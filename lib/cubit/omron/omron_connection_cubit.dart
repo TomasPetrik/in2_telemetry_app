@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/bloc/omron/omron_connection_state.dart';
+import 'package:scalesoft_app/cubit/omron/omron_connection_state.dart';
 import 'package:scalesoft_app/model/device_info.dart';
 import 'package:scalesoft_app/model/measurement_info.dart';
 import 'package:scalesoft_app/model/measurement_result.dart';
@@ -19,11 +19,11 @@ const String bloodPressure = '00001810-0000-1000-8000-00805f9b34fb';
 const String batteryService = '0000180F-0000-1000-8000-00805f9b34fb';
 
 @singleton
-class OmronConnectionBloc extends Cubit<OmronConnectionState> {
+class OmronConnectionCubit extends Cubit<OmronConnectionState> {
   FlutterBlue flutterBlue = FlutterBlue.instance;
   bool search = true;
 
-  OmronConnectionBloc()
+  OmronConnectionCubit()
       : super(
           const OmronConnectionState.init(),
         );
@@ -106,7 +106,6 @@ class OmronConnectionBloc extends Cubit<OmronConnectionState> {
   Future<void> verifyDevice(BluetoothDevice device) async {
     final deviceInfo = await requestDeviceInfo(device);
     if (deviceInfo != null) {
-      //TODO.. && isVerified() => by manucafture data comming from user profile
       emit(OmronConnectionState.verified(device: device, deviceInfo: deviceInfo));
     } else {
       emit(const OmronConnectionState.notVerified());

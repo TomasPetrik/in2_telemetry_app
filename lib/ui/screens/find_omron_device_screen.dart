@@ -1,8 +1,8 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scalesoft_app/bloc/omron/omron_connection_bloc.dart';
-import 'package:scalesoft_app/bloc/omron/omron_connection_state.dart';
+import 'package:scalesoft_app/cubit/omron/omron_connection_cubit.dart';
+import 'package:scalesoft_app/cubit/omron/omron_connection_state.dart';
 import 'package:scalesoft_app/model/measurement_result.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/measurement_result_screen.dart';
@@ -19,7 +19,7 @@ class FindOmronDeviceScreen extends StatelessWidget with PopupDialogMixin {
 
   @override
   Widget build(BuildContext context) {
-    final OmronConnectionBloc omronConnectionBloc = getIt<OmronConnectionBloc>();
+    final OmronConnectionCubit omronConnectionCubit = getIt<OmronConnectionCubit>();
 
     /*
     omronConnectionBloc.state.whenOrNull(
@@ -37,12 +37,12 @@ class FindOmronDeviceScreen extends StatelessWidget with PopupDialogMixin {
     */
     return WillPopScope(
       onWillPop: () async {
-        await omronConnectionBloc.stopSearch();
+        await omronConnectionCubit.stopSearch();
         return true;
       },
       child: Scaffold(
-        body: BlocConsumer<OmronConnectionBloc, OmronConnectionState>(
-          bloc: omronConnectionBloc..checkDeviceAvailability(),
+        body: BlocConsumer<OmronConnectionCubit, OmronConnectionState>(
+          bloc: omronConnectionCubit..checkDeviceAvailability(),
           listener: (context, state) {
             state.whenOrNull(
               verified: (device, deviceInfo) {

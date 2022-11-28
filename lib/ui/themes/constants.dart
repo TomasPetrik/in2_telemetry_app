@@ -1,6 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
+class Constants {
+  /* API */
+  static const String baseUrl = 'https://in2-win.devscale.cz/api-mobile/v1';
+  static const String privateDioName = 'privateDio';
+
+  /* OAuth2 */
+  static const String clientSecret = 'cqWFWo9zYQHFh38kS8VC';
+  static const String issuer = 'https://in2-win-auth.devscale.cz';
+  static const String clientId = 'MobileApp';
+  static const List<String> scopes = [
+    'openid',
+    'profile',
+    'offline_access',
+    'mobile_api.Default',
+  ];
+  static const String redirectUrl = 'cz.scalesoft.tlm://auth-callback'; //cz.scalesoft.tlm://auth-callback
+  static const String authorizationEndpoint = 'https://in2-win-auth.devscale.cz/connect/authorize';
+  static const String tokenEndpoint = 'https://in2-win-auth.devscale.cz/connect/token';
+  static const String endSessionEndpoint = 'https://in2-win-auth.devscale.cz/connect/endsession';
+}
+
 class Paddings {
   static const EdgeInsetsGeometry left5 = EdgeInsets.only(left: Dimensions.padding5);
   static const EdgeInsetsGeometry left8 = EdgeInsets.only(left: Dimensions.padding8);
