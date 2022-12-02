@@ -26,7 +26,7 @@ class AuthService {
     final authorizationUrl = grant.getAuthorizationUrl(Uri.parse(redirectUrl), scopes: scopes);
 
     if (await canLaunchUrl(authorizationUrl)) {
-      await launchUrl(authorizationUrl, mode: LaunchMode.externalNonBrowserApplication);
+      await launchUrl(authorizationUrl, mode: LaunchMode.externalApplication);
     }
 
     linkStream.listen(
