@@ -68,7 +68,7 @@ class OmronConnectionCubit extends Cubit<OmronConnectionState> {
         // do something with scan results
 
         for (final result in results) {
-          if (result.advertisementData.serviceUuids.map((uuid) => uuid.toLowerCase()).contains(bloodPressureUuid)) {
+          if (result.advertisementData.serviceUuids.map((uuid) => uuid.toLowerCase()).contains(bloodPressureServiceUuid)) {
             search = false;
             flutterBlue.stopScan();
             BluetoothDevice device = result.device;
