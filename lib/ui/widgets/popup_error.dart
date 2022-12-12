@@ -47,7 +47,7 @@ class PopupError extends StatelessWidget {
                   Expanded(
                     child: Text(
                       message,
-                      style: ScaleTextStyles.heading4.apply(color: ScaleColors.white),
+                      style: ScaleTextStyles.label.apply(color: ScaleColors.white),
                     ),
                   ),
                   Gaps.gap10,

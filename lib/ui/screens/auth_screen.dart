@@ -6,6 +6,7 @@ import 'package:scalesoft_app/bloc/auth/auth_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/dashboard_screen.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/loading_indicator.dart';
 
 class AuthScreen extends StatelessWidget {
@@ -34,9 +35,15 @@ class AuthScreen extends StatelessWidget {
         builder: (context, state) {
           Widget stateInfo;
           if (state is Unauthenticated) {
-            stateInfo = const Text('Unauthenticated');
+            stateInfo = Text(
+              'Unauthenticated',
+              style: ScaleTextStyles.title,
+            );
           } else if (state is LogoutSuccess) {
-            stateInfo = const SizedBox(height: 35);
+            stateInfo = Text(
+              'Logged out',
+              style: ScaleTextStyles.title,
+            );
           } else {
             stateInfo = const LoadingIndicator();
           }

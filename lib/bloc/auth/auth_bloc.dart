@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/dto/auth_token.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
-import 'package:scalesoft_app/repository/account_repository.dart';
+import 'package:scalesoft_app/repositories/account_repository.dart';
 import 'package:scalesoft_app/services/auth_service.dart';
 import 'package:scalesoft_app/storage/storage.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';

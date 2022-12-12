@@ -20,6 +20,8 @@ class Constants {
   static const String authorizationEndpoint = 'https://in2-win-auth.devscale.cz/connect/authorize';
   static const String tokenEndpoint = 'https://in2-win-auth.devscale.cz/connect/token';
   static const String endSessionEndpoint = 'https://in2-win-auth.devscale.cz/connect/endsession';
+
+  static const double appBarHeight = 76;
 }
 
 class Paddings {
@@ -89,6 +91,7 @@ class Paddings {
 class BorderRadii {
   static BorderRadius radius2 = const BorderRadius.all(Radius.circular(RadiusSize.radius2));
   static BorderRadius radius6 = const BorderRadius.all(Radius.circular(RadiusSize.radius6));
+  static BorderRadius radius8 = const BorderRadius.all(Radius.circular(RadiusSize.radius8));
   static BorderRadius radius10 = const BorderRadius.all(Radius.circular(RadiusSize.radius10));
   static BorderRadius radius12 = const BorderRadius.all(Radius.circular(RadiusSize.radius12));
   static BorderRadius radius15 = const BorderRadius.all(Radius.circular(RadiusSize.radius15));
@@ -112,10 +115,11 @@ class Gaps {
   static Gap gap16 = const Gap(Dimensions.padding16);
   static Gap gap17 = const Gap(Dimensions.padding17);
   static Gap gap20 = const Gap(Dimensions.padding20);
+  static Gap gap24 = const Gap(Dimensions.padding24);
   static Gap gap30 = const Gap(Dimensions.padding30);
   static Gap gap32 = const Gap(Dimensions.padding32);
   static Gap gap35 = const Gap(Dimensions.padding35);
-  static Gap gap40 = const Gap(Dimensions.padding35);
+  static Gap gap42 = const Gap(Dimensions.padding42);
   static Gap gap48 = const Gap(Dimensions.padding48);
   static Gap gap60 = const Gap(Dimensions.padding60);
 }
@@ -133,11 +137,12 @@ class Dimensions {
   static const double padding16 = 16;
   static const double padding17 = 17;
   static const double padding20 = 20;
+  static const double padding24 = 24;
   static const double padding25 = 25;
   static const double padding30 = 30;
   static const double padding32 = 32;
   static const double padding35 = 35;
-  static const double padding40 = 40;
+  static const double padding42 = 42;
   static const double padding48 = 48;
   static const double padding60 = 60;
   static const double padding64 = 64;
@@ -146,6 +151,7 @@ class Dimensions {
 class RadiusSize {
   static const double radius2 = 2;
   static const double radius6 = 6;
+  static const double radius8 = 8;
   static const double radius10 = 10;
   static const double radius12 = 12;
   static const double radius15 = 15;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
-import 'package:scalesoft_app/ui/themes/scalesoft_colors.dart';
+import 'package:scalesoft_app/ui/themes/scalesoft_colors_light.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 
 class PopupDialog extends StatelessWidget {
@@ -28,14 +28,14 @@ class PopupDialog extends StatelessWidget {
               margin: Paddings.all16,
               padding: Paddings.all12,
               decoration: BoxDecoration(
-                color: ScaleColors.white,
+                color: ScaleColorsLight.paper,
                 borderRadius: BorderRadii.radius20,
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    ScaleColors.white,
-                    ScaleColors.blurDark1,
+                    ScaleColorsLight.paper,
+                    ScaleColorsLight.content100,
                   ],
                 ),
               ),
@@ -47,7 +47,7 @@ class PopupDialog extends StatelessWidget {
                     child: Text(
                       key: const Key('send_forgot_password_popup'),
                       message,
-                      style: ScaleTextStyles.heading4.apply(color: ScaleColors.blurDark1),
+                      style: ScaleTextStyles.label.apply(color: ScaleColorsLight.content100),
                     ),
                   ),
                   Gaps.gap10,

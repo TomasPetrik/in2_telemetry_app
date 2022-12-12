@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
-import 'package:scalesoft_app/ui/themes/scalesoft_colors.dart';
+import 'package:scalesoft_app/ui/themes/scalesoft_colors_light.dart';
 
 class LoadingIndicator extends StatelessWidget {
   const LoadingIndicator({
@@ -19,8 +19,8 @@ class LoadingIndicator extends StatelessWidget {
       height: 35,
       child: CircularProgressIndicator(
         strokeWidth: Dimensions.padding2,
-        color: activeColor ?? ScaleColors.mainText1,
-        backgroundColor: backgroundColor ?? ScaleColors.blurDark1,
+        color: activeColor ?? ScaleColorsLight.content100,
+        backgroundColor: backgroundColor ?? ScaleColorsLight.content80,
       ),
     );
   }

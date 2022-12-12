@@ -1,0 +1,31 @@
+{
+  "appTitle": "ScelesoftApp",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+
+  
+
+  "configuration_screen_title": "Telemedicína",
+
+  "configuration_screen_logged_accounts": "Přihlášené účty",
+  "configuration_screen_add_account": "Přidat účet",
+
+  "configuration_screen_settings": "Nastavení",
+  "configuration_screen_notification_label": "Notifikace",
+  "configuration_screen_notification_sublabel": "Dle plánu měření",
+
+  "configuration_screen_appearance_label": "Vzhled",
+  "configuration_screen_appearance_sublabel": "Téma dle systému",
+
+  "configuration_screen_auto_mode_title": "Automaticky",
+  "configuration_screen_auto_mode_desc": "Světlý a tmavý režim se střídají dle západu a východu slunce.",
+  "configuration_screen_light": "Světlý",
+  "configuration_screen_good_in_day": "Skvělý přes den",
+  "configuration_screen_dark": "Tmavý",
+  "configuration_screen_good_in_night": "Skvělý v noci",
+
+  "notifications_screen_title": "Notifikace",
+  "appearance_screen_title": "Vzhled"
+
+}

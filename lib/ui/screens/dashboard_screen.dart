@@ -9,8 +9,11 @@ import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/auth_screen.dart';
+import 'package:scalesoft_app/ui/screens/configuration_screen.dart';
 import 'package:scalesoft_app/ui/screens/select_device_screen.dart';
-import 'package:scalesoft_app/ui/themes/scalesoft_colors.dart';
+import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/themes/scalesoft_colors_light.dart';
+import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({
@@ -35,14 +38,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
           GestureDetector(
             onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
             child: RefreshIndicator(
-              color: ScaleColors.mainText2,
-              backgroundColor: ScaleColors.dark20,
-              edgeOffset: MediaQuery.of(context).viewPadding.top + 50,
+              color: ScaleColorsLight.content100,
+              backgroundColor: ScaleColorsLight.content20,
+              edgeOffset: MediaQuery.of(context).viewPadding.top + 56,
               onRefresh: () async => {},
               child: CustomScrollView(
                 controller: scrollController,
                 slivers: [
-                  SliverGap(MediaQuery.of(context).viewPadding.top + 50 + 6),
+                  SliverGap(MediaQuery.of(context).viewPadding.top + 56 + Dimensions.padding16 + Dimensions.padding16),
                   SliverToBoxAdapter(
                     child: Card(
                       child: Container(
@@ -87,26 +90,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                   child: Container(
-                    color: ScaleColors.blurDark1,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top + 6),
-                          child: SizedBox(
-                            height: 50,
+                    color: ScaleColorsLight.paperTransparent,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).viewPadding.top + Dimensions.padding16,
+                        bottom: Dimensions.padding16,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 24,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const SizedBox(
-                                  width: 56,
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    widget.userInfo.currentUser.fullName,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
                                 BlocConsumer<AuthBloc, AuthState>(
                                   bloc: getIt<AuthBloc>(),
                                   listener: (context, state) {
@@ -124,18 +121,48 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         onPressed: () {
                                           getIt<AuthBloc>().add(const LogoutUser());
                                         },
+                                        padding: EdgeInsets.zero,
                                         icon: const Icon(
-                                          Icons.logout,
+                                          Icons.local_hospital_outlined,
+                                          color: ScaleColorsLight.content100,
                                         ),
                                       ),
                                     );
                                   },
                                 ),
+                                Expanded(
+                                  child: Text(
+                                    style: ScaleTextStyles.textAccent.apply(color: ScaleColorsLight.content100),
+                                    widget.userInfo.currentUser.fullName,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 56,
+                                  child: IconButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pushNamed(
+                                        ConfigurationScreen.routeName,
+                                      );
+                                    },
+                                    padding: EdgeInsets.zero,
+                                    icon: const Icon(
+                                      Icons.settings,
+                                      color: ScaleColorsLight.content100,
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
-                        ),
-                      ],
+                          Gaps.gap6,
+                          Text(
+                            style: ScaleTextStyles.label.apply(color: ScaleColorsLight.content80),
+                            widget.userInfo.currentUser.fullName,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
