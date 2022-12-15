@@ -106,7 +106,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                BlocConsumer<AuthBloc, AuthState>(
+                                BlocListener<AuthBloc, AuthState>(
                                   bloc: authBloc,
                                   listener: (context, state) {
                                     state.whenOrNull(
@@ -118,21 +118,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       },
                                     );
                                   },
-                                  builder: (context, state) {
-                                    return SizedBox(
-                                      width: 56,
-                                      child: IconButton(
-                                        onPressed: () {
-                                          getIt<AuthBloc>().add(const LogoutUser());
-                                        },
-                                        padding: EdgeInsets.zero,
-                                        icon: const Icon(
-                                          Icons.local_hospital_outlined,
-                                          color: ScaleColorsLight.content100,
-                                        ),
+                                  child: SizedBox(
+                                    width: 56,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        authBloc.add(const LogoutUser());
+                                      },
+                                      padding: EdgeInsets.zero,
+                                      icon: const Icon(
+                                        Icons.local_hospital_outlined,
+                                        color: ScaleColorsLight.content100,
                                       ),
-                                    );
-                                  },
+                                    ),
+                                  ),
                                 ),
                                 Expanded(
                                   child: Text(
