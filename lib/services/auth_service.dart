@@ -6,6 +6,24 @@ import 'package:url_launcher/url_launcher.dart';
 
 @singleton
 class AuthService {
+  AuthorizationCodeGrant getAuthGrant(
+    Uri uri,
+    String clientId,
+    String clientSecret,
+    String authorizationEndpoint,
+    String tokenEndpoint,
+    String endSessionEndpoint,
+  ) {
+    final grant = oauth2.AuthorizationCodeGrant(
+      clientId,
+      Uri.parse(authorizationEndpoint),
+      Uri.parse(tokenEndpoint),
+      secret: clientSecret,
+    );
+
+    return grant;
+  }
+
   Future<Client?> authorize(
     Uri uri,
     String clientId,
@@ -23,7 +41,10 @@ class AuthService {
       secret: clientSecret,
     );
 
-    final authorizationUrl = grant.getAuthorizationUrl(Uri.parse(redirectUrl), scopes: scopes);
+    final authorizationUrl = grant.getAuthorizationUrl(
+      Uri.parse(redirectUrl),
+      scopes: scopes,
+    );
 
     if (await canLaunchUrl(authorizationUrl)) {
       await launchUrl(authorizationUrl, mode: LaunchMode.externalApplication);

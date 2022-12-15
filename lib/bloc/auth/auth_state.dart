@@ -1,57 +1,17 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:oauth2/oauth2.dart';
 import 'package:scalesoft_app/api/dto/user_info.dart';
 
-abstract class AuthState extends Equatable {
-  const AuthState();
-}
+part 'auth_state.freezed.dart';
 
-class Authenticating extends AuthState {
-  const Authenticating();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class Unauthenticated extends AuthState {
-  final Exception? error;
-
-  const Unauthenticated({this.error});
-
-  @override
-  List<Object?> get props => [error];
-}
-
-class Authenticated extends AuthState {
-  final Credentials? credentials;
-
-  const Authenticated({this.credentials});
-
-  @override
-  List<Object?> get props => [credentials];
-}
-
-class UserVerified extends AuthState {
-  final UserInfo? userInfo;
-
-  const UserVerified({this.userInfo});
-
-  @override
-  List<Object?> get props => [userInfo];
-}
-
-class LogoutSuccess extends AuthState {
-  const LogoutSuccess();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class LogoutFailed extends AuthState {
-  final Exception? error;
-
-  const LogoutFailed({this.error});
-
-  @override
-  List<Object?> get props => [error];
+@freezed
+class AuthState with _$AuthState {
+  const factory AuthState.authenticating() = _Authenticating;
+  const factory AuthState.cancelled() = _Cancelled;
+  const factory AuthState.authenticated({Credentials? credentials}) = _Authenticated;
+  const factory AuthState.unauthenticated({Exception? error}) = _Unauthenticated;
+  const factory AuthState.openAuthReqest({required Uri authUri}) = _OpenAuthReqest;
+  const factory AuthState.userVerified({UserInfo? userInfo}) = _UserVerified;
+  const factory AuthState.logoutSuccess() = _LogoutSuccess;
+  const factory AuthState.logoutFailed({Exception? error}) = _LogoutFailed;
 }

@@ -29,6 +29,8 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  final AuthBloc authBloc = getIt<AuthBloc>();
+
   final scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
@@ -105,14 +107,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 BlocConsumer<AuthBloc, AuthState>(
-                                  bloc: getIt<AuthBloc>(),
+                                  bloc: authBloc,
                                   listener: (context, state) {
-                                    if (state is LogoutSuccess) {
-                                      Navigator.of(context).pushNamedAndRemoveUntil(
-                                        AuthScreen.routeName,
-                                        (route) => false,
-                                      );
-                                    }
+                                    state.whenOrNull(
+                                      logoutSuccess: () {
+                                        Navigator.of(context).pushNamedAndRemoveUntil(
+                                          AuthScreen.routeName,
+                                          (route) => false,
+                                        );
+                                      },
+                                    );
                                   },
                                   builder: (context, state) {
                                     return SizedBox(

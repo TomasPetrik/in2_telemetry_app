@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scalesoft_app/api/dto/user_info.dart';
@@ -39,7 +40,8 @@ Future<void> _main({
 }) async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  initializeGlobals(themeMode: ThemeMode.dark, locale: cz, isDevel: true);
+  initializeGlobals(themeMode: themeMode, locale: locale, isDevel: isDevel);
+  WebView.debugLoggingSettings.enabled = false;
 
   await configureDependencies();
   getIt<Dio>(instanceName: Constants.privateDioName).interceptors.add(getIt<TokenInterceptor>());

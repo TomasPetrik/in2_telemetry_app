@@ -4,6 +4,7 @@ import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/ui/screens/auth_web_screen.dart';
 import 'package:scalesoft_app/ui/screens/dashboard_screen.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -22,31 +23,61 @@ class AuthScreen extends StatelessWidget {
       body: BlocConsumer<AuthBloc, AuthState>(
         bloc: authBloc,
         listener: (context, state) {
-          if (state is Authenticated) {
-            authBloc.add(const VerifyUser());
-          } else if (state is UserVerified) {
-            Navigator.pushReplacementNamed(
-              context,
-              DashboardScreen.routeName,
-              arguments: state.userInfo,
-            );
-          }
+          state.whenOrNull(
+            openAuthReqest: (authUri) {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AuthWebScreen(
+                    authUri: authUri,
+                    onRedirect: (redirectUri) {
+                      authBloc.add(
+                        HandleAuthResponse(authRespUri: redirectUri),
+                      );
+                    },
+                    onCancelled: () {
+                      authBloc.add(const CancelAuth());
+                    },
+                  );
+                },
+              );
+            },
+            authenticated: (credentials) {
+              Navigator.of(context, rootNavigator: true).pop();
+              authBloc.add(const VerifyUser());
+            },
+            userVerified: (userInfo) => {
+              Navigator.pushReplacementNamed(
+                context,
+                DashboardScreen.routeName,
+                arguments: userInfo,
+              )
+            },
+          );
         },
         builder: (context, state) {
-          Widget stateInfo;
-          if (state is Unauthenticated) {
-            stateInfo = Text(
-              'Unauthenticated',
-              style: ScaleTextStyles.title,
-            );
-          } else if (state is LogoutSuccess) {
-            stateInfo = Text(
-              'Logged out',
-              style: ScaleTextStyles.title,
-            );
-          } else {
-            stateInfo = const LoadingIndicator();
-          }
+          Widget? stateWidget = state.whenOrNull<Widget>(
+            unauthenticated: (exception) {
+              return Text(
+                'Unauthenticated',
+                style: ScaleTextStyles.title,
+              );
+            },
+            logoutSuccess: () {
+              return Text(
+                'Logged out',
+                style: ScaleTextStyles.title,
+              );
+            },
+            cancelled: () {
+              return Text(
+                'Cancelled',
+                style: ScaleTextStyles.title,
+              );
+            },
+          );
+
+          stateWidget ??= const LoadingIndicator();
 
           return Stack(
             children: [
@@ -54,7 +85,7 @@ class AuthScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    stateInfo,
+                    stateWidget,
                     Gaps.gap20,
                     TextButton(
                       onPressed: () {

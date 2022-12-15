@@ -11,6 +11,23 @@ class Authenticate extends AuthEvent {
   List<Object?> get props => [];
 }
 
+class HandleAuthResponse extends AuthEvent {
+  final Uri authRespUri;
+  const HandleAuthResponse({
+    required this.authRespUri,
+  });
+
+  @override
+  List<Object?> get props => [authRespUri];
+}
+
+class CancelAuth extends AuthEvent {
+  const CancelAuth();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class VerifyUser extends AuthEvent {
   const VerifyUser();
 
@@ -18,12 +35,9 @@ class VerifyUser extends AuthEvent {
   List<Object?> get props => [];
 }
 
-
 class LogoutUser extends AuthEvent {
   const LogoutUser();
 
   @override
   List<Object?> get props => [];
 }
-
-
