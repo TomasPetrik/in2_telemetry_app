@@ -113,6 +113,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     CancelAuth event,
     Emitter<AuthState> emit,
   ) async {
-    emit(const AuthState.logoutSuccess());
+    emit(const AuthState.cancelled());
   }
 }
