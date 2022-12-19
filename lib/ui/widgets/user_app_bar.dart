@@ -1,0 +1,96 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:scalesoft_app/api/dto/user_info.dart';
+import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
+import 'package:scalesoft_app/bloc/auth/auth_event.dart';
+import 'package:scalesoft_app/bloc/auth/auth_state.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/ui/screens/auth_screen.dart';
+import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+
+class UserAppBar extends StatelessWidget {
+  const UserAppBar({
+    super.key,
+    required this.userInfo,
+  });
+
+  final UserInfo userInfo;
+
+  @override
+  Widget build(BuildContext context) {
+    final AuthBloc authBloc = getIt<AuthBloc>();
+    return Material(
+      color: Colors.transparent, // Theme.of(context).backgroundColor.withOpacity(0.5),
+      child: Padding(
+        padding: EdgeInsets.only(
+          top: MediaQuery.of(context).viewPadding.top,
+        ),
+        child: SizedBox(
+          height: Constants.twoLinedBarHeight,
+          child: Padding(
+            padding: const EdgeInsets.only(
+              top: Dimensions.padding16,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 24,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      BlocListener<AuthBloc, AuthState>(
+                        bloc: authBloc,
+                        listener: (context, state) {
+                          state.whenOrNull(
+                            logoutSuccess: () {
+                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                AuthScreen.routeName,
+                                (route) => false,
+                              );
+                            },
+                          );
+                        },
+                        child: SizedBox(
+                          width: 56,
+                          child: IconButton(
+                            onPressed: () {
+                              authBloc.add(const LogoutUser());
+                            },
+                            padding: EdgeInsets.zero,
+                            icon: SvgPicture.asset(
+                              'assets/icons/icon_add_user.svg',
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          style: ScaleTextStyles.textAccent,
+                          userInfo.currentUser.fullName,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      const SizedBox(width: 56),
+                    ],
+                  ),
+                ),
+                Gaps.gap6,
+                Text(
+                  style: ScaleTextStyles.label.apply(
+                    color: Theme.of(context).hintColor,
+                  ),
+                  userInfo.currentUser.fullName,
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

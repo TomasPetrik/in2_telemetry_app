@@ -17,8 +17,7 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/appearance_settings_screen.dart';
 import 'package:scalesoft_app/ui/screens/auth_screen.dart';
 import 'package:scalesoft_app/ui/screens/beurer_screen.dart';
-import 'package:scalesoft_app/ui/screens/configuration_screen.dart';
-import 'package:scalesoft_app/ui/screens/dashboard_screen.dart';
+import 'package:scalesoft_app/ui/screens/home_screen.dart';
 import 'package:scalesoft_app/ui/screens/measurement_result_screen.dart';
 import 'package:scalesoft_app/ui/screens/notifications_settings_screen.dart';
 import 'package:scalesoft_app/ui/screens/omron_screen.dart';
@@ -97,17 +96,15 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
               settings: routeSettings,
               builder: (BuildContext context) {
                 switch (routeSettings.name) {
+                  case HomeScreen.routeName:
+                    final userInfo = routeSettings.arguments as UserInfo;
+                    return HomeScreen(userInfo: userInfo);
                   case AuthScreen.routeName:
                     return AuthScreen();
-                  case ConfigurationScreen.routeName:
-                    return const ConfigurationScreen();
                   case AppearanceSettingsScreen.routeName:
                     return const AppearanceSettingsScreen();
                   case NotificationsSettingsScreen.routeName:
                     return const NotificationsSettingsScreen();
-                  case DashboardScreen.routeName:
-                    final userInfo = routeSettings.arguments as UserInfo;
-                    return DashboardScreen(userInfo: userInfo);
                   case BeurerScreen.routeName:
                     return const BeurerScreen();
                   case OmronScreen.routeName:

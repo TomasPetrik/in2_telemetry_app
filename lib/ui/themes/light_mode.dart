@@ -5,13 +5,23 @@ import 'package:scalesoft_app/ui/themes/scalesoft_colors_light.dart';
 class LightMode {
   static Color get backgroundColor => ScaleColorsLight.paper;
 
-  static Color get buttonColor => ScaleColorsLight.primary;
+  static Color get primary => ScaleColorsLight.primary;
 
   static Color get fontColor => ScaleColorsLight.content100;
 
-  static Color get fontColorLabel => ScaleColorsLight.content80;
+  static Color get colorContent80 => ScaleColorsLight.content80;
 
-  static Color get cardColor => ScaleColorsLight.paperAccent;
+  static Color get paperAccent => ScaleColorsLight.paperAccent;
+
+  static Color get alertColor => ScaleColorsLight.alert;
+
+  static Color get actionStartColor => ScaleColorsLight.actionStart;
+
+  static Color get actionEndColor => ScaleColorsLight.actionEnd;
+
+  static Color get light => ScaleColorsLight.light;
+
+  static Color get dark => ScaleColorsLight.dark;
 
   static TextTheme get textTheme => TextTheme(
         headlineLarge: TextStyle(fontSize: 36, height: 1.33, fontWeight: FontWeight.w700, color: fontColor), //big
@@ -22,17 +32,36 @@ class LightMode {
         labelSmall: TextStyle(fontSize: 13, height: 1.23, fontWeight: FontWeight.w700, color: fontColor), //label
       );
 
+  static ColorScheme get colorScheme => ColorScheme(
+        background: backgroundColor,
+        brightness: Brightness.dark,
+        error: alertColor,
+        onBackground: backgroundColor,
+        onError: alertColor,
+        onPrimary: fontColor,
+        onSecondary: colorContent80,
+        onSurface: backgroundColor,
+        primary: primary,
+        secondary: paperAccent,
+        surface: backgroundColor,
+        primaryContainer: actionStartColor,
+        onPrimaryContainer: actionEndColor,
+        
+      );
   static ThemeData get theme => ThemeData(
         primaryColor: ScaleColorsLight.primary,
         canvasColor: backgroundColor,
         backgroundColor: backgroundColor,
         scaffoldBackgroundColor: backgroundColor,
-        cardColor: cardColor,
-        highlightColor: buttonColor,
-        hintColor: fontColorLabel,
+        cardColor: paperAccent,
+        highlightColor: primary,
+        hintColor: colorContent80,
         textTheme: textTheme,
+        colorScheme: colorScheme,
+        primaryColorLight: light,
+        primaryColorDark: dark,
         appBarTheme: AppBarTheme(
-          iconTheme: const IconThemeData(color: ScaleColorsLight.primary),
+          iconTheme: IconThemeData(color: primary),
           backgroundColor: ScaleColorsLight.paperTransparent,
           titleTextStyle: TextStyle(
             backgroundColor: backgroundColor,
@@ -53,9 +82,8 @@ class LightMode {
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
             backgroundColor: MaterialStateColor.resolveWith(
-              (states) => states.isNotEmpty && states.first == MaterialState.pressed
-                  ? buttonColor.withOpacity(0.5)
-                  : buttonColor,
+              (states) =>
+                  states.isNotEmpty && states.first == MaterialState.pressed ? primary.withOpacity(0.5) : primary,
             ),
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(

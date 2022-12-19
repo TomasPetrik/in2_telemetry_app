@@ -21,7 +21,14 @@ class Constants {
   static const String tokenEndpoint = 'https://in2-win-auth.devscale.cz/connect/token';
   static const String endSessionEndpoint = 'https://in2-win-auth.devscale.cz/connect/endsession';
 
-  static const double appBarHeight = 76;
+  static const double appBarHeight = 56;
+  static const double twoLinedBarHeight = 76;
+  static const double bottomTabBarHeight = 56;
+  static const double navigationTabBarHeight = 28;
+  static const double buttonHeight = 48;
+
+  static const double actionActiveWidgetHeight = 16 + 20 + 16 + buttonHeight + 16;
+  static const double actionPassiveWidgetHeight = 16 + 20 + 16;
 }
 
 class Paddings {
@@ -116,6 +123,7 @@ class Gaps {
   static Gap gap17 = const Gap(Dimensions.padding17);
   static Gap gap20 = const Gap(Dimensions.padding20);
   static Gap gap24 = const Gap(Dimensions.padding24);
+  static Gap gap26 = const Gap(Dimensions.padding26);
   static Gap gap30 = const Gap(Dimensions.padding30);
   static Gap gap32 = const Gap(Dimensions.padding32);
   static Gap gap35 = const Gap(Dimensions.padding35);
@@ -139,6 +147,7 @@ class Dimensions {
   static const double padding20 = 20;
   static const double padding24 = 24;
   static const double padding25 = 25;
+  static const double padding26 = 26;
   static const double padding30 = 30;
   static const double padding32 = 32;
   static const double padding35 = 35;

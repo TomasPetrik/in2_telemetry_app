@@ -6,13 +6,11 @@ import 'package:scalesoft_app/ui/screens/notifications_settings_screen.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_colors_light.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
-import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
+import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/settings_item.dart';
 
 class ConfigurationScreen extends StatelessWidget {
   const ConfigurationScreen({super.key});
-
-  static const routeName = '/configuration';
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +27,7 @@ class ConfigurationScreen extends StatelessWidget {
                   Gaps.gap16,
                   Center(
                     child: Image.asset(
-                      'assets/images/flower.png',
+                      'assets/images/app_icon.png',
                       height: 64,
                       width: 64,
                     ),
@@ -77,8 +75,13 @@ class ConfigurationScreen extends StatelessWidget {
               ),
             ),
           ),
-          ScaleAppBar(
-            title: context.locale.configuration_screen_title,
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: BluredUserAppBar(
+              title: context.locale.common_telemedicine,
+            ),
           ),
         ],
       ),

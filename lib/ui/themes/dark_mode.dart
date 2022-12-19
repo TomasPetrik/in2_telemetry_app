@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_colors_dark.dart';
+import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 
 class DarkMode {
   static Color get backgroundColor => ScaleColorsDark.paper;
 
-  static Color get buttonColor => ScaleColorsDark.primary;
+  static Color get primary => ScaleColorsDark.primary;
 
   static Color get fontColor => ScaleColorsDark.content100;
 
@@ -13,7 +14,17 @@ class DarkMode {
 
   static Color get colorContent20 => ScaleColorsDark.content20;
 
-  static Color get cardColor => ScaleColorsDark.paperAccent;
+  static Color get paperAccent => ScaleColorsDark.paperAccent;
+
+  static Color get alertColor => ScaleColorsDark.alert;
+
+  static Color get actionStartColor => ScaleColorsDark.actionStart;
+
+  static Color get actionEndColor => ScaleColorsDark.actionEnd;
+
+  static Color get light => ScaleColorsDark.light;
+
+  static Color get dark => ScaleColorsDark.dark;
 
   static TextTheme get textTheme => TextTheme(
         headlineLarge: TextStyle(fontSize: 36, height: 1.33, fontWeight: FontWeight.w700, color: fontColor), //big
@@ -24,18 +35,37 @@ class DarkMode {
         labelSmall: TextStyle(fontSize: 13, height: 1.23, fontWeight: FontWeight.w700, color: fontColor), //label
       );
 
+  static ColorScheme get colorScheme => ColorScheme(
+        background: backgroundColor,
+        brightness: Brightness.dark,
+        error: alertColor,
+        onBackground: backgroundColor,
+        onError: alertColor,
+        onPrimary: fontColor,
+        onSecondary: colorContent80,
+        onSurface: backgroundColor,
+        primary: primary,
+        secondary: paperAccent,
+        surface: backgroundColor,
+        primaryContainer: actionStartColor,
+        onPrimaryContainer: actionEndColor,
+      );
+
   static ThemeData get theme => ThemeData(
         primaryColor: ScaleColorsDark.primary,
         canvasColor: backgroundColor,
         backgroundColor: backgroundColor,
         scaffoldBackgroundColor: backgroundColor,
-        cardColor: cardColor,
-        highlightColor: buttonColor,
+        cardColor: paperAccent,
+        highlightColor: primary,
         textTheme: textTheme,
         hintColor: colorContent80,
         selectedRowColor: colorContent20,
+        colorScheme: colorScheme,
+        primaryColorLight: light,
+        primaryColorDark: dark,
         appBarTheme: AppBarTheme(
-          iconTheme: const IconThemeData(color: ScaleColorsDark.primary),
+          iconTheme: IconThemeData(color: primary),
           backgroundColor: ScaleColorsDark.paperTransparent,
           titleTextStyle: TextStyle(
             backgroundColor: backgroundColor,
@@ -56,8 +86,16 @@ class DarkMode {
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
             backgroundColor: MaterialStateColor.resolveWith(
-              (states) => states.isNotEmpty && states.first == MaterialState.pressed ? buttonColor.withOpacity(0.5) : buttonColor,
+              (states) => states.isNotEmpty && states.first == MaterialState.pressed
+                  ? colorContent20.withOpacity(0.5)
+                  : colorContent20,
             ),
+            textStyle: MaterialStateProperty.all<TextStyle>(
+              ScaleTextStyles.textAccent.apply(
+                color: fontColor,
+              ),
+            ),
+            padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.zero),
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
                 borderRadius: BorderRadii.radius8,

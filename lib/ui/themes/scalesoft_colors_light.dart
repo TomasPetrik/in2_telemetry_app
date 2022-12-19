@@ -20,4 +20,7 @@ abstract class ScaleColorsLight {
 
   static const dark = Color(0xFF263238);
   static const light = Color(0xFFFFFFFF);
+
+  static const actionStart = Color(0xFF32B585);
+  static const actionEnd = Color(0xFF109383);
 }

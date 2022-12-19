@@ -9,7 +9,7 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/appearance_item.dart';
-import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
+import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 
 class AppearanceSettingsScreen extends StatelessWidget {
   const AppearanceSettingsScreen({super.key});
@@ -28,7 +28,7 @@ class AppearanceSettingsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ScaleAppBar(
+              BluredUserAppBar(
                 title: context.locale.appearance_screen_title,
                 onBackTap: () {},
               ),

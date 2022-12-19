@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 
@@ -7,55 +5,70 @@ class ScaleAppBar extends StatelessWidget {
   const ScaleAppBar({
     super.key,
     required this.title,
+    this.showClose = false,
     this.onBackTap,
   });
 
   final String title;
+  final bool showClose;
   final VoidCallback? onBackTap;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).viewPadding.top + Constants.appBarHeight,
-      child: ClipRRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Stack(
+    return Padding(
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).viewPadding.top,
+      ),
+      child: SizedBox(
+        height: Constants.appBarHeight,
+        child: Padding(
+          padding: const EdgeInsets.only(
+            top: Dimensions.padding16,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              if (onBackTap != null)
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    onPressed: () {
-                      onBackTap?.call();
-                      Navigator.of(context).pop();
-                    },
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Theme.of(context).primaryColor,
+              SizedBox(
+                height: 24,
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 56,
+                      child: onBackTap != null
+                          ? IconButton(
+                              onPressed: () {
+                                onBackTap?.call();
+                                Navigator.of(context).pop();
+                              },
+                              icon: Icon(
+                                Icons.arrow_back,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            )
+                          : null,
                     ),
-                  ),
-                ),
-              Positioned.fill(
-                left: 48,
-                right: 48,
-                child: Center(
-                  child: Text(
-                    title,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  icon: Icon(
-                    Icons.close,
-                    color: Theme.of(context).primaryColor,
-                  ),
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: Theme.of(context).textTheme.titleMedium,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 56,
+                      child: showClose
+                          ? IconButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              icon: Icon(
+                                Icons.close,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                  ],
                 ),
               ),
             ],
