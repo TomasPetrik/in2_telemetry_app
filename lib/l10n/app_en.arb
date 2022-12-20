@@ -6,7 +6,7 @@
   "common_measurement": "Měření",
   "common_measure_now": "Měřit teď",
   "common_manual_measurement": "Vlastní měření",
-  
+  "common_show_calendar": "Zobrazit kalendář",
   "common_telemedicine": "Telemedicína",
   "common_measurement_times": "{measurementTime, select, today{Dnes} upcomming{Nejbližší} tomorrow{Zítra}}",
   "@common_measurement_times": {
@@ -30,5 +30,30 @@
   "configuration_screen_dark": "Tmavý",
   "configuration_screen_good_in_night": "Skvělý v noci",
   "notifications_screen_title": "Notifikace",
-  "appearance_screen_title": "Vzhled"
+  "appearance_screen_title": "Vzhled",
+  
+  "measurement_screen_upcomming_n_measurements": "{count} čekajících měření",
+  "@measurement_screen_upcomming_n_measurements": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "measurement_screen_today_n_measurements": "Dnes zbývají {count} měření",
+  "@measurement_screen_today_n_measurements": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "measurement_screen_tomorrow_n_measurements": "Celkem {count} měření",
+  "@measurement_screen_tomorrow_n_measurements": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

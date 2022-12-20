@@ -126,6 +126,7 @@ class Gaps {
   static Gap gap26 = const Gap(Dimensions.padding26);
   static Gap gap30 = const Gap(Dimensions.padding30);
   static Gap gap32 = const Gap(Dimensions.padding32);
+  static Gap gap34 = const Gap(Dimensions.padding34);
   static Gap gap35 = const Gap(Dimensions.padding35);
   static Gap gap42 = const Gap(Dimensions.padding42);
   static Gap gap48 = const Gap(Dimensions.padding48);
@@ -150,6 +151,7 @@ class Dimensions {
   static const double padding26 = 26;
   static const double padding30 = 30;
   static const double padding32 = 32;
+  static const double padding34 = 34;
   static const double padding35 = 35;
   static const double padding42 = 42;
   static const double padding48 = 48;

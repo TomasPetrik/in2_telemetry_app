@@ -36,7 +36,7 @@ class LightMode {
         background: backgroundColor,
         brightness: Brightness.dark,
         error: alertColor,
-        onBackground: backgroundColor,
+        onBackground: paperAccent,
         onError: alertColor,
         onPrimary: fontColor,
         onSecondary: colorContent80,

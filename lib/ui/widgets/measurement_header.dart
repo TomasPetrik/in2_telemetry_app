@@ -6,9 +6,11 @@ class MeasurementHeader extends StatelessWidget {
   const MeasurementHeader({
     super.key,
     required this.measurementTime,
+    required this.openTimeSelector,
   });
 
-  final MeasurementTime measurementTime;
+  final PeriodType measurementTime;
+  final Function openTimeSelector;
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +21,15 @@ class MeasurementHeader extends StatelessWidget {
           style: ScaleTextStyles.textAccent.apply(color: Theme.of(context).colorScheme.onSecondary),
         ),
         const Spacer(),
-        Text(
-          context.locale.common_measurement_times(measurementTime.name),
-          style: ScaleTextStyles.text.apply(
-            color: Theme.of(context).primaryColor,
+        InkWell(
+          onTap: () {
+            openTimeSelector.call();
+          },
+          child: Text(
+            context.locale.common_measurement_times(measurementTime.name),
+            style: ScaleTextStyles.text.apply(
+              color: Theme.of(context).primaryColor,
+            ),
           ),
         ),
       ],
@@ -30,7 +37,7 @@ class MeasurementHeader extends StatelessWidget {
   }
 }
 
-enum MeasurementTime {
+enum PeriodType {
   today,
   upcomming,
   tomorrow,
