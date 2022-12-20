@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
@@ -47,10 +48,21 @@ class AuthScreen extends StatelessWidget {
               authBloc.add(const VerifyUser());
             },
             userVerified: (userInfo) => {
+              /*
               Navigator.pushReplacementNamed(
                 context,
                 HomeScreen.routeName,
                 arguments: userInfo,
+              )
+              */
+
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => HomeScreen(
+                    userInfo: userInfo!,
+                  ),
+                ),
               )
             },
           );

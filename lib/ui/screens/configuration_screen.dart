@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
@@ -58,7 +59,12 @@ class ConfigurationScreen extends StatelessWidget {
                     subLabel: context.locale.configuration_screen_notification_sublabel,
                     icon: Icons.announcement,
                     onTap: () {
-                      Navigator.of(context).pushNamed(NotificationsSettingsScreen.routeName);
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => const NotificationsSettingsScreen(),
+                        ),
+                      );
                     },
                   ),
                   Gaps.gap24,
@@ -67,7 +73,12 @@ class ConfigurationScreen extends StatelessWidget {
                     subLabel: context.locale.configuration_screen_appearance_sublabel,
                     icon: Icons.imagesearch_roller,
                     onTap: () {
-                      Navigator.of(context).pushNamed(AppearanceSettingsScreen.routeName);
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => const AppearanceSettingsScreen(),
+                        ),
+                      );
                     },
                   ),
                   const Gap(300),

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/model/measurement_info.dart';
 import 'package:scalesoft_app/ui/screens/select_device_screen.dart';
@@ -39,7 +40,10 @@ class MeasurementResultScreen extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, SelectDeviceScreen.routeName);
+                Navigator.pushReplacement(
+                  context,
+                  CupertinoPageRoute(builder: (context) => const SelectDeviceScreen()),
+                );
               },
               child: const Text('Continue'),
             )

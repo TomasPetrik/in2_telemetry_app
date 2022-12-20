@@ -1,11 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:scalesoft_app/api/dto/user_info.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
+import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/navigation_screen.dart';
+import 'package:scalesoft_app/ui/screens/select_device_screen.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/widgets/action_widget.dart';
 import 'package:scalesoft_app/ui/widgets/blured_user_app_bar.dart';
+import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/measurement_header.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -81,6 +86,24 @@ class _DashboardPageState extends State<DashboardPage> {
                       color: Colors.yellow,
                       height: 200,
                       child: const Text('Teplota'),
+                    ),
+                  ),
+                ),
+                const SliverGap(Dimensions.padding16),
+                SliverPadding(
+                  padding: Paddings.horizontal16,
+                  sliver: SliverToBoxAdapter(
+                    child: HighlightedElevatedButton(
+                      label: context.locale.common_manual_measurement,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => const SelectDeviceScreen(),
+                            fullscreenDialog: true,
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),

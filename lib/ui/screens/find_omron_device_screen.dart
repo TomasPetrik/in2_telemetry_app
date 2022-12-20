@@ -1,4 +1,5 @@
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scalesoft_app/cubit/omron/omron_connection_cubit.dart';
@@ -67,10 +68,13 @@ class FindOmronDeviceScreen extends StatelessWidget with PopupDialogMixin {
               synced: (measurementResult) {
                 switch (measurementResult.resultState) {
                   case ResultState.success:
-                    Navigator.pushReplacementNamed(
+                    Navigator.pushReplacement(
                       context,
-                      MeasurementResultScreen.routeName,
-                      arguments: measurementResult.measurementInfo,
+                      CupertinoPageRoute(
+                        builder: (context) => MeasurementResultScreen(
+                          measurementInfo: measurementResult.measurementInfo!,
+                        ),
+                      ),
                     );
                     break;
                   case ResultState.noData:
@@ -78,10 +82,9 @@ class FindOmronDeviceScreen extends StatelessWidget with PopupDialogMixin {
                       context,
                       message: 'No data available',
                       afterHideAction: () {
-                        Navigator.pushReplacementNamed(
+                        Navigator.pushReplacement(
                           context,
-                          SelectDeviceScreen.routeName,
-                          arguments: measurementResult.measurementInfo,
+                          CupertinoPageRoute(builder: (context) => const SelectDeviceScreen()),
                         );
                       },
                     );
@@ -91,10 +94,9 @@ class FindOmronDeviceScreen extends StatelessWidget with PopupDialogMixin {
                       context,
                       message: 'Connection Error',
                       afterHideAction: () {
-                        Navigator.pushReplacementNamed(
+                        Navigator.pushReplacement(
                           context,
-                          SelectDeviceScreen.routeName,
-                          arguments: measurementResult.measurementInfo,
+                          CupertinoPageRoute(builder: (context) => const SelectDeviceScreen()),
                         );
                       },
                     );

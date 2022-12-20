@@ -60,7 +60,10 @@ class ActionWidget extends StatelessWidget {
           ),
           if (activityType == ActivityType.active) ...[
             Gaps.gap16,
-            HighlightedElevatedButton(label: context.locale.common_measure_now),
+            HighlightedElevatedButton(
+              label: context.locale.common_measure_now,
+              buttonType: ButtonType.secondary,
+            ),
           ]
         ],
       ),

@@ -21,58 +21,67 @@ class ScaleAppBar extends StatelessWidget {
       ),
       child: SizedBox(
         height: Constants.appBarHeight,
-        child: Padding(
-          padding: const EdgeInsets.only(
-            top: Dimensions.padding16,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 24,
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 56,
-                      child: onBackTap != null
-                          ? IconButton(
-                              onPressed: () {
-                                onBackTap?.call();
-                                Navigator.of(context).pop();
-                              },
-                              icon: Icon(
-                                Icons.arrow_back,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            )
-                          : null,
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                top: Dimensions.padding16,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 24,
+                    child: Row(
+                      children: [
+                        const SizedBox(
+                          width: 56,
+                        ),
+                        Expanded(
+                          child: Text(
+                            title,
+                            style: Theme.of(context).textTheme.titleMedium,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 56,
+                          child: showClose
+                              ? IconButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  icon: Icon(
+                                    Icons.close,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
+                        ),
+                      ],
                     ),
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: Theme.of(context).textTheme.titleMedium,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 56,
-                      child: showClose
-                          ? IconButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              icon: Icon(
-                                Icons.close,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            )
-                          : const SizedBox.shrink(),
-                    ),
-                  ],
+                  ),
+                ],
+              ),
+            ),
+            if (onBackTap != null)
+              Positioned(
+                top: 0,
+                left: 0,
+                bottom: 0,
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () {
+                    onBackTap?.call();
+                    Navigator.of(context).pop();
+                  },
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
               ),
-            ],
-          ),
+          ],
         ),
       ),
     );

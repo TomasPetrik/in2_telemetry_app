@@ -35,6 +35,24 @@ class DarkMode {
         labelSmall: TextStyle(fontSize: 13, height: 1.23, fontWeight: FontWeight.w700, color: fontColor), //label
       );
 
+  static ButtonStyle elevatedButtonStyle = ButtonStyle(
+    backgroundColor: MaterialStateColor.resolveWith(
+      (states) =>
+          states.isNotEmpty && states.first == MaterialState.pressed ? colorContent20.withOpacity(0.5) : colorContent20,
+    ),
+    textStyle: MaterialStateProperty.all<TextStyle>(
+      ScaleTextStyles.textAccent.apply(
+        color: fontColor,
+      ),
+    ),
+    padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.zero),
+    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+      RoundedRectangleBorder(
+        borderRadius: BorderRadii.radius8,
+      ),
+    ),
+  );
+
   static ColorScheme get colorScheme => ColorScheme(
         background: backgroundColor,
         brightness: Brightness.dark,
@@ -45,7 +63,7 @@ class DarkMode {
         onSecondary: colorContent80,
         onSurface: backgroundColor,
         primary: primary,
-        secondary: paperAccent,
+        secondary: colorContent20,
         surface: backgroundColor,
         primaryContainer: actionStartColor,
         onPrimaryContainer: actionEndColor,
@@ -84,24 +102,7 @@ class DarkMode {
           ),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ButtonStyle(
-            backgroundColor: MaterialStateColor.resolveWith(
-              (states) => states.isNotEmpty && states.first == MaterialState.pressed
-                  ? colorContent20.withOpacity(0.5)
-                  : colorContent20,
-            ),
-            textStyle: MaterialStateProperty.all<TextStyle>(
-              ScaleTextStyles.textAccent.apply(
-                color: fontColor,
-              ),
-            ),
-            padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.zero),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadii.radius8,
-              ),
-            ),
-          ),
+          style: elevatedButtonStyle,
         ),
       );
 }
