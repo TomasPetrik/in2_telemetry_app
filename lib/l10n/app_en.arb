@@ -5,6 +5,8 @@
   },
   "common_measurement": "Měření",
   "common_measure_now": "Měřit teď",
+  "common_manual_measurement": "Vlastní měření",
+  
   "common_telemedicine": "Telemedicína",
   "common_measurement_times": "{measurementTime, select, today{Dnes} upcomming{Nejbližší} tomorrow{Zítra}}",
   "@common_measurement_times": {
