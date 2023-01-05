@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:scalesoft_app/api/dto/user_info.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/screens/navigation_screen.dart';
@@ -20,10 +20,10 @@ import 'package:scalesoft_app/ui/widgets/measurement_header.dart';
 class DashboardPage extends StatefulWidget {
   const DashboardPage({
     Key? key,
-    required this.userInfo,
+    required this.userAccount,
   }) : super(key: key);
 
-  final UserInfo userInfo;
+  final UserAccount userAccount;
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
@@ -67,7 +67,7 @@ class _DashboardPageState extends State<DashboardPage> with BottomSheetMixin {
                   final selected = await showMeasurementTime(context, state.selectedPeriod);
                   if (selected?.selectedPeriod != null) {
                     carePlanBloc.add(CarePlanTimePeriodEvent(selected!.selectedPeriod!));
-                  }else if(selected?.showCalendar == true){
+                  } else if (selected?.showCalendar == true) {
                     //TODO.. show calendar
                   }
                 },
@@ -160,7 +160,7 @@ class _DashboardPageState extends State<DashboardPage> with BottomSheetMixin {
               left: 0,
               right: 0,
               child: BluredUserAppBar(
-                userInfo: widget.userInfo,
+                userAccount: widget.userAccount,
               ),
             ),
           ],

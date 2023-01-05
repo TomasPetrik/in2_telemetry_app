@@ -2,8 +2,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:oauth2/oauth2.dart';
 import 'package:scalesoft_app/api/dto/auth_token.dart';
+import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
+import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/repositories/account_repository.dart';
 import 'package:scalesoft_app/services/auth_service.dart';
 import 'package:scalesoft_app/storage/storage.dart';
@@ -13,14 +16,16 @@ import 'package:scalesoft_app/ui/themes/constants.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthService _authService;
   final AccountRepository _accountService;
-  final Storage _storage;
-  AuthorizationCodeGrant? grant;
+  final AccountDbProvider _accountDbProvider;
+  final Session _session;
+  AuthorizationCodeGrant? _grant;
 
-  AuthBloc(this._authService, this._accountService, this._storage) : super(const AuthState.unauthenticated()) {
+  AuthBloc(this._authService, this._accountService, this._session, this._accountDbProvider)
+      : super(const AuthState.unauthenticated()) {
     on<Authenticate>(_onAuthenticate);
     on<HandleAuthResponse>(_onHandleAuthResponse);
     on<VerifyUser>(_verifyUser);
-    on<LogoutUser>(_logoutUser);
+    on<LogoutUser>(_removeUser);
     on<CancelAuth>(_cancelAuth);
   }
 
@@ -31,7 +36,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(const AuthState.authenticating());
 
     try {
-      grant = _authService.getAuthGrant(
+      _grant = _authService.getAuthGrant(
         Uri.parse(Constants.issuer),
         Constants.clientId,
         Constants.clientSecret,
@@ -42,7 +47,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       emit(
         AuthState.openAuthReqest(
-          authUri: grant!.getAuthorizationUrl(
+          authUri: _grant!.getAuthorizationUrl(
             Uri.parse(Constants.redirectUrl),
             scopes: Constants.scopes,
             state: DateTime.now().toString(),
@@ -59,15 +64,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     try {
-      final tokenResponse = await grant!.handleAuthorizationResponse(
+      final tokenResponse = await _grant!.handleAuthorizationResponse(
         event.authRespUri.queryParameters,
       );
 
-      _storage.token = AuthToken(
+      _session.token = AuthToken(
         accessToken: tokenResponse.credentials.accessToken,
         refreshToken: tokenResponse.credentials.refreshToken!,
         accessTokenExpires: tokenResponse.credentials.expiration!,
       );
+
       emit(AuthState.authenticated(credentials: tokenResponse.credentials));
     } on Exception catch (e) {
       emit(AuthState.unauthenticated(error: e));
@@ -80,28 +86,32 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       final userInfo = await _accountService.loadUserInfo();
-      await _storage.setAuthToken(
-        userInfo.currentUser.muid,
-        _storage.token!,
+
+      final userAccount = UserAccount(
+        user: userInfo.currentUser,
+        authToken: _session.token,
+        hospital: const Hospital(id: 1, title: 'Na Homolce', iconPath: 'assets/icons/icon_hospital_nahomolce.svg'),
+        signedIn: DateTime.now(),
       );
 
-      _storage.userInfo = userInfo;
-
-      emit(AuthState.userVerified(userInfo: userInfo));
+      await _accountDbProvider.save(userAccount);
+      _session.userAccount = userAccount;
+      emit(AuthState.userVerified(userAccount: userAccount));
     } on Exception catch (e) {
-      _storage.token = null;
+      _session.token = null;
       emit(AuthState.unauthenticated(error: e));
     }
   }
 
-  Future<void> _logoutUser(
+  Future<void> _removeUser(
     LogoutUser event,
     Emitter<AuthState> emit,
   ) async {
     try {
-      _storage.removeTokens(_storage.userInfo!.currentUser.muid);
-      _storage.token = null;
-      _storage.userInfo = null;
+      await _accountDbProvider.remove(_session.userAccount!);
+      _session.removeTokens(_session.userAccount!.user.muid);
+      _session.token = null;
+      _session.userAccount = null;
 
       emit(const AuthState.logoutSuccess());
     } on Exception catch (e) {

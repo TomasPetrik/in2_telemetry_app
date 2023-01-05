@@ -5,24 +5,15 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:scalesoft_app/api/dto/user_info.dart';
 import 'package:scalesoft_app/api/interceptors/token_interceptor.dart';
 import 'package:scalesoft_app/bloc/settings/settings_bloc.dart';
 import 'package:scalesoft_app/globals_initialization.dart';
 import 'package:scalesoft_app/locales.dart';
 import 'package:scalesoft_app/model/app_settings.dart';
-import 'package:scalesoft_app/model/measurement_info.dart';
+import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/ui/screens/appearance_settings_screen.dart';
 import 'package:scalesoft_app/ui/screens/auth_screen.dart';
-import 'package:scalesoft_app/ui/screens/beurer_screen.dart';
-import 'package:scalesoft_app/ui/screens/home_screen.dart';
-import 'package:scalesoft_app/ui/screens/measurement_result_screen.dart';
-import 'package:scalesoft_app/ui/screens/notifications_settings_screen.dart';
-import 'package:scalesoft_app/ui/screens/omron_screen.dart';
-import 'package:scalesoft_app/ui/screens/search_devices_screen.dart';
-import 'package:scalesoft_app/ui/screens/select_device_screen.dart';
 import 'package:scalesoft_app/ui/screens/splash_screen.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/dark_mode.dart';
@@ -91,39 +82,7 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
           theme: LightMode.theme,
           darkTheme: DarkMode.theme,
           themeMode: settingsBloc.state.themeMode,
-          onGenerateRoute: (RouteSettings routeSettings) {
-            return MaterialPageRoute<void>(
-              settings: routeSettings,
-              builder: (BuildContext context) {
-                switch (routeSettings.name) {
-                  case HomeScreen.routeName:
-                    final userInfo = routeSettings.arguments as UserInfo;
-                    return HomeScreen(userInfo: userInfo);
-                  case AuthScreen.routeName:
-                    return AuthScreen();
-                  case AppearanceSettingsScreen.routeName:
-                    return const AppearanceSettingsScreen();
-                  case NotificationsSettingsScreen.routeName:
-                    return const NotificationsSettingsScreen();
-                  case BeurerScreen.routeName:
-                    return const BeurerScreen();
-                  case OmronScreen.routeName:
-                    return const OmronScreen();
-                  case SearchDevicesScreen.routeName:
-                    return const SearchDevicesScreen();
-                  case SelectDeviceScreen.routeName:
-                    return const SelectDeviceScreen();
-                  case MeasurementResultScreen.routeName:
-                    final measurementInfo = routeSettings.arguments as MeasurementInfo;
-                    return MeasurementResultScreen(
-                      measurementInfo: measurementInfo,
-                    );
-                  default:
-                    return AuthScreen();
-                }
-              },
-            );
-          },
+          home: AuthScreen(),
         );
       },
     );
@@ -134,6 +93,9 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
 
     final settingsDbProvider = getIt<SettingsDbProvider>();
     await settingsDbProvider.init();
+
+    final accountDbProvider = getIt<AccountDbProvider>();
+    await accountDbProvider.init();
   }
 }
 

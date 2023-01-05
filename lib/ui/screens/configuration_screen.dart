@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/providers/account_db_provider.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/appearance_settings_screen.dart';
+import 'package:scalesoft_app/ui/screens/hospital_users_screen.dart';
 import 'package:scalesoft_app/ui/screens/notifications_settings_screen.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
-import 'package:scalesoft_app/ui/themes/scalesoft_colors_light.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/settings_item.dart';
@@ -15,6 +18,8 @@ class ConfigurationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AccountDbProvider accountDbProvider = getIt<AccountDbProvider>();
+
     return Scaffold(
       body: Stack(
         children: [
@@ -34,23 +39,67 @@ class ConfigurationScreen extends StatelessWidget {
                     ),
                   ),
                   Gaps.gap42,
-                  Text(
-                    context.locale.configuration_screen_logged_accounts,
-                    style: ScaleTextStyles.textAccent.apply(
-                      color: ScaleColorsLight.content80,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        context.locale.configuration_screen_logged_accounts,
+                        style: ScaleTextStyles.textAccent.apply(
+                          color: Theme.of(context).colorScheme.onSecondary,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {},
+                        child: Icon(
+                          Icons.add,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ],
                   ),
                   Gaps.gap24,
+                  ...accountDbProvider
+                      .getHospitalUsers()
+                      .entries
+                      .map(
+                        (hospital) => SettingsItem(
+                          label: hospital.key.title,
+                          subLabel: hospital.value
+                              .map(
+                                (userAccount) => userAccount.user.fullName,
+                              )
+                              .join(','),
+                          iconWidget: Padding(
+                            padding: Paddings.all8,
+                            child: SvgPicture.asset(
+                              hospital.key.iconPath,
+                              color: Theme.of(context).hintColor,
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                builder: (context) => HospitalUsersScreen(
+                                  title: hospital.key.title,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                      .toList(),
                   SettingsItem(
                     label: context.locale.configuration_screen_add_account,
                     icon: Icons.add,
+                    hasNavigationIcon: false,
                     onTap: () {},
                   ),
                   Gaps.gap42,
                   Text(
                     context.locale.configuration_screen_settings,
                     style: ScaleTextStyles.textAccent.apply(
-                      color: ScaleColorsLight.content80,
+                      color: Theme.of(context).colorScheme.onSecondary,
                     ),
                   ),
                   Gaps.gap24,

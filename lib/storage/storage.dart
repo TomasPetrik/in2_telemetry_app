@@ -1,19 +1,19 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/dto/auth_token.dart';
-import 'package:scalesoft_app/api/dto/user_info.dart';
+import 'package:scalesoft_app/model/user_account.dart';
 
 @singleton
-class Storage {
+class Session {
   final FlutterSecureStorage _secureStorage;
 
   final _accessTokenKey = 'accesshToken';
   final _refreshTokenKey = 'refreshToken';
 
   AuthToken? token;
-  UserInfo? userInfo;
+  UserAccount? userAccount;
 
-  Storage(this._secureStorage);
+  Session(this._secureStorage);
 
   Future<String?> getRefreshToken(String userId) async {
     final tokenString = await _secureStorage.read(key: '${_refreshTokenKey}_$userId');

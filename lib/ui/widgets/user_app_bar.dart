@@ -1,26 +1,27 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:scalesoft_app/api/dto/user_info.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
-import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
+import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/ui/screens/auth_screen.dart';
+import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 
-class UserAppBar extends StatelessWidget {
+class UserAppBar extends StatelessWidget with BottomSheetMixin {
   const UserAppBar({
     super.key,
-    required this.userInfo,
+    required this.userAccount,
   });
 
-  final UserInfo userInfo;
+  final UserAccount userAccount;
 
   @override
   Widget build(BuildContext context) {
+    final AccountDbProvider accountDbProvider = getIt<AccountDbProvider>();
+
     final AuthBloc authBloc = getIt<AuthBloc>();
     return Material(
       color: Colors.transparent, // Theme.of(context).backgroundColor.withOpacity(0.5),
@@ -44,21 +45,27 @@ class UserAppBar extends StatelessWidget {
                     children: [
                       BlocListener<AuthBloc, AuthState>(
                         bloc: authBloc,
-                        listener: (context, state) {
-                          state.whenOrNull(
-                            logoutSuccess: () {
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                AuthScreen.routeName,
-                                (route) => false,
-                              );
-                            },
-                          );
-                        },
+                        listener: (context, state) {},
                         child: SizedBox(
                           width: 56,
                           child: IconButton(
-                            onPressed: () {
-                              authBloc.add(const LogoutUser());
+                            onPressed: () async {
+                              final selectedUser = await selectHospital(context: context);
+
+                              /*
+
+                              final hospitalUsers = accountDbProvider.getHospitalUsers();
+
+                              final selectedUser = await selectUserAccount(
+                                context: context,
+                                hospital: const Hospital(
+                                  id: 1,
+                                  title: 'Na Homolce',
+                                  iconPath: 'assets/icons/icon_hospital_nahomolce.svg',
+                                ),
+                                userAccounts: hospitalUsers.entries.toList()[0].value,
+                              );
+                              */
                             },
                             padding: EdgeInsets.zero,
                             icon: SvgPicture.asset(
@@ -71,7 +78,7 @@ class UserAppBar extends StatelessWidget {
                       Expanded(
                         child: Text(
                           style: ScaleTextStyles.textAccent,
-                          userInfo.currentUser.fullName,
+                          userAccount.user.fullName,
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -84,7 +91,7 @@ class UserAppBar extends StatelessWidget {
                   style: ScaleTextStyles.label.apply(
                     color: Theme.of(context).hintColor,
                   ),
-                  userInfo.currentUser.fullName,
+                  userAccount.hospital?.title ?? '',
                   textAlign: TextAlign.center,
                 ),
               ],

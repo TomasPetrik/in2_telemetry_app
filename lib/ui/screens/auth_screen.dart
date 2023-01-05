@@ -14,8 +14,6 @@ import 'package:scalesoft_app/ui/widgets/loading_indicator.dart';
 class AuthScreen extends StatelessWidget {
   AuthScreen({super.key});
 
-  static const routeName = '/auth';
-
   final AuthBloc authBloc = getIt<AuthBloc>();
 
   @override
@@ -47,7 +45,7 @@ class AuthScreen extends StatelessWidget {
               Navigator.of(context, rootNavigator: true).pop();
               authBloc.add(const VerifyUser());
             },
-            userVerified: (userInfo) => {
+            userVerified: (userAccount) => {
               /*
               Navigator.pushReplacementNamed(
                 context,
@@ -60,7 +58,7 @@ class AuthScreen extends StatelessWidget {
                 context,
                 CupertinoPageRoute(
                   builder: (context) => HomeScreen(
-                    userInfo: userInfo!,
+                    userAccount: userAccount!,
                   ),
                 ),
               )

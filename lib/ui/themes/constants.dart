@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:scalesoft_app/api/dto/hospital.dart';
 
 class Constants {
   /* API */
@@ -16,7 +17,7 @@ class Constants {
     'offline_access',
     'mobile_api.Default',
   ];
-  static const String redirectUrl = 'cz.scalesoft.tlm://auth-callback'; //cz.scalesoft.tlm://auth-callback
+  static const String redirectUrl = 'cz.scalesoft.tlm://auth-callback';
   static const String authorizationEndpoint = 'https://in2-win-auth.devscale.cz/connect/authorize';
   static const String tokenEndpoint = 'https://in2-win-auth.devscale.cz/connect/token';
   static const String endSessionEndpoint = 'https://in2-win-auth.devscale.cz/connect/endsession';
@@ -29,6 +30,19 @@ class Constants {
 
   static const double actionActiveWidgetHeight = 16 + 20 + 16 + buttonHeight + 16;
   static const double actionPassiveWidgetHeight = 16 + 20 + 16;
+
+  static const hospitals = [
+    Hospital(
+      id: 0,
+      title: 'Ikem',
+      iconPath: 'assets/icons/icon_hospital_ikem.svg',
+    ),
+    Hospital(
+      id: 1,
+      title: 'Na Homolce',
+      iconPath: 'assets/icons/icon_hospital_nahomolce.svg',
+    )
+  ];
 }
 
 class Paddings {

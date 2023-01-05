@@ -1,21 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:scalesoft_app/api/dto/user_info.dart';
+import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/ui/screens/configuration_screen.dart';
 import 'package:scalesoft_app/ui/screens/dashboard_screen.dart';
 import 'package:scalesoft_app/ui/widgets/tab_icon_widget.dart';
-import 'package:scalesoft_app/ui/widgets/user_app_bar.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({
     Key? key,
-    required this.userInfo,
+    required this.userAccount,
   }) : super(key: key);
 
-  static const routeName = '/home';
-
-  final UserInfo userInfo;
+  final UserAccount userAccount;
 
   @override
   Widget build(BuildContext context) {
@@ -83,9 +80,9 @@ class HomeScreen extends StatelessWidget {
             builder: (context) {
               switch (index) {
                 case 0:
-                  return DashboardPage(userInfo: userInfo);
+                  return DashboardPage(userAccount: userAccount);
                 case 1:
-                  return DashboardPage(userInfo: userInfo);
+                  return DashboardPage(userAccount: userAccount);
                 case 2:
                 default:
                   return const ConfigurationScreen();

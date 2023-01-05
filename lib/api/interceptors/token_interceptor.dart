@@ -16,25 +16,25 @@ import 'package:scalesoft_app/utils/exceptions/exception/no_internet_exception.d
 
 @injectable
 class TokenInterceptor extends Interceptor {
-  final Storage storage;
+  final Session session;
   final AccountApiClient accountApiClient;
 
   TokenInterceptor(
-    this.storage,
+    this.session,
     this.accountApiClient,
   );
 
   @override
   Future onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
-    final accessToken = storage.token;
+    final accessToken = session.token;
     if (accessToken == null || accessToken.isExpired()) {
       refreshToken();
     }
 
-    if (storage.token != null) {
+    if (session.token != null) {
       options.headers.putIfAbsent(
         HttpHeaders.authorizationHeader,
-        () => 'Bearer ${storage.token!.accessToken}',
+        () => 'Bearer ${session.token!.accessToken}',
       );
     }
 
@@ -65,14 +65,14 @@ class TokenInterceptor extends Interceptor {
 
   Future<void> refreshToken() async {
     try {
-      final userId = storage.userInfo?.currentUser.muid;
+      final userId = session.userAccount?.user.muid;
 
       if (userId != null) {
-        final refreshToken = await storage.getRefreshToken(userId);
+        final refreshToken = await session.getRefreshToken(userId);
         if (refreshToken != null) {
           final request = RefreshTokenRequest(userId: userId, refreshToken: refreshToken);
           final response = await getIt<AuthApiClient>().refreshToken(request);
-          await storage.setAuthToken(
+          await session.setAuthToken(
             userId,
             AuthToken(
               accessToken: response.accessToken,

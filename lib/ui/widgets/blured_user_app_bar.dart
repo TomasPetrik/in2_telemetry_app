@@ -1,17 +1,17 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/dto/user_info.dart';
+import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/widgets/user_app_bar.dart';
 
 class BluredUserAppBar extends StatelessWidget {
   const BluredUserAppBar({
     super.key,
-    required this.userInfo,
+    required this.userAccount,
   });
 
-  final UserInfo userInfo;
+  final UserAccount userAccount;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class BluredUserAppBar extends StatelessWidget {
           ),
         ),
         UserAppBar(
-          userInfo: userInfo,
+          userAccount: userAccount,
         )
       ],
     );

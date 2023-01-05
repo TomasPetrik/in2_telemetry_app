@@ -3,6 +3,7 @@
   "@appTitle": {
     "description": "The title of the application"
   },
+  "common_close": "Zavřít",
   "common_measurement": "Měření",
   "common_measure_now": "Měřit teď",
   "common_manual_measurement": "Vlastní měření",
@@ -31,6 +32,20 @@
   "configuration_screen_good_in_night": "Skvělý v noci",
   "notifications_screen_title": "Notifikace",
   "appearance_screen_title": "Vzhled",
+
+  "user_detail_screen_logout_user": "Odhlásit uživatele",
+  "user_detail_screen_measurement_plans": "Plány měření",
+
+  "hospital_selection_dialog_measurement_for": "Měření pro",
+  "user_selection_dialog_measurement_in_hospital": "Měření v {hospital} pro",
+  "@user_selection_dialog_measurement_in_hospital": {
+    "placeholders": {
+      "hospital": {
+        "type": "String"
+      }
+    }
+  },
+  
   
   "measurement_screen_upcomming_n_measurements": "{count} čekajících měření",
   "@measurement_screen_upcomming_n_measurements": {
