@@ -60,7 +60,7 @@ mixin BottomSheetMixin {
   Future<SwitchUserResult?> switchUser({
     required final BuildContext context,
   }) async {
-    final selectedHospitalResult = await showModalBottomSheet<UserSelection>(
+    final userHospitalSelectionResult = await showModalBottomSheet<UserSelection>(
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
@@ -75,15 +75,15 @@ mixin BottomSheetMixin {
       },
     );
 
-    if (selectedHospitalResult?.action == SwitchUserAction.addUserAccount) {
+    if (userHospitalSelectionResult?.action == SwitchUserAction.addUserAccount) {
       return SwitchUserResult(addNewUser: true);
-    } else if (selectedHospitalResult?.action == SwitchUserAction.selectedUser) {
-      return SwitchUserResult(selectedUser: selectedHospitalResult!.selectedUser);
-    } else if (selectedHospitalResult?.action == SwitchUserAction.selectedHospital) {
-      final userSelection = await selectUserFromHospital(
+    } else if (userHospitalSelectionResult?.action == SwitchUserAction.selectedUser) {
+      return SwitchUserResult(selectedUser: userHospitalSelectionResult!.selectedUser);
+    } else if (userHospitalSelectionResult?.action == SwitchUserAction.selectedHospital) {
+      final userSelection = await _selectUserFromHospital(
         context: context,
-        hospital: selectedHospitalResult!.selectedHospital!,
-        userAccounts: selectedHospitalResult.hospitalUsers!,
+        hospital: userHospitalSelectionResult!.selectedHospital!,
+        userAccounts: userHospitalSelectionResult.hospitalUsers!,
       );
 
       if (userSelection!.action == SwitchUserAction.addUserAccount) {
@@ -96,12 +96,12 @@ mixin BottomSheetMixin {
     }
   }
 
-  Future<UserSelection?> selectUserFromHospital({
+  Future<UserSelection?> _selectUserFromHospital({
     required final BuildContext context,
     required Hospital hospital,
     required List<UserAccount> userAccounts,
   }) async {
-    final selectedUserResult = await showModalBottomSheet<UserSelection>(
+    final userSelectionResult = await showModalBottomSheet<UserSelection>(
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
@@ -116,7 +116,7 @@ mixin BottomSheetMixin {
       },
     );
 
-    return selectedUserResult;
+    return userSelectionResult;
   }
 }
 
