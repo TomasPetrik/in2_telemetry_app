@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
@@ -30,7 +31,9 @@ class UserSelectionDialog extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
                 child: Icon(
                   Icons.arrow_back,
                   color: Theme.of(context).colorScheme.primary,
@@ -43,7 +46,9 @@ class UserSelectionDialog extends StatelessWidget {
               ),
               const Spacer(),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).pop(UserSelection(action: SwitchUserAction.addUserAccount));
+                },
                 child: Icon(
                   Icons.add,
                   color: Theme.of(context).colorScheme.primary,
@@ -71,7 +76,12 @@ class UserSelectionDialog extends StatelessWidget {
                     ),
                   ),
                   onTap: () {
-                    Navigator.of(context).pop(userAccount);
+                    Navigator.of(context).pop(
+                      UserSelection(
+                        action: SwitchUserAction.selectedUser,
+                        selectedUser: userAccount,
+                      ),
+                    );
                   },
                 ),
               ),

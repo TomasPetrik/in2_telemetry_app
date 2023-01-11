@@ -45,24 +45,25 @@ class SettingsItem extends StatelessWidget {
                 : Center(child: iconWidget),
           ),
           Gaps.gap16,
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: ScaleTextStyles.textAccent,
-              ),
-              if (subLabel?.isNotEmpty == true)
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Text(
-                  subLabel!,
-                  style: ScaleTextStyles.label.apply(
-                    color: Theme.of(context).colorScheme.onSecondary,
-                  ),
+                  label,
+                  style: ScaleTextStyles.textAccent,
                 ),
-            ],
+                if (subLabel?.isNotEmpty == true)
+                  Text(
+                    subLabel!,
+                    style: ScaleTextStyles.label.apply(
+                      color: Theme.of(context).colorScheme.onSecondary,
+                    ),
+                  ),
+              ],
+            ),
           ),
           if (hasNavigationIcon) ...[
-            const Spacer(),
             Icon(
               Icons.arrow_forward,
               color: Theme.of(context).colorScheme.primary,

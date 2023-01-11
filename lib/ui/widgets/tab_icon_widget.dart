@@ -14,14 +14,14 @@ class TabIconWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: Paddings.all10,
+      padding: Paddings.all4,
+      margin: Paddings.bottom5,
+      width: 40,
+      height: 32,
       decoration: isActive
           ? BoxDecoration(
               borderRadius: BorderRadii.radius8,
-              border: Border.all(
-                color: Theme.of(context).primaryColor,
-                width: 2,
-              ),
+              color: Theme.of(context).primaryColor,
             )
           : null,
       child: SizedBox(height: 25, width: 25, child: icon),

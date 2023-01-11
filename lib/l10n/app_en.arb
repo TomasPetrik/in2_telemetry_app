@@ -16,6 +16,17 @@
       "measurementTime": {}
     }
   },
+  "common_plus_n_others": "+ {count} další",
+  "@common_plus_n_others": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tabs_measurement": "Měření",
+  "tabs_results": "Výsledky",
+  "tabs_more": "Více",
   "configuration_screen_title": "Telemedicína",
   "configuration_screen_logged_accounts": "Přihlášené účty",
   "configuration_screen_add_account": "Přidat účet",
@@ -32,10 +43,14 @@
   "configuration_screen_good_in_night": "Skvělý v noci",
   "notifications_screen_title": "Notifikace",
   "appearance_screen_title": "Vzhled",
-
   "user_detail_screen_logout_user": "Odhlásit uživatele",
   "user_detail_screen_measurement_plans": "Plány měření",
-
+  "user_detail_screen_user_info": "Informace o uživateli",
+  "user_detail_screen_user_name": "Jméno",
+  "user_detail_screen_user_surname": "Příjmení",
+  "user_detail_screen_user_phone": "Telefon",
+  "user_detail_screen_user_email": "Email",
+  "hospital_selector_search_for_account": "Název účtu...",
   "hospital_selection_dialog_measurement_for": "Měření pro",
   "user_selection_dialog_measurement_in_hospital": "Měření v {hospital} pro",
   "@user_selection_dialog_measurement_in_hospital": {
@@ -45,8 +60,6 @@
       }
     }
   },
-  
-  
   "measurement_screen_upcomming_n_measurements": "{count} čekajících měření",
   "@measurement_screen_upcomming_n_measurements": {
     "placeholders": {
@@ -70,5 +83,23 @@
         "type": "int"
       }
     }
-  }
+  },
+  "onboarding_add_account_screen_add_account_title": "Přidat účet",
+  "onboarding_add_account_screen_add_account_subtitle": "Pro používání aplikace musíte mít\naktivní alespoň jeden účet.",
+  "onboarding_add_account_screen_add_account_text1": "Vyhledejte místo kde jste evidován",
+  "onboarding_add_account_screen_add_account_text2": "Přihlašte se přes 2-faktorové ověření",
+  "onboarding_add_account_screen_add_account_text3": "Můžete se začít měřit",
+  "onboarding_add_account_screen_add_account_button": "Přidat účet",
+  "onboarding_add_account_screen_add_account_how_it_works_button": "Jak to funguje?",
+  "onboarding_account_added_screen_add_account_title": "Přidat účet",
+  "onboarding_account_added_screen_user_added": "Uživatel {name} byl úspěšně přidán.",
+  "@onboarding_account_added_screen_user_added": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "onboarding_account_added_screen_continue_to_app": "Pokračovat do aplikace",
+  "onboarding_account_added_screen_add_other_account": "Přidat další účet"
 }

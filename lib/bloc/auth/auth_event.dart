@@ -1,14 +1,21 @@
 import 'package:equatable/equatable.dart';
+import 'package:scalesoft_app/api/dto/hospital.dart';
+import 'package:scalesoft_app/model/user_account.dart';
 
 abstract class AuthEvent extends Equatable {
   const AuthEvent();
+  @override
+  List<Object?> get props => [];
 }
 
 class Authenticate extends AuthEvent {
-  const Authenticate();
+  final Hospital hospital;
+  const Authenticate({
+    required this.hospital,
+  });
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [hospital];
 }
 
 class HandleAuthResponse extends AuthEvent {
@@ -36,8 +43,12 @@ class VerifyUser extends AuthEvent {
 }
 
 class LogoutUser extends AuthEvent {
-  const LogoutUser();
+  final UserAccount userAccount;
+
+  const LogoutUser({
+    required this.userAccount,
+  });
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [userAccount];
 }

@@ -2,17 +2,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:oauth2/oauth2.dart';
 import 'package:scalesoft_app/api/dto/auth_token.dart';
-import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
+import 'package:scalesoft_app/bloc/user_content/user_content_bloc.dart';
+import 'package:scalesoft_app/bloc/user_content/user_content_event.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/repositories/account_repository.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/auth_service.dart';
 import 'package:scalesoft_app/storage/storage.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 
-@injectable
+@singleton
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthService _authService;
   final AccountRepository _accountService;
@@ -37,13 +39,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     try {
       _grant = _authService.getAuthGrant(
-        Uri.parse(Constants.issuer),
         Constants.clientId,
         Constants.clientSecret,
-        Constants.authorizationEndpoint,
-        Constants.tokenEndpoint,
-        Constants.endSessionEndpoint,
+        event.hospital.authData.authUrl,
+        event.hospital.authData.tokenUrl,
       );
+
+      _session.hospital = event.hospital;
 
       emit(
         AuthState.openAuthReqest(
@@ -89,8 +91,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       final userAccount = UserAccount(
         user: userInfo.currentUser,
+        email: '',
         authToken: _session.token,
-        hospital: const Hospital(id: 1, title: 'Na Homolce', iconPath: 'assets/icons/icon_hospital_nahomolce.svg'),
+        hospital: _session.hospital,
         signedIn: DateTime.now(),
       );
 
@@ -108,10 +111,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     try {
-      await _accountDbProvider.remove(_session.userAccount!);
-      _session.removeTokens(_session.userAccount!.user.muid);
-      _session.token = null;
-      _session.userAccount = null;
+      await _accountDbProvider.remove(event.userAccount);
+
+      if (event.userAccount.user.muid == _session.userAccount?.user.muid) {
+        _session.removeTokens(_session.userAccount!.user.muid);
+        _session.token = null;
+        _session.userAccount = null;
+
+        final lastLoggedUser = _accountDbProvider.getLast();
+        if (lastLoggedUser != null) {
+          getIt<UserContentBloc>().add(
+            SwitchUserContentEvent(
+              userAccount: lastLoggedUser,
+            ),
+          );
+        } else {
+          getIt<UserContentBloc>().add(const SwitchNoUserContentEvent());
+        }
+      }
 
       emit(const AuthState.logoutSuccess());
     } on Exception catch (e) {
@@ -124,5 +141,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(const AuthState.cancelled());
+  }
+
+  Future<void> _restoreLastAccount(
+    Emitter<AuthState> emit,
+  ) async {
+    final lastAccount = _accountDbProvider.getLast();
+    if (lastAccount != null) {
+      _session.userAccount = lastAccount;
+      _session.token = lastAccount.authToken;
+      _session.hospital = lastAccount.hospital;
+    }
+
+    emit(AuthState.lastSessionRestored(userAccount: lastAccount));
   }
 }

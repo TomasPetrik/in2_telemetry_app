@@ -46,8 +46,8 @@ class ActionWidget extends StatelessWidget {
             child: Row(
               children: [
                 SvgPicture.asset(
-                  'assets/icons/icon_measurement.svg',
-                  color: Theme.of(context).primaryColorLight,
+                  'assets/icons/icon_wave_pulse.svg',
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
                 Gaps.gap16,
                 Text('Mereni krve ${activityType == ActivityType.passive ? 've ${when.getTimeShort()}' : ''}'),

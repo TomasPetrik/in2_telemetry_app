@@ -13,7 +13,7 @@ import 'package:scalesoft_app/model/app_settings.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/ui/screens/auth_screen.dart';
+import 'package:scalesoft_app/ui/screens/main_screen.dart';
 import 'package:scalesoft_app/ui/screens/splash_screen.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/dark_mode.dart';
@@ -82,7 +82,7 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
           theme: LightMode.theme,
           darkTheme: DarkMode.theme,
           themeMode: settingsBloc.state.themeMode,
-          home: AuthScreen(),
+          home: const MainScreen(),
         );
       },
     );

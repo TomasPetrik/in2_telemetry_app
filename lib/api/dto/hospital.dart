@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:scalesoft_app/api/dto/auth_data.dart';
 
 part 'hospital.freezed.dart';
 part 'hospital.g.dart';
@@ -12,6 +13,7 @@ class Hospital with _$Hospital {
     required int id,
     required String title,
     required String iconPath,
+    required AuthData authData,
   }) = _Hospital;
 
   factory Hospital.fromJson(Map<String, dynamic> json) => _$HospitalFromJson(json);
@@ -19,6 +21,7 @@ class Hospital with _$Hospital {
   @override
   String toString() => toJson().toString();
 }
+
 
 @HiveType(typeId: 3)
 class HospitalLocal extends HiveObject {
@@ -31,9 +34,13 @@ class HospitalLocal extends HiveObject {
   @HiveField(2)
   final String iconPath;
 
+  @HiveField(3)
+  final AuthDataLocal authData;
+
   HospitalLocal({
     required this.id,
     required this.title,
     required this.iconPath,
+    required this.authData,
   });
 }

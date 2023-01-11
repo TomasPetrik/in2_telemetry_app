@@ -7,12 +7,10 @@ import 'package:url_launcher/url_launcher.dart';
 @singleton
 class AuthService {
   AuthorizationCodeGrant getAuthGrant(
-    Uri uri,
     String clientId,
     String clientSecret,
     String authorizationEndpoint,
     String tokenEndpoint,
-    String endSessionEndpoint,
   ) {
     final grant = oauth2.AuthorizationCodeGrant(
       clientId,
@@ -25,14 +23,12 @@ class AuthService {
   }
 
   Future<Client?> authorize(
-    Uri uri,
     String clientId,
     List<String> scopes,
     String redirectUrl,
     String clientSecret,
     String authorizationEndpoint,
     String tokenEndpoint,
-    String endSessionEndpoint,
   ) async {
     final grant = oauth2.AuthorizationCodeGrant(
       clientId,

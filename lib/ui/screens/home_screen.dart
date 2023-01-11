@@ -1,12 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/ui/screens/configuration_screen.dart';
-import 'package:scalesoft_app/ui/screens/dashboard_screen.dart';
+import 'package:scalesoft_app/ui/screens/dashboard_page.dart';
+import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/tab_icon_widget.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({
     Key? key,
     required this.userAccount,
@@ -15,82 +16,95 @@ class HomeScreen extends StatelessWidget {
   final UserAccount userAccount;
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return CupertinoTabScaffold(
-      tabBar: CupertinoTabBar(
-        activeColor: Theme.of(context).canvasColor,
-        inactiveColor: Theme.of(context).canvasColor,
-        backgroundColor: Theme.of(context).backgroundColor,
-        height: 70,
-        iconSize: 30,
-        items: [
+    final List<Widget> pages = <Widget>[
+      DashboardPage(userAccount: widget.userAccount),
+      DashboardPage(userAccount: widget.userAccount),
+      const ConfigurationScreen(),
+    ];
+    return Scaffold(
+      body: Center(
+        child: pages.elementAt(_selectedIndex), //New
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: _onItemTapped,
+        currentIndex: _selectedIndex,
+        selectedLabelStyle: ScaleTextStyles.label.apply(color: Theme.of(context).colorScheme.onPrimary),
+        unselectedLabelStyle: ScaleTextStyles.label.apply(color: Theme.of(context).colorScheme.onPrimary),
+        fixedColor: Theme.of(context).colorScheme.onPrimary,
+        type: BottomNavigationBarType.fixed,
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: TabIconWidget(
               icon: SvgPicture.asset(
-                'assets/icons/icon_measurement.svg',
+                'assets/icons/icon_wave_pulse.svg',
                 color: Theme.of(context).hintColor,
               ),
               isActive: false,
             ),
             activeIcon: TabIconWidget(
               icon: SvgPicture.asset(
-                'assets/icons/icon_measurement.svg',
-                color: Theme.of(context).primaryColor,
+                'assets/icons/icon_wave_pulse.svg',
+                color: Theme.of(context).colorScheme.onPrimary,
               ),
               isActive: true,
             ),
+            label: context.locale.tabs_measurement,
           ),
           BottomNavigationBarItem(
             icon: TabIconWidget(
               icon: SvgPicture.asset(
-                'assets/icons/icon_pie_chart.svg',
+                'assets/icons/icon_chart_pie_simple.svg',
                 color: Theme.of(context).hintColor,
               ),
               isActive: false,
             ),
             activeIcon: TabIconWidget(
               icon: SvgPicture.asset(
-                'assets/icons/icon_pie_chart.svg',
-                color: Theme.of(context).primaryColor,
+                'assets/icons/icon_chart_pie_simple.svg',
+                color: Theme.of(context).colorScheme.onPrimary,
               ),
               isActive: true,
             ),
+            label: context.locale.tabs_results,
           ),
           BottomNavigationBarItem(
             icon: TabIconWidget(
               icon: SvgPicture.asset(
-                'assets/icons/icon_more_horiz.svg',
+                'assets/icons/icon_dots_horizontal.svg',
                 color: Theme.of(context).hintColor,
               ),
               isActive: false,
             ),
             activeIcon: TabIconWidget(
               icon: SvgPicture.asset(
-                'assets/icons/icon_more_horiz.svg',
-                color: Theme.of(context).primaryColor,
+                'assets/icons/icon_dots_horizontal.svg',
+                color: Theme.of(context).colorScheme.onPrimary,
               ),
               isActive: true,
             ),
+            label: context.locale.tabs_more,
           ),
         ],
       ),
-      tabBuilder: (context, index) {
-        return Positioned.fill(
-          child: CupertinoTabView(
-            builder: (context) {
-              switch (index) {
-                case 0:
-                  return DashboardPage(userAccount: userAccount);
-                case 1:
-                  return DashboardPage(userAccount: userAccount);
-                case 2:
-                default:
-                  return const ConfigurationScreen();
-              }
-            },
-          ),
-        );
-      },
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_colors_dark.dart';
@@ -45,8 +46,8 @@ class AppearanceItem extends StatelessWidget {
         : context.locale.configuration_screen_good_in_night;
   }
 
-  IconData _getIcon(BuildContext context) {
-    return itemType == AppearanceItemType.light ? Icons.light_mode_outlined : Icons.dark_mode_outlined;
+  String _getIconPath(BuildContext context) {
+    return itemType == AppearanceItemType.light ? 'assets/icons/icon_sun.svg' : 'assets/icons/icon_moon.svg';
   }
 
   @override
@@ -72,12 +73,13 @@ class AppearanceItem extends StatelessWidget {
             AspectRatio(
               aspectRatio: 1,
               child: Container(
+                padding: Paddings.all14,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadii.radius8,
                   color: _getRectColor(context),
                 ),
-                child: Icon(
-                  _getIcon(context),
+                child: SvgPicture.asset(
+                  _getIconPath(context),
                   color: _getSubTitleColor(context),
                 ),
               ),

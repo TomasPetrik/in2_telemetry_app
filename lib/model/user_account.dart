@@ -13,6 +13,7 @@ class UserAccount with _$UserAccount {
 
   factory UserAccount({
     required User user,
+    required String email,
     AuthToken? authToken,
     Hospital? hospital,
     DateTime? signedIn,
@@ -30,22 +31,26 @@ class UserAccountLocal extends HiveObject {
   final String muid;
 
   @HiveField(1)
-  final List<String> firstNames;
+  final String email;
 
   @HiveField(2)
-  final List<String> lastNames;
+  final List<String> firstNames;
 
   @HiveField(3)
-  final AuthTokenLocal authTokenLocal;
+  final List<String> lastNames;
 
   @HiveField(4)
-  final HospitalLocal hospitalLocal;
+  final AuthTokenLocal authTokenLocal;
 
   @HiveField(5)
+  final HospitalLocal hospitalLocal;
+
+  @HiveField(6)
   final DateTime signedIn;
 
   UserAccountLocal({
     required this.muid,
+    required this.email,
     required this.firstNames,
     required this.lastNames,
     required this.authTokenLocal,

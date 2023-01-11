@@ -12,6 +12,8 @@ class DarkMode {
 
   static Color get colorContent80 => ScaleColorsDark.content80;
 
+  static Color get colorContent60 => ScaleColorsDark.content60;
+
   static Color get colorContent20 => ScaleColorsDark.content20;
 
   static Color get paperAccent => ScaleColorsDark.paperAccent;
@@ -61,12 +63,14 @@ class DarkMode {
         onError: alertColor,
         onPrimary: fontColor,
         onSecondary: colorContent80,
-        onSurface: backgroundColor,
+        surface: dark,
+        onSurface: light,
         primary: primary,
         secondary: colorContent20,
-        surface: backgroundColor,
         primaryContainer: actionStartColor,
         onPrimaryContainer: actionEndColor,
+        tertiary: colorContent60,
+        
       );
 
   static ThemeData get theme => ThemeData(
@@ -80,8 +84,6 @@ class DarkMode {
         hintColor: colorContent80,
         selectedRowColor: colorContent20,
         colorScheme: colorScheme,
-        primaryColorLight: light,
-        primaryColorDark: dark,
         appBarTheme: AppBarTheme(
           iconTheme: IconThemeData(color: primary),
           backgroundColor: ScaleColorsDark.paperTransparent,

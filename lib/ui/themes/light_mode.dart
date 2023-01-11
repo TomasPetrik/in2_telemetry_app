@@ -11,6 +11,10 @@ class LightMode {
 
   static Color get colorContent80 => ScaleColorsLight.content80;
 
+  static Color get colorContent60 => ScaleColorsLight.content60;
+
+  static Color get colorContent20 => ScaleColorsLight.content20;
+
   static Color get paperAccent => ScaleColorsLight.paperAccent;
 
   static Color get alertColor => ScaleColorsLight.alert;
@@ -40,13 +44,13 @@ class LightMode {
         onError: alertColor,
         onPrimary: fontColor,
         onSecondary: colorContent80,
-        onSurface: backgroundColor,
+        surface: dark,
+        onSurface: light,
         primary: primary,
-        secondary: paperAccent,
-        surface: backgroundColor,
+        secondary: colorContent20,
         primaryContainer: actionStartColor,
         onPrimaryContainer: actionEndColor,
-        
+        tertiary: colorContent60,
       );
   static ThemeData get theme => ThemeData(
         primaryColor: ScaleColorsLight.primary,
@@ -58,8 +62,6 @@ class LightMode {
         hintColor: colorContent80,
         textTheme: textTheme,
         colorScheme: colorScheme,
-        primaryColorLight: light,
-        primaryColorDark: dark,
         appBarTheme: AppBarTheme(
           iconTheme: IconThemeData(color: primary),
           backgroundColor: ScaleColorsLight.paperTransparent,

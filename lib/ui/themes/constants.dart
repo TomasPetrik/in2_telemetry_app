@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:scalesoft_app/api/dto/auth_data.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 
 class Constants {
@@ -9,7 +10,6 @@ class Constants {
 
   /* OAuth2 */
   static const String clientSecret = 'cqWFWo9zYQHFh38kS8VC';
-  static const String issuer = 'https://in2-win-auth.devscale.cz';
   static const String clientId = 'MobileApp';
   static const List<String> scopes = [
     'openid',
@@ -18,29 +18,62 @@ class Constants {
     'mobile_api.Default',
   ];
   static const String redirectUrl = 'cz.scalesoft.tlm://auth-callback';
-  static const String authorizationEndpoint = 'https://in2-win-auth.devscale.cz/connect/authorize';
-  static const String tokenEndpoint = 'https://in2-win-auth.devscale.cz/connect/token';
-  static const String endSessionEndpoint = 'https://in2-win-auth.devscale.cz/connect/endsession';
 
   static const double appBarHeight = 56;
   static const double twoLinedBarHeight = 76;
   static const double bottomTabBarHeight = 56;
   static const double navigationTabBarHeight = 28;
   static const double buttonHeight = 48;
+  static const double searchBarHeight = 48;
 
   static const double actionActiveWidgetHeight = 16 + 20 + 16 + buttonHeight + 16;
   static const double actionPassiveWidgetHeight = 16 + 20 + 16;
 
-  static const hospitals = [
+  static const List<Hospital> hospitals = [
     Hospital(
       id: 0,
       title: 'Ikem',
       iconPath: 'assets/icons/icon_hospital_ikem.svg',
+      authData: AuthData(
+        authUrl: 'https://in2-auth.devscale.cz',
+        tokenUrl: 'https://in2-auth.devscale.cz/connect/token',
+      ),
     ),
     Hospital(
       id: 1,
       title: 'Na Homolce',
       iconPath: 'assets/icons/icon_hospital_nahomolce.svg',
+      authData: AuthData(
+        authUrl: 'https://in2-win-auth.devscale.cz/connect/authorize',
+        tokenUrl: 'https://in2-win-auth.devscale.cz/connect/token',
+      ),
+    ),
+    Hospital(
+      id: 2,
+      title: 'Fakultní nemocnice Bulovka',
+      iconPath: 'assets/icons/icon_hospital_user.svg',
+      authData: AuthData(
+        authUrl: 'https://in2-win-auth.devscale.cz/connect/authorize',
+        tokenUrl: 'https://in2-win-auth.devscale.cz/connect/token',
+      ),
+    ),
+    Hospital(
+      id: 3,
+      title: 'Fakultní nemocnice Královské Vinohrady',
+      iconPath: 'assets/icons/icon_hospital_user.svg',
+      authData: AuthData(
+        authUrl: 'https://in2-win-auth.devscale.cz/connect/authorize',
+        tokenUrl: 'https://in2-win-auth.devscale.cz/connect/token',
+      ),
+    ),
+    Hospital(
+      id: 4,
+      title: 'Thomayerova nemocnice',
+      iconPath: 'assets/icons/icon_hospital_user.svg',
+      authData: AuthData(
+        authUrl: 'https://in2-win-auth.devscale.cz/connect/authorize',
+        tokenUrl: 'https://in2-win-auth.devscale.cz/connect/token',
+      ),
     )
   ];
 }
@@ -102,6 +135,7 @@ class Paddings {
   static const EdgeInsetsGeometry all8 = EdgeInsets.all(Dimensions.padding8);
   static const EdgeInsetsGeometry all10 = EdgeInsets.all(Dimensions.padding10);
   static const EdgeInsetsGeometry all12 = EdgeInsets.all(Dimensions.padding12);
+  static const EdgeInsetsGeometry all14 = EdgeInsets.all(Dimensions.padding14);
   static const EdgeInsetsGeometry all16 = EdgeInsets.all(Dimensions.padding16);
   static const EdgeInsetsGeometry all20 = EdgeInsets.all(Dimensions.padding20);
   static const EdgeInsetsGeometry all32 = EdgeInsets.all(Dimensions.padding32);
@@ -142,6 +176,7 @@ class Gaps {
   static Gap gap32 = const Gap(Dimensions.padding32);
   static Gap gap34 = const Gap(Dimensions.padding34);
   static Gap gap35 = const Gap(Dimensions.padding35);
+  static Gap gap36 = const Gap(Dimensions.padding36);
   static Gap gap42 = const Gap(Dimensions.padding42);
   static Gap gap48 = const Gap(Dimensions.padding48);
   static Gap gap60 = const Gap(Dimensions.padding60);
@@ -167,6 +202,7 @@ class Dimensions {
   static const double padding32 = 32;
   static const double padding34 = 34;
   static const double padding35 = 35;
+  static const double padding36 = 36;
   static const double padding42 = 42;
   static const double padding48 = 48;
   static const double padding60 = 60;
@@ -182,6 +218,7 @@ class RadiusSize {
   static const double radius15 = 15;
   static const double radius16 = 16;
   static const double radius20 = 20;
+  static const double radius24 = 24;
   static const double radius30 = 30;
   static const double radius50 = 50;
   static const double radius64 = 64;

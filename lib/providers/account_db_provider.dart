@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
+import 'package:scalesoft_app/api/dto/auth_data.dart';
 import 'package:scalesoft_app/api/dto/auth_token.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/api/dto/user.dart';
@@ -17,6 +18,7 @@ class AccountDbProvider extends BoxProvider<UserAccountLocal> implements Account
     Hive.registerAdapter(UserAccountLocalAdapter());
     Hive.registerAdapter(AuthTokenLocalAdapter());
     Hive.registerAdapter(HospitalLocalAdapter());
+    Hive.registerAdapter(AuthDataLocalAdapter());
   }
 
   @override
@@ -71,7 +73,8 @@ class AccountDbProvider extends BoxProvider<UserAccountLocal> implements Account
   }
 
   Map<Hospital, List<UserAccount>> getHospitalUsers() {
-    return box.values
+    final userAccountsLocal = box.values;
+    return userAccountsLocal
         .map(
           _mapAccountFrom,
         )
@@ -82,6 +85,7 @@ class AccountDbProvider extends BoxProvider<UserAccountLocal> implements Account
 UserAccountLocal _mapAccountTo(UserAccount userAccount) {
   return UserAccountLocal(
     muid: userAccount.user.muid,
+    email: userAccount.email,
     firstNames: userAccount.user.firstNames,
     lastNames: userAccount.user.lastNames,
     authTokenLocal: AuthTokenLocal(
@@ -93,6 +97,10 @@ UserAccountLocal _mapAccountTo(UserAccount userAccount) {
       id: userAccount.hospital!.id,
       title: userAccount.hospital!.title,
       iconPath: userAccount.hospital!.iconPath,
+      authData: AuthDataLocal(
+        authUrl: userAccount.hospital!.authData.authUrl,
+        tokenUrl: userAccount.hospital!.authData.tokenUrl,
+      ),
     ),
     signedIn: userAccount.signedIn!,
   );
@@ -101,10 +109,15 @@ UserAccountLocal _mapAccountTo(UserAccount userAccount) {
 UserAccount _mapAccountFrom(UserAccountLocal localAccount) {
   return UserAccount(
     user: User(localAccount.muid, localAccount.firstNames, localAccount.lastNames),
+    email: localAccount.email,
     hospital: Hospital(
       id: localAccount.hospitalLocal.id,
       title: localAccount.hospitalLocal.title,
       iconPath: localAccount.hospitalLocal.iconPath,
+      authData: AuthData(
+        authUrl: localAccount.hospitalLocal.authData.authUrl,
+        tokenUrl: localAccount.hospitalLocal.authData.tokenUrl,
+      ),
     ),
     signedIn: localAccount.signedIn,
     authToken: AuthToken(
