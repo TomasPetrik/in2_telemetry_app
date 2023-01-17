@@ -6,8 +6,6 @@ import 'package:scalesoft_app/ui/screens/debug_device_screen.dart';
 class SearchDevicesScreen extends StatelessWidget {
   const SearchDevicesScreen({super.key});
 
-  static const routeName = '/search-devices-screen';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +44,10 @@ class BluetoothOffScreen extends StatelessWidget {
             ),
             Text(
               'Bluetooth Adapter is ${state != null ? state.toString().substring(15) : 'not available'}.',
-              style: Theme.of(context).primaryTextTheme.subtitle1?.copyWith(color: Colors.white),
+              style: Theme.of(context)
+                  .primaryTextTheme
+                  .subtitle1
+                  ?.copyWith(color: Colors.white),
             ),
           ],
         ),
@@ -177,7 +178,8 @@ class FindDevicesScreen extends StatelessWidget {
           } else {
             return FloatingActionButton(
               child: const Icon(Icons.search),
-              onPressed: () => FlutterBlue.instance.startScan(timeout: const Duration(seconds: 4)),
+              onPressed: () => FlutterBlue.instance
+                  .startScan(timeout: const Duration(seconds: 4)),
             );
           }
         },

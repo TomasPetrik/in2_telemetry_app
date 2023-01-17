@@ -6,8 +6,6 @@ import 'package:scalesoft_app/ui/screens/find_omron_device_screen.dart';
 class OmronScreen extends StatelessWidget {
   const OmronScreen({Key? key}) : super(key: key);
 
-  static const routeName = '/omron';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

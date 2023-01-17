@@ -7,8 +7,6 @@ import 'package:scalesoft_app/ui/screens/search_devices_screen.dart';
 class SelectDeviceScreen extends StatelessWidget {
   const SelectDeviceScreen({super.key});
 
-  static const routeName = '/select-device-screen';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +19,9 @@ class SelectDeviceScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  CupertinoPageRoute(builder: (context) => const BeurerScreen()),
+                  CupertinoPageRoute(
+                    builder: (context) => const BeurerScreen(),
+                  ),
                 );
               },
               child: const Text('Beurer'),
@@ -39,7 +39,9 @@ class SelectDeviceScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  CupertinoPageRoute(builder: (context) => const SearchDevicesScreen()),
+                  CupertinoPageRoute(
+                    builder: (context) => const SearchDevicesScreen(),
+                  ),
                 );
               },
               child: const Text('Manual search'),

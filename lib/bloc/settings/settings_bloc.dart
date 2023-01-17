@@ -3,9 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/bloc/settings/settings_bloc_event.dart';
+import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
+import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/globals.dart';
 import 'package:scalesoft_app/model/app_settings.dart';
 import 'package:scalesoft_app/providers/settings_db_provider.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/settings_service.dart';
 
 @injectable
@@ -46,6 +49,7 @@ class SettingsBloc extends Bloc<SettingsBlocEvent, AppSettings> {
       setSystemUIOverlayStyle(event.newThemeMode);
 
       emit(_getState());
+      getIt<ContentBloc>().add(const OnAppearanceChangedContentEvent());
     });
     on<OnSettingsChangedEvent>((event, emit) {
       emit(_getState());
@@ -64,7 +68,9 @@ class SettingsBloc extends Bloc<SettingsBlocEvent, AppSettings> {
 
   void setSystemUIOverlayStyle(ThemeMode? mode) {
     SystemChrome.setSystemUIOverlayStyle(
-      mode == ThemeMode.dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+      mode == ThemeMode.dark
+          ? SystemUiOverlayStyle.light
+          : SystemUiOverlayStyle.dark,
     );
   }
 

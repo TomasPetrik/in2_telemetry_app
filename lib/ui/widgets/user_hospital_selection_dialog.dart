@@ -17,43 +17,54 @@ class UserHospitalSelectionDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AccountDbProvider accountDbProvider = getIt<AccountDbProvider>();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Gaps.gap34,
-        Padding(
-          padding: Paddings.horizontal16,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                context.locale.hospital_selection_dialog_measurement_for,
-                style: ScaleTextStyles.textAccent.apply(color: Theme.of(context).colorScheme.onSecondary),
-              ),
-              const Spacer(),
-              InkWell(
-                onTap: () {
-                  Navigator.of(context).pop(
-                    UserSelection(
-                      action: SwitchUserAction.addUserAccount,
-                    ),
-                  );
-                },
-                child: Icon(
-                  Icons.add,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              )
-            ],
-          ),
+    final hospitalUserEntries = accountDbProvider.getHospitalUsersMap().entries;
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.background,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(RadiusSize.radius16),
+          topRight: Radius.circular(RadiusSize.radius16),
         ),
-        Gaps.gap24,
-        ...accountDbProvider
-            .getHospitalUsers()
-            .entries
-            .map(
-              (hospital) => Padding(
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Gaps.gap34,
+          Padding(
+            padding: Paddings.horizontal16,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  context.locale.hospital_selection_dialog_measurement_for,
+                  style: ScaleTextStyles.textAccent
+                      .apply(color: Theme.of(context).colorScheme.onSecondary),
+                ),
+                const Spacer(),
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop(
+                      UserSelection(
+                        action: SwitchUserAction.addUserAccount,
+                      ),
+                    );
+                  },
+                  child: Icon(
+                    Icons.add,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                )
+              ],
+            ),
+          ),
+          Gaps.gap24,
+          ListView.separated(
+            padding: EdgeInsets.zero,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              final hospital = hospitalUserEntries.toList()[index];
+              return Padding(
                 padding: Paddings.horizontal16,
                 child: SettingsItem(
                   label: hospital.key.title,
@@ -75,33 +86,40 @@ class UserHospitalSelectionDialog extends StatelessWidget {
                         ),
                       );
                     } else {
+                      final hospitalUsers = accountDbProvider
+                          .getRootUsersFromHospital(hospital.key);
                       Navigator.of(context).pop(
                         UserSelection(
                           action: SwitchUserAction.selectedHospital,
                           selectedHospital: hospital.key,
-                          hospitalUsers: hospital.value,
+                          hospitalUsers: hospitalUsers,
                         ),
                       );
                     }
                   },
                   hasNavigationIcon: hospital.value.length > 1,
                 ),
-              ),
-            )
-            .toList(),
-        Gaps.gap24,
-        Padding(
-          padding: Paddings.horizontal16,
-          child: HighlightedElevatedButton(
-            label: context.locale.common_close,
-            buttonType: ButtonType.secondary,
-            onPressed: () {
-              Navigator.of(context).pop();
+              );
             },
+            separatorBuilder: (_, __) {
+              return Gaps.gap24;
+            },
+            itemCount: hospitalUserEntries.length,
           ),
-        ),
-        Gaps.gap48,
-      ],
+          Gaps.gap24,
+          Padding(
+            padding: Paddings.horizontal16,
+            child: HighlightedElevatedButton(
+              label: context.locale.common_close,
+              buttonType: ButtonType.secondary,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+          Gaps.gap48,
+        ],
+      ),
     );
   }
 }

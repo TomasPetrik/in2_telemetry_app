@@ -8,9 +8,13 @@ part 'user_info.g.dart';
 class UserInfo with _$UserInfo {
   const UserInfo._();
 
-  const factory UserInfo(User currentUser) = _UserInfo;
+  const factory UserInfo(
+    User currentUser,
+    List<User>? representedPeople,
+  ) = _UserInfo;
 
-  factory UserInfo.fromJson(Map<String, dynamic> json) => _$UserInfoFromJson(json);
+  factory UserInfo.fromJson(Map<String, dynamic> json) =>
+      _$UserInfoFromJson(json);
 
   @override
   String toString() => toJson().toString();

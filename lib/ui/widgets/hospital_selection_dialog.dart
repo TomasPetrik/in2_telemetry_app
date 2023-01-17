@@ -23,76 +23,93 @@ class HospitalSelectionDialog extends StatelessWidget {
     final cubit = getIt<HospitalSearchCubit>();
 
     searchController.addListener(() {
-      cubit.search(criteria: searchController.text, initialList: Constants.hospitals);
+      cubit.search(
+        criteria: searchController.text,
+        initialList: Constants.hospitals,
+      );
     });
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Gaps.gap34,
-        Padding(
-          padding: Paddings.horizontal16,
-          child: SearchBar(
-            searchHint: context.locale.hospital_selector_search_for_account,
-            searchController: searchController,
-            onBack: () {
-              Navigator.of(context).pop();
-            },
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.background,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(RadiusSize.radius16),
+          topRight: Radius.circular(RadiusSize.radius16),
         ),
-        Gaps.gap24,
-        BlocBuilder<HospitalSearchCubit, HospitalSearchState>(
-          bloc: cubit,
-          builder: (context, state) {
-            final list = state.when(
-              initial: () => Constants.hospitals,
-              result: ((hospitals) => hospitals.toList()),
-            );
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Gaps.gap34,
+          Padding(
+            padding: Paddings.horizontal16,
+            child: SearchBar(
+              searchHint: context.locale.hospital_selector_search_for_account,
+              searchController: searchController,
+              onBack: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+          Gaps.gap24,
+          BlocBuilder<HospitalSearchCubit, HospitalSearchState>(
+            bloc: cubit,
+            builder: (context, state) {
+              final list = state.when(
+                initial: () => Constants.hospitals,
+                result: ((hospitals) => hospitals.toList()),
+              );
 
-            return Column(
-              children: list
-                  .map(
-                    (hospital) => Padding(
-                      padding: Paddings.horizontal16,
-                      child: SettingsItem(
-                        label: hospital.title,
-                        iconWidget: Padding(
-                          padding: Paddings.all8,
-                          child: SvgPicture.asset(
-                            hospital.iconPath,
-                            color: Theme.of(context).hintColor,
-                          ),
+              return ListView.separated(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  final hospital = list[index];
+                  return Padding(
+                    padding: Paddings.horizontal16,
+                    child: SettingsItem(
+                      label: hospital.title,
+                      iconWidget: Padding(
+                        padding: Paddings.all8,
+                        child: SvgPicture.asset(
+                          hospital.iconPath,
+                          color: Theme.of(context).hintColor,
                         ),
-                        onTap: () {
-                          Navigator.of(context).pop(
-                            UserSelection(
-                              action: SwitchUserAction.addUserAccount,
-                              selectedHospital: hospital,
-                            ),
-                          );
-                        },
-                        hasNavigationIcon: false,
                       ),
+                      onTap: () {
+                        Navigator.of(context).pop(
+                          UserSelection(
+                            action: SwitchUserAction.addUserAccount,
+                            selectedHospital: hospital,
+                          ),
+                        );
+                      },
+                      hasNavigationIcon: false,
                     ),
-                  )
-                  .toList(),
-            );
-          },
-        ),
-        Gaps.gap24,
-        Padding(
-          padding: Paddings.horizontal16,
-          child: HighlightedElevatedButton(
-            label: context.locale.common_close,
-            buttonType: ButtonType.secondary,
-            onPressed: () {
-              Navigator.of(context).pop();
+                  );
+                },
+                separatorBuilder: (_, __) {
+                  return Gaps.gap24;
+                },
+                itemCount: list.length,
+              );
             },
           ),
-        ),
-        Gaps.gap48,
-      ],
+          Gaps.gap24,
+          Padding(
+            padding: Paddings.horizontal16,
+            child: HighlightedElevatedButton(
+              label: context.locale.common_close,
+              buttonType: ButtonType.secondary,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+          Gaps.gap48,
+        ],
+      ),
     );
   }
 }

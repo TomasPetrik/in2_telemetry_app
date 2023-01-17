@@ -5,13 +5,14 @@ import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
 import 'package:scalesoft_app/ui/widgets/sliver_name_value_row.dart';
 
-class UserDetailScreen extends StatelessWidget {
+class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
   const UserDetailScreen({
     super.key,
     required this.userAccount,
@@ -26,7 +27,9 @@ class UserDetailScreen extends StatelessWidget {
         children: [
           CustomScrollView(
             slivers: [
-              SliverGap(MediaQuery.of(context).viewPadding.top + Constants.appBarHeight),
+              SliverGap(
+                MediaQuery.of(context).viewPadding.top + Constants.appBarHeight,
+              ),
               SliverPadding(
                 padding: Paddings.left16,
                 sliver: SliverToBoxAdapter(
@@ -60,18 +63,43 @@ class UserDetailScreen extends StatelessWidget {
                 name: context.locale.user_detail_screen_user_surname,
                 value: userAccount.user.lastNames[0],
               ),
-              const SliverGap(Dimensions.padding24),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: Paddings.horizontal16,
-                  child: HighlightedElevatedButton(
-                    label: context.locale.user_detail_screen_logout_user,
-                    onPressed: () {
-                      getIt<AuthBloc>().add(LogoutUser(userAccount: userAccount));
-                    },
+              if (userAccount.user.phoneNumbers?.isNotEmpty == true) ...[
+                const SliverGap(Dimensions.padding8),
+                SliverNameValueRow(
+                  name: context.locale.user_detail_screen_user_phone,
+                  value: userAccount.user.phoneNumbers![0],
+                ),
+              ],
+              if (userAccount.user.emailAddresses?.isNotEmpty == true) ...[
+                const SliverGap(Dimensions.padding8),
+                SliverNameValueRow(
+                  name: context.locale.user_detail_screen_user_email,
+                  value: userAccount.user.emailAddresses![0],
+                ),
+              ],
+              if (userAccount.hasParent == false) ...[
+                const SliverGap(Dimensions.padding24),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: Paddings.horizontal16,
+                    child: HighlightedElevatedButton(
+                      label: context.locale.user_detail_screen_remove_account,
+                      buttonType: ButtonType.alert,
+                      onPressed: () async {
+                        final confirmed = await showAccounRemovalConfirmation(
+                          context: context,
+                          accountName: userAccount.user.fullName,
+                        );
+
+                        if (confirmed == true) {
+                          getIt<AuthBloc>()
+                              .add(LogoutUser(userAccount: userAccount));
+                        }
+                      },
+                    ),
                   ),
                 ),
-              ),
+              ],
             ],
           ),
           Positioned(

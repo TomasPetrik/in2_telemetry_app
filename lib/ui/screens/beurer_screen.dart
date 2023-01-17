@@ -6,8 +6,6 @@ import 'package:scalesoft_app/ui/screens/find_beurer_device_screen.dart';
 class BeurerScreen extends StatelessWidget {
   const BeurerScreen({Key? key}) : super(key: key);
 
-  static const routeName = '/beurer';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

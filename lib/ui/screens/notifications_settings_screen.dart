@@ -7,8 +7,6 @@ import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
 class NotificationsSettingsScreen extends StatelessWidget {
   const NotificationsSettingsScreen({super.key});
 
-  static const routeName = '/notifications-settings';
-
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -19,7 +17,10 @@ class NotificationsSettingsScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Gap(MediaQuery.of(context).viewPadding.top + Constants.appBarHeight),
+                  Gap(
+                    MediaQuery.of(context).viewPadding.top +
+                        Constants.appBarHeight,
+                  ),
                   Gaps.gap16,
                 ],
               ),

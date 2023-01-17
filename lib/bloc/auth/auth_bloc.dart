@@ -4,8 +4,8 @@ import 'package:oauth2/oauth2.dart';
 import 'package:scalesoft_app/api/dto/auth_token.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
-import 'package:scalesoft_app/bloc/user_content/user_content_bloc.dart';
-import 'package:scalesoft_app/bloc/user_content/user_content_event.dart';
+import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
+import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/repositories/account_repository.dart';
@@ -22,8 +22,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final Session _session;
   AuthorizationCodeGrant? _grant;
 
-  AuthBloc(this._authService, this._accountService, this._session, this._accountDbProvider)
-      : super(const AuthState.unauthenticated()) {
+  AuthBloc(
+    this._authService,
+    this._accountService,
+    this._session,
+    this._accountDbProvider,
+  ) : super(const AuthState.unauthenticated()) {
     on<Authenticate>(_onAuthenticate);
     on<HandleAuthResponse>(_onHandleAuthResponse);
     on<VerifyUser>(_verifyUser);
@@ -48,7 +52,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       _session.hospital = event.hospital;
 
       emit(
-        AuthState.openAuthReqest(
+        AuthState.openAuthRequest(
           authUri: _grant!.getAuthorizationUrl(
             Uri.parse(Constants.redirectUrl),
             scopes: Constants.scopes,
@@ -91,10 +95,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       final userAccount = UserAccount(
         user: userInfo.currentUser,
-        email: '',
         authToken: _session.token,
         hospital: _session.hospital,
         signedIn: DateTime.now(),
+        lastActiveIn: DateTime.now(),
+        representedPeople: userInfo.representedPeople
+            ?.map(
+              (representedPerson) => UserAccount(
+                user: representedPerson,
+                authToken: _session.token,
+                hospital: _session.hospital,
+                signedIn: DateTime.now(),
+                lastActiveIn: null,
+                representedPeople: null,
+              ),
+            )
+            .toList(),
       );
 
       await _accountDbProvider.save(userAccount);
@@ -120,17 +136,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         final lastLoggedUser = _accountDbProvider.getLast();
         if (lastLoggedUser != null) {
-          getIt<UserContentBloc>().add(
+          getIt<ContentBloc>().add(
             SwitchUserContentEvent(
               userAccount: lastLoggedUser,
             ),
           );
         } else {
-          getIt<UserContentBloc>().add(const SwitchNoUserContentEvent());
+          getIt<ContentBloc>().add(const SwitchNoUserContentEvent());
         }
+        emit(const AuthState.logoutSuccess());
+      } else {
+        emit(AuthState.inactiveUserRemoved(userAccount: event.userAccount));
       }
-
-      emit(const AuthState.logoutSuccess());
     } on Exception catch (e) {
       emit(AuthState.logoutFailed(error: e));
     }

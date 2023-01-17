@@ -19,7 +19,7 @@ class AuthData with _$AuthData {
   String toString() => toJson().toString();
 }
 
-@HiveType(typeId: 4)
+@HiveType(typeId: 5)
 class AuthDataLocal extends HiveObject {
   @HiveField(0)
   final String authUrl;

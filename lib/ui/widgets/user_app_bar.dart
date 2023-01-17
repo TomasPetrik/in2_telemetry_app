@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
-import 'package:scalesoft_app/bloc/user_content/user_content_bloc.dart';
-import 'package:scalesoft_app/bloc/user_content/user_content_event.dart';
+import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
+import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
@@ -52,7 +52,7 @@ class UserAppBar extends StatelessWidget with BottomSheetMixin {
                                 getIt<AuthBloc>().add(Authenticate(hospital: hospitalSelection!.selectedHospital!));
                               }
                             } else if (switchUserResult?.selectedUser != null) {
-                              getIt<UserContentBloc>()
+                              getIt<ContentBloc>()
                                   .add(SwitchUserContentEvent(userAccount: switchUserResult!.selectedUser!));
                             }
                           },

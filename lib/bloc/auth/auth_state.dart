@@ -10,8 +10,9 @@ class AuthState with _$AuthState {
   const factory AuthState.cancelled() = _Cancelled;
   const factory AuthState.authenticated({Credentials? credentials}) = _Authenticated;
   const factory AuthState.unauthenticated({Exception? error}) = _Unauthenticated;
-  const factory AuthState.openAuthReqest({required Uri authUri}) = _OpenAuthReqest;
+  const factory AuthState.openAuthRequest({required Uri authUri}) = _OpenAuthRequest;
   const factory AuthState.userVerified({required UserAccount userAccount}) = _UserVerified;
+  const factory AuthState.inactiveUserRemoved({required UserAccount userAccount}) = _InactiveUserRemoved;
   const factory AuthState.logoutSuccess() = _LogoutSuccess;
   const factory AuthState.logoutFailed({Exception? error}) = _LogoutFailed;
   const factory AuthState.lastSessionRestored({UserAccount? userAccount}) = _LastSessionRestored;

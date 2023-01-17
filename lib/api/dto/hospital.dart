@@ -23,7 +23,7 @@ class Hospital with _$Hospital {
 }
 
 
-@HiveType(typeId: 3)
+@HiveType(typeId: 4)
 class HospitalLocal extends HiveObject {
   @HiveField(0)
   final int id;

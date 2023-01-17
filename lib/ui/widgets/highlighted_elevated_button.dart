@@ -19,8 +19,11 @@ class HighlightedElevatedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color backgroundColor =
-        buttonType == ButtonType.primary ? Theme.of(context).primaryColor : Theme.of(context).colorScheme.secondary;
+    Color backgroundColor = buttonType == ButtonType.primary
+        ? Theme.of(context).primaryColor
+        : buttonType == ButtonType.secondary
+            ? Theme.of(context).colorScheme.secondary
+            : Theme.of(context).colorScheme.error;
 
     return ElevatedButton(
       onPressed: onPressed,
@@ -45,7 +48,8 @@ class HighlightedElevatedButton extends StatelessWidget {
             ],
             Text(
               label,
-              style: ScaleTextStyles.textAccent.apply(color: Theme.of(context).colorScheme.onPrimary),
+              style: ScaleTextStyles.textAccent
+                  .apply(color: Theme.of(context).colorScheme.onPrimary),
             ),
           ],
         ),
@@ -57,4 +61,5 @@ class HighlightedElevatedButton extends StatelessWidget {
 enum ButtonType {
   primary,
   secondary,
+  alert,
 }

@@ -1,19 +1,19 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/ui/screens/appearance_settings_screen.dart';
-import 'package:scalesoft_app/ui/screens/hospital_details_screen.dart';
+import 'package:scalesoft_app/ui/routers/routes/appearance_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/hospital_detail_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/notification_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/user_detail_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
-import 'package:scalesoft_app/ui/screens/notifications_settings_screen.dart';
-import 'package:scalesoft_app/ui/screens/user_details_screen.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
@@ -25,6 +25,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
   @override
   Widget build(BuildContext context) {
     final AccountDbProvider accountDbProvider = getIt<AccountDbProvider>();
+    final hospitalUserEntries = accountDbProvider.getHospitalUsersMap().entries;
 
     return Scaffold(
       body: BlocBuilder<AuthBloc, AuthState>(
@@ -38,7 +39,10 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Gap(MediaQuery.of(context).viewPadding.top + Constants.appBarHeight),
+                      Gap(
+                        MediaQuery.of(context).viewPadding.top +
+                            Constants.appBarHeight,
+                      ),
                       Gaps.gap16,
                       Center(
                         child: Image.asset(
@@ -59,9 +63,16 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                           ),
                           InkWell(
                             onTap: () async {
-                              final hospitalSelection = await selectHospital(context: context);
-                              if (hospitalSelection?.action == SwitchUserAction.addUserAccount) {
-                                getIt<AuthBloc>().add(Authenticate(hospital: hospitalSelection!.selectedHospital!));
+                              final hospitalSelection =
+                                  await selectHospital(context: context);
+                              if (hospitalSelection?.action ==
+                                  SwitchUserAction.addUserAccount) {
+                                getIt<AuthBloc>().add(
+                                  Authenticate(
+                                    hospital:
+                                        hospitalSelection!.selectedHospital!,
+                                  ),
+                                );
                               }
                             },
                             child: SvgPicture.asset(
@@ -72,46 +83,48 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                         ],
                       ),
                       Gaps.gap24,
-                      ...accountDbProvider
-                          .getHospitalUsers()
-                          .entries
-                          .map(
-                            (hospital) => SettingsItem(
-                              label: hospital.key.title,
-                              subLabel: '${hospital.value[0].user.fullName}'
-                                  ' ${hospital.value.length > 1 ? context.locale.common_plus_n_others(hospital.value.length - 1) : ''}',
-                              iconWidget: Padding(
-                                padding: Paddings.all8,
-                                child: SvgPicture.asset(
-                                  hospital.key.iconPath,
-                                  color: Theme.of(context).hintColor,
-                                ),
+                      ListView.separated(
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          final hospital = hospitalUserEntries.toList()[index];
+                          return SettingsItem(
+                            label: hospital.key.title,
+                            subLabel: '${hospital.value[0].user.fullName}'
+                                ' ${hospital.value.length > 1 ? context.locale.common_plus_n_others(hospital.value.length - 1) : ''}',
+                            iconWidget: Padding(
+                              padding: Paddings.all8,
+                              child: SvgPicture.asset(
+                                hospital.key.iconPath,
+                                color: Theme.of(context).hintColor,
                               ),
-                              onTap: () {
-                                if (hospital.value.length == 1) {
-                                  Navigator.push(
-                                    context,
-                                    CupertinoPageRoute(
-                                      builder: (context) => UserDetailScreen(
-                                        userAccount: hospital.value[0],
-                                      ),
-                                    ),
-                                  );
-                                } else {
-                                  Navigator.push(
-                                    context,
-                                    CupertinoPageRoute(
-                                      builder: (context) => HospitalDetailScreen(
-                                        hospital: hospital.key,
-                                        userAccounts: hospital.value,
-                                      ),
-                                    ),
-                                  );
-                                }
-                              },
                             ),
-                          )
-                          .toList(),
+                            onTap: () {
+                              if (hospital.value.length == 1) {
+                                GoRouter.of(context).pushNamed(
+                                  UserDetailRoute.name,
+                                  extra: hospital.value[0],
+                                );
+                              } else {
+                                GoRouter.of(context).pushNamed(
+                                  HospitalDetailRoute.name,
+                                  extra: List.of([
+                                    hospital.key,
+                                    accountDbProvider.getRootUsersFromHospital(
+                                      hospital.key,
+                                    ),
+                                  ]),
+                                );
+                              }
+                            },
+                          );
+                        },
+                        separatorBuilder: (_, __) {
+                          return Gaps.gap24;
+                        },
+                        itemCount: hospitalUserEntries.length,
+                      ),
+                      Gaps.gap24,
                       SettingsItem(
                         label: context.locale.configuration_screen_add_account,
                         iconWidget: SvgPicture.asset(
@@ -120,9 +133,15 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                         ),
                         hasNavigationIcon: false,
                         onTap: () async {
-                          final hospitalSelection = await selectHospital(context: context);
-                          if (hospitalSelection?.action == SwitchUserAction.addUserAccount) {
-                            getIt<AuthBloc>().add(Authenticate(hospital: hospitalSelection!.selectedHospital!));
+                          final hospitalSelection =
+                              await selectHospital(context: context);
+                          if (hospitalSelection?.action ==
+                              SwitchUserAction.addUserAccount) {
+                            getIt<AuthBloc>().add(
+                              Authenticate(
+                                hospital: hospitalSelection!.selectedHospital!,
+                              ),
+                            );
                           }
                         },
                       ),
@@ -135,36 +154,31 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                       ),
                       Gaps.gap24,
                       SettingsItem(
-                        label: context.locale.configuration_screen_notification_label,
-                        subLabel: context.locale.configuration_screen_notification_sublabel,
+                        label: context
+                            .locale.configuration_screen_notification_label,
+                        subLabel: context
+                            .locale.configuration_screen_notification_sublabel,
                         iconWidget: SvgPicture.asset(
                           'assets/icons/icon_message_square_notification.svg',
                           color: Theme.of(context).colorScheme.onSecondary,
                         ),
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => const NotificationsSettingsScreen(),
-                            ),
-                          );
+                          GoRouter.of(context)
+                              .pushNamed(NotificationRoute.name);
                         },
                       ),
                       Gaps.gap24,
                       SettingsItem(
-                        label: context.locale.configuration_screen_appearance_label,
-                        subLabel: context.locale.configuration_screen_appearance_sublabel,
+                        label: context
+                            .locale.configuration_screen_appearance_label,
+                        subLabel: context
+                            .locale.configuration_screen_appearance_sublabel,
                         iconWidget: SvgPicture.asset(
                           'assets/icons/icon_paint_roller.svg',
                           color: Theme.of(context).colorScheme.onSecondary,
                         ),
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => const AppearanceSettingsScreen(),
-                            ),
-                          );
+                          GoRouter.of(context).pushNamed(AppearanceRoute.name);
                         },
                       ),
                       const Gap(300),

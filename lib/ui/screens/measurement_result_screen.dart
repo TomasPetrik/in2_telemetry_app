@@ -13,8 +13,6 @@ class MeasurementResultScreen extends StatelessWidget {
 
   final MeasurementInfo measurementInfo;
 
-  static const routeName = '/measurement-result-screen';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,15 +23,30 @@ class MeasurementResultScreen extends StatelessWidget {
           children: [
             Column(
               children: [
-                NameValueRow(name: 'Systolic', value: '${measurementInfo.systolic}'),
+                NameValueRow(
+                  name: 'Systolic',
+                  value: '${measurementInfo.systolic}',
+                ),
                 Gaps.gap10,
-                NameValueRow(name: 'Diastolic', value: '${measurementInfo.diastolic}'),
+                NameValueRow(
+                  name: 'Diastolic',
+                  value: '${measurementInfo.diastolic}',
+                ),
                 Gaps.gap10,
-                NameValueRow(name: 'Mean Arterial Pressure', value: '${measurementInfo.meanArterialPressure}'),
+                NameValueRow(
+                  name: 'Mean Arterial Pressure',
+                  value: '${measurementInfo.meanArterialPressure}',
+                ),
                 Gaps.gap10,
-                NameValueRow(name: 'Date Time', value: measurementInfo.timestamp),
+                NameValueRow(
+                  name: 'Date Time',
+                  value: measurementInfo.timestamp,
+                ),
                 Gaps.gap10,
-                NameValueRow(name: 'Pulse Rate', value: '${measurementInfo.pulseRate}'),
+                NameValueRow(
+                  name: 'Pulse Rate',
+                  value: '${measurementInfo.pulseRate}',
+                ),
                 Gaps.gap10,
                 NameValueRow(name: 'User', value: '${measurementInfo.userId}'),
               ],
@@ -42,7 +55,9 @@ class MeasurementResultScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  CupertinoPageRoute(builder: (context) => const SelectDeviceScreen()),
+                  CupertinoPageRoute(
+                    builder: (context) => const SelectDeviceScreen(),
+                  ),
                 );
               },
               child: const Text('Continue'),

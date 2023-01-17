@@ -12,12 +12,11 @@ import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/onboarding_item_desc.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
 
-class OnboardingAddAccountScreen extends StatelessWidget with BottomSheetMixin {
-  const OnboardingAddAccountScreen({super.key});
+class OnboardingScreen extends StatelessWidget with BottomSheetMixin {
+  const OnboardingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final AuthBloc authBloc = getIt<AuthBloc>();
     return Scaffold(
       body: Stack(
         children: [
@@ -57,7 +56,7 @@ class OnboardingAddAccountScreen extends StatelessWidget with BottomSheetMixin {
                     onPressed: () async {
                       final hospitalSelection = await selectHospital(context: context);
                       if (hospitalSelection?.selectedHospital != null) {
-                        authBloc.add(Authenticate(hospital: hospitalSelection!.selectedHospital!));
+                        getIt<AuthBloc>().add(Authenticate(hospital: hospitalSelection!.selectedHospital!));
                       }
                     },
                   ),

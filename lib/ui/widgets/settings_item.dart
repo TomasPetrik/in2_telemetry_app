@@ -7,7 +7,7 @@ class SettingsItem extends StatelessWidget {
     super.key,
     required this.label,
     this.subLabel,
-    required this.onTap,
+     this.onTap,
     this.icon,
     this.iconWidget,
     this.hasNavigationIcon = true,
@@ -18,17 +18,16 @@ class SettingsItem extends StatelessWidget {
 
   final String label;
   final String? subLabel;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final IconData? icon;
   final Widget? iconWidget;
   final bool hasNavigationIcon;
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
+    return InkWell(
       onTap: onTap,
-      title: Row(
+      child: Row(
         children: [
           Container(
             decoration: BoxDecoration(

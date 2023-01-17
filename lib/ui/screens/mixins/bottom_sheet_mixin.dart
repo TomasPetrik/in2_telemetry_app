@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/widgets/confimation_dialog.dart';
 import 'package:scalesoft_app/ui/widgets/hospital_selection_dialog.dart';
 import 'package:scalesoft_app/ui/widgets/measurement_header.dart';
 import 'package:scalesoft_app/ui/widgets/measurement_time_dialog.dart';
@@ -9,6 +9,25 @@ import 'package:scalesoft_app/ui/widgets/user_hospital_selection_dialog.dart';
 import 'package:scalesoft_app/ui/widgets/user_selection_dialog.dart';
 
 mixin BottomSheetMixin {
+  Future<bool?> showAccounRemovalConfirmation({
+    required final BuildContext context,
+    required final String accountName,
+  }) async {
+    final result = await showModalBottomSheet<bool?>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return ConfirmationDialog.accountRemoval(
+          context: context,
+          accountName: accountName,
+        );
+      },
+    );
+    return result;
+  }
+
   Future<TypePeriodSelection?> showMeasurementTime(
     final BuildContext context,
     final PeriodType? selectedTime,
@@ -17,14 +36,11 @@ mixin BottomSheetMixin {
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(Dimensions.padding16),
-        ),
-      ),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Colors.transparent,
       builder: (context) {
-        return MeasurementTimeDialog(selectedTime: selectedTime ?? PeriodType.today);
+        return MeasurementTimeDialog(
+          selectedTime: selectedTime ?? PeriodType.today,
+        );
       },
     );
     return selected;
@@ -37,12 +53,7 @@ mixin BottomSheetMixin {
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(Dimensions.padding16),
-        ),
-      ),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Colors.transparent,
       builder: (context) {
         return const FractionallySizedBox(
           heightFactor: 1.0,
@@ -60,26 +71,27 @@ mixin BottomSheetMixin {
   Future<SwitchUserResult?> switchUser({
     required final BuildContext context,
   }) async {
-    final userHospitalSelectionResult = await showModalBottomSheet<UserSelection>(
+    final userHospitalSelectionResult =
+        await showModalBottomSheet<UserSelection>(
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(Dimensions.padding16),
-        ),
-      ),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Colors.transparent,
       builder: (context) {
         return const UserHospitalSelectionDialog();
       },
     );
 
-    if (userHospitalSelectionResult?.action == SwitchUserAction.addUserAccount) {
+    if (userHospitalSelectionResult?.action ==
+        SwitchUserAction.addUserAccount) {
       return SwitchUserResult(addNewUser: true);
-    } else if (userHospitalSelectionResult?.action == SwitchUserAction.selectedUser) {
-      return SwitchUserResult(selectedUser: userHospitalSelectionResult!.selectedUser);
-    } else if (userHospitalSelectionResult?.action == SwitchUserAction.selectedHospital) {
+    } else if (userHospitalSelectionResult?.action ==
+        SwitchUserAction.selectedUser) {
+      return SwitchUserResult(
+        selectedUser: userHospitalSelectionResult!.selectedUser,
+      );
+    } else if (userHospitalSelectionResult?.action ==
+        SwitchUserAction.selectedHospital) {
       final userSelection = await _selectUserFromHospital(
         context: context,
         hospital: userHospitalSelectionResult!.selectedHospital!,
@@ -105,14 +117,12 @@ mixin BottomSheetMixin {
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(Dimensions.padding16),
-        ),
-      ),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Colors.transparent,
       builder: (context) {
-        return UserSelectionDialog(hospital: hospital, userAccounts: userAccounts);
+        return UserSelectionDialog(
+          hospital: hospital,
+          userAccounts: userAccounts,
+        );
       },
     );
 

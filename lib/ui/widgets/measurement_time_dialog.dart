@@ -17,67 +17,83 @@ class MeasurementTimeDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Gaps.gap34,
-        Padding(
-          padding: Paddings.horizontal16,
-          child: Text(
-            context.locale.common_measurement,
-            style: ScaleTextStyles.textAccent.apply(color: Theme.of(context).colorScheme.onSecondary),
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.background,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(RadiusSize.radius16),
+          topRight: Radius.circular(RadiusSize.radius16),
         ),
-        Gaps.gap24,
-        InkWell(
-          onTap: () {
-            Navigator.of(context).pop(TypePeriodSelection(selectedPeriod: PeriodType.upcomming));
-          },
-          child: Padding(
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Gaps.gap34,
+          Padding(
             padding: Paddings.horizontal16,
-            child: PeriodItem(
-              periodTime: PeriodType.upcomming,
-              isSelected: selectedTime == PeriodType.upcomming,
+            child: Text(
+              context.locale.common_measurement,
+              style: ScaleTextStyles.textAccent
+                  .apply(color: Theme.of(context).colorScheme.onSecondary),
             ),
           ),
-        ),
-        InkWell(
-          onTap: () {
-            Navigator.of(context).pop(TypePeriodSelection(selectedPeriod: PeriodType.today));
-          },
-          child: Padding(
-            padding: Paddings.horizontal16,
-            child: PeriodItem(
-              periodTime: PeriodType.today,
-              isSelected: selectedTime == PeriodType.today,
-            ),
-          ),
-        ),
-        InkWell(
-          onTap: () {
-            Navigator.of(context).pop(TypePeriodSelection(selectedPeriod: PeriodType.tomorrow));
-          },
-          child: Padding(
-            padding: Paddings.horizontal16,
-            child: PeriodItem(
-              periodTime: PeriodType.tomorrow,
-              isSelected: selectedTime == PeriodType.tomorrow,
-            ),
-          ),
-        ),
-        Gaps.gap24,
-        Padding(
-          padding: Paddings.horizontal16,
-          child: HighlightedElevatedButton(
-            label: context.locale.common_show_calendar,
-            onPressed: () {
-              Navigator.of(context).pop(TypePeriodSelection(showCalendar: true));
+          Gaps.gap24,
+          InkWell(
+            onTap: () {
+              Navigator.of(context).pop(
+                TypePeriodSelection(selectedPeriod: PeriodType.upcomming),
+              );
             },
+            child: Padding(
+              padding: Paddings.horizontal16,
+              child: PeriodItem(
+                periodTime: PeriodType.upcomming,
+                isSelected: selectedTime == PeriodType.upcomming,
+              ),
+            ),
           ),
-        ),
-        Gaps.gap48,
-      ],
+          InkWell(
+            onTap: () {
+              Navigator.of(context)
+                  .pop(TypePeriodSelection(selectedPeriod: PeriodType.today));
+            },
+            child: Padding(
+              padding: Paddings.horizontal16,
+              child: PeriodItem(
+                periodTime: PeriodType.today,
+                isSelected: selectedTime == PeriodType.today,
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              Navigator.of(context).pop(
+                TypePeriodSelection(selectedPeriod: PeriodType.tomorrow),
+              );
+            },
+            child: Padding(
+              padding: Paddings.horizontal16,
+              child: PeriodItem(
+                periodTime: PeriodType.tomorrow,
+                isSelected: selectedTime == PeriodType.tomorrow,
+              ),
+            ),
+          ),
+          Gaps.gap24,
+          Padding(
+            padding: Paddings.horizontal16,
+            child: HighlightedElevatedButton(
+              label: context.locale.common_show_calendar,
+              onPressed: () {
+                Navigator.of(context)
+                    .pop(TypePeriodSelection(showCalendar: true));
+              },
+            ),
+          ),
+          Gaps.gap48,
+        ],
+      ),
     );
   }
 }

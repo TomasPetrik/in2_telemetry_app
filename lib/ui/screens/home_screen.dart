@@ -1,54 +1,85 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
+import 'package:scalesoft_app/bloc/user_content/content_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
-import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/ui/screens/configuration_screen.dart';
-import 'package:scalesoft_app/ui/screens/dashboard_page.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/results_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/settings_route.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/tab_icon_widget.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({
     Key? key,
-    required this.userAccount,
+    required this.child,
+    required this.path,
   }) : super(key: key);
 
-  final UserAccount userAccount;
+  final Widget child;
+  final String path;
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
-
-  @override
-  void initState() {
-    super.initState();
+  int _getCurrentTabIndex() {
+    if (path.contains(DashboardRoute.name)) {
+      return 0;
+    } else if (path.contains(ResultsRoute.name)) {
+      return 1;
+    } else if (path.contains(SettingsRoute.name)) {
+      return 2;
+    } else {
+      return 0;
+    }
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  String _getPathByIndex(int index) {
+    switch (index) {
+      case 0:
+        return DashboardRoute.name;
+      case 1:
+        return ResultsRoute.name;
+      case 2:
+        return SettingsRoute.name;
+      default:
+        return DashboardRoute.name;
+    }
+  }
+
+  Map<String, String> _getParams(index) {
+    final ContentState userContentState = getIt<ContentBloc>().state;
+
+    final userId = userContentState.whenOrNull(
+      activeSingleUser: (userAccount) => userAccount.user.muid,
+    );
+
+    switch (index) {
+      case 0:
+      case 1:
+        return {'userId': userId!};
+      default:
+        return {};
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> pages = <Widget>[
-      DashboardPage(userAccount: widget.userAccount),
-      DashboardPage(userAccount: widget.userAccount),
-      const ConfigurationScreen(),
-    ];
     return Scaffold(
       body: Center(
-        child: pages.elementAt(_selectedIndex), //New
+        child: child, //pages.elementAt(_selectedIndex), //New
       ),
       bottomNavigationBar: BottomNavigationBar(
-        onTap: _onItemTapped,
-        currentIndex: _selectedIndex,
-        selectedLabelStyle: ScaleTextStyles.label.apply(color: Theme.of(context).colorScheme.onPrimary),
-        unselectedLabelStyle: ScaleTextStyles.label.apply(color: Theme.of(context).colorScheme.onPrimary),
+        onTap: ((index) {
+          GoRouter.of(context).goNamed(
+            _getPathByIndex(index),
+            params: _getParams(index),
+          );
+        }),
+        currentIndex: _getCurrentTabIndex(),
+        selectedLabelStyle: ScaleTextStyles.label
+            .apply(color: Theme.of(context).colorScheme.onPrimary),
+        unselectedLabelStyle: ScaleTextStyles.label
+            .apply(color: Theme.of(context).colorScheme.onPrimary),
         fixedColor: Theme.of(context).colorScheme.onPrimary,
         type: BottomNavigationBarType.fixed,
         items: <BottomNavigationBarItem>[

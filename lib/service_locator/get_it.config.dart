@@ -10,20 +10,20 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i8;
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 
-import '../api/client/account_api_client.dart' as _i15;
-import '../api/client/auth_api_client.dart' as _i17;
+import '../api/client/account_api_client.dart' as _i14;
+import '../api/client/auth_api_client.dart' as _i16;
 import '../api/dio_module.dart' as _i21;
 import '../api/interceptors/token_interceptor.dart' as _i20;
-import '../bloc/auth/auth_bloc.dart' as _i18;
+import '../bloc/auth/auth_bloc.dart' as _i17;
 import '../bloc/care_plan/care_plan_bloc.dart' as _i6;
 import '../bloc/settings/settings_bloc.dart' as _i19;
-import '../bloc/user_content/user_content_bloc.dart' as _i14;
+import '../bloc/user_content/content_bloc.dart' as _i18;
 import '../cubit/auth_web/auth_web_cubit.dart' as _i5;
 import '../cubit/hospital_search/hospital_search_cubit.dart' as _i9;
 import '../cubit/omron/omron_connection_cubit.dart' as _i10;
 import '../providers/account_db_provider.dart' as _i3;
 import '../providers/settings_db_provider.dart' as _i12;
-import '../repositories/account_repository.dart' as _i16;
+import '../repositories/account_repository.dart' as _i15;
 import '../services/auth_service.dart' as _i4;
 import '../services/settings_service.dart' as _i13;
 import '../storage/secure_storage_module.dart' as _i22;
@@ -62,21 +62,21 @@ Future<_i1.GetIt> $initGetIt(
     preResolve: true,
     dispose: (i) => i.dispose(),
   );
-  gh.singleton<_i14.UserContentBloc>(_i14.UserContentBloc(
-    get<_i3.AccountDbProvider>(),
-    get<_i11.Session>(),
-  ));
-  gh.factory<_i15.AccountApiClient>(
-      () => _i15.AccountApiClient(get<_i7.Dio>(instanceName: 'privateDio')));
-  gh.singleton<_i16.AccountRepository>(
-      _i16.AccountRepository(get<_i15.AccountApiClient>()));
-  gh.factory<_i17.AuthApiClient>(
-      () => _i17.AuthApiClient(get<_i7.Dio>(instanceName: 'privateDio')));
-  gh.singleton<_i18.AuthBloc>(_i18.AuthBloc(
+  gh.factory<_i14.AccountApiClient>(
+      () => _i14.AccountApiClient(get<_i7.Dio>(instanceName: 'privateDio')));
+  gh.singleton<_i15.AccountRepository>(
+      _i15.AccountRepository(get<_i14.AccountApiClient>()));
+  gh.factory<_i16.AuthApiClient>(
+      () => _i16.AuthApiClient(get<_i7.Dio>(instanceName: 'privateDio')));
+  gh.singleton<_i17.AuthBloc>(_i17.AuthBloc(
     get<_i4.AuthService>(),
-    get<_i16.AccountRepository>(),
+    get<_i15.AccountRepository>(),
     get<_i11.Session>(),
     get<_i3.AccountDbProvider>(),
+  ));
+  gh.singleton<_i18.ContentBloc>(_i18.ContentBloc(
+    get<_i3.AccountDbProvider>(),
+    get<_i11.Session>(),
   ));
   gh.factory<_i19.SettingsBloc>(() => _i19.SettingsBloc(
         get<_i13.SettingsService>(),
@@ -84,7 +84,7 @@ Future<_i1.GetIt> $initGetIt(
       ));
   gh.factory<_i20.TokenInterceptor>(() => _i20.TokenInterceptor(
         get<_i11.Session>(),
-        get<_i15.AccountApiClient>(),
+        get<_i14.AccountApiClient>(),
       ));
   return get;
 }
