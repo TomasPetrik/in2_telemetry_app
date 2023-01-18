@@ -7,7 +7,7 @@ import 'package:scalesoft_app/api/client/auth_api_client.dart';
 import 'package:scalesoft_app/api/dto/auth_token.dart';
 import 'package:scalesoft_app/api/dto/refresh_token_request.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/storage/storage.dart';
+import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/utils/exceptions/exception/forbidden_exception.dart';
 import 'package:scalesoft_app/utils/exceptions/exception/internal_server_exception.dart';

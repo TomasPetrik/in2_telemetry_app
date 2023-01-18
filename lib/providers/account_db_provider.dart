@@ -6,6 +6,8 @@ import 'package:scalesoft_app/api/dto/auth_token.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/api/dto/user.dart';
 import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/parsers/jwt_parser.dart';
+import 'package:scalesoft_app/parsers/user_jwt_data.dart';
 import 'package:scalesoft_app/providers/box_provider.dart';
 
 @singleton
@@ -20,6 +22,7 @@ class AccountDbProvider extends BoxProvider<UserAccountLocal>
     Hive.registerAdapter(AuthTokenLocalAdapter());
     Hive.registerAdapter(HospitalLocalAdapter());
     Hive.registerAdapter(AuthDataLocalAdapter());
+    Hive.registerAdapter(UserPermissionLocalAdapter());
   }
 
   @override
@@ -129,6 +132,9 @@ class AccountDbProvider extends BoxProvider<UserAccountLocal>
         refreshToken: userAccount.authToken!.refreshToken,
         expiresIn: userAccount.authToken!.accessTokenExpires,
       ),
+      userPermissions: userAccount.userPermissions!
+          .map((userPermission) => UserPermissionLocal(key: userPermission.key))
+          .toList(),
       hospitalLocal: HospitalLocal(
         id: userAccount.hospital!.id,
         title: userAccount.hospital!.title,
@@ -189,6 +195,13 @@ class AccountDbProvider extends BoxProvider<UserAccountLocal>
         refreshToken: localAccount.authTokenLocal.refreshToken,
         accessTokenExpires: localAccount.authTokenLocal.expiresIn,
       ),
+      userPermissions: localAccount.userPermissions
+          .map(
+            (userPermissionLocal) => UserPermission.values.firstWhere(
+              (userPermission) => userPermission.key == userPermissionLocal.key,
+            ),
+          )
+          .toList(),
       representedPeople: localAccount.representedPeople == null
           ? null
           : _mapAccountsFrom(localAccount.representedPeople!),

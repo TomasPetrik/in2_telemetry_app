@@ -7,11 +7,12 @@ import 'package:scalesoft_app/bloc/auth/auth_state.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/parsers/jwt_parser.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/repositories/account_repository.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/auth_service.dart';
-import 'package:scalesoft_app/storage/storage.dart';
+import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 
 @singleton
@@ -74,6 +75,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         event.authRespUri.queryParameters,
       );
 
+      _session.userPermissions =
+          JwtParser(jwtToken: tokenResponse.credentials.accessToken)
+              .getUserPermissions();
+
       _session.token = AuthToken(
         accessToken: tokenResponse.credentials.accessToken,
         refreshToken: tokenResponse.credentials.refreshToken!,
@@ -96,6 +101,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final userAccount = UserAccount(
         user: userInfo.currentUser,
         authToken: _session.token,
+        userPermissions: _session.userPermissions,
         hospital: _session.hospital,
         signedIn: DateTime.now(),
         lastActiveIn: DateTime.now(),
@@ -105,6 +111,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                 user: representedPerson,
                 authToken: _session.token,
                 hospital: _session.hospital,
+                userPermissions: _session.userPermissions,
                 signedIn: DateTime.now(),
                 lastActiveIn: null,
                 representedPeople: null,

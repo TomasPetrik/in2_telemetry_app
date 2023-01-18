@@ -27,7 +27,7 @@ import '../repositories/account_repository.dart' as _i15;
 import '../services/auth_service.dart' as _i4;
 import '../services/settings_service.dart' as _i13;
 import '../storage/secure_storage_module.dart' as _i22;
-import '../storage/storage.dart'
+import '../storage/session.dart'
     as _i11; // ignore_for_file: unnecessary_lambdas
 
 // ignore_for_file: lines_longer_than_80_chars

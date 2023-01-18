@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_state.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
-import 'package:scalesoft_app/storage/storage.dart';
+import 'package:scalesoft_app/storage/session.dart';
 
 @singleton
 class ContentBloc extends Bloc<SwitchContentEvent, ContentState> {

@@ -14,7 +14,8 @@ class AuthToken with _$AuthToken {
     required DateTime accessTokenExpires,
   }) = _AuthToken;
 
-  factory AuthToken.fromJson(Map<String, dynamic> json) => _$AuthTokenFromJson(json);
+  factory AuthToken.fromJson(Map<String, dynamic> json) =>
+      _$AuthTokenFromJson(json);
 
   @override
   String toString() => toJson().toString();

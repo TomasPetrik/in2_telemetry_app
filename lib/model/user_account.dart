@@ -3,6 +3,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scalesoft_app/api/dto/auth_token.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/api/dto/user.dart';
+import 'package:scalesoft_app/parsers/jwt_parser.dart';
+import 'package:scalesoft_app/parsers/user_jwt_data.dart';
 
 part 'user_account.freezed.dart';
 part 'user_account.g.dart';
@@ -14,11 +16,12 @@ class UserAccount with _$UserAccount {
   factory UserAccount({
     required User user,
     AuthToken? authToken,
+    List<UserPermission>? userPermissions,
     Hospital? hospital,
     DateTime? signedIn,
     DateTime? lastActiveIn,
     List<UserAccount>? representedPeople,
-    bool? hasParent, 
+    bool? hasParent,
     //TODO.. add care plan
   }) = _UserAccount;
 
@@ -33,7 +36,6 @@ class UserAccount with _$UserAccount {
 class UserAccountLocal extends HiveObject {
   @HiveField(0)
   final String muid;
-
 
   @HiveField(1)
   final List<String> firstNames;
@@ -51,15 +53,18 @@ class UserAccountLocal extends HiveObject {
   final AuthTokenLocal authTokenLocal;
 
   @HiveField(6)
-  final HospitalLocal hospitalLocal;
+  final List<UserPermissionLocal> userPermissions;
 
   @HiveField(7)
-  final DateTime signedIn;
+  final HospitalLocal hospitalLocal;
 
   @HiveField(8)
-  final DateTime? lastActiveIn;
+  final DateTime signedIn;
 
   @HiveField(9)
+  final DateTime? lastActiveIn;
+
+  @HiveField(10)
   final List<UserAccountLocal>? representedPeople;
 
   @HiveField(11)
@@ -72,6 +77,7 @@ class UserAccountLocal extends HiveObject {
     this.phoneNumbers,
     this.emailAddresses,
     required this.authTokenLocal,
+    required this.userPermissions,
     required this.hospitalLocal,
     required this.signedIn,
     this.lastActiveIn,
