@@ -102,8 +102,6 @@
   },
   "onboarding_account_added_screen_continue_to_app": "Pokračovat do aplikace",
   "onboarding_account_added_screen_add_other_account": "Přidat další účet",
-
-
   "dialog_account_removal_confirmation_title": "Odstranit účet",
   "dialog_account_removal_confirmation_description": "Všechna data účtu {accountName}\nbudou z aplikace nevratně\nodstraněna.",
   "@dialog_account_removal_confirmation_description": {
@@ -113,6 +111,6 @@
       }
     }
   },
-  "dialog_account_removal_confirmation_button_positive_label": "Odstranit účet"
-
+  "dialog_account_removal_confirmation_button_positive_label": "Odstranit účet",
+  "dialog_popup_users_data_loading": "Načítání dat uživatele"
 }
