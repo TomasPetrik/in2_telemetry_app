@@ -40,11 +40,12 @@ class _SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: const BoxConstraints.tightFor(height: Constants.searchBarHeight),
+      constraints:
+          const BoxConstraints.tightFor(height: Constants.searchBarHeight),
       child: CupertinoTextField(
         focusNode: _searchBoxNode,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(RadiusSize.radius20),
+          borderRadius: BorderRadius.circular(RadiusSize.radius24),
           border: Border.all(
             width: 1,
             color: Theme.of(context).colorScheme.tertiary,
