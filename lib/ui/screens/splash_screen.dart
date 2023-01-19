@@ -23,7 +23,7 @@ class SplashScreen extends StatelessWidget {
             body: SafeArea(
               child: Center(
                 child: Image.asset(
-                  'assets/images/flower.png',
+                  'assets/images/icon.png',
                   height: 64,
                   width: 64,
                 ),
