@@ -2,8 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
 import 'package:scalesoft_app/ui/screens/configuration_screen.dart';
+import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
 
-class SettingsRoute extends ApplicationRoute {
+class SettingsRoute extends ApplicationRoute with PageBuilderMixin {
   static const name = 'settings';
   static const path = 'settings';
 
@@ -19,11 +20,14 @@ class SettingsRoute extends ApplicationRoute {
       name: name,
       routes: routes,
       parentNavigatorKey: navigator,
-      builder: (context, state) {
-        return ConfigurationScreen(
-          key: UniqueKey(),
-        );
-      },
+      pageBuilder: pageBuilder(
+        withTransition: false,
+        builder: (state) {
+          return ConfigurationScreen(
+            key: UniqueKey(),
+          );
+        },
+      ),
     );
   }
 }

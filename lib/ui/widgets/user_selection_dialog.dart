@@ -48,14 +48,17 @@ class UserSelectionDialog extends StatelessWidget {
                   ),
                 ),
                 Gaps.gap20,
-                Text(
-                  context.locale.user_selection_dialog_measurement_in_hospital(
-                    hospital.title,
+                Expanded(
+                  child: Text(
+                    context.locale
+                        .user_selection_dialog_measurement_in_hospital(
+                      hospital.title,
+                    ),
+                    style: ScaleTextStyles.textAccent.apply(
+                      color: Theme.of(context).colorScheme.onSecondary,
+                    ),
                   ),
-                  style: ScaleTextStyles.textAccent
-                      .apply(color: Theme.of(context).colorScheme.onSecondary),
                 ),
-                const Spacer(),
                 InkWell(
                   onTap: () {
                     Navigator.of(context).pop(
