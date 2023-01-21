@@ -46,9 +46,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                       Gaps.gap16,
                       Center(
                         child: Image.asset(
-                          'assets/images/app_icon.png',
-                          height: 64,
-                          width: 64,
+                          'assets/images/app_icon_64.png',
                         ),
                       ),
                       Gaps.gap42,

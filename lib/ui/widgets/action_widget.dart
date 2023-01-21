@@ -18,11 +18,6 @@ class ActionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: BoxConstraints(
-        maxHeight: activityType == ActivityType.active
-            ? Constants.actionActiveWidgetHeight
-            : Constants.actionPassiveWidgetHeight,
-      ),
       height: activityType == ActivityType.active
           ? Constants.actionActiveWidgetHeight
           : Constants.actionPassiveWidgetHeight,
@@ -50,7 +45,9 @@ class ActionWidget extends StatelessWidget {
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
                 Gaps.gap16,
-                Text('Mereni krve ${activityType == ActivityType.passive ? 've ${when.getTimeShort()}' : ''}'),
+                Text(
+                  'Mereni krve ${activityType == ActivityType.passive ? 've ${when.getTimeShort()}' : ''}',
+                ),
                 if (activityType == ActivityType.active) ...[
                   const Spacer(),
                   Text(when.getTimeShort()),
@@ -59,12 +56,12 @@ class ActionWidget extends StatelessWidget {
             ),
           ),
           if (activityType == ActivityType.active) ...[
-            Gaps.gap16,
+            const Spacer(),
             HighlightedElevatedButton(
               label: context.locale.common_measure_now,
               buttonType: ButtonType.secondary,
             ),
-          ]
+          ],
         ],
       ),
     );

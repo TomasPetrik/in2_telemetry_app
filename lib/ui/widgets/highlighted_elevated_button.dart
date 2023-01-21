@@ -25,33 +25,37 @@ class HighlightedElevatedButton extends StatelessWidget {
             ? Theme.of(context).colorScheme.secondary
             : Theme.of(context).colorScheme.error;
 
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: DarkMode.elevatedButtonStyle.copyWith(
-        backgroundColor: MaterialStateColor.resolveWith(
-          (states) => states.isNotEmpty && states.first == MaterialState.pressed
-              ? backgroundColor.withOpacity(0.5)
-              : backgroundColor,
+    return SizedBox(
+      height: Constants.buttonHeight,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: DarkMode.elevatedButtonStyle.copyWith(
+          padding: MaterialStateProperty.all<EdgeInsets>(
+            EdgeInsets.zero,
+          ),
+          backgroundColor: MaterialStateColor.resolveWith(
+            (states) =>
+                states.isNotEmpty && states.first == MaterialState.pressed
+                    ? backgroundColor.withOpacity(0.5)
+                    : backgroundColor,
+          ),
         ),
-      ),
-      child: Ink(
-        height: Constants.buttonHeight,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadii.radius8,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (icon != null) ...[
-              icon!,
-              Gaps.gap10,
+        child: Ink(
+          padding: EdgeInsets.zero,
+          height: Constants.buttonHeight,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadii.radius8,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                label,
+                style: ScaleTextStyles.textAccent
+                    .apply(color: Theme.of(context).colorScheme.onPrimary),
+              ),
             ],
-            Text(
-              label,
-              style: ScaleTextStyles.textAccent
-                  .apply(color: Theme.of(context).colorScheme.onPrimary),
-            ),
-          ],
+          ),
         ),
       ),
     );

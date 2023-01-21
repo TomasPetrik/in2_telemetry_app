@@ -91,7 +91,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
                 edgeOffset: fixedHeight,
                 color: Theme.of(context).hintColor,
                 backgroundColor: Theme.of(context).backgroundColor,
-                onRefresh: () async => widget.tabs[currentTab].onRefresh?.call(),
+                onRefresh: () async =>
+                    widget.tabs[currentTab].onRefresh?.call(),
                 child: CustomScrollView(
                   physics: const BouncingScrollPhysics(),
                   controller: scrollController,
@@ -139,7 +140,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
                             Gaps.gap16,
                           ],
                         ),
-                        blurColor: Theme.of(context).backgroundColor.withOpacity(0.8),
+                        blurColor:
+                            Theme.of(context).backgroundColor.withOpacity(0.8),
                       ),
                     ),
                     ...widget.tabs[currentTab].slivers,

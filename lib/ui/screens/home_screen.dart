@@ -65,6 +65,9 @@ class HomeScreen extends StatelessWidget {
         child: child, //pages.elementAt(_selectedIndex), //New
       ),
       bottomNavigationBar: BottomNavigationBar(
+        elevation: 0,
+        selectedItemColor: Theme.of(context).colorScheme.onPrimary,
+        unselectedItemColor: Theme.of(context).colorScheme.onPrimary,
         onTap: ((index) {
           GoRouter.of(context).goNamed(
             _getPathByIndex(index),
@@ -76,21 +79,20 @@ class HomeScreen extends StatelessWidget {
             .apply(color: Theme.of(context).colorScheme.onPrimary),
         unselectedLabelStyle: ScaleTextStyles.label
             .apply(color: Theme.of(context).colorScheme.onPrimary),
-        fixedColor: Theme.of(context).colorScheme.onPrimary,
         type: BottomNavigationBarType.fixed,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: TabIconWidget(
               icon: SvgPicture.asset(
                 'assets/icons/icon_wave_pulse.svg',
-                color: Theme.of(context).hintColor,
+                color: Theme.of(context).colorScheme.onPrimary,
               ),
               isActive: false,
             ),
             activeIcon: TabIconWidget(
               icon: SvgPicture.asset(
                 'assets/icons/icon_wave_pulse.svg',
-                color: Theme.of(context).colorScheme.onPrimary,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
               isActive: true,
             ),
@@ -100,14 +102,14 @@ class HomeScreen extends StatelessWidget {
             icon: TabIconWidget(
               icon: SvgPicture.asset(
                 'assets/icons/icon_chart_pie_simple.svg',
-                color: Theme.of(context).hintColor,
+                color: Theme.of(context).colorScheme.onPrimary,
               ),
               isActive: false,
             ),
             activeIcon: TabIconWidget(
               icon: SvgPicture.asset(
                 'assets/icons/icon_chart_pie_simple.svg',
-                color: Theme.of(context).colorScheme.onPrimary,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
               isActive: true,
             ),
@@ -117,14 +119,14 @@ class HomeScreen extends StatelessWidget {
             icon: TabIconWidget(
               icon: SvgPicture.asset(
                 'assets/icons/icon_dots_horizontal.svg',
-                color: Theme.of(context).hintColor,
+                color: Theme.of(context).colorScheme.onPrimary,
               ),
               isActive: false,
             ),
             activeIcon: TabIconWidget(
               icon: SvgPicture.asset(
                 'assets/icons/icon_dots_horizontal.svg',
-                color: Theme.of(context).colorScheme.onPrimary,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
               isActive: true,
             ),

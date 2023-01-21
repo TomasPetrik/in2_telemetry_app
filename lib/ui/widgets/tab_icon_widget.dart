@@ -21,7 +21,7 @@ class TabIconWidget extends StatelessWidget {
       decoration: isActive
           ? BoxDecoration(
               borderRadius: BorderRadii.radius8,
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).colorScheme.primary,
             )
           : null,
       child: SizedBox(height: 25, width: 25, child: icon),

@@ -26,7 +26,8 @@ class Constants {
   static const double buttonHeight = 48;
   static const double searchBarHeight = 48;
 
-  static const double actionActiveWidgetHeight = 16 + 20 + 16 + buttonHeight + 16;
+  static const double actionActiveWidgetHeight =
+      16 + 20 + 16 + buttonHeight + 16;
   static const double actionPassiveWidgetHeight = 16 + 20 + 16;
 
   static const List<Hospital> hospitals = [
@@ -79,56 +80,101 @@ class Constants {
 }
 
 class Paddings {
-  static const EdgeInsetsGeometry left5 = EdgeInsets.only(left: Dimensions.padding5);
-  static const EdgeInsetsGeometry left8 = EdgeInsets.only(left: Dimensions.padding8);
-  static const EdgeInsetsGeometry left10 = EdgeInsets.only(left: Dimensions.padding10);
-  static const EdgeInsetsGeometry left16 = EdgeInsets.only(left: Dimensions.padding16);
-  static const EdgeInsetsGeometry left20 = EdgeInsets.only(left: Dimensions.padding20);
-  static const EdgeInsetsGeometry left32 = EdgeInsets.only(left: Dimensions.padding32);
-  static const EdgeInsetsGeometry left48 = EdgeInsets.only(left: Dimensions.padding48);
+  static const EdgeInsetsGeometry left5 =
+      EdgeInsets.only(left: Dimensions.padding5);
+  static const EdgeInsetsGeometry left8 =
+      EdgeInsets.only(left: Dimensions.padding8);
+  static const EdgeInsetsGeometry left10 =
+      EdgeInsets.only(left: Dimensions.padding10);
+  static const EdgeInsetsGeometry left16 =
+      EdgeInsets.only(left: Dimensions.padding16);
+  static const EdgeInsetsGeometry left20 =
+      EdgeInsets.only(left: Dimensions.padding20);
+  static const EdgeInsetsGeometry left32 =
+      EdgeInsets.only(left: Dimensions.padding32);
+  static const EdgeInsetsGeometry left48 =
+      EdgeInsets.only(left: Dimensions.padding48);
 
-  static const EdgeInsetsGeometry right5 = EdgeInsets.only(right: Dimensions.padding5);
-  static const EdgeInsetsGeometry right8 = EdgeInsets.only(right: Dimensions.padding8);
-  static const EdgeInsetsGeometry right10 = EdgeInsets.only(right: Dimensions.padding10);
-  static const EdgeInsetsGeometry right20 = EdgeInsets.only(right: Dimensions.padding20);
-  static const EdgeInsetsGeometry right32 = EdgeInsets.only(right: Dimensions.padding32);
-  static const EdgeInsetsGeometry right48 = EdgeInsets.only(right: Dimensions.padding48);
+  static const EdgeInsetsGeometry right5 =
+      EdgeInsets.only(right: Dimensions.padding5);
+  static const EdgeInsetsGeometry right8 =
+      EdgeInsets.only(right: Dimensions.padding8);
+  static const EdgeInsetsGeometry right10 =
+      EdgeInsets.only(right: Dimensions.padding10);
+  static const EdgeInsetsGeometry right20 =
+      EdgeInsets.only(right: Dimensions.padding20);
+  static const EdgeInsetsGeometry right32 =
+      EdgeInsets.only(right: Dimensions.padding32);
+  static const EdgeInsetsGeometry right48 =
+      EdgeInsets.only(right: Dimensions.padding48);
 
-  static const EdgeInsetsGeometry top5 = EdgeInsets.only(top: Dimensions.padding5);
-  static const EdgeInsetsGeometry top8 = EdgeInsets.only(top: Dimensions.padding8);
-  static const EdgeInsetsGeometry top10 = EdgeInsets.only(top: Dimensions.padding10);
-  static const EdgeInsetsGeometry top16 = EdgeInsets.only(top: Dimensions.padding16);
-  static const EdgeInsetsGeometry top20 = EdgeInsets.only(top: Dimensions.padding20);
-  static const EdgeInsetsGeometry top30 = EdgeInsets.only(top: Dimensions.padding30);
-  static const EdgeInsetsGeometry top32 = EdgeInsets.only(top: Dimensions.padding32);
-  static const EdgeInsetsGeometry top48 = EdgeInsets.only(top: Dimensions.padding48);
+  static const EdgeInsetsGeometry top5 =
+      EdgeInsets.only(top: Dimensions.padding5);
+  static const EdgeInsetsGeometry top8 =
+      EdgeInsets.only(top: Dimensions.padding8);
+  static const EdgeInsetsGeometry top10 =
+      EdgeInsets.only(top: Dimensions.padding10);
+  static const EdgeInsetsGeometry top16 =
+      EdgeInsets.only(top: Dimensions.padding16);
+  static const EdgeInsetsGeometry top20 =
+      EdgeInsets.only(top: Dimensions.padding20);
+  static const EdgeInsetsGeometry top30 =
+      EdgeInsets.only(top: Dimensions.padding30);
+  static const EdgeInsetsGeometry top32 =
+      EdgeInsets.only(top: Dimensions.padding32);
+  static const EdgeInsetsGeometry top48 =
+      EdgeInsets.only(top: Dimensions.padding48);
 
-  static const EdgeInsetsGeometry bottom5 = EdgeInsets.only(bottom: Dimensions.padding5);
-  static const EdgeInsetsGeometry bottom8 = EdgeInsets.only(bottom: Dimensions.padding8);
-  static const EdgeInsetsGeometry bottom10 = EdgeInsets.only(bottom: Dimensions.padding10);
-  static const EdgeInsetsGeometry bottom20 = EdgeInsets.only(bottom: Dimensions.padding20);
-  static const EdgeInsetsGeometry bottom32 = EdgeInsets.only(bottom: Dimensions.padding32);
-  static const EdgeInsetsGeometry bottom48 = EdgeInsets.only(bottom: Dimensions.padding48);
+  static const EdgeInsetsGeometry bottom5 =
+      EdgeInsets.only(bottom: Dimensions.padding5);
+  static const EdgeInsetsGeometry bottom8 =
+      EdgeInsets.only(bottom: Dimensions.padding8);
+  static const EdgeInsetsGeometry bottom10 =
+      EdgeInsets.only(bottom: Dimensions.padding10);
+  static const EdgeInsetsGeometry bottom20 =
+      EdgeInsets.only(bottom: Dimensions.padding20);
+  static const EdgeInsetsGeometry bottom32 =
+      EdgeInsets.only(bottom: Dimensions.padding32);
+  static const EdgeInsetsGeometry bottom48 =
+      EdgeInsets.only(bottom: Dimensions.padding48);
 
-  static const EdgeInsetsGeometry horizontal4 = EdgeInsets.symmetric(horizontal: Dimensions.padding4);
-  static const EdgeInsetsGeometry horizontal5 = EdgeInsets.symmetric(horizontal: Dimensions.padding5);
-  static const EdgeInsetsGeometry horizontal8 = EdgeInsets.symmetric(horizontal: Dimensions.padding8);
-  static const EdgeInsetsGeometry horizontal10 = EdgeInsets.symmetric(horizontal: Dimensions.padding10);
-  static const EdgeInsetsGeometry horizontal16 = EdgeInsets.symmetric(horizontal: Dimensions.padding16);
-  static const EdgeInsetsGeometry horizontal20 = EdgeInsets.symmetric(horizontal: Dimensions.padding20);
-  static const EdgeInsetsGeometry horizontal32 = EdgeInsets.symmetric(horizontal: Dimensions.padding32);
-  static const EdgeInsetsGeometry horizontal48 = EdgeInsets.symmetric(horizontal: Dimensions.padding48);
-  static const EdgeInsetsGeometry horizontal64 = EdgeInsets.symmetric(horizontal: Dimensions.padding64);
+  static const EdgeInsetsGeometry horizontal4 =
+      EdgeInsets.symmetric(horizontal: Dimensions.padding4);
+  static const EdgeInsetsGeometry horizontal5 =
+      EdgeInsets.symmetric(horizontal: Dimensions.padding5);
+  static const EdgeInsetsGeometry horizontal8 =
+      EdgeInsets.symmetric(horizontal: Dimensions.padding8);
+  static const EdgeInsetsGeometry horizontal10 =
+      EdgeInsets.symmetric(horizontal: Dimensions.padding10);
+  static const EdgeInsetsGeometry horizontal16 =
+      EdgeInsets.symmetric(horizontal: Dimensions.padding16);
+  static const EdgeInsetsGeometry horizontal20 =
+      EdgeInsets.symmetric(horizontal: Dimensions.padding20);
+  static const EdgeInsetsGeometry horizontal32 =
+      EdgeInsets.symmetric(horizontal: Dimensions.padding32);
+  static const EdgeInsetsGeometry horizontal48 =
+      EdgeInsets.symmetric(horizontal: Dimensions.padding48);
+  static const EdgeInsetsGeometry horizontal64 =
+      EdgeInsets.symmetric(horizontal: Dimensions.padding64);
 
-  static const EdgeInsetsGeometry vertical4 = EdgeInsets.symmetric(vertical: Dimensions.padding4);
-  static const EdgeInsetsGeometry vertical5 = EdgeInsets.symmetric(vertical: Dimensions.padding5);
-  static const EdgeInsetsGeometry vertical8 = EdgeInsets.symmetric(vertical: Dimensions.padding8);
-  static const EdgeInsetsGeometry vertical10 = EdgeInsets.symmetric(vertical: Dimensions.padding10);
-  static const EdgeInsetsGeometry vertical12 = EdgeInsets.symmetric(vertical: Dimensions.padding12);
-  static const EdgeInsetsGeometry vertical16 = EdgeInsets.symmetric(vertical: Dimensions.padding16);
-  static const EdgeInsetsGeometry vertical20 = EdgeInsets.symmetric(vertical: Dimensions.padding20);
-  static const EdgeInsetsGeometry vertical32 = EdgeInsets.symmetric(vertical: Dimensions.padding32);
-  static const EdgeInsetsGeometry vertical48 = EdgeInsets.symmetric(vertical: Dimensions.padding48);
+  static const EdgeInsetsGeometry vertical4 =
+      EdgeInsets.symmetric(vertical: Dimensions.padding4);
+  static const EdgeInsetsGeometry vertical5 =
+      EdgeInsets.symmetric(vertical: Dimensions.padding5);
+  static const EdgeInsetsGeometry vertical8 =
+      EdgeInsets.symmetric(vertical: Dimensions.padding8);
+  static const EdgeInsetsGeometry vertical10 =
+      EdgeInsets.symmetric(vertical: Dimensions.padding10);
+  static const EdgeInsetsGeometry vertical12 =
+      EdgeInsets.symmetric(vertical: Dimensions.padding12);
+  static const EdgeInsetsGeometry vertical16 =
+      EdgeInsets.symmetric(vertical: Dimensions.padding16);
+  static const EdgeInsetsGeometry vertical20 =
+      EdgeInsets.symmetric(vertical: Dimensions.padding20);
+  static const EdgeInsetsGeometry vertical32 =
+      EdgeInsets.symmetric(vertical: Dimensions.padding32);
+  static const EdgeInsetsGeometry vertical48 =
+      EdgeInsets.symmetric(vertical: Dimensions.padding48);
 
   static const EdgeInsetsGeometry all4 = EdgeInsets.all(Dimensions.padding4);
   static const EdgeInsetsGeometry all5 = EdgeInsets.all(Dimensions.padding5);
@@ -144,17 +190,28 @@ class Paddings {
 }
 
 class BorderRadii {
-  static BorderRadius radius2 = const BorderRadius.all(Radius.circular(RadiusSize.radius2));
-  static BorderRadius radius6 = const BorderRadius.all(Radius.circular(RadiusSize.radius6));
-  static BorderRadius radius8 = const BorderRadius.all(Radius.circular(RadiusSize.radius8));
-  static BorderRadius radius10 = const BorderRadius.all(Radius.circular(RadiusSize.radius10));
-  static BorderRadius radius12 = const BorderRadius.all(Radius.circular(RadiusSize.radius12));
-  static BorderRadius radius15 = const BorderRadius.all(Radius.circular(RadiusSize.radius15));
-  static BorderRadius radius16 = const BorderRadius.all(Radius.circular(RadiusSize.radius16));
-  static BorderRadius radius20 = const BorderRadius.all(Radius.circular(RadiusSize.radius20));
-  static BorderRadius radius30 = const BorderRadius.all(Radius.circular(RadiusSize.radius30));
-  static BorderRadius radius50 = const BorderRadius.all(Radius.circular(RadiusSize.radius50));
-  static BorderRadius radius64 = const BorderRadius.all(Radius.circular(RadiusSize.radius64));
+  static BorderRadius radius2 =
+      const BorderRadius.all(Radius.circular(RadiusSize.radius2));
+  static BorderRadius radius6 =
+      const BorderRadius.all(Radius.circular(RadiusSize.radius6));
+  static BorderRadius radius8 =
+      const BorderRadius.all(Radius.circular(RadiusSize.radius8));
+  static BorderRadius radius10 =
+      const BorderRadius.all(Radius.circular(RadiusSize.radius10));
+  static BorderRadius radius12 =
+      const BorderRadius.all(Radius.circular(RadiusSize.radius12));
+  static BorderRadius radius15 =
+      const BorderRadius.all(Radius.circular(RadiusSize.radius15));
+  static BorderRadius radius16 =
+      const BorderRadius.all(Radius.circular(RadiusSize.radius16));
+  static BorderRadius radius20 =
+      const BorderRadius.all(Radius.circular(RadiusSize.radius20));
+  static BorderRadius radius30 =
+      const BorderRadius.all(Radius.circular(RadiusSize.radius30));
+  static BorderRadius radius50 =
+      const BorderRadius.all(Radius.circular(RadiusSize.radius50));
+  static BorderRadius radius64 =
+      const BorderRadius.all(Radius.circular(RadiusSize.radius64));
 }
 
 class Gaps {
