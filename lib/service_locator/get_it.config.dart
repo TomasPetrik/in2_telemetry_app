@@ -12,21 +12,23 @@ import 'package:injectable/injectable.dart' as _i2;
 
 import '../api/client/account_api_client.dart' as _i14;
 import '../api/client/auth_api_client.dart' as _i16;
-import '../api/dio_module.dart' as _i21;
-import '../api/interceptors/token_interceptor.dart' as _i20;
+import '../api/client/care_plan_api_client.dart' as _i18;
+import '../api/dio_module.dart' as _i23;
+import '../api/interceptors/token_interceptor.dart' as _i22;
 import '../bloc/auth/auth_bloc.dart' as _i17;
 import '../bloc/care_plan/care_plan_bloc.dart' as _i6;
-import '../bloc/settings/settings_bloc.dart' as _i19;
-import '../bloc/user_content/content_bloc.dart' as _i18;
+import '../bloc/settings/settings_bloc.dart' as _i21;
+import '../bloc/user_content/content_bloc.dart' as _i20;
 import '../cubit/auth_web/auth_web_cubit.dart' as _i5;
 import '../cubit/hospital_search/hospital_search_cubit.dart' as _i9;
 import '../cubit/omron/omron_connection_cubit.dart' as _i10;
 import '../providers/account_db_provider.dart' as _i3;
 import '../providers/settings_db_provider.dart' as _i12;
 import '../repositories/account_repository.dart' as _i15;
+import '../repositories/care_plans_repository.dart' as _i19;
 import '../services/auth_service.dart' as _i4;
 import '../services/settings_service.dart' as _i13;
-import '../storage/secure_storage_module.dart' as _i22;
+import '../storage/secure_storage_module.dart' as _i24;
 import '../storage/session.dart'
     as _i11; // ignore_for_file: unnecessary_lambdas
 
@@ -74,21 +76,27 @@ Future<_i1.GetIt> $initGetIt(
     get<_i11.Session>(),
     get<_i3.AccountDbProvider>(),
   ));
-  gh.singleton<_i18.ContentBloc>(_i18.ContentBloc(
+  gh.factory<_i18.CarePlanApiClient>(
+      () => _i18.CarePlanApiClient(get<_i7.Dio>(instanceName: 'privateDio')));
+  gh.singleton<_i19.CarePlansRepository>(
+      _i19.CarePlansRepository(get<_i18.CarePlanApiClient>()));
+  gh.singleton<_i20.ContentBloc>(_i20.ContentBloc(
     get<_i3.AccountDbProvider>(),
     get<_i11.Session>(),
+    get<_i19.CarePlansRepository>(),
   ));
-  gh.factory<_i19.SettingsBloc>(() => _i19.SettingsBloc(
+  gh.factory<_i21.SettingsBloc>(() => _i21.SettingsBloc(
         get<_i13.SettingsService>(),
         get<_i12.SettingsDbProvider>(),
       ));
-  gh.factory<_i20.TokenInterceptor>(() => _i20.TokenInterceptor(
+  gh.factory<_i22.TokenInterceptor>(() => _i22.TokenInterceptor(
         get<_i11.Session>(),
         get<_i14.AccountApiClient>(),
+        get<_i7.Dio>(instanceName: 'privateDio'),
       ));
   return get;
 }
 
-class _$DioModule extends _i21.DioModule {}
+class _$DioModule extends _i23.DioModule {}
 
-class _$SecureStorageModule extends _i22.SecureStorageModule {}
+class _$SecureStorageModule extends _i24.SecureStorageModule {}

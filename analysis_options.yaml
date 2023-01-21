@@ -4,6 +4,7 @@ analyzer:
   exclude: [ "**/*.g.dart", "lib/generated/**", "lib/service_locator/get_it.config.dart" ]
   errors:
     asset_does_not_exist: ignore
+    invalid_annotation_target: ignore
 
 linter:
   rules:

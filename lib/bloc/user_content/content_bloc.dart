@@ -3,14 +3,16 @@ import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_state.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
+import 'package:scalesoft_app/repositories/care_plans_repository.dart';
 import 'package:scalesoft_app/storage/session.dart';
 
 @singleton
 class ContentBloc extends Bloc<SwitchContentEvent, ContentState> {
   final AccountDbProvider _accountDbProvider;
+  final CarePlansRepository _carePlansRepository;
   final Session _session;
 
-  ContentBloc(this._accountDbProvider, this._session)
+  ContentBloc(this._accountDbProvider, this._session, this._carePlansRepository)
       : super(const ContentState.initial()) {
     on<CheckLastLoggedUserContentEvent>(_checkLastLoggedUserContentEvent);
     on<OnUserAddedContentEvent>(_onUserAddedContentEvent);
@@ -30,6 +32,11 @@ class ContentBloc extends Bloc<SwitchContentEvent, ContentState> {
     } else {
       _session.userAccount = userAccount;
       _session.token = userAccount.authToken;
+
+      final activePlans = await _carePlansRepository.loadActiveCarePlans(
+        patientMuid: userAccount.user.muid,
+      );
+
       emit(ContentState.activeSingleUser(userAccount));
     }
   }
@@ -40,6 +47,11 @@ class ContentBloc extends Bloc<SwitchContentEvent, ContentState> {
   ) async {
     _session.userAccount = event.userAccount;
     _session.token = event.userAccount.authToken;
+
+    final activePlans = await _carePlansRepository.loadActiveCarePlans(
+      patientMuid: event.userAccount.user.muid,
+    );
+
     emit(ContentState.activeSingleUser(event.userAccount));
   }
 

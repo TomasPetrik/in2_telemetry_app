@@ -18,14 +18,14 @@ import 'package:scalesoft_app/ui/themes/constants.dart';
 @singleton
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthService _authService;
-  final AccountRepository _accountService;
+  final AccountRepository _accountRepository;
   final AccountDbProvider _accountDbProvider;
   final Session _session;
   AuthorizationCodeGrant? _grant;
 
   AuthBloc(
     this._authService,
-    this._accountService,
+    this._accountRepository,
     this._session,
     this._accountDbProvider,
   ) : super(const AuthState.unauthenticated()) {
@@ -96,7 +96,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     try {
-      final userInfo = await _accountService.loadUserInfo();
+      final userInfo = await _accountRepository.loadUserInfo();
 
       final userAccount = UserAccount(
         user: userInfo.currentUser,

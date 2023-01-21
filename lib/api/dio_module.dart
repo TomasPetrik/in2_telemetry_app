@@ -19,7 +19,7 @@ abstract class DioModule {
             requestHeader: true,
             requestBody: true,
             responseBody: true,
-            responseHeader: false,
+            responseHeader: true,
             error: true,
             compact: false,
             maxWidth: 120,

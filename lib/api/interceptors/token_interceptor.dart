@@ -5,7 +5,6 @@ import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/account_api_client.dart';
 import 'package:scalesoft_app/api/client/auth_api_client.dart';
 import 'package:scalesoft_app/api/dto/auth_token.dart';
-import 'package:scalesoft_app/api/dto/refresh_token_request.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
@@ -18,14 +17,19 @@ import 'package:scalesoft_app/utils/exceptions/exception/no_internet_exception.d
 class TokenInterceptor extends Interceptor {
   final Session session;
   final AccountApiClient accountApiClient;
+  final Dio dio;
 
   TokenInterceptor(
     this.session,
     this.accountApiClient,
+    @Named(Constants.privateDioName) this.dio,
   );
 
   @override
-  Future onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+  Future onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     final accessToken = session.token;
     if (accessToken == null || accessToken.isExpired()) {
       refreshToken();
@@ -49,7 +53,9 @@ class TokenInterceptor extends Interceptor {
       case 401:
         refreshToken().then((value) async {
           err.requestOptions.headers.remove(HttpHeaders.authorizationHeader);
-          final response = await getIt<Dio>(instanceName: Constants.privateDioName).fetch(err.requestOptions);
+          final response =
+              await getIt<Dio>(instanceName: Constants.privateDioName)
+                  .fetch(err.requestOptions);
           handler.resolve(response);
         });
         return;
@@ -66,21 +72,27 @@ class TokenInterceptor extends Interceptor {
   Future<void> refreshToken() async {
     try {
       final userId = session.userAccount?.user.muid;
+      final refreshToken = session.userAccount?.authToken?.refreshToken;
+      final tokenUrl = session.userAccount?.hospital?.authData.tokenUrl;
 
-      if (userId != null) {
-        final refreshToken = await session.getRefreshToken(userId);
-        if (refreshToken != null) {
-          final request = RefreshTokenRequest(userId: userId, refreshToken: refreshToken);
-          final response = await getIt<AuthApiClient>().refreshToken(request);
-          await session.setAuthToken(
-            userId,
-            AuthToken(
-              accessToken: response.accessToken,
-              refreshToken: response.refreshToken,
-              accessTokenExpires: DateTime.now().add(const Duration(seconds: 3600)),
-            ),
-          );
-        }
+      if (userId != null && refreshToken != null && tokenUrl != null) {
+        
+        final response = await getIt<AuthApiClient>().refreshToken(
+          tokenUrl,
+          'refresh_token',
+          refreshToken,
+          Constants.clientId,
+          Constants.clientSecret,
+        );
+        await session.setAuthToken(
+          userId,
+          AuthToken(
+            accessToken: response.accessToken,
+            refreshToken: response.refreshToken,
+            accessTokenExpires:
+                DateTime.now().add(const Duration(seconds: 3600)),
+          ),
+        );
       }
     } catch (e) {
       return;
