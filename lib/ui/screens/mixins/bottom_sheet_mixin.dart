@@ -58,7 +58,9 @@ mixin BottomSheetMixin {
         return const FractionallySizedBox(
           heightFactor: 1.0,
           child: Padding(
-            padding: EdgeInsets.only(top: 62),
+            padding: EdgeInsets.only(
+              top: 44,
+            ),
             child: HospitalSelectionDialog(),
           ),
         );
