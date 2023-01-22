@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -48,7 +49,9 @@ class AuthWebScreen extends StatelessWidget {
                   cacheEnabled: false,
                 ),
                 onReceivedError: (controller, request, error) {
-                  if (request.url.uriValue.toString().startsWith('cz.scalesoft.tlm')) {
+                  if (request.url.uriValue
+                      .toString()
+                      .startsWith('cz.scalesoft.tlm')) {
                     final authRespUri = request.url.uriValue;
 
                     onRedirect.call(authRespUri);

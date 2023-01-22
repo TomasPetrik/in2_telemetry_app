@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
-import 'package:scalesoft_app/ui/themes/scalesoft_colors_light.dart';
+import 'package:flutter/cupertino.dart';
 
 class LoadingIndicator extends StatelessWidget {
   const LoadingIndicator({
@@ -14,14 +12,8 @@ class LoadingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 35,
-      height: 35,
-      child: CircularProgressIndicator(
-        strokeWidth: Dimensions.padding2,
-        color: activeColor ?? ScaleColorsLight.content100,
-        backgroundColor: backgroundColor ?? ScaleColorsLight.content80,
-      ),
+    return const CupertinoActivityIndicator(
+      radius: 14,
     );
   }
 }

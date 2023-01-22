@@ -111,6 +111,5 @@
       }
     }
   },
-  "dialog_account_removal_confirmation_button_positive_label": "Odstranit účet",
-  "dialog_popup_users_data_loading": "Načítání dat uživatele"
+  "dialog_account_removal_confirmation_button_positive_label": "Odstranit účet"
 }

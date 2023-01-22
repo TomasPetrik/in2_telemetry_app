@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_colors_dark.dart';
@@ -92,6 +93,7 @@ class DarkMode {
             color: fontColor,
           ),
         ),
+        
         inputDecorationTheme: InputDecorationTheme(
           fillColor: ScaleColorsDark.paper,
           labelStyle: TextStyle(color: fontColor),

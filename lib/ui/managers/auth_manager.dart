@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -6,11 +7,9 @@ import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/auth_web_screen.dart';
 import 'package:scalesoft_app/ui/widgets/loading_indicator.dart';
-import 'package:scalesoft_app/ui/widgets/popup_dialog.dart';
 
 class AuthManager extends StatelessWidget {
   const AuthManager({super.key});
@@ -47,9 +46,7 @@ class AuthManager extends StatelessWidget {
               context: context,
               barrierDismissible: true,
               useRootNavigator: true,
-              builder: (context) => PopupDialog.loading(
-                message: context.locale.dialog_popup_users_data_loading,
-              ),
+              builder: (context) => const LoadingIndicator(),
             );
             authBloc.add(const VerifyUser());
           },
