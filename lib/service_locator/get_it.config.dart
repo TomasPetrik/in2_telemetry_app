@@ -75,6 +75,7 @@ Future<_i1.GetIt> $initGetIt(
     get<_i15.AccountRepository>(),
     get<_i11.Session>(),
     get<_i3.AccountDbProvider>(),
+    get<_i7.Dio>(instanceName: 'privateDio'),
   ));
   gh.factory<_i18.CarePlanApiClient>(
       () => _i18.CarePlanApiClient(get<_i7.Dio>(instanceName: 'privateDio')));

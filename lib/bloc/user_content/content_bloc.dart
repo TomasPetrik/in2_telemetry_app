@@ -51,6 +51,7 @@ class ContentBloc extends Bloc<SwitchContentEvent, ContentState> {
     final activePlans = await _carePlansRepository.loadActiveCarePlans(
       patientMuid: event.userAccount.user.muid,
     );
+    //todo.. save this plans for user
 
     emit(ContentState.activeSingleUser(event.userAccount));
   }

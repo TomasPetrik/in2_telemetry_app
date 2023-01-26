@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_colors_dark.dart';
@@ -30,18 +29,49 @@ class DarkMode {
   static Color get dark => ScaleColorsDark.dark;
 
   static TextTheme get textTheme => TextTheme(
-        headlineLarge: TextStyle(fontSize: 36, height: 1.33, fontWeight: FontWeight.w700, color: fontColor), //big
-        headlineMedium: TextStyle(fontSize: 28, height: 1.14, fontWeight: FontWeight.w700, color: fontColor), //headline
-        titleLarge: TextStyle(fontSize: 22, height: 1.27, fontWeight: FontWeight.w600, color: fontColor), //title
-        bodyMedium: TextStyle(fontSize: 16, height: 1.25, fontWeight: FontWeight.w500, color: fontColor), //text
-        titleMedium: TextStyle(fontSize: 16, height: 1.25, fontWeight: FontWeight.w700, color: fontColor), //textAccent
-        labelSmall: TextStyle(fontSize: 13, height: 1.23, fontWeight: FontWeight.w700, color: fontColor), //label
+        headlineLarge: TextStyle(
+          fontSize: 36,
+          height: 1.33,
+          fontWeight: FontWeight.w700,
+          color: fontColor,
+        ), //big
+        headlineMedium: TextStyle(
+          fontSize: 28,
+          height: 1.14,
+          fontWeight: FontWeight.w700,
+          color: fontColor,
+        ), //headline
+        titleLarge: TextStyle(
+          fontSize: 22,
+          height: 1.27,
+          fontWeight: FontWeight.w600,
+          color: fontColor,
+        ), //title
+        bodyMedium: TextStyle(
+          fontSize: 16,
+          height: 1.25,
+          fontWeight: FontWeight.w500,
+          color: fontColor,
+        ), //text
+        titleMedium: TextStyle(
+          fontSize: 16,
+          height: 1.25,
+          fontWeight: FontWeight.w700,
+          color: fontColor,
+        ), //textAccent
+        labelSmall: TextStyle(
+          fontSize: 13,
+          height: 1.23,
+          fontWeight: FontWeight.w700,
+          color: fontColor,
+        ), //label
       );
 
   static ButtonStyle elevatedButtonStyle = ButtonStyle(
     backgroundColor: MaterialStateColor.resolveWith(
-      (states) =>
-          states.isNotEmpty && states.first == MaterialState.pressed ? colorContent20.withOpacity(0.5) : colorContent20,
+      (states) => states.isNotEmpty && states.first == MaterialState.pressed
+          ? colorContent20.withOpacity(0.5)
+          : colorContent20,
     ),
     textStyle: MaterialStateProperty.all<TextStyle>(
       ScaleTextStyles.textAccent.apply(
@@ -71,7 +101,6 @@ class DarkMode {
         primaryContainer: actionStartColor,
         onPrimaryContainer: actionEndColor,
         tertiary: colorContent60,
-        
       );
 
   static ThemeData get theme => ThemeData(
@@ -93,12 +122,12 @@ class DarkMode {
             color: fontColor,
           ),
         ),
-        
         inputDecorationTheme: InputDecorationTheme(
           fillColor: ScaleColorsDark.paper,
           labelStyle: TextStyle(color: fontColor),
           iconColor: ScaleColorsDark.primary,
-          hintStyle: const TextStyle(fontSize: 16.0, color: ScaleColorsDark.content40),
+          hintStyle:
+              const TextStyle(fontSize: 16.0, color: ScaleColorsDark.content40),
           border: InputBorder.none,
           errorStyle: const TextStyle(
             color: ScaleColorsDark.alert,

@@ -9,7 +9,6 @@ abstract class DioModule {
   @singleton
   Dio get privateDio => Dio(
         BaseOptions(
-          baseUrl: Constants.baseUrl,
           contentType: 'application/json',
           connectTimeout: 30000,
           receiveTimeout: 30000,
@@ -19,7 +18,7 @@ abstract class DioModule {
             requestHeader: true,
             requestBody: true,
             responseBody: true,
-            responseHeader: true,
+            responseHeader: false,
             error: true,
             compact: false,
             maxWidth: 120,

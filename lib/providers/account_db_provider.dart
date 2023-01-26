@@ -140,6 +140,7 @@ class AccountDbProvider extends BoxProvider<UserAccountLocal>
         title: userAccount.hospital!.title,
         iconPath: userAccount.hospital!.iconPath,
         authData: AuthDataLocal(
+          baseUrl: userAccount.hospital!.authData.baseUrl,
           authUrl: userAccount.hospital!.authData.authUrl,
           tokenUrl: userAccount.hospital!.authData.tokenUrl,
         ),
@@ -185,6 +186,7 @@ class AccountDbProvider extends BoxProvider<UserAccountLocal>
         title: localAccount.hospitalLocal.title,
         iconPath: localAccount.hospitalLocal.iconPath,
         authData: AuthData(
+          baseUrl: localAccount.hospitalLocal.authData.baseUrl,
           authUrl: localAccount.hospitalLocal.authData.authUrl,
           tokenUrl: localAccount.hospitalLocal.authData.tokenUrl,
         ),

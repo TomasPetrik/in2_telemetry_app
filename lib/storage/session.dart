@@ -27,7 +27,9 @@ class Session {
 
   Future<void> setRefreshToken(String userId, String token) {
     return _secureStorage.write(
-        key: '${_refreshTokenKey}_$userId', value: token);
+      key: '${_refreshTokenKey}_$userId',
+      value: token,
+    );
   }
 
   Future<void> removeTokens(String userId) {

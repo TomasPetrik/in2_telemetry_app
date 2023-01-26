@@ -10,7 +10,8 @@ part 'account_api_client.g.dart';
 @injectable
 abstract class AccountApiClient {
   @factoryMethod
-  factory AccountApiClient(@Named(Constants.privateDioName) Dio dio) = _AccountApiClient;
+  factory AccountApiClient(@Named(Constants.privateDioName) Dio dio) =
+      _AccountApiClient;
 
   @GET('/user/me')
   Future<UserInfo> loadUserInfo();

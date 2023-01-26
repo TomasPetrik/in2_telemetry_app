@@ -5,7 +5,7 @@ import 'package:scalesoft_app/api/dto/hospital.dart';
 
 class Constants {
   /* API */
-  static const String baseUrl = 'https://in2-win.devscale.cz/api-mobile/v1';
+  //static const String baseUrl = 'https://in2-win.devscale.cz/api-mobile/v1';
   static const String privateDioName = 'privateDio';
 
   /* OAuth2 */
@@ -33,49 +33,34 @@ class Constants {
   static const List<Hospital> hospitals = [
     Hospital(
       id: 0,
-      title: 'Ikem',
+      title: 'in2-win',
       iconPath: 'assets/icons/icon_hospital_ikem.svg',
       authData: AuthData(
-        authUrl: 'https://in2-auth.devscale.cz',
-        tokenUrl: 'https://in2-auth.devscale.cz/connect/token',
+        baseUrl: 'https://in2-win.devscale.cz/api-mobile/v1',
+        authUrl: 'https://in2-win-auth.devscale.cz/connect/authorize',
+        tokenUrl: 'https://in2-win-auth.devscale.cz/connect/token',
       ),
     ),
     Hospital(
       id: 1,
-      title: 'Na Homolce',
+      title: 'in2-test',
       iconPath: 'assets/icons/icon_hospital_nahomolce.svg',
       authData: AuthData(
-        authUrl: 'https://in2-win-auth.devscale.cz/connect/authorize',
-        tokenUrl: 'https://in2-win-auth.devscale.cz/connect/token',
+        baseUrl: 'https://in2-test.devscale.cz/api-mobile/v1',
+        authUrl: 'https://in2-test-auth.devscale.cz/connect/authorize',
+        tokenUrl: 'https://in2-test-auth.devscale.cz/connect/token',
       ),
     ),
     Hospital(
       id: 2,
-      title: 'Fakultní nemocnice Bulovka',
+      title: 'in2',
       iconPath: 'assets/icons/icon_hospital_user.svg',
       authData: AuthData(
-        authUrl: 'https://in2-win-auth.devscale.cz/connect/authorize',
-        tokenUrl: 'https://in2-win-auth.devscale.cz/connect/token',
+        baseUrl: 'https://in2.devscale.cz/api-mobile/v1',
+        authUrl: 'https://in2-auth.devscale.cz/connect/authorize',
+        tokenUrl: 'https://in2-auth.devscale.cz/connect/token',
       ),
     ),
-    Hospital(
-      id: 3,
-      title: 'Fakultní nemocnice Královské Vinohrady',
-      iconPath: 'assets/icons/icon_hospital_user.svg',
-      authData: AuthData(
-        authUrl: 'https://in2-win-auth.devscale.cz/connect/authorize',
-        tokenUrl: 'https://in2-win-auth.devscale.cz/connect/token',
-      ),
-    ),
-    Hospital(
-      id: 4,
-      title: 'Thomayerova nemocnice',
-      iconPath: 'assets/icons/icon_hospital_user.svg',
-      authData: AuthData(
-        authUrl: 'https://in2-win-auth.devscale.cz/connect/authorize',
-        tokenUrl: 'https://in2-win-auth.devscale.cz/connect/token',
-      ),
-    )
   ];
 }
 

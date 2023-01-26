@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:oauth2/oauth2.dart';
@@ -22,12 +23,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AccountDbProvider _accountDbProvider;
   final Session _session;
   AuthorizationCodeGrant? _grant;
+  final Dio _dio;
 
   AuthBloc(
     this._authService,
     this._accountRepository,
     this._session,
     this._accountDbProvider,
+    @Named(Constants.privateDioName) this._dio,
   ) : super(const AuthState.unauthenticated()) {
     on<Authenticate>(_onAuthenticate);
     on<HandleAuthResponse>(_onHandleAuthResponse);
@@ -74,6 +77,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final tokenResponse = await _grant!.handleAuthorizationResponse(
         event.authRespUri.queryParameters,
       );
+
+      _dio.options =
+          _dio.options.copyWith(baseUrl: _session.hospital!.authData.baseUrl);
 
       _session.userPermissions =
           JwtParser(jwtToken: tokenResponse.credentials.accessToken)
@@ -165,18 +171,5 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(const AuthState.cancelled());
-  }
-
-  Future<void> _restoreLastAccount(
-    Emitter<AuthState> emit,
-  ) async {
-    final lastAccount = _accountDbProvider.getLast();
-    if (lastAccount != null) {
-      _session.userAccount = lastAccount;
-      _session.token = lastAccount.authToken;
-      _session.hospital = lastAccount.hospital;
-    }
-
-    emit(AuthState.lastSessionRestored(userAccount: lastAccount));
   }
 }
