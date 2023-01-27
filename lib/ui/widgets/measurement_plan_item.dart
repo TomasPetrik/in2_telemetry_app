@@ -55,7 +55,7 @@ class MeasurementPlanItem extends StatelessWidget {
           ),
           Gaps.gap16,
           Text(
-            'Mudr. Petr Pijalenko',
+            carePlan.author.fullName,
             style: ScaleTextStyles.textAccent.apply(
               color: Theme.of(context).colorScheme.onPrimary,
             ),

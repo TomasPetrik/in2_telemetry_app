@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/dto/auth_data.dart';
 import 'package:scalesoft_app/api/dto/auth_token.dart';
+import 'package:scalesoft_app/api/dto/care_plan/author.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart';
@@ -28,6 +29,7 @@ class AccountDbProvider extends BoxProvider<UserAccountLocal>
     Hive.registerAdapter(HiveEnumAdapter());
     Hive.registerAdapter(CarePlanAdapter());
     Hive.registerAdapter(CarePlanActivityAdapter());
+    Hive.registerAdapter(AuthorAdapter());
     Hive.registerAdapter(ActivityTypeAdapter());
     Hive.registerAdapter(MeasurementTypeAdapter());
     Hive.registerAdapter(TimeUnitEnumContractAdapter());

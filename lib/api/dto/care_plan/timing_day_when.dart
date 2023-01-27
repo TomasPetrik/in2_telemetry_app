@@ -6,7 +6,7 @@ part 'timing_day_when.g.dart';
 
 @freezed
 class TimingDayWhen with _$TimingDayWhen {
-  @HiveType(typeId: 16, adapterName: 'TimingDayWhenAdapter')
+  @HiveType(typeId: 17, adapterName: 'TimingDayWhenAdapter')
   factory TimingDayWhen(
     @HiveField(0) TimingDayWhenType type,
     @HiveField(1) @TimeOfDayConverter() TimeOfDay start,
@@ -22,7 +22,7 @@ class TimingDayWhen with _$TimingDayWhen {
   String toString() => toJson().toString();
 }
 
-@HiveType(typeId: 17)
+@HiveType(typeId: 18)
 class TimeOfDay extends HiveObject {
   @HiveField(0)
   int hour;
@@ -50,7 +50,7 @@ class TimeOfDayConverter implements JsonConverter<TimeOfDay, String> {
   String toJson(TimeOfDay tod) => '${tod.hour}:${tod.minute}:${tod.second}';
 }
 
-@HiveType(typeId: 18)
+@HiveType(typeId: 19)
 enum TimingDayWhenType {
   @JsonValue('TimeOfDay')
   @HiveField(0)
@@ -60,7 +60,7 @@ enum TimingDayWhenType {
   when;
 }
 
-@HiveType(typeId: 19)
+@HiveType(typeId: 20)
 enum WhenCode {
   @HiveField(0)
   morning,

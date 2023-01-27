@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:scalesoft_app/api/dto/care_plan/author.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart';
 
@@ -15,7 +16,7 @@ class CarePlan with _$CarePlan {
     @HiveField(2) String? finishedByUserMuid,
     @HiveField(3) CarePlanActivity activity,
     @HiveField(4) int versionId,
-    @HiveField(5) String? authorUserMuid,
+    @HiveField(5) Author author,
     @HiveField(6) DateTime scheduledStart,
     @HiveField(7) DateTime? scheduledEnd,
     @HiveField(8) int frequency,
@@ -32,7 +33,7 @@ class CarePlan with _$CarePlan {
   String toString() => toJson().toString();
 }
 
-@HiveType(typeId: 14)
+@HiveType(typeId: 15)
 enum TimeUnitEnumContract {
   @JsonValue('hour')
   @HiveField(0)
@@ -51,7 +52,7 @@ enum TimeUnitEnumContract {
   year;
 }
 
-@HiveType(typeId: 15)
+@HiveType(typeId: 16)
 enum WeekDayEnumAppContract {
   @JsonValue('Monday')
   @HiveField(0)
