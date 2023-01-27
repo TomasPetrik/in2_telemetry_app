@@ -12,7 +12,7 @@ class TimingDayWhen with _$TimingDayWhen {
     @HiveField(1) @TimeOfDayConverter() TimeOfDay start,
     @HiveField(2) @TimeOfDayConverter() TimeOfDay end,
     @HiveField(3) @TimeOfDayConverter() TimeOfDay? timeOfDay,
-    @HiveField(4) WhenCode whenCode,
+    @HiveField(4) WhenCode? whenCode,
   ) = _TimingWhenDay;
 
   factory TimingDayWhen.fromJson(Map<String, dynamic> json) =>
