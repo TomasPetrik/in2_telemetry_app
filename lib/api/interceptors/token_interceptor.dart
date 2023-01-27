@@ -17,12 +17,10 @@ import 'package:scalesoft_app/utils/exceptions/exception/no_internet_exception.d
 class TokenInterceptor extends Interceptor {
   final Session session;
   final AccountApiClient accountApiClient;
-  final Dio dio;
 
   TokenInterceptor(
     this.session,
     this.accountApiClient,
-    @Named(Constants.privateDioName) this.dio,
   );
 
   @override
@@ -76,7 +74,6 @@ class TokenInterceptor extends Interceptor {
       final tokenUrl = session.userAccount?.hospital?.authData.tokenUrl;
 
       if (userId != null && refreshToken != null && tokenUrl != null) {
-        
         final response = await getIt<AuthApiClient>().refreshToken(
           tokenUrl,
           'refresh_token',
@@ -84,15 +81,14 @@ class TokenInterceptor extends Interceptor {
           Constants.clientId,
           Constants.clientSecret,
         );
-        await session.setAuthToken(
-          userId,
-          AuthToken(
-            accessToken: response.accessToken,
-            refreshToken: response.refreshToken,
-            accessTokenExpires:
-                DateTime.now().add(const Duration(seconds: 3600)),
-          ),
+
+        final newToken = AuthToken(
+          accessToken: response.accessToken,
+          refreshToken: response.refreshToken,
+          accessTokenExpires: DateTime.now().add(const Duration(seconds: 3600)),
         );
+
+        session.token = newToken;
       }
     } catch (e) {
       return;

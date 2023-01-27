@@ -90,7 +90,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
               child: RefreshIndicator(
                 edgeOffset: fixedHeight,
                 color: Theme.of(context).hintColor,
-                backgroundColor: Theme.of(context).backgroundColor,
+                backgroundColor: Theme.of(context).colorScheme.background,
                 onRefresh: () async =>
                     widget.tabs[currentTab].onRefresh?.call(),
                 child: CustomScrollView(
@@ -141,7 +141,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                           ],
                         ),
                         blurColor:
-                            Theme.of(context).backgroundColor.withOpacity(0.8),
+                             Theme.of(context).colorScheme.background.withOpacity(0.8),
                       ),
                     ),
                     ...widget.tabs[currentTab].slivers,

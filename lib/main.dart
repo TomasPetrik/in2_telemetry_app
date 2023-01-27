@@ -18,7 +18,7 @@ import 'package:scalesoft_app/ui/screens/splash_screen.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 
 Future<void> main() async {
-  await _main(themeMode: ThemeMode.dark, locale: cz, isDev: true);
+  await _main(themeMode: ThemeMode.dark, locale: cs, isDev: true);
 }
 
 Future<void> _main({

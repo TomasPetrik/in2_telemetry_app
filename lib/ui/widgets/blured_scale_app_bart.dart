@@ -27,7 +27,7 @@ class BluredUserAppBar extends StatelessWidget {
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
                 height: topGap + Constants.appBarHeight,
-                color: Theme.of(context).backgroundColor.withOpacity(0.8),
+                color: Theme.of(context).colorScheme.background.withOpacity(0.8),
               ),
             ),
           ),

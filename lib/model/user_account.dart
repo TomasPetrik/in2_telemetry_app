@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scalesoft_app/api/dto/auth_token.dart';
+import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/api/dto/user.dart';
 import 'package:scalesoft_app/parsers/jwt_parser.dart';
@@ -9,7 +10,7 @@ import 'package:scalesoft_app/parsers/user_jwt_data.dart';
 part 'user_account.freezed.dart';
 part 'user_account.g.dart';
 
-@freezed
+@unfreezed
 class UserAccount with _$UserAccount {
   const UserAccount._();
 
@@ -22,6 +23,7 @@ class UserAccount with _$UserAccount {
     DateTime? lastActiveIn,
     List<UserAccount>? representedPeople,
     bool? hasParent,
+    List<CarePlan>? carePlans,
     //TODO.. add care plan
   }) = _UserAccount;
 
@@ -53,7 +55,7 @@ class UserAccountLocal extends HiveObject {
   final AuthTokenLocal authTokenLocal;
 
   @HiveField(6)
-  final List<UserPermissionLocal> userPermissions;
+  final List<HiveEnum> userPermissions;
 
   @HiveField(7)
   final HospitalLocal hospitalLocal;
@@ -70,6 +72,9 @@ class UserAccountLocal extends HiveObject {
   @HiveField(11)
   bool? hasParent;
 
+  @HiveField(12)
+  final List<CarePlan>? carePlans;
+
   UserAccountLocal({
     required this.muid,
     required this.firstNames,
@@ -83,5 +88,6 @@ class UserAccountLocal extends HiveObject {
     this.lastActiveIn,
     this.representedPeople,
     this.hasParent,
+    this.carePlans,
   });
 }

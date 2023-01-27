@@ -11,6 +11,7 @@ import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/parsers/jwt_parser.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/repositories/account_repository.dart';
+import 'package:scalesoft_app/repositories/care_plans_repository.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/auth_service.dart';
 import 'package:scalesoft_app/storage/session.dart';
@@ -20,6 +21,7 @@ import 'package:scalesoft_app/ui/themes/constants.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthService _authService;
   final AccountRepository _accountRepository;
+  final CarePlansRepository _carePlansRepository;
   final AccountDbProvider _accountDbProvider;
   final Session _session;
   AuthorizationCodeGrant? _grant;
@@ -28,6 +30,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(
     this._authService,
     this._accountRepository,
+    this._carePlansRepository,
     this._session,
     this._accountDbProvider,
     @Named(Constants.privateDioName) this._dio,
@@ -64,8 +67,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           ),
         ),
       );
-    } on Exception catch (e) {
-      emit(AuthState.unauthenticated(error: e));
+    } on Exception {
+      emit(const AuthState.unauthenticated());
     }
   }
 
@@ -92,8 +95,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
 
       emit(AuthState.authenticated(credentials: tokenResponse.credentials));
-    } on Exception catch (e) {
-      emit(AuthState.unauthenticated(error: e));
+    } on Exception {
+      emit(const AuthState.unauthenticated());
     }
   }
 
@@ -126,12 +129,29 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             .toList(),
       );
 
+      //load and assign care plans, doctor
+      final activeCarePlans = await _carePlansRepository.loadActiveCarePlans(
+        patientMuid: userInfo.currentUser.muid,
+      );
+
+      userAccount.carePlans = activeCarePlans.items;
+      if (userAccount.representedPeople?.isNotEmpty == true) {
+        for (final UserAccount representedPerson
+            in userAccount.representedPeople!) {
+          final activeCarePlans =
+              await _carePlansRepository.loadActiveCarePlans(
+            patientMuid: representedPerson.user.muid,
+          );
+          representedPerson.carePlans = activeCarePlans.items;
+        }
+      }
+
       await _accountDbProvider.save(userAccount);
       _session.userAccount = userAccount;
       emit(AuthState.userVerified(userAccount: userAccount));
-    } on Exception catch (e) {
+    } on Exception {
       _session.token = null;
-      emit(AuthState.unauthenticated(error: e));
+      emit(const AuthState.unauthenticated());
     }
   }
 
@@ -146,6 +166,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _session.removeTokens(_session.userAccount!.user.muid);
         _session.token = null;
         _session.userAccount = null;
+        _session.hospital = null;
+        _session.userPermissions = null;
 
         final lastLoggedUser = _accountDbProvider.getLast();
         if (lastLoggedUser != null) {

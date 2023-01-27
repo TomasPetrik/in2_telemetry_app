@@ -25,10 +25,12 @@ class ScaleApp extends StatelessWidget {
         AppLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
       ],
-      onGenerateTitle: (BuildContext context) => AppLocalizations.of(context)!.appTitle,
+      onGenerateTitle: (BuildContext context) =>
+          AppLocalizations.of(context)!.appTitle,
       supportedLocales: const [
-        Locale('en', ''),
+        Locale('cs'),
       ],
       theme: LightMode.theme,
       darkTheme: DarkMode.theme,

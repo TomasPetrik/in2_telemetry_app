@@ -24,7 +24,7 @@ class NavigationTabChip extends StatelessWidget {
           padding: const EdgeInsets.symmetric(
             horizontal: Dimensions.padding10,
           ),
-          color: isSelected ? Theme.of(context).primaryColor : Theme.of(context).selectedRowColor,
+          color: isSelected ? Theme.of(context).primaryColor : Theme.of(context).colorScheme.secondary,
           child: Center(
             child: Text(
               label,

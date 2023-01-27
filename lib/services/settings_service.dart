@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/globals.dart';
-import 'package:scalesoft_app/locales.dart';
 
 @preResolve
 @lazySingleton
@@ -13,7 +12,6 @@ class SettingsService {
     themeChangedStream = _themeModeStreamController.stream;
   }
 
-  final _supportedLocales = [cz];
   final _localeStreamController = StreamController<Locale>.broadcast();
   final _themeModeStreamController = StreamController<ThemeMode>.broadcast();
   late Stream<Locale> localeChangedStream;
@@ -41,10 +39,6 @@ class SettingsService {
   void changeThemeMode(final ThemeMode newThemeMode) {
     currentThemeMode = newThemeMode;
     _themeModeStreamController.sink.add(newThemeMode);
-  }
-
-  List<Locale> getSupportedLocales() {
-    return _supportedLocales;
   }
 
   @disposeMethod

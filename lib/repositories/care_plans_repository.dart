@@ -10,7 +10,7 @@ class CarePlansRepository {
   Future<ActiveCarePlansResponse> loadActiveCarePlans({
     required String patientMuid,
      int start = 0,
-     int count = 10,
+     int count = 100,
   }) =>
       carePlanApiClient.loadActiveCarePlans(
         patientMuid,

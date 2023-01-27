@@ -33,9 +33,8 @@ class ContentBloc extends Bloc<SwitchContentEvent, ContentState> {
       _session.userAccount = userAccount;
       _session.token = userAccount.authToken;
 
-      final activePlans = await _carePlansRepository.loadActiveCarePlans(
-        patientMuid: userAccount.user.muid,
-      );
+      //todo.. try to load care plans,
+      //if is in offline mode, then just switch user
 
       emit(ContentState.activeSingleUser(userAccount));
     }
@@ -48,10 +47,15 @@ class ContentBloc extends Bloc<SwitchContentEvent, ContentState> {
     _session.userAccount = event.userAccount;
     _session.token = event.userAccount.authToken;
 
+    //todo.. try to load care plans,
+    //if is in offline mode, then just switch user
+    /*
     final activePlans = await _carePlansRepository.loadActiveCarePlans(
       patientMuid: event.userAccount.user.muid,
     );
+    _accountDbProvider.save(event.userAccount.copyWith(carePlans: activePlans.items));
     //todo.. save this plans for user
+    */
 
     emit(ContentState.activeSingleUser(event.userAccount));
   }

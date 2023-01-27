@@ -9,11 +9,18 @@
   "common_manual_measurement": "Vlastní měření",
   "common_show_calendar": "Zobrazit kalendář",
   "common_telemedicine": "Telemedicína",
-  "common_measurement_times": "{measurementTime, select, today{Dnes} upcomming{Nejbližší} tomorrow{Zítra}}",
+  "common_measurement_times": "{measurementTime, select, today{Dnes} upcomming{Nejbližší} tomorrow{Zítra} other{Jiný}}",
   "@common_measurement_times": {
     "description": "Measurement times",
     "placeholders": {
       "measurementTime": {}
+    }
+  },
+  "common_measurement_types": "{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace Kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Tepová frekvence} ews{Ews} respiratoryRate{Dechová frekvence} other{Jiný}}",
+  "@common_measurement_types": {
+    "description": "Measurement types",
+    "placeholders": {
+      "measurementType": {}
     }
   },
   "common_plus_n_others": "+ {count} další",
@@ -111,5 +118,25 @@
       }
     }
   },
-  "dialog_account_removal_confirmation_button_positive_label": "Odstranit účet"
+  "dialog_account_removal_confirmation_button_positive_label": "Odstranit účet",
+
+  "user_details_screen_plan_active_from_date": "Platný od {fromDate}",
+  "@user_details_screen_plan_active_from_date": {
+    "placeholders": {
+      "fromDate": {
+        "type": "String"
+      }
+    }
+  },
+  "user_details_screen_plan_active_from_to_date": "Platný od {fromDate} do {toDate}",
+  "@user_details_screen_plan_active_from_to_date": {
+    "placeholders": {
+      "fromDate": {
+        "type": "String"
+      },
+      "toDate": {
+        "type": "String"
+      }
+    }
+  }
 }

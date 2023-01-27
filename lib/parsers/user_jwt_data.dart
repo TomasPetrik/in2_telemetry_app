@@ -19,12 +19,12 @@ class UserJwtData with _$UserJwtData {
 }
 
 @HiveType(typeId: 8)
-class UserPermissionLocal extends HiveObject {
+class HiveEnum extends HiveObject {
   @override
   @HiveField(0)
   final String key;
 
-  UserPermissionLocal({
+  HiveEnum({
     required this.key,
   });
 }

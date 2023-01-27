@@ -106,13 +106,11 @@ class DarkMode {
   static ThemeData get theme => ThemeData(
         primaryColor: ScaleColorsDark.primary,
         canvasColor: backgroundColor,
-        backgroundColor: backgroundColor,
         scaffoldBackgroundColor: backgroundColor,
         cardColor: paperAccent,
         highlightColor: primary,
         textTheme: textTheme,
         hintColor: colorContent80,
-        selectedRowColor: colorContent20,
         colorScheme: colorScheme,
         appBarTheme: AppBarTheme(
           iconTheme: IconThemeData(color: primary),

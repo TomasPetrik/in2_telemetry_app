@@ -9,6 +9,7 @@ import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
+import 'package:scalesoft_app/ui/widgets/measurement_plan_item.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
 import 'package:scalesoft_app/ui/widgets/sliver_name_value_row.dart';
 
@@ -41,6 +42,29 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                   ),
                 ),
               ),
+              if (userAccount.carePlans?.isNotEmpty == true) ...[
+                const SliverGap(Dimensions.padding26),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (_, int index) {
+                      final carePlan = userAccount.carePlans![index];
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: Paddings.horizontal16,
+                            child: MeasurementPlanItem(
+                              carePlan: carePlan,
+                            ),
+                          ),
+                          if (index != (userAccount.carePlans!.length - 1))
+                            Gaps.gap16,
+                        ],
+                      );
+                    },
+                    childCount: userAccount.carePlans!.length,
+                  ),
+                ),
+              ],
               const SliverGap(Dimensions.padding24),
               SliverPadding(
                 padding: Paddings.left16,

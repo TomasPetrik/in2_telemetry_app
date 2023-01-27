@@ -55,7 +55,6 @@ class LightMode {
   static ThemeData get theme => ThemeData(
         primaryColor: ScaleColorsLight.primary,
         canvasColor: backgroundColor,
-        backgroundColor: backgroundColor,
         scaffoldBackgroundColor: backgroundColor,
         cardColor: paperAccent,
         highlightColor: primary,

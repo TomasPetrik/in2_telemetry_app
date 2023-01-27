@@ -3,6 +3,9 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/dto/auth_data.dart';
 import 'package:scalesoft_app/api/dto/auth_token.dart';
+import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
+import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/api/dto/user.dart';
 import 'package:scalesoft_app/model/user_account.dart';
@@ -22,7 +25,17 @@ class AccountDbProvider extends BoxProvider<UserAccountLocal>
     Hive.registerAdapter(AuthTokenLocalAdapter());
     Hive.registerAdapter(HospitalLocalAdapter());
     Hive.registerAdapter(AuthDataLocalAdapter());
-    Hive.registerAdapter(UserPermissionLocalAdapter());
+    Hive.registerAdapter(HiveEnumAdapter());
+    Hive.registerAdapter(CarePlanAdapter());
+    Hive.registerAdapter(CarePlanActivityAdapter());
+    Hive.registerAdapter(ActivityTypeAdapter());
+    Hive.registerAdapter(MeasurementTypeAdapter());
+    Hive.registerAdapter(TimeUnitEnumContractAdapter());
+    Hive.registerAdapter(WeekDayEnumAppContractAdapter());
+    Hive.registerAdapter(TimingDayWhenAdapter());
+    Hive.registerAdapter(TimingDayWhenTypeAdapter());
+    Hive.registerAdapter(TimeOfDayAdapter());
+    Hive.registerAdapter(WhenCodeAdapter());
   }
 
   @override
@@ -133,7 +146,7 @@ class AccountDbProvider extends BoxProvider<UserAccountLocal>
         expiresIn: userAccount.authToken!.accessTokenExpires,
       ),
       userPermissions: userAccount.userPermissions!
-          .map((userPermission) => UserPermissionLocal(key: userPermission.key))
+          .map((userPermission) => HiveEnum(key: userPermission.key))
           .toList(),
       hospitalLocal: HospitalLocal(
         id: userAccount.hospital!.id,
@@ -148,6 +161,7 @@ class AccountDbProvider extends BoxProvider<UserAccountLocal>
       signedIn: userAccount.signedIn!,
       lastActiveIn: userAccount.lastActiveIn,
       hasParent: false,
+      carePlans: userAccount.carePlans,
     );
   }
 
@@ -162,6 +176,7 @@ class AccountDbProvider extends BoxProvider<UserAccountLocal>
         user: userAccount.user,
         lastActiveIn: null,
         representedPeople: null,
+        carePlans: userAccount.carePlans,
       );
 
       representedPeopleLocal.add(
@@ -208,6 +223,7 @@ class AccountDbProvider extends BoxProvider<UserAccountLocal>
           ? null
           : _mapAccountsFrom(localAccount.representedPeople!),
       hasParent: localAccount.hasParent,
+      carePlans: localAccount.carePlans,
     );
   }
 
