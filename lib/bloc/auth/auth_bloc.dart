@@ -114,6 +114,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         hospital: _session.hospital,
         signedIn: DateTime.now(),
         lastActiveIn: DateTime.now(),
+        hasParent: false,
         representedPeople: userInfo.representedPeople
             ?.map(
               (representedPerson) => UserAccount(
@@ -124,15 +125,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                 signedIn: DateTime.now(),
                 lastActiveIn: null,
                 representedPeople: null,
+                hasParent: true,
               ),
             )
             .toList(),
       );
 
-      //load and assign care plans, doctor
+      //load and assign care plans, fulfillment_evaluation
       final activeCarePlans = await _carePlansRepository.loadActiveCarePlans(
         patientMuid: userInfo.currentUser.muid,
       );
+
+      for (final carePlan in activeCarePlans.items) {
+        final fulfillmentEvaluation =
+            await _carePlansRepository.loadFulFillmentEvaluation(
+          carePlanVersionId: carePlan.id,
+        );
+        carePlan.fulfillmentEvaluation = fulfillmentEvaluation;
+      }
 
       userAccount.carePlans = activeCarePlans.items;
       if (userAccount.representedPeople?.isNotEmpty == true) {
@@ -142,6 +152,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               await _carePlansRepository.loadActiveCarePlans(
             patientMuid: representedPerson.user.muid,
           );
+
+          for (final carePlan in activeCarePlans.items) {
+            final fulfillmentEvaluation =
+                await _carePlansRepository.loadFulFillmentEvaluation(
+              carePlanVersionId: carePlan.id,
+            );
+            carePlan.fulfillmentEvaluation = fulfillmentEvaluation;
+          }
+
           representedPerson.carePlans = activeCarePlans.items;
         }
       }

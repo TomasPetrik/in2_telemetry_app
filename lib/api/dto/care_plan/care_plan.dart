@@ -2,12 +2,13 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scalesoft_app/api/dto/care_plan/author.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart';
 
 part 'care_plan.freezed.dart';
 part 'care_plan.g.dart';
 
-@freezed
+@unfreezed
 class CarePlan with _$CarePlan {
   @HiveType(typeId: 10, adapterName: 'CarePlanAdapter')
   factory CarePlan(
@@ -24,6 +25,7 @@ class CarePlan with _$CarePlan {
     @HiveField(10) TimeUnitEnumContract periodUnit,
     @HiveField(11) List<WeekDayEnumAppContract>? weekDays,
     @HiveField(12) List<TimingDayWhen> timingDayWhen,
+    @HiveField(13) FulfillmentEvaluation? fulfillmentEvaluation,
   ) = _CarePlan;
 
   factory CarePlan.fromJson(Map<String, dynamic> json) =>

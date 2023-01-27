@@ -6,6 +6,7 @@ import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/managers/auth_manager.dart';
 import 'package:scalesoft_app/ui/routers/routes/appearance_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/care_plan_detail_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/hospital_detail_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/no_user_route.dart';
@@ -30,7 +31,7 @@ class AppRouter {
           path: '/',
           builder: (_, __) {
             return const AuthManager();
-        },
+          },
           redirect: (context, state) {
             if (state.location != '/') {
               return state.location;
@@ -70,6 +71,7 @@ class AppRouter {
                     NotificationRoute(navigator: navTabBar).route,
                     UserDetailRoute(navigator: navTabBar).route,
                     HospitalDetailRoute(navigator: navTabBar).route,
+                    CarePlanDetailRoute(navigator: navTabBar).route,
                   ],
                 ).route,
               ],

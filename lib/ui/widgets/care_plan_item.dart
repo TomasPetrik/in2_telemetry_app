@@ -6,8 +6,8 @@ import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
-class MeasurementPlanItem extends StatelessWidget {
-  const MeasurementPlanItem({
+class CarePlanItem extends StatelessWidget {
+  const CarePlanItem({
     super.key,
     required this.carePlan,
   });
@@ -64,11 +64,11 @@ class MeasurementPlanItem extends StatelessWidget {
           Text(
             carePlan.scheduledEnd != null
                 ? context.locale.user_details_screen_plan_active_from_to_date(
-                    carePlan.scheduledStart.getRegularDate(),
-                    carePlan.scheduledEnd!.getRegularDate(),
+                    carePlan.scheduledStart.toRegularDate(),
+                    carePlan.scheduledEnd!.toRegularDate(),
                   )
                 : context.locale.user_details_screen_plan_active_from_date(
-                    carePlan.scheduledStart.getRegularDate(),
+                    carePlan.scheduledStart.toRegularDate(),
                   ),
             style: ScaleTextStyles.textAccent.apply(
               color: Theme.of(context).colorScheme.onSecondary,

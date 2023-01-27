@@ -119,7 +119,6 @@
     }
   },
   "dialog_account_removal_confirmation_button_positive_label": "Odstranit účet",
-
   "user_details_screen_plan_active_from_date": "Platný od {fromDate}",
   "@user_details_screen_plan_active_from_date": {
     "placeholders": {
@@ -138,5 +137,13 @@
         "type": "String"
       }
     }
-  }
+  },
+  "care_plan_detail_screen_fulfillment_evaluation": "Dosavadní plnění plánu",
+  "care_plan_detail_screen_show_calendar": "Zobrazit kalendář",
+  "care_plan_detail_screen_plan_info": "Informace o plánu",
+  "care_plan_detail_screen_managed_by": "Spravuje",
+  "care_plan_detail_screen_active_from_date": "Platný od",
+  "care_plan_detail_screen_active_to_date": "Platný do",
+  "care_plan_detail_screen_measurement": "Měření",
+  "care_plan_detail_daily_times": "Denní doby"
 }

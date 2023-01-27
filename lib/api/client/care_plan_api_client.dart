@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:scalesoft_app/api/dto/active_care_plans_response.dart';
+import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 
 part 'care_plan_api_client.g.dart';
@@ -18,5 +19,12 @@ abstract class CarePlanApiClient {
     @Query('patientMuid') String patientMuid,
     @Query('start') int start,
     @Query('count') int count,
+  );
+
+  @GET(
+    '/patient/me/care-plan/version/{carePlanVersionId}/fulfillment-evaluation',
+  )
+  Future<List<FulfillmentEvaluationItem>> loadFulFillmentEvaluation(
+    @Path('carePlanVersionId') int carePlanVersionId,
   );
 }

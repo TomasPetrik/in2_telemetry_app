@@ -6,6 +6,7 @@ import 'package:scalesoft_app/api/dto/auth_token.dart';
 import 'package:scalesoft_app/api/dto/care_plan/author.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/api/dto/user.dart';
@@ -36,6 +37,8 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
     Hive.registerAdapter(TimingDayWhenTypeAdapter());
     Hive.registerAdapter(TimeOfDayAdapter());
     Hive.registerAdapter(WhenCodeAdapter());
+    Hive.registerAdapter(FulfillmentEvaluationAdapter());
+    Hive.registerAdapter(FulfillmentEvaluationItemAdapter());
   }
 
   @override

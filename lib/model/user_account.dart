@@ -12,7 +12,7 @@ part 'user_account.g.dart';
 class UserAccount with _$UserAccount {
   const UserAccount._();
 
-   @HiveType(typeId: 2, adapterName: 'UserAccountAdapter')
+  @HiveType(typeId: 2, adapterName: 'UserAccountAdapter')
   factory UserAccount({
     @HiveField(0) required User user,
     @HiveField(1) AuthToken? authToken,

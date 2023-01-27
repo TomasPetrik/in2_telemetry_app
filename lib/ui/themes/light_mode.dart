@@ -27,6 +27,8 @@ class LightMode {
 
   static Color get dark => ScaleColorsLight.dark;
 
+  static Color get positive => ScaleColorsLight.positive;
+
   static TextTheme get textTheme => TextTheme(
         headlineLarge: TextStyle(fontSize: 36, height: 1.33, fontWeight: FontWeight.w700, color: fontColor), //big
         headlineMedium: TextStyle(fontSize: 28, height: 1.14, fontWeight: FontWeight.w700, color: fontColor), //headline
@@ -51,6 +53,7 @@ class LightMode {
         primaryContainer: actionStartColor,
         onPrimaryContainer: actionEndColor,
         tertiary: colorContent60,
+         onTertiary: positive,
       );
   static ThemeData get theme => ThemeData(
         primaryColor: ScaleColorsLight.primary,

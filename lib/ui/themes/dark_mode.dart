@@ -28,6 +28,8 @@ class DarkMode {
 
   static Color get dark => ScaleColorsDark.dark;
 
+  static Color get positive => ScaleColorsDark.positive;
+
   static TextTheme get textTheme => TextTheme(
         headlineLarge: TextStyle(
           fontSize: 36,
@@ -101,6 +103,7 @@ class DarkMode {
         primaryContainer: actionStartColor,
         onPrimaryContainer: actionEndColor,
         tertiary: colorContent60,
+        onTertiary: positive,
       );
 
   static ThemeData get theme => ThemeData(

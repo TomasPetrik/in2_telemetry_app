@@ -177,6 +177,8 @@ class Paddings {
 class BorderRadii {
   static BorderRadius radius2 =
       const BorderRadius.all(Radius.circular(RadiusSize.radius2));
+  static BorderRadius radius4 =
+      const BorderRadius.all(Radius.circular(RadiusSize.radius4));
   static BorderRadius radius6 =
       const BorderRadius.all(Radius.circular(RadiusSize.radius6));
   static BorderRadius radius8 =
@@ -253,6 +255,7 @@ class Dimensions {
 
 class RadiusSize {
   static const double radius2 = 2;
+  static const double radius4 = 4;
   static const double radius6 = 6;
   static const double radius8 = 8;
   static const double radius10 = 10;
