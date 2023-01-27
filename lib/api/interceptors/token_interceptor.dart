@@ -83,9 +83,9 @@ class TokenInterceptor extends Interceptor {
         );
 
         final newToken = AuthToken(
-          accessToken: response.accessToken,
-          refreshToken: response.refreshToken,
-          accessTokenExpires: DateTime.now().add(const Duration(seconds: 3600)),
+          response.accessToken,
+          response.refreshToken,
+          DateTime.now().add(const Duration(seconds: 3600)),
         );
 
         session.token = newToken;

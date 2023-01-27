@@ -7,7 +7,6 @@ part 'author.g.dart';
 @freezed
 class Author with _$Author {
   const Author._();
-
   @HiveType(typeId: 14, adapterName: 'AuthorAdapter')
   const factory Author(
     @HiveField(0) String muid,

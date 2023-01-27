@@ -8,11 +8,12 @@ part 'auth_token.g.dart';
 class AuthToken with _$AuthToken {
   const AuthToken._();
 
-  factory AuthToken({
-    required String accessToken,
-    required String refreshToken,
-    required DateTime accessTokenExpires,
-  }) = _AuthToken;
+  @HiveType(typeId: 7, adapterName: 'AuthTokenAdapter')
+  factory AuthToken(
+    @HiveField(0) String accessToken,
+    @HiveField(1) String refreshToken,
+    @HiveField(2) DateTime accessTokenExpires,
+  ) = _AuthToken;
 
   factory AuthToken.fromJson(Map<String, dynamic> json) =>
       _$AuthTokenFromJson(json);
@@ -23,22 +24,4 @@ class AuthToken with _$AuthToken {
   bool isExpired() {
     return DateTime.now().isAfter(accessTokenExpires);
   }
-}
-
-@HiveType(typeId: 7)
-class AuthTokenLocal extends HiveObject {
-  @HiveField(0)
-  final String refreshToken;
-
-  @HiveField(1)
-  final String accessToken;
-
-  @HiveField(2)
-  final DateTime expiresIn;
-
-  AuthTokenLocal({
-    required this.refreshToken,
-    required this.accessToken,
-    required this.expiresIn,
-  });
 }

@@ -10,23 +10,21 @@ import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/api/dto/user.dart';
 import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/parsers/jwt_parser.dart';
-import 'package:scalesoft_app/parsers/user_jwt_data.dart';
 import 'package:scalesoft_app/providers/box_provider.dart';
 
 @singleton
-class AccountDbProvider extends BoxProvider<UserAccountLocal>
-    implements AccountDb {
+class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
   @override
   final String boxName = 'accountBox';
 
   @override
   void registerAdapters() {
-    Hive.registerAdapter(UserAccountLocalAdapter());
-    Hive.registerAdapter(AuthTokenLocalAdapter());
-    Hive.registerAdapter(HospitalLocalAdapter());
-    Hive.registerAdapter(AuthDataLocalAdapter());
-    Hive.registerAdapter(HiveEnumAdapter());
+    Hive.registerAdapter(UserAccountAdapter());
+    Hive.registerAdapter(UserAdapter());
+    Hive.registerAdapter(UserPermissionAdapter());
+    Hive.registerAdapter(AuthTokenAdapter());
+    Hive.registerAdapter(HospitalAdapter());
+    Hive.registerAdapter(AuthDataAdapter());
     Hive.registerAdapter(CarePlanAdapter());
     Hive.registerAdapter(CarePlanActivityAdapter());
     Hive.registerAdapter(AuthorAdapter());
@@ -45,20 +43,20 @@ class AccountDbProvider extends BoxProvider<UserAccountLocal>
     try {
       final rootAccounts = box.values;
 
-      final List<UserAccountLocal> allAccounts = [];
+      final List<UserAccount> allAccounts = [];
 
-      for (final UserAccountLocal localAccount in rootAccounts) {
+      for (final UserAccount localAccount in rootAccounts) {
         allAccounts.add(localAccount);
         if (localAccount.representedPeople?.isNotEmpty == true) {
           allAccounts.addAll(localAccount.representedPeople!);
         }
       }
 
-      final UserAccountLocal? local = allAccounts.firstWhereOrNull(
-        (userAccountLocal) => userAccountLocal.muid == id,
+      final UserAccount? local = allAccounts.firstWhereOrNull(
+        (userAccountLocal) => userAccountLocal.user.muid == id,
       );
 
-      return local != null ? _mapAccountFrom(local) : null;
+      return local;
     } catch (_) {
       return null;
     }
@@ -68,7 +66,7 @@ class AccountDbProvider extends BoxProvider<UserAccountLocal>
   Future<UserAccount> save(UserAccount userAccount) async {
     await box.put(
       userAccount.user.muid,
-      _mapAccountTo(userAccount),
+      userAccount,
     );
     return userAccount;
   }
@@ -84,15 +82,15 @@ class AccountDbProvider extends BoxProvider<UserAccountLocal>
     try {
       final localAccount = box.values.reduce(
         (acc, current) =>
-            acc.signedIn.isAfter(current.signedIn) ? acc : current,
+            acc.signedIn!.isAfter(current.signedIn!) ? acc : current,
       );
 
-      final isZero = localAccount.signedIn.isAtSameMomentAs(
+      final isZero = localAccount.signedIn!.isAtSameMomentAs(
         DateTime.fromMillisecondsSinceEpoch(0),
       );
       if (isZero) return null;
 
-      return _mapAccountFrom(localAccount);
+      return localAccount;
     } catch (_) {
       return null;
     }
@@ -100,25 +98,23 @@ class AccountDbProvider extends BoxProvider<UserAccountLocal>
 
   @override
   Iterable<UserAccount> getAll() {
-    return box.values.map(
-      _mapAccountFrom,
-    );
+    return box.values;
   }
 
   List<UserAccount> getRootUsersFromHospital(Hospital hospital) {
-    final rootAccounts = box.values.where(
-      (userAccountLocal) => userAccountLocal.hospitalLocal.id == hospital.id,
-    );
-
-    return rootAccounts.map(_mapAccountFrom).toList();
+    return box.values
+        .where(
+          (userAccountLocal) => userAccountLocal.hospital!.id == hospital.id,
+        )
+        .toList();
   }
 
   Map<Hospital, List<UserAccount>> getHospitalUsersMap() {
     final rootAccounts = box.values;
 
-    final List<UserAccountLocal> allAccounts = [];
+    final List<UserAccount> allAccounts = [];
 
-    for (final UserAccountLocal localAccount in rootAccounts) {
+    for (final UserAccount localAccount in rootAccounts) {
       allAccounts.add(localAccount);
       if (localAccount.representedPeople?.isNotEmpty == true) {
         allAccounts.addAll(localAccount.representedPeople!);
@@ -126,119 +122,7 @@ class AccountDbProvider extends BoxProvider<UserAccountLocal>
     }
 
     return allAccounts
-        .map(
-          _mapAccountFrom,
-        )
         .groupListsBy<Hospital>((userAccount) => userAccount.hospital!);
-  }
-
-  UserAccountLocal _mapAccountTo(UserAccount userAccount) {
-    return UserAccountLocal(
-      muid: userAccount.user.muid,
-      firstNames: userAccount.user.firstNames,
-      lastNames: userAccount.user.lastNames,
-      phoneNumbers: userAccount.user.phoneNumbers,
-      emailAddresses: userAccount.user.emailAddresses,
-      representedPeople: userAccount.representedPeople == null
-          ? null
-          : _mapAccountsTo(userAccount, userAccount.representedPeople!),
-      authTokenLocal: AuthTokenLocal(
-        accessToken: userAccount.authToken!.accessToken,
-        refreshToken: userAccount.authToken!.refreshToken,
-        expiresIn: userAccount.authToken!.accessTokenExpires,
-      ),
-      userPermissions: userAccount.userPermissions!
-          .map((userPermission) => HiveEnum(key: userPermission.key))
-          .toList(),
-      hospitalLocal: HospitalLocal(
-        id: userAccount.hospital!.id,
-        title: userAccount.hospital!.title,
-        iconPath: userAccount.hospital!.iconPath,
-        authData: AuthDataLocal(
-          baseUrl: userAccount.hospital!.authData.baseUrl,
-          authUrl: userAccount.hospital!.authData.authUrl,
-          tokenUrl: userAccount.hospital!.authData.tokenUrl,
-        ),
-      ),
-      signedIn: userAccount.signedIn!,
-      lastActiveIn: userAccount.lastActiveIn,
-      hasParent: false,
-      carePlans: userAccount.carePlans,
-    );
-  }
-
-  List<UserAccountLocal> _mapAccountsTo(
-    final UserAccount parentAccount,
-    List<UserAccount> usersAccounts,
-  ) {
-    List<UserAccountLocal> representedPeopleLocal = [];
-
-    for (final UserAccount userAccount in usersAccounts) {
-      UserAccount childAccount = parentAccount.copyWith(
-        user: userAccount.user,
-        lastActiveIn: null,
-        representedPeople: null,
-        carePlans: userAccount.carePlans,
-      );
-
-      representedPeopleLocal.add(
-        _mapAccountTo(childAccount)..hasParent = true,
-      );
-    }
-
-    return representedPeopleLocal;
-  }
-
-  UserAccount _mapAccountFrom(UserAccountLocal localAccount) {
-    return UserAccount(
-      user: User(
-        muid: localAccount.muid,
-        firstNames: localAccount.firstNames,
-        lastNames: localAccount.lastNames,
-        phoneNumbers: localAccount.phoneNumbers,
-        emailAddresses: localAccount.emailAddresses,
-      ),
-      hospital: Hospital(
-        id: localAccount.hospitalLocal.id,
-        title: localAccount.hospitalLocal.title,
-        iconPath: localAccount.hospitalLocal.iconPath,
-        authData: AuthData(
-          baseUrl: localAccount.hospitalLocal.authData.baseUrl,
-          authUrl: localAccount.hospitalLocal.authData.authUrl,
-          tokenUrl: localAccount.hospitalLocal.authData.tokenUrl,
-        ),
-      ),
-      signedIn: localAccount.signedIn,
-      authToken: AuthToken(
-        accessToken: localAccount.authTokenLocal.accessToken,
-        refreshToken: localAccount.authTokenLocal.refreshToken,
-        accessTokenExpires: localAccount.authTokenLocal.expiresIn,
-      ),
-      userPermissions: localAccount.userPermissions
-          .map(
-            (userPermissionLocal) => UserPermission.values.firstWhere(
-              (userPermission) => userPermission.key == userPermissionLocal.key,
-            ),
-          )
-          .toList(),
-      representedPeople: localAccount.representedPeople == null
-          ? null
-          : _mapAccountsFrom(localAccount.representedPeople!),
-      hasParent: localAccount.hasParent,
-      carePlans: localAccount.carePlans,
-    );
-  }
-
-  List<UserAccount> _mapAccountsFrom(
-    List<UserAccountLocal> localUsers,
-  ) {
-    List<UserAccount> users = [];
-
-    for (final UserAccountLocal localUser in localUsers) {
-      users.add(_mapAccountFrom(localUser));
-    }
-
-    return users;
   }
 }
 

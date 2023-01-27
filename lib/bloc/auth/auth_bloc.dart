@@ -89,9 +89,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               .getUserPermissions();
 
       _session.token = AuthToken(
-        accessToken: tokenResponse.credentials.accessToken,
-        refreshToken: tokenResponse.credentials.refreshToken!,
-        accessTokenExpires: tokenResponse.credentials.expiration!,
+        tokenResponse.credentials.accessToken,
+        tokenResponse.credentials.refreshToken!,
+        tokenResponse.credentials.expiration!,
       );
 
       emit(AuthState.authenticated(credentials: tokenResponse.credentials));

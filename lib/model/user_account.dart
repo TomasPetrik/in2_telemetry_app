@@ -4,8 +4,6 @@ import 'package:scalesoft_app/api/dto/auth_token.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/api/dto/user.dart';
-import 'package:scalesoft_app/parsers/jwt_parser.dart';
-import 'package:scalesoft_app/parsers/user_jwt_data.dart';
 
 part 'user_account.freezed.dart';
 part 'user_account.g.dart';
@@ -14,17 +12,17 @@ part 'user_account.g.dart';
 class UserAccount with _$UserAccount {
   const UserAccount._();
 
+   @HiveType(typeId: 2, adapterName: 'UserAccountAdapter')
   factory UserAccount({
-    required User user,
-    AuthToken? authToken,
-    List<UserPermission>? userPermissions,
-    Hospital? hospital,
-    DateTime? signedIn,
-    DateTime? lastActiveIn,
-    List<UserAccount>? representedPeople,
-    bool? hasParent,
-    List<CarePlan>? carePlans,
-    //TODO.. add care plan
+    @HiveField(0) required User user,
+    @HiveField(1) AuthToken? authToken,
+    @HiveField(2) List<UserPermission>? userPermissions,
+    @HiveField(3) Hospital? hospital,
+    @HiveField(4) DateTime? signedIn,
+    @HiveField(5) DateTime? lastActiveIn,
+    @HiveField(6) List<UserAccount>? representedPeople,
+    @HiveField(7) bool? hasParent,
+    @HiveField(8) List<CarePlan>? carePlans,
   }) = _UserAccount;
 
   factory UserAccount.fromJson(Map<String, dynamic> json) =>
@@ -34,60 +32,21 @@ class UserAccount with _$UserAccount {
   String toString() => toJson().toString();
 }
 
-@HiveType(typeId: 2)
-class UserAccountLocal extends HiveObject {
+@HiveType(typeId: 6)
+enum UserPermission {
+  @JsonValue('scs-can-manually-enter-measurement')
   @HiveField(0)
-  final String muid;
-
+  canManuallyEnterMeasurement,
+  @JsonValue('scs-view-own-measurement-data')
   @HiveField(1)
-  final List<String> firstNames;
-
+  viewOwnMeasurementData,
+  @JsonValue('scs-enter-measurement-without-plan')
   @HiveField(2)
-  final List<String> lastNames;
-
-  @HiveField(3)
-  final List<String>? phoneNumbers;
-
-  @HiveField(4)
-  final List<String>? emailAddresses;
-
-  @HiveField(5)
-  final AuthTokenLocal authTokenLocal;
-
-  @HiveField(6)
-  final List<HiveEnum> userPermissions;
-
-  @HiveField(7)
-  final HospitalLocal hospitalLocal;
-
-  @HiveField(8)
-  final DateTime signedIn;
-
-  @HiveField(9)
-  final DateTime? lastActiveIn;
-
-  @HiveField(10)
-  final List<UserAccountLocal>? representedPeople;
-
-  @HiveField(11)
-  bool? hasParent;
-
-  @HiveField(12)
-  final List<CarePlan>? carePlans;
-
-  UserAccountLocal({
-    required this.muid,
-    required this.firstNames,
-    required this.lastNames,
-    this.phoneNumbers,
-    this.emailAddresses,
-    required this.authTokenLocal,
-    required this.userPermissions,
-    required this.hospitalLocal,
-    required this.signedIn,
-    this.lastActiveIn,
-    this.representedPeople,
-    this.hasParent,
-    this.carePlans,
-  });
+  enterMeasurementWithoutPlan;
 }
+
+const supportedUserPermissions = [
+  'scs-can-manually-enter-measurement',
+  'scs-view-own-measurement-data',
+  'scs-enter-measurement-without-plan'
+];

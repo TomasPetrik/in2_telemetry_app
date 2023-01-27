@@ -8,10 +8,11 @@ part 'auth_data.g.dart';
 class AuthData with _$AuthData {
   const AuthData._();
 
+  @HiveType(typeId: 5, adapterName: 'AuthDataAdapter')
   const factory AuthData({
-    required String baseUrl,
-    required String authUrl,
-    required String tokenUrl,
+    @HiveField(0) required String baseUrl,
+    @HiveField(1) required String authUrl,
+    @HiveField(2) required String tokenUrl,
   }) = _AuthData;
 
   factory AuthData.fromJson(Map<String, dynamic> json) =>
@@ -19,22 +20,4 @@ class AuthData with _$AuthData {
 
   @override
   String toString() => toJson().toString();
-}
-
-@HiveType(typeId: 5)
-class AuthDataLocal extends HiveObject {
-  @HiveField(0)
-  final String baseUrl;
-
-  @HiveField(1)
-  final String authUrl;
-
-  @HiveField(2)
-  final String tokenUrl;
-
-  AuthDataLocal({
-    required this.baseUrl,
-    required this.authUrl,
-    required this.tokenUrl,
-  });
 }
