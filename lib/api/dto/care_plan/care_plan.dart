@@ -4,12 +4,15 @@ import 'package:scalesoft_app/api/dto/care_plan/author.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart';
+import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 part 'care_plan.freezed.dart';
 part 'care_plan.g.dart';
 
 @unfreezed
 class CarePlan with _$CarePlan {
+  const CarePlan._();
+
   @HiveType(typeId: 10, adapterName: 'CarePlanAdapter')
   factory CarePlan(
     @HiveField(0) int id,
@@ -22,8 +25,8 @@ class CarePlan with _$CarePlan {
     @HiveField(7) DateTime? scheduledEnd,
     @HiveField(8) int frequency,
     @HiveField(9) int period,
-    @HiveField(10) TimeUnitEnumContract periodUnit,
-    @HiveField(11) List<WeekDayEnumAppContract>? weekDays,
+    @HiveField(10) TimeUnit periodUnit,
+    @HiveField(11) List<WeekDay>? weekDays,
     @HiveField(12) List<TimingDayWhen> timingDayWhen,
     @HiveField(13) FulfillmentEvaluation? fulfillmentEvaluation,
   ) = _CarePlan;
@@ -33,10 +36,40 @@ class CarePlan with _$CarePlan {
 
   @override
   String toString() => toJson().toString();
+
+  List<TimingDayWhen> getTodayRemainingMeasurements() {
+    final now = DateTime.now();
+    final currentWeekDay = now.currentWeekDay();
+
+    if ((periodUnit == TimeUnit.day && weekDays?.isEmpty == true) ||
+        weekDays?.contains(currentWeekDay) == true) {
+      return timingDayWhen.where((currentTiming) {
+        final todayStart = currentTiming.start.todayDateTime();
+        final todayEnd = currentTiming.end.todayDateTime();
+
+        return ((now.isBefore(todayEnd) && now.isAfter(todayStart)) ||
+            now.isBefore(todayStart));
+      }).toList();
+    } else {
+      return [];
+    }
+  }
+
+  bool hasMeasurementsToday() {
+    final now = DateTime.now();
+    final currentWeekDay = now.currentWeekDay();
+
+    if ((periodUnit == TimeUnit.day && weekDays?.isEmpty == true) ||
+        weekDays?.contains(currentWeekDay) == true) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
 
 @HiveType(typeId: 15)
-enum TimeUnitEnumContract {
+enum TimeUnit {
   @JsonValue('hour')
   @HiveField(0)
   hour,
@@ -55,7 +88,7 @@ enum TimeUnitEnumContract {
 }
 
 @HiveType(typeId: 16)
-enum WeekDayEnumAppContract {
+enum WeekDay {
   @JsonValue('Monday')
   @HiveField(0)
   monday,

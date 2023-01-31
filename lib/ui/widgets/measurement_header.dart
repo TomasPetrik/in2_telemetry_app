@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 class MeasurementHeader extends StatelessWidget {
   const MeasurementHeader({
     super.key,
-    required this.measurementTime,
+    required this.whenPeriod,
     required this.openTimeSelector,
   });
 
-  final PeriodType measurementTime;
+  final WhenPeriod whenPeriod;
   final Function openTimeSelector;
 
   @override
@@ -18,7 +19,8 @@ class MeasurementHeader extends StatelessWidget {
       children: [
         Text(
           context.locale.common_measurement,
-          style: ScaleTextStyles.textAccent.apply(color: Theme.of(context).colorScheme.onSecondary),
+          style: ScaleTextStyles.textAccent
+              .apply(color: Theme.of(context).colorScheme.onSecondary),
         ),
         const Spacer(),
         InkWell(
@@ -26,7 +28,7 @@ class MeasurementHeader extends StatelessWidget {
             openTimeSelector.call();
           },
           child: Text(
-            context.locale.common_measurement_times(measurementTime.name),
+            context.locale.common_measurement_times(whenPeriod.name),
             style: ScaleTextStyles.text.apply(
               color: Theme.of(context).primaryColor,
             ),
@@ -35,10 +37,4 @@ class MeasurementHeader extends StatelessWidget {
       ],
     );
   }
-}
-
-enum PeriodType {
-  today,
-  upcomming,
-  tomorrow,
 }

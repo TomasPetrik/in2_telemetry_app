@@ -3,10 +3,10 @@ import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/ui/widgets/confimation_dialog.dart';
 import 'package:scalesoft_app/ui/widgets/hospital_selection_dialog.dart';
-import 'package:scalesoft_app/ui/widgets/measurement_header.dart';
 import 'package:scalesoft_app/ui/widgets/measurement_time_dialog.dart';
 import 'package:scalesoft_app/ui/widgets/user_hospital_selection_dialog.dart';
 import 'package:scalesoft_app/ui/widgets/user_selection_dialog.dart';
+import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 mixin BottomSheetMixin {
   Future<bool?> showAccounRemovalConfirmation({
@@ -28,9 +28,10 @@ mixin BottomSheetMixin {
     return result;
   }
 
-  Future<TypePeriodSelection?> showMeasurementTime(
+  Future<TypePeriodSelection?> showWhenSelector(
     final BuildContext context,
-    final PeriodType? selectedTime,
+    final WhenPeriod? whenPeriod,
+    final Map<WhenPeriod, int> measurements,
   ) async {
     final selected = await showModalBottomSheet<TypePeriodSelection>(
       context: context,
@@ -39,7 +40,8 @@ mixin BottomSheetMixin {
       backgroundColor: Colors.transparent,
       builder: (context) {
         return MeasurementTimeDialog(
-          selectedTime: selectedTime ?? PeriodType.today,
+          whenPeriod: whenPeriod ?? WhenPeriod.today,
+          measurements: measurements,
         );
       },
     );
@@ -163,7 +165,7 @@ class UserSelection {
 }
 
 class TypePeriodSelection {
-  PeriodType? selectedPeriod;
+  WhenPeriod? selectedPeriod;
   bool? showCalendar;
 
   TypePeriodSelection({this.selectedPeriod, this.showCalendar})

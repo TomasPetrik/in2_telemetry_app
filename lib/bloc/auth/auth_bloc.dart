@@ -139,7 +139,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       for (final carePlan in activeCarePlans.items) {
         final fulfillmentEvaluation =
             await _carePlansRepository.loadFulFillmentEvaluation(
-          carePlanVersionId: carePlan.id,
+          carePlanVersionId: carePlan.versionId,
         );
         carePlan.fulfillmentEvaluation = fulfillmentEvaluation;
       }
@@ -156,7 +156,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           for (final carePlan in activeCarePlans.items) {
             final fulfillmentEvaluation =
                 await _carePlansRepository.loadFulFillmentEvaluation(
-              carePlanVersionId: carePlan.id,
+              carePlanVersionId: carePlan.versionId,
             );
             carePlan.fulfillmentEvaluation = fulfillmentEvaluation;
           }
@@ -182,7 +182,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await _accountDbProvider.remove(event.userAccount);
 
       if (event.userAccount.user.muid == _session.userAccount?.user.muid) {
-        _session.removeTokens(_session.userAccount!.user.muid);
         _session.token = null;
         _session.userAccount = null;
         _session.hospital = null;

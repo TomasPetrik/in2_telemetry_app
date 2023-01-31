@@ -20,6 +20,8 @@ class FulfillmentEvaluation with _$FulfillmentEvaluation {
   String toString() => toJson().toString();
 
   int get progress {
+    if (items.isEmpty) return 0;
+
     int allActualMeasurementCount =
         items.fold(0, (sum, current) => sum + current.actualMeasurementCount);
     int allRequiredMeasurementCount =

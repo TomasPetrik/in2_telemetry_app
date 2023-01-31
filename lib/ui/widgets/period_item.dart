@@ -3,32 +3,37 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
-import 'package:scalesoft_app/ui/widgets/measurement_header.dart';
+import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 class PeriodItem extends StatelessWidget {
   const PeriodItem({
     super.key,
-    required this.periodTime,
+    required this.whenPeriod,
+    required this.count,
     this.isSelected = false,
   });
 
-  final PeriodType periodTime;
+  final WhenPeriod whenPeriod;
+  final int count;
   final bool isSelected;
 
-  static final Map<PeriodType, String> periodItemIcons = {
-    PeriodType.today: 'assets/icons/icon_calendar_today.svg',
-    PeriodType.tomorrow: 'assets/icons/icon_calendar_tomorrow.svg',
-    PeriodType.upcomming: 'assets/icons/icon_calendar_upcomming.svg',
+  static final Map<WhenPeriod, String> periodItemIcons = {
+    WhenPeriod.today: 'assets/icons/icon_calendar_today.svg',
+    WhenPeriod.tomorrow: 'assets/icons/icon_calendar_tomorrow.svg',
+    WhenPeriod.next10: 'assets/icons/icon_calendar_upcomming.svg',
   };
 
   String _getSubtitle(BuildContext context, int measurements) {
-    switch (periodTime) {
-      case PeriodType.today:
-        return context.locale.measurement_screen_today_n_measurements(measurements);
-      case PeriodType.upcomming:
-        return context.locale.measurement_screen_upcomming_n_measurements(measurements);
-      case PeriodType.tomorrow:
-        return context.locale.measurement_screen_tomorrow_n_measurements(measurements);
+    switch (whenPeriod) {
+      case WhenPeriod.today:
+        return context.locale
+            .measurement_screen_today_n_measurements(measurements);
+      case WhenPeriod.next10:
+        return context.locale
+            .measurement_screen_upcomming_n_measurements(measurements);
+      case WhenPeriod.tomorrow:
+        return context.locale
+            .measurement_screen_tomorrow_n_measurements(measurements);
     }
   }
 
@@ -39,7 +44,7 @@ class PeriodItem extends StatelessWidget {
       child: Row(
         children: [
           SvgPicture.asset(
-            periodItemIcons[periodTime]!,
+            periodItemIcons[whenPeriod]!,
             color: Theme.of(context).hintColor,
           ),
           Gaps.gap16,
@@ -48,12 +53,12 @@ class PeriodItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                context.locale.common_measurement_times(periodTime.name),
+                context.locale.common_measurement_times(whenPeriod.name),
                 style: ScaleTextStyles.textAccent,
               ),
               Gaps.gap6,
               Text(
-                _getSubtitle(context, 10),
+                _getSubtitle(context, count),
                 style: ScaleTextStyles.label.apply(
                   color: Theme.of(context).colorScheme.onSecondary,
                 ),

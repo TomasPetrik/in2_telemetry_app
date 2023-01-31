@@ -19,8 +19,8 @@ class NavigationTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: Constants.navigationTabBarHeight,
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
       child: Row(
         children: [
           ...tabs

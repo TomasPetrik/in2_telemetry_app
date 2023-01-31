@@ -11,7 +11,7 @@ class CarePlanActivity with _$CarePlanActivity {
     @HiveField(0) ActivityType activityType,
     @HiveField(1) MeasurementType measurementType,
     @HiveField(2) int? goalValue,
-  ) = _CarePlanActivityAppContract;
+  ) = _CarePlanActivity;
 
   factory CarePlanActivity.fromJson(Map<String, dynamic> json) =>
       _$CarePlanActivityFromJson(json);

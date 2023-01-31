@@ -46,7 +46,7 @@ class ShrinkingAutoBlurHeaderDelegate extends SliverPersistentHeaderDelegate {
               Positioned.fill(
                 child: ClipRRect(
                   child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                     child: Container(
                       color: blurColor,
                     ),
@@ -63,11 +63,14 @@ class ShrinkingAutoBlurHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => childHeight + (shrinedChildHeight < topOffset ? topOffset + 1 : shrinedChildHeight);
+  double get maxExtent =>
+      childHeight +
+      (shrinedChildHeight < topOffset ? topOffset + 1 : shrinedChildHeight);
 
   @override
   double get minExtent => childHeight + topOffset;
 
   @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) => true;
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
+      true;
 }

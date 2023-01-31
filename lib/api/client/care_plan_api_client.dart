@@ -7,24 +7,26 @@ import 'package:scalesoft_app/ui/themes/constants.dart';
 
 part 'care_plan_api_client.g.dart';
 
-@RestApi()
+@RestApi(baseUrl: '')
 @injectable
 abstract class CarePlanApiClient {
   @factoryMethod
   factory CarePlanApiClient(@Named(Constants.privateDioName) Dio dio) =
       _CarePlanApiClient;
 
-  @GET('/patient/care-plan/active')
+  @GET('{apiUrl}/patient/care-plan/active')
   Future<ActiveCarePlansResponse> loadActiveCarePlans(
+    @Path('apiUrl') String apiUrl,
     @Query('patientMuid') String patientMuid,
     @Query('start') int start,
     @Query('count') int count,
   );
 
   @GET(
-    '/patient/me/care-plan/version/{carePlanVersionId}/fulfillment-evaluation',
+    '{apiUrl}/patient/me/care-plan/version/{carePlanVersionId}/fulfillment-evaluation',
   )
   Future<List<FulfillmentEvaluationItem>> loadFulFillmentEvaluation(
+    @Path('apiUrl') String apiUrl,
     @Path('carePlanVersionId') int carePlanVersionId,
   );
 }

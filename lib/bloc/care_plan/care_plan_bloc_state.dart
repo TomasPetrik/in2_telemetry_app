@@ -1,17 +1,18 @@
-import 'package:flutter/material.dart';
-import 'package:scalesoft_app/ui/widgets/measurement_header.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
+import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
-@immutable
-class CarePlanBlocState {
-  const CarePlanBlocState({
-    this.selectedPeriod,
-  });
-  final PeriodType? selectedPeriod;
+part 'care_plan_bloc_state.freezed.dart';
 
-  CarePlanBlocState cloneWith({
-    final PeriodType? selectedPeriod,
-  }) =>
-      CarePlanBlocState(
-        selectedPeriod: selectedPeriod ?? this.selectedPeriod,
-      );
+@freezed
+class CarePlanBlocState with _$CarePlanBlocState {
+  const CarePlanBlocState._();
+
+
+  factory CarePlanBlocState({
+    WhenPeriod? selectedPeriod,
+    List<CarePlan>? currentCarePlans,
+    Measurement? nextMeasurement,
+    List<Measurement>? measurements,
+  }) = _HasData;
 }

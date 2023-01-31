@@ -31,8 +31,8 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
     Hive.registerAdapter(AuthorAdapter());
     Hive.registerAdapter(ActivityTypeAdapter());
     Hive.registerAdapter(MeasurementTypeAdapter());
-    Hive.registerAdapter(TimeUnitEnumContractAdapter());
-    Hive.registerAdapter(WeekDayEnumAppContractAdapter());
+    Hive.registerAdapter(TimeUnitAdapter());
+    Hive.registerAdapter(WeekDayAdapter());
     Hive.registerAdapter(TimingDayWhenAdapter());
     Hive.registerAdapter(TimingDayWhenTypeAdapter());
     Hive.registerAdapter(TimeOfDayAdapter());

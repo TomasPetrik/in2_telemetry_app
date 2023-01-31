@@ -46,7 +46,7 @@ class AppRouter {
               onUserAdded: (UserAccount userAccount) =>
                   '/${UserAddedRoute.name}/${userAccount.user.muid}',
               activeSingleUser: (UserAccount userAccount) =>
-                  '/${DashboardRoute.name}/${userAccount.user.muid}',
+                  '/${DashboardRoute.name}',
               activeAllUsers: () => '/multi-user',
             );
 

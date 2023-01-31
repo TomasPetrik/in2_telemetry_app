@@ -1,22 +1,20 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/widgets/fixed_item_height_delegate.dart';
 import 'package:scalesoft_app/ui/widgets/navigation_tab_bar.dart';
-import 'package:scalesoft_app/ui/widgets/shrinking_auto_blur_header_delegate.dart';
 
 class NavigationBarTabItem {
   NavigationBarTabItem({
     required this.label,
-    this.topSlivers = const [],
     required this.slivers,
-    this.onRefresh,
     this.scrollPosition,
   });
 
   final String label;
-  final List<Widget> topSlivers;
+
   final List<Widget> slivers;
-  final Future<void> Function()? onRefresh;
   double? scrollPosition;
 }
 
@@ -24,19 +22,28 @@ class NavigationScreen extends StatefulWidget {
   NavigationScreen({
     Key? key,
     required this.tabs,
+    this.topSlivers = const [],
     this.currentTab = 0,
     required this.topHeader,
     required this.navigationHeader,
     required this.topHeaderHeight,
+    this.onTabSelected,
+    this.bottomSlivers,
+    this.onRefresh,
   })  : assert(tabs.isNotEmpty),
         assert(currentTab < tabs.length),
         super(key: key);
 
   final List<NavigationBarTabItem> tabs;
+  final List<Widget> topSlivers;
   final int currentTab;
   final Widget topHeader;
   final Widget? navigationHeader;
   final double topHeaderHeight;
+  final List<Widget>? bottomSlivers;
+  final Function(int tabIndex)? onTabSelected;
+
+  final Future<void> Function()? onRefresh;
 
   @override
   State<NavigationScreen> createState() => _NavigationScreenState();
@@ -63,6 +70,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   }
 
   void onTabTap(int newTabIndex, int prevTabIndex) {
+    widget.onTabSelected?.call(newTabIndex);
     setState(() => currentTab = newTabIndex);
 
     widget.tabs[prevTabIndex].scrollPosition = scrollController.position.pixels;
@@ -91,16 +99,83 @@ class _NavigationScreenState extends State<NavigationScreen> {
                 edgeOffset: fixedHeight,
                 color: Theme.of(context).hintColor,
                 backgroundColor: Theme.of(context).colorScheme.background,
-                onRefresh: () async =>
-                    widget.tabs[currentTab].onRefresh?.call(),
+                onRefresh: () async => widget.onRefresh?.call(),
                 child: CustomScrollView(
                   physics: const BouncingScrollPhysics(),
                   controller: scrollController,
                   slivers: [
+                    /*
                     SliverGap(
                       topGap + Constants.twoLinedBarHeight,
                     ),
-                    ...widget.tabs[currentTab].topSlivers,
+                    */
+                    SliverPersistentHeader(
+                      pinned: true,
+                      delegate: FixedHeightItemDelegate(
+                        child: const SizedBox.shrink(),
+                        fixedHeight: topGap + Constants.twoLinedBarHeight,
+                      ),
+                    ),
+                    ...widget.topSlivers,
+                    SliverPersistentHeader(
+                      pinned: true,
+                      delegate: FixedHeightItemDelegate(
+                        child: Stack(
+                          children: [
+                            Positioned.fill(
+                              child: ClipRRect(
+                                child: BackdropFilter(
+                                  filter:
+                                      ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                  child: Container(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background
+                                        .withOpacity(0.8),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Column(
+                              children: [
+                                if (widget.navigationHeader != null) ...[
+                                  Gaps.gap16,
+                                  Padding(
+                                    padding: Paddings.horizontal16,
+                                    child: widget.navigationHeader!,
+                                  ),
+                                ],
+                                if (widget.tabs.length > 1) ...[
+                                  Gaps.gap26,
+                                  Padding(
+                                    padding: Paddings.horizontal16,
+                                    child: NavigationTabBar(
+                                      tabs: widget.tabs,
+                                      onTabChanged: (
+                                        int newTabIndex,
+                                        int previousTabIndex,
+                                      ) {
+                                        onTabTap(
+                                          newTabIndex,
+                                          previousTabIndex,
+                                        );
+                                      },
+                                      currentTab: currentTab,
+                                    ),
+                                  ),
+                                ],
+                                Gaps.gap24,
+                              ],
+                            ),
+                          ],
+                        ),
+                        fixedHeight: Dimensions.padding16 +
+                            Constants.navigationTabBarHeight +
+                            Dimensions.padding24 +
+                            (widget.navigationHeader != null ? 46 : 0),
+                      ),
+                    ),
+                    /*
                     SliverPersistentHeader(
                       pinned: true,
                       delegate: ShrinkingAutoBlurHeaderDelegate(
@@ -120,31 +195,38 @@ class _NavigationScreenState extends State<NavigationScreen> {
                                 child: widget.navigationHeader!,
                               ),
                             ],
-                            Gaps.gap26,
-                            Padding(
-                              padding: Paddings.horizontal16,
-                              child: NavigationTabBar(
-                                tabs: widget.tabs,
-                                onTabChanged: (
-                                  int newTabIndex,
-                                  int previousTabIndex,
-                                ) {
-                                  onTabTap(
-                                    newTabIndex,
-                                    previousTabIndex,
-                                  );
-                                },
-                                currentTab: currentTab,
+                            if (widget.tabs.length > 1) ...[
+                              Gaps.gap26,
+                              Padding(
+                                padding: Paddings.horizontal16,
+                                child: NavigationTabBar(
+                                  tabs: widget.tabs,
+                                  onTabChanged: (
+                                    int newTabIndex,
+                                    int previousTabIndex,
+                                  ) {
+                                    onTabTap(
+                                      newTabIndex,
+                                      previousTabIndex,
+                                    );
+                                  },
+                                  currentTab: currentTab,
+                                ),
                               ),
-                            ),
+                            ],
                             Gaps.gap16,
                           ],
                         ),
-                        blurColor:
-                             Theme.of(context).colorScheme.background.withOpacity(0.8),
+                        blurColor: Theme.of(context)
+                            .colorScheme
+                            .background
+                            .withOpacity(0.8),
                       ),
                     ),
+                    */
                     ...widget.tabs[currentTab].slivers,
+                    if (widget.bottomSlivers?.isNotEmpty == true)
+                      ...widget.bottomSlivers!,
                     const SliverFillRemaining(),
                   ],
                 ),

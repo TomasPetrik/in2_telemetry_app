@@ -37,6 +37,25 @@ class TimeOfDay extends HiveObject {
       : hour = dateTime.hour,
         minute = dateTime.minute,
         second = dateTime.second;
+
+  @override
+  String toString() {
+    return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+  }
+
+  DateTime todayDateTime() {
+    return DateTime.now().copyWith(hour: hour, minute: minute, second: second);
+  }
+
+  DateTime tomorrowDateTime() {
+    final today = DateTime.now();
+    return today.copyWith(
+      day: today.day + 1,
+      hour: hour,
+      minute: minute,
+      second: second,
+    );
+  }
 }
 
 class TimeOfDayConverter implements JsonConverter<TimeOfDay, String> {

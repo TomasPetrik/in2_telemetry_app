@@ -1,170 +1,244 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/screens/navigation_screen.dart';
-import 'package:scalesoft_app/ui/screens/select_device_screen.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/action_widget.dart';
 import 'package:scalesoft_app/ui/widgets/blured_user_app_bar.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
+import 'package:scalesoft_app/ui/widgets/info_placeholder.dart';
 import 'package:scalesoft_app/ui/widgets/measurement_header.dart';
+import 'package:scalesoft_app/ui/widgets/measurements_list.dart';
+import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
-class DashboardPage extends StatefulWidget {
-  const DashboardPage({
-    Key? key,
-    required this.userAccount,
-  }) : super(key: key);
+class DashboardPage extends StatelessWidget with BottomSheetMixin {
+  const DashboardPage({super.key});
 
-  final UserAccount userAccount;
-
-  @override
-  State<DashboardPage> createState() => _DashboardPageState();
-}
-
-class _DashboardPageState extends State<DashboardPage> with BottomSheetMixin {
-  final carePlanBloc = getIt<CarePlanBloc>();
-  final scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
+    final UserAccount userAccount = getIt<Session>().userAccount!;
+    final allCarePlans = userAccount.carePlans!;
+
+    final carePlanBloc = getIt<CarePlanBloc>()
+      ..add(
+        CarePlanInitializeEvent(
+          carePlans: allCarePlans,
+          periodTime: WhenPeriod.today,
+        ),
+      );
+
     return BlocBuilder<CarePlanBloc, CarePlanBlocState>(
       bloc: carePlanBloc,
       builder: (context, state) {
-        return Stack(
-          children: [
-            NavigationScreen(
-              topHeaderHeight: Dimensions.padding16 + Constants.actionActiveWidgetHeight + Dimensions.padding26,
-              topHeader: Column(
-                children: [
-                  Gaps.gap16,
-                  Flexible(
-                    child: ActionWidget(
-                      when: DateTime.now(),
-                      activityType: ActivityType.active,
-                    ),
-                  ),
-                  /*
-                Flexible(
-                  child: ActionWidget(
-                    when: DateTime.now(),
-                    activityType: ActivityType.passive,
-                  ),
-                ),
-                */
-                  Gaps.gap26,
-                ],
-              ),
-              navigationHeader: MeasurementHeader(
-                measurementTime: state.selectedPeriod ?? PeriodType.today,
-                openTimeSelector: () async {
-                  final selected = await showMeasurementTime(context, state.selectedPeriod);
-                  if (selected?.selectedPeriod != null) {
-                    carePlanBloc.add(CarePlanTimePeriodEvent(selected!.selectedPeriod!));
-                  } else if (selected?.showCalendar == true) {
-                    //TODO.. show calendar
+        if (state.selectedPeriod == null) {
+          return const SizedBox.shrink();
+        } else {
+          Map<WhenPeriod, int>? measurements;
+
+          if (allCarePlans.isNotEmpty) {
+            measurements = CarePlanHelper.getPossibleWhenPeriods(allCarePlans);
+          }
+
+          return Stack(
+            children: [
+              NavigationScreen(
+                onTabSelected: (tabIndex) {
+                  if (tabIndex == 0) {
+                    carePlanBloc.add(
+                      CurrentPlansChangeEvent(allCarePlans),
+                    );
+                  } else {
+                    carePlanBloc.add(
+                      CurrentPlansChangeEvent(
+                        [
+                          allCarePlans[tabIndex - 1],
+                        ],
+                      ),
+                    );
                   }
                 },
-              ),
-              tabs: [
-                NavigationBarTabItem(
-                  label: 'Vsechna',
-                  topSlivers: [],
-                  slivers: [
-                    SliverPadding(
-                      padding: Paddings.horizontal16,
-                      sliver: SliverToBoxAdapter(
-                        child: Container(
-                          color: Colors.red,
-                          height: 200,
-                          child: const Text('Vsechna'),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                NavigationBarTabItem(
-                  label: 'Teplota',
-                  topSlivers: [],
-                  slivers: [
-                    SliverPadding(
-                      padding: Paddings.horizontal16,
-                      sliver: SliverToBoxAdapter(
-                        child: Container(
-                          color: Colors.yellow,
-                          height: 200,
-                          child: const Text('Teplota'),
-                        ),
+                onRefresh: () async {
+                  carePlanBloc.add(ReloadCarePlansEvent(userAccount));
+                },
+                topSlivers: [
+                  if ((state.selectedPeriod == WhenPeriod.today ||
+                          state.selectedPeriod == WhenPeriod.next10) &&
+                      (state.nextMeasurement?.carePlan
+                              .getTodayRemainingMeasurements()
+                              .isNotEmpty ==
+                          true)) ...{
+                    SliverToBoxAdapter(
+                      child: Column(
+                        children: [
+                          Gaps.gap16,
+                          ActionWidget(
+                            measurement: state.nextMeasurement,
+                          ),
+                          Gaps.gap26,
+                        ],
                       ),
                     ),
-                    const SliverGap(Dimensions.padding16),
-                    SliverPadding(
-                      padding: Paddings.horizontal16,
-                      sliver: SliverToBoxAdapter(
-                        child: HighlightedElevatedButton(
-                          label: context.locale.common_manual_measurement,
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => const SelectDeviceScreen(),
-                                fullscreenDialog: true,
+                  }
+                ],
+                topHeaderHeight: (state.selectedPeriod == WhenPeriod.today ||
+                            state.selectedPeriod == WhenPeriod.next10) &&
+                        (state.nextMeasurement?.carePlan
+                                .getTodayRemainingMeasurements()
+                                .isNotEmpty ==
+                            true)
+                    ? Dimensions.padding16 +
+                        Constants.actionActiveWidgetHeight +
+                        Dimensions.padding26
+                    : 0,
+                topHeader: (state.selectedPeriod == WhenPeriod.today ||
+                            state.selectedPeriod == WhenPeriod.next10) &&
+                        (state.nextMeasurement?.carePlan
+                                .getTodayRemainingMeasurements()
+                                .isNotEmpty ==
+                            true)
+                    ? Column(
+                        children: [
+                          Gaps.gap16,
+                          Flexible(
+                            child: ActionWidget(
+                              measurement: state.nextMeasurement,
+                            ),
+                          ),
+                          Gaps.gap26,
+                        ],
+                      )
+                    : const SizedBox.shrink(),
+                navigationHeader: measurements?.isNotEmpty == true
+                    ? MeasurementHeader(
+                        whenPeriod: state.selectedPeriod ?? WhenPeriod.today,
+                        openTimeSelector: () async {
+                          final selected = await showWhenSelector(
+                            context,
+                            state.selectedPeriod,
+                            CarePlanHelper.getPossibleWhenPeriods(
+                              state.currentCarePlans ?? allCarePlans,
+                            ),
+                          );
+                          if (selected?.selectedPeriod != null) {
+                            carePlanBloc.add(
+                              TimePeriodChangeEvent(
+                                selected!.selectedPeriod!,
                               ),
                             );
-                          },
+                          } else if (selected?.showCalendar == true) {
+                            //TODO.. show calendar
+                          }
+                        },
+                      )
+                    : null,
+                tabs: [
+                  if (allCarePlans.isEmpty) ...{
+                    NavigationBarTabItem(
+                      label: '',
+                      slivers: [
+                        SliverPadding(
+                          padding: Paddings.horizontal64,
+                          sliver: InfoPlaceholder(
+                            icon: SvgPicture.asset(
+                              'assets/icons/icon_wave_pulse_big.svg',
+                              color: Theme.of(context).colorScheme.tertiary,
+                            ),
+                            label: context.locale.dashboard_screen_no_plan,
+                          ),
+                        )
+                      ],
+                    )
+                  } else ...[
+                    NavigationBarTabItem(
+                      label: context.locale.dashboard_screen_all,
+                      slivers: [
+                        MeasurementsList(
+                          measurements: state.measurements!,
+                          nextMeasurement: state.nextMeasurement!,
+                          showDateHeader:
+                              state.selectedPeriod == WhenPeriod.next10,
+                        ),
+                      ],
+                    ),
+                    ...allCarePlans
+                        .map(
+                          (carePlan) => NavigationBarTabItem(
+                            label: context.locale.common_measurement_types(
+                              carePlan.activity.measurementType.name,
+                            ),
+                            slivers: [
+                              MeasurementsList(
+                                measurements: state.measurements!,
+                                nextMeasurement: state.nextMeasurement!,
+                                showDateHeader:
+                                    state.selectedPeriod == WhenPeriod.next10,
+                              ),
+                            ],
+                          ),
+                        )
+                        .toList(),
+                  ],
+                ],
+                bottomSlivers: [
+                  if (userAccount.userPermissions?.contains(
+                        UserPermission.enterMeasurementWithoutPlan,
+                      ) ==
+                      true) ...[
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: Paddings.horizontal16,
+                        child: Column(
+                          children: [
+                            if (state.measurements?.isNotEmpty == true) ...[
+                              Container(
+                                height: 0.5,
+                                color:
+                                    Theme.of(context).colorScheme.onSecondary,
+                              ),
+                              Gaps.gap16,
+                              Text(
+                                context.locale
+                                    .dashboard_screen_manual_measurement_info,
+                                style: ScaleTextStyles.text.apply(
+                                  color:
+                                      Theme.of(context).colorScheme.onSecondary,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                            Gaps.gap24,
+                            HighlightedElevatedButton(
+                              label: context.locale.common_manual_measurement,
+                              buttonType: ButtonType.primary,
+                              onPressed: () async {},
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ],
-                ),
-                NavigationBarTabItem(
-                  label: 'Krev',
-                  slivers: [
-                    SliverPadding(
-                      padding: Paddings.horizontal16,
-                      sliver: SliverToBoxAdapter(
-                        child: Container(
-                          color: Colors.blue,
-                          height: 200,
-                          child: const Text('Krev'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                NavigationBarTabItem(
-                  label: 'Tlak',
-                  slivers: [
-                    SliverPadding(
-                      padding: Paddings.horizontal16,
-                      sliver: SliverToBoxAdapter(
-                        child: Container(
-                          color: Colors.green,
-                          height: 200,
-                          child: const Text('Tlak'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: BluredUserAppBar(
-                userAccount: widget.userAccount,
+                ],
               ),
-            ),
-          ],
-        );
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: BluredUserAppBar(
+                  userAccount: userAccount,
+                ),
+              ),
+            ],
+          );
+        }
       },
     );
   }

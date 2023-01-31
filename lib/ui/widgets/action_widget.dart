@@ -1,24 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:scalesoft_app/extensions/date_extensions.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
+import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 class ActionWidget extends StatelessWidget {
   const ActionWidget({
     super.key,
-    required this.when,
-    required this.activityType,
+    required this.measurement,
   });
 
-  final DateTime when;
-  final ActivityType activityType;
+  final Measurement? measurement;
+
+  MeasurementType get measurementType {
+    final now = DateTime.now();
+
+    measurement?.carePlan.hasMeasurementsToday();
+
+    if (measurement != null) {
+      final todayStart = measurement!.timingDayWhen.start.todayDateTime();
+      final todayEnd = measurement!.timingDayWhen.end.todayDateTime();
+      if (now.isBefore(todayEnd) && now.isAfter(todayStart)) {
+        return MeasurementType.ongoing;
+      } else if (now.isBefore(todayStart)) {
+        return MeasurementType.upcoming;
+      } else if (measurement?.carePlan.hasMeasurementsToday() == true) {
+        return MeasurementType.finished;
+      }
+    }
+
+    return MeasurementType.noMeasurement;
+  }
+
+  String getMeasurementText(BuildContext context) {
+    switch (measurementType) {
+      case MeasurementType.ongoing:
+        return '${context.locale.common_measurement} ${context.locale.common_measurement_types(
+              measurement!.carePlan.activity.measurementType.name,
+            ).toLowerCase()} ${measurement!.timingDayWhen.whenCode != null ? context.locale.common_when_code(
+              measurement!.timingDayWhen.whenCode!.name,
+            ).toLowerCase() : ''}';
+
+      case MeasurementType.upcoming:
+        return '${context.locale.common_measurement} ${context.locale.common_measurement_types(
+              measurement!.carePlan.activity.measurementType.name,
+            ).toLowerCase()} ${measurement!.timingDayWhen.whenCode != null ? context.locale.common_when_code(
+              measurement!.timingDayWhen.whenCode!.name,
+            ).toLowerCase() : ''} ve ${measurement!.timingDayWhen.start.toString()}';
+
+      case MeasurementType.finished:
+        return context.locale.dashboard_screen_no_more_measurements;
+      case MeasurementType.noMeasurement:
+        return context.locale.dashboard_screen_no_todays_measurements;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: activityType == ActivityType.active
+      height: measurementType == MeasurementType.ongoing
           ? Constants.actionActiveWidgetHeight
           : Constants.actionPassiveWidgetHeight,
       margin: Paddings.horizontal16,
@@ -46,16 +87,16 @@ class ActionWidget extends StatelessWidget {
                 ),
                 Gaps.gap16,
                 Text(
-                  'Mereni krve ${activityType == ActivityType.passive ? 've ${when.getTimeShort()}' : ''}',
+                  getMeasurementText(context),
                 ),
-                if (activityType == ActivityType.active) ...[
+                if (measurementType == MeasurementType.ongoing) ...[
                   const Spacer(),
-                  Text(when.getTimeShort()),
+                  Text(measurement?.timingDayWhen.start.toString() ?? ''),
                 ],
               ],
             ),
           ),
-          if (activityType == ActivityType.active) ...[
+          if (measurementType == MeasurementType.ongoing) ...[
             const Spacer(),
             HighlightedElevatedButton(
               label: context.locale.common_measure_now,
@@ -68,4 +109,4 @@ class ActionWidget extends StatelessWidget {
   }
 }
 
-enum ActivityType { active, passive }
+enum MeasurementType { ongoing, upcoming, finished, noMeasurement }

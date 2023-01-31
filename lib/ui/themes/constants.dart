@@ -22,7 +22,7 @@ class Constants {
   static const double appBarHeight = 56;
   static const double twoLinedBarHeight = 76;
   static const double bottomTabBarHeight = 56;
-  static const double navigationTabBarHeight = 28;
+  static const double navigationTabBarHeight = 32;
   static const double buttonHeight = 48;
   static const double searchBarHeight = 48;
 

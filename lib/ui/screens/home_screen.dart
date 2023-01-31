@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
-import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/settings_route.dart';
@@ -45,19 +43,6 @@ class HomeScreen extends StatelessWidget {
     }
   }
 
-  Map<String, String> _getParams(index) {
-    final Session session = getIt<Session>();
-    final userId = session.userAccount?.user.muid;
-
-    switch (index) {
-      case 0:
-      case 1:
-        return {'userId': userId!};
-      default:
-        return {};
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,7 +56,6 @@ class HomeScreen extends StatelessWidget {
         onTap: ((index) {
           GoRouter.of(context).goNamed(
             _getPathByIndex(index),
-            params: _getParams(index),
           );
         }),
         currentIndex: _getCurrentTabIndex(),

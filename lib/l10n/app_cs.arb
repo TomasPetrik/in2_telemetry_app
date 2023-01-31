@@ -5,22 +5,30 @@
   },
   "common_close": "Zavřít",
   "common_measurement": "Měření",
+  "common_measure": "Měřit",
   "common_measure_now": "Měřit teď",
   "common_manual_measurement": "Vlastní měření",
   "common_show_calendar": "Zobrazit kalendář",
   "common_telemedicine": "Telemedicína",
-  "common_measurement_times": "{measurementTime, select, today{Dnes} upcomming{Nejbližší} tomorrow{Zítra} other{Jiný}}",
+  "common_measurement_times": "{measurementTime, select, today{Dnes} next10{Nejbližší} tomorrow{Zítra} other{Jiný}}",
   "@common_measurement_times": {
     "description": "Measurement times",
     "placeholders": {
       "measurementTime": {}
     }
   },
-  "common_measurement_types": "{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace Kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Tepová frekvence} ews{Ews} respiratoryRate{Dechová frekvence} other{Jiný}}",
+  "common_measurement_types": "{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace Kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} other{Jiný}}",
   "@common_measurement_types": {
     "description": "Measurement types",
     "placeholders": {
       "measurementType": {}
+    }
+  },
+  "common_when_code": "{whenCode, select, morning{Ráno} earlyMorning{Brzy ráno} lateMorning{Pozdní ráno} lateMorning{Neskoré ráno} noon{Poledne} afternoon{Odpoledne} earlyAfternoon{Brzké odpoledne} lateAfternoon{Pozdní odpoledne} evening{Večer} earlyEvening{Podvečer} lateEvening{Pozdní večer} night{Noc} afterSleep{Po spánku} beforeSleep{Před spaním} afterWaking{Po probuzení} atBreakfast{Na snídani} atLunch{Na obědě} atDinner{Na večeři} beforeBreakfast{Před snídaní} beforeLunch{Před obědem} beforeDinner{Před večeří} afterBreakfast{Po snídani} afterLunch{Po obědě} afterDinner{Po večeři} other{Nedefinovano}}",
+  "@common_when_code": {
+    "description": "When codes",
+    "placeholders": {
+      "whenCode": {}
     }
   },
   "common_plus_n_others": "+ {count} další",
@@ -145,5 +153,33 @@
   "care_plan_detail_screen_active_from_date": "Platný od",
   "care_plan_detail_screen_active_to_date": "Platný do",
   "care_plan_detail_screen_measurement": "Měření",
-  "care_plan_detail_daily_times": "Denní doby"
+  "care_plan_detail_daily_times": "Denní doby",
+  "dashboard_screen_no_plan": "Uživatel nemá nastaven plán a historie měření neobsahuje žádná data.",
+  "dashboard_screen_all": "Všechna",
+  "dashboard_screen_measurement_interval": "Interval {fromTime} - {toTime}",
+  "@dashboard_screen_measurement_interval": {
+    "placeholders": {
+      "fromTime": {
+        "type": "String"
+      },
+      "toTime": {
+        "type": "String"
+      }
+    }
+  },
+  "dashboard_screen_manual_measurement_info": "Vlastní měření můžete spustit\ni mimo předepsaný plán.",
+  "dashboard_screen_upcoming_measurement_info": "Nejbližší měření je {date} v {time}.",
+  "@dashboard_screen_upcoming_measurement_info": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+
+  "dashboard_screen_no_more_measurements": "Dnes plánované měření skončilo.",
+  "dashboard_screen_no_todays_measurements": "Dnes nemáte naplánované žádné měření."
 }

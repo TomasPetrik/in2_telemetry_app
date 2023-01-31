@@ -21,10 +21,13 @@ class NavigationTabChip extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadii.radius8,
         child: Container(
+          height: Constants.navigationTabBarHeight,
           padding: const EdgeInsets.symmetric(
             horizontal: Dimensions.padding10,
           ),
-          color: isSelected ? Theme.of(context).primaryColor : Theme.of(context).colorScheme.secondary,
+          color: isSelected
+              ? Theme.of(context).primaryColor
+              : Theme.of(context).colorScheme.secondary,
           child: Center(
             child: Text(
               label,

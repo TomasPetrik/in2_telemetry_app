@@ -4,16 +4,18 @@ import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
-import 'package:scalesoft_app/ui/widgets/measurement_header.dart';
 import 'package:scalesoft_app/ui/widgets/period_item.dart';
+import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 class MeasurementTimeDialog extends StatelessWidget {
   const MeasurementTimeDialog({
     super.key,
-    required this.selectedTime,
+    required this.whenPeriod,
+    required this.measurements,
   });
 
-  final PeriodType selectedTime;
+  final WhenPeriod whenPeriod;
+  final Map<WhenPeriod, int> measurements;
 
   @override
   Widget build(BuildContext context) {
@@ -39,47 +41,25 @@ class MeasurementTimeDialog extends StatelessWidget {
             ),
           ),
           Gaps.gap24,
-          InkWell(
-            onTap: () {
-              Navigator.of(context).pop(
-                TypePeriodSelection(selectedPeriod: PeriodType.upcomming),
+          ...measurements.entries.map(
+            (entry) {
+              return InkWell(
+                onTap: () {
+                  Navigator.of(context).pop(
+                    TypePeriodSelection(selectedPeriod: entry.key),
+                  );
+                },
+                child: Padding(
+                  padding: Paddings.horizontal16,
+                  child: PeriodItem(
+                    whenPeriod: entry.key,
+                    isSelected: whenPeriod == entry.key,
+                    count: entry.value,
+                  ),
+                ),
               );
             },
-            child: Padding(
-              padding: Paddings.horizontal16,
-              child: PeriodItem(
-                periodTime: PeriodType.upcomming,
-                isSelected: selectedTime == PeriodType.upcomming,
-              ),
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.of(context)
-                  .pop(TypePeriodSelection(selectedPeriod: PeriodType.today));
-            },
-            child: Padding(
-              padding: Paddings.horizontal16,
-              child: PeriodItem(
-                periodTime: PeriodType.today,
-                isSelected: selectedTime == PeriodType.today,
-              ),
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.of(context).pop(
-                TypePeriodSelection(selectedPeriod: PeriodType.tomorrow),
-              );
-            },
-            child: Padding(
-              padding: Paddings.horizontal16,
-              child: PeriodItem(
-                periodTime: PeriodType.tomorrow,
-                isSelected: selectedTime == PeriodType.tomorrow,
-              ),
-            ),
-          ),
+          ).toList(),
           Gaps.gap24,
           Padding(
             padding: Paddings.horizontal16,
