@@ -59,9 +59,6 @@ class ActionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: measurementType == MeasurementType.ongoing
-          ? Constants.actionActiveWidgetHeight
-          : Constants.actionPassiveWidgetHeight,
       margin: Paddings.horizontal16,
       padding: Paddings.all16,
       decoration: BoxDecoration(
@@ -77,24 +74,23 @@ class ActionWidget extends StatelessWidget {
       ),
       child: Column(
         children: [
-          SizedBox(
-            height: 20,
-            child: Row(
-              children: [
-                SvgPicture.asset(
-                  'assets/icons/icon_wave_pulse.svg',
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-                Gaps.gap16,
-                Text(
+          Row(
+            children: [
+              SvgPicture.asset(
+                'assets/icons/icon_wave_pulse.svg',
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+              Gaps.gap16,
+              Expanded(
+                child: Text(
                   getMeasurementText(context),
                 ),
-                if (measurementType == MeasurementType.ongoing) ...[
-                  const Spacer(),
-                  Text(measurement?.timingDayWhen.start.toString() ?? ''),
-                ],
+              ),
+              if (measurementType == MeasurementType.ongoing) ...[
+                Gaps.gap16,
+                Text(measurement?.timingDayWhen.start.toString() ?? ''),
               ],
-            ),
+            ],
           ),
           if (measurementType == MeasurementType.ongoing) ...[
             const Spacer(),

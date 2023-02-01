@@ -29,33 +29,40 @@ class TokenInterceptor extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     final accessToken = session.token;
-    if (accessToken == null || accessToken.isExpired()) {
-      refreshToken();
-    }
 
-    if (session.token != null) {
-      options.headers.putIfAbsent(
-        HttpHeaders.authorizationHeader,
-        () => 'Bearer ${session.token!.accessToken}',
-      );
+    /*
+    if (accessToken == null || accessToken.isExpired()) {
+      accessToken = await refreshToken();
+    }
+    */
+
+    if (accessToken != null) {
+      options.headers[HttpHeaders.authorizationHeader] =
+          'Bearer ${session.token!.accessToken}';
     }
 
     return super.onRequest(options, handler);
   }
 
   @override
-  void onError(DioError err, ErrorInterceptorHandler handler) {
+  Future<void> onError(DioError err, ErrorInterceptorHandler handler) async {
     switch (err.response?.statusCode) {
       case 400:
         throw InvalidRequestException();
       case 401:
-        refreshToken().then((value) async {
-          err.requestOptions.headers.remove(HttpHeaders.authorizationHeader);
-          final response =
-              await getIt<Dio>(instanceName: Constants.privateDioName)
-                  .fetch(err.requestOptions);
+        final originReqOpt = err.requestOptions;
+
+        final newAuthToken = await refreshToken();
+        if (newAuthToken != null) {
+          originReqOpt.headers[HttpHeaders.authorizationHeader] =
+              'Bearer ${session.token!.accessToken}';
+          final dio = getIt<Dio>(instanceName: Constants.privateDioName);
+          final response = await dio.fetch(originReqOpt);
           handler.resolve(response);
-        });
+        } else {
+          throw InvalidRequestException();
+        }
+
         return;
       case 403:
         throw ForbiddenException();
@@ -67,7 +74,7 @@ class TokenInterceptor extends Interceptor {
     }
   }
 
-  Future<void> refreshToken() async {
+  Future<AuthToken?> refreshToken() async {
     try {
       final userId = session.userAccount?.user.muid;
       final refreshToken = session.userAccount?.authToken?.refreshToken;
@@ -89,9 +96,12 @@ class TokenInterceptor extends Interceptor {
         );
 
         session.token = newToken;
+
+        return newToken;
       }
     } catch (e) {
-      return;
+      return null;
     }
+    return null;
   }
 }

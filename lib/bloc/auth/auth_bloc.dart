@@ -131,6 +131,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             .toList(),
       );
 
+      _session.userAccount = userAccount;
+
       //load and assign care plans, fulfillment_evaluation
       final activeCarePlans = await _carePlansRepository.loadActiveCarePlans(
         patientMuid: userInfo.currentUser.muid,

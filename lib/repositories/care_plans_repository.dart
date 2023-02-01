@@ -16,7 +16,7 @@ class CarePlansRepository {
     int count = 100,
   }) =>
       carePlanApiClient.loadActiveCarePlans(
-        session.hospital!.authData.baseUrl,
+        session.userAccount!.hospital!.authData.baseUrl,
         patientMuid,
         start,
         count,
