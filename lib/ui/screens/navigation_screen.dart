@@ -170,60 +170,14 @@ class _NavigationScreenState extends State<NavigationScreen> {
                           ],
                         ),
                         fixedHeight: Dimensions.padding16 +
-                            Constants.navigationTabBarHeight +
+                            (widget.tabs.length > 1
+                                ? Dimensions.padding26 +
+                                    Constants.navigationTabBarHeight
+                                : 0) +
                             Dimensions.padding24 +
-                            (widget.navigationHeader != null ? 46 : 0),
+                            Dimensions.padding20,
                       ),
                     ),
-                    /*
-                    SliverPersistentHeader(
-                      pinned: true,
-                      delegate: ShrinkingAutoBlurHeaderDelegate(
-                        topOffset: topGap + Constants.twoLinedBarHeight,
-                        childHeight: Dimensions.padding16 +
-                            Constants.navigationTabBarHeight +
-                            Dimensions.padding16 +
-                            (widget.navigationHeader != null ? 46 : 0),
-                        shrinedChildHeight: widget.topHeaderHeight,
-                        shrinkingChild: widget.topHeader,
-                        child: Column(
-                          children: [
-                            if (widget.navigationHeader != null) ...[
-                              Gaps.gap16,
-                              Padding(
-                                padding: Paddings.horizontal16,
-                                child: widget.navigationHeader!,
-                              ),
-                            ],
-                            if (widget.tabs.length > 1) ...[
-                              Gaps.gap26,
-                              Padding(
-                                padding: Paddings.horizontal16,
-                                child: NavigationTabBar(
-                                  tabs: widget.tabs,
-                                  onTabChanged: (
-                                    int newTabIndex,
-                                    int previousTabIndex,
-                                  ) {
-                                    onTabTap(
-                                      newTabIndex,
-                                      previousTabIndex,
-                                    );
-                                  },
-                                  currentTab: currentTab,
-                                ),
-                              ),
-                            ],
-                            Gaps.gap16,
-                          ],
-                        ),
-                        blurColor: Theme.of(context)
-                            .colorScheme
-                            .background
-                            .withOpacity(0.8),
-                      ),
-                    ),
-                    */
                     ...widget.tabs[currentTab].slivers,
                     if (widget.bottomSlivers?.isNotEmpty == true)
                       ...widget.bottomSlivers!,

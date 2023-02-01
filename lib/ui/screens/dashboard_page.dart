@@ -158,17 +158,19 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                       ],
                     )
                   } else ...[
-                    NavigationBarTabItem(
-                      label: context.locale.dashboard_screen_all,
-                      slivers: [
-                        MeasurementsList(
-                          measurements: state.measurements!,
-                          nextMeasurement: state.nextMeasurement!,
-                          showDateHeader:
-                              state.selectedPeriod == WhenPeriod.next10,
-                        ),
-                      ],
-                    ),
+                    if (allCarePlans.length > 1) ...{
+                      NavigationBarTabItem(
+                        label: context.locale.dashboard_screen_all,
+                        slivers: [
+                          MeasurementsList(
+                            measurements: state.measurements!,
+                            nextMeasurement: state.nextMeasurement!,
+                            showDateHeader:
+                                state.selectedPeriod == WhenPeriod.next10,
+                          ),
+                        ],
+                      ),
+                    },
                     ...allCarePlans
                         .map(
                           (carePlan) => NavigationBarTabItem(
