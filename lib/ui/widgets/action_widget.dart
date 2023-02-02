@@ -58,34 +58,49 @@ class ActionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            SvgPicture.asset(
-              'assets/icons/icon_wave_pulse.svg',
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
-            Gaps.gap16,
-            Expanded(
-              child: Text(
-                getMeasurementText(context),
-              ),
-            ),
-            if (measurementType == MeasurementType.ongoing) ...[
-              Gaps.gap16,
-              Text(measurement?.timingDayWhen.start.toString() ?? ''),
-            ],
+    return Container(
+      margin: Paddings.horizontal16,
+      padding: Paddings.all16,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadii.radius16,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Theme.of(context).colorScheme.primaryContainer,
+            Theme.of(context).colorScheme.onPrimaryContainer,
           ],
         ),
-        if (measurementType == MeasurementType.ongoing) ...[
-          Gaps.gap16,
-          HighlightedElevatedButton(
-            label: context.locale.common_measure_now,
-            buttonType: ButtonType.secondary,
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              SvgPicture.asset(
+                'assets/icons/icon_wave_pulse.svg',
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+              Gaps.gap16,
+              Expanded(
+                child: Text(
+                  getMeasurementText(context),
+                ),
+              ),
+              if (measurementType == MeasurementType.ongoing) ...[
+                Gaps.gap16,
+                Text(measurement?.timingDayWhen.start.toString() ?? ''),
+              ],
+            ],
           ),
+          if (measurementType == MeasurementType.ongoing) ...[
+            Gaps.gap16,
+            HighlightedElevatedButton(
+              label: context.locale.common_measure_now,
+              buttonType: ButtonType.secondary,
+            ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }
