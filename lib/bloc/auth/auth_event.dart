@@ -52,3 +52,10 @@ class LogoutUser extends AuthEvent {
   @override
   List<Object?> get props => [userAccount];
 }
+
+class ErrorLoadDataEvent extends AuthEvent {
+  const ErrorLoadDataEvent();
+
+  @override
+  List<Object?> get props => [];
+}

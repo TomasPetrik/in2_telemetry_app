@@ -3,11 +3,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/navigation_tab_chip.dart';
 
-class MeasurementItem extends StatelessWidget {
+class MeasurementItem extends StatelessWidget with BottomSheetMixin {
   const MeasurementItem({
     super.key,
     required this.timingDayWhen,
@@ -84,7 +85,12 @@ class MeasurementItem extends StatelessWidget {
             NavigationTabChip(
               label: context.locale.common_measure,
               isSelected: true,
-              onTap: () {},
+              onTap: () {
+                showDeviceSelector(
+                  context: context,
+                  carePlanActivity: carePlan.activity,
+                );
+              },
             ),
           ],
         ],

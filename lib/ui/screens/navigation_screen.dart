@@ -9,12 +9,14 @@ class NavigationBarTabItem {
   NavigationBarTabItem({
     required this.label,
     required this.slivers,
+    this.bottomSlivers,
     this.scrollPosition,
   });
 
   final String label;
 
   final List<Widget> slivers;
+  final List<Widget>? bottomSlivers;
   double? scrollPosition;
 }
 
@@ -28,7 +30,6 @@ class NavigationScreen extends StatefulWidget {
     required this.navigationHeader,
     required this.topHeaderHeight,
     this.onTabSelected,
-    this.bottomSlivers,
     this.onRefresh,
   })  : assert(tabs.isNotEmpty),
         assert(currentTab < tabs.length),
@@ -40,7 +41,6 @@ class NavigationScreen extends StatefulWidget {
   final Widget topHeader;
   final Widget? navigationHeader;
   final double topHeaderHeight;
-  final List<Widget>? bottomSlivers;
   final Function(int tabIndex)? onTabSelected;
 
   final Future<void> Function()? onRefresh;
@@ -179,8 +179,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
                       ),
                     ),
                     ...widget.tabs[currentTab].slivers,
-                    if (widget.bottomSlivers?.isNotEmpty == true)
-                      ...widget.bottomSlivers!,
+                    if (widget.tabs[currentTab].bottomSlivers?.isNotEmpty == true)
+                      ...widget.tabs[currentTab].bottomSlivers!,
                     const SliverFillRemaining(),
                   ],
                 ),

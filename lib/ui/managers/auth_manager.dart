@@ -6,11 +6,13 @@ import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
+import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/auth_web_screen.dart';
+import 'package:scalesoft_app/ui/screens/mixins/popup_dialog_mixin.dart';
 import 'package:scalesoft_app/ui/widgets/loading_indicator.dart';
 
-class AuthManager extends StatelessWidget {
+class AuthManager extends StatelessWidget with PopupDialogMixin {
   const AuthManager({super.key});
 
   @override
@@ -56,6 +58,9 @@ class AuthManager extends StatelessWidget {
           },
           inactiveUserRemoved: (userAccount) {
             GoRouter.of(context).pop();
+          },
+          errorLoadData: () {
+            showError(context, message: context.locale.common_error_404);
           },
         );
       },

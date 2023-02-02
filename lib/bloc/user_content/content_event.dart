@@ -1,19 +1,19 @@
 import 'package:equatable/equatable.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 
-abstract class SwitchContentEvent extends Equatable {
-  const SwitchContentEvent();
+abstract class ContentEvent extends Equatable {
+  const ContentEvent();
   @override
   List<Object?> get props => [];
 }
 
-class CheckLastLoggedUserContentEvent extends SwitchContentEvent {
+class CheckLastLoggedUserContentEvent extends ContentEvent {
   const CheckLastLoggedUserContentEvent();
   @override
   List<Object?> get props => [];
 }
 
-class SwitchUserContentEvent extends SwitchContentEvent {
+class SwitchUserContentEvent extends ContentEvent {
   final UserAccount userAccount;
 
   const SwitchUserContentEvent({required this.userAccount});
@@ -22,7 +22,7 @@ class SwitchUserContentEvent extends SwitchContentEvent {
   List<Object?> get props => [userAccount];
 }
 
-class OnUserAddedContentEvent extends SwitchContentEvent {
+class OnUserAddedContentEvent extends ContentEvent {
   final UserAccount userAccount;
 
   const OnUserAddedContentEvent({required this.userAccount});
@@ -31,21 +31,21 @@ class OnUserAddedContentEvent extends SwitchContentEvent {
   List<Object?> get props => [userAccount];
 }
 
-class OnAppearanceChangedContentEvent extends SwitchContentEvent {
+class OnAppearanceChangedContentEvent extends ContentEvent {
   const OnAppearanceChangedContentEvent();
 
   @override
   List<Object?> get props => [];
 }
 
-class SwitchAllUsersContentEvent extends SwitchContentEvent {
+class SwitchAllUsersContentEvent extends ContentEvent {
   const SwitchAllUsersContentEvent();
 
   @override
   List<Object?> get props => [];
 }
 
-class SwitchNoUserContentEvent extends SwitchContentEvent {
+class SwitchNoUserContentEvent extends ContentEvent {
   const SwitchNoUserContentEvent();
 
   @override

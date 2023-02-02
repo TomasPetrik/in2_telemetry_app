@@ -8,11 +8,17 @@ part 'care_plan_bloc_state.freezed.dart';
 class CarePlanBlocState with _$CarePlanBlocState {
   const CarePlanBlocState._();
 
-
   factory CarePlanBlocState({
     WhenPeriod? selectedPeriod,
     List<CarePlan>? currentCarePlans,
     Measurement? nextMeasurement,
     List<Measurement>? measurements,
   }) = _HasData;
+}
+
+@freezed
+class CarePlanBlocErrorState with _$CarePlanBlocErrorState {
+  const CarePlanBlocErrorState._();
+
+  factory CarePlanBlocErrorState(final String errorMessage) = _Error;
 }

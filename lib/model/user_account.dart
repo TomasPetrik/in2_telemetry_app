@@ -23,6 +23,7 @@ class UserAccount with _$UserAccount {
     @HiveField(6) List<UserAccount>? representedPeople,
     @HiveField(7) bool? hasParent,
     @HiveField(8) List<CarePlan>? carePlans,
+    @HiveField(9) bool? sessionExpired,
   }) = _UserAccount;
 
   factory UserAccount.fromJson(Map<String, dynamic> json) =>
@@ -30,6 +31,18 @@ class UserAccount with _$UserAccount {
 
   @override
   String toString() => toJson().toString();
+
+  bool hasProblem() {
+    if (sessionExpired == true) {
+      return true;
+    }
+
+    if (carePlans?.any((carePlan) => carePlan.wasChanged == true) == true) {
+      return true;
+    }
+
+    return false;
+  }
 }
 
 @HiveType(typeId: 6)

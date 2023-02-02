@@ -16,11 +16,13 @@ class UserItemCompound extends StatelessWidget {
     required this.userAccount,
     required this.onUserSelected,
     required this.userItemCompoundType,
+    this.showWarning,
   });
 
   final UserAccount userAccount;
   final Function(UserAccount) onUserSelected;
   final UserItemCompoundType userItemCompoundType;
+  final bool? showWarning;
 
   int get _itemCount {
     return userAccount.representedPeople?.isNotEmpty == true
@@ -76,11 +78,17 @@ class UserItemCompound extends StatelessWidget {
           onTap: () {
             onUserSelected.call(userAccount);
           },
-          child: UserItem(
-            key: ValueKey(index),
-            userAccount: userAccount,
-            hasNavigationIcon: userItemCompoundType == UserItemCompoundType.settings,
-            userItemType: _getUserItemTypeByIndex(index),
+          child: Stack(
+            children: [
+              UserItem(
+                key: ValueKey(index),
+                showWarning: showWarning,
+                userAccount: userAccount,
+                hasNavigationIcon:
+                    userItemCompoundType == UserItemCompoundType.settings,
+                userItemType: _getUserItemTypeByIndex(index),
+              ),
+            ],
           ),
         );
       }),

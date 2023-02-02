@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:scalesoft_app/api/dto/auth_data.dart';
+import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
+import 'package:scalesoft_app/api/dto/measurement/device.dart';
 
 class Constants {
   /* API */
@@ -62,6 +64,27 @@ class Constants {
       ),
     ),
   ];
+
+  static const List<Device> devices = [
+    Device(
+      modelName: 'Beurer BM 77',
+      deviceModel: DeviceModel.beurerBm77,
+      imagePath: 'assets/images/beurer_bm_77.png',
+      supportedMeasurementTypes: [
+        MeasurementType.bloodPressure,
+        MeasurementType.heartRate,
+      ],
+    ),
+    Device(
+      modelName: 'Omron M7',
+      deviceModel: DeviceModel.omronM7,
+      imagePath: 'assets/images/omron_m7.png',
+      supportedMeasurementTypes: [
+        MeasurementType.bloodPressure,
+        MeasurementType.heartRate,
+      ],
+    ),
+  ];
 }
 
 class Paddings {
@@ -103,6 +126,8 @@ class Paddings {
       EdgeInsets.only(top: Dimensions.padding16);
   static const EdgeInsetsGeometry top20 =
       EdgeInsets.only(top: Dimensions.padding20);
+  static const EdgeInsetsGeometry top24 =
+      EdgeInsets.only(top: Dimensions.padding24);
   static const EdgeInsetsGeometry top30 =
       EdgeInsets.only(top: Dimensions.padding30);
   static const EdgeInsetsGeometry top32 =
@@ -213,6 +238,7 @@ class Gaps {
   static Gap gap14 = const Gap(Dimensions.padding14);
   static Gap gap16 = const Gap(Dimensions.padding16);
   static Gap gap17 = const Gap(Dimensions.padding17);
+  static Gap gap18 = const Gap(Dimensions.padding18);
   static Gap gap20 = const Gap(Dimensions.padding20);
   static Gap gap24 = const Gap(Dimensions.padding24);
   static Gap gap26 = const Gap(Dimensions.padding26);
@@ -238,6 +264,7 @@ class Dimensions {
   static const double padding14 = 14;
   static const double padding16 = 16;
   static const double padding17 = 17;
+  static const double padding18 = 18;
   static const double padding20 = 20;
   static const double padding24 = 24;
   static const double padding25 = 25;

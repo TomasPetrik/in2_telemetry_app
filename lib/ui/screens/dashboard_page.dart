@@ -185,48 +185,58 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                                     state.selectedPeriod == WhenPeriod.next10,
                               ),
                             ],
+                            bottomSlivers: [
+                              if (userAccount.userPermissions?.contains(
+                                    UserPermission.enterMeasurementWithoutPlan,
+                                  ) ==
+                                  true) ...[
+                                SliverToBoxAdapter(
+                                  child: Padding(
+                                    padding: Paddings.horizontal16,
+                                    child: Column(
+                                      children: [
+                                        if (state.measurements?.isNotEmpty ==
+                                            true) ...[
+                                          Container(
+                                            height: 0.5,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSecondary,
+                                          ),
+                                          Gaps.gap16,
+                                          Text(
+                                            context.locale
+                                                .dashboard_screen_manual_measurement_info,
+                                            style: ScaleTextStyles.text.apply(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSecondary,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                        Gaps.gap24,
+                                        HighlightedElevatedButton(
+                                          label: context
+                                              .locale.common_manual_measurement,
+                                          buttonType: ButtonType.primary,
+                                          onPressed: () async {
+                                            showDeviceSelector(
+                                              context: context,
+                                              carePlanActivity:
+                                                  carePlan.activity,
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
                         )
                         .toList(),
-                  ],
-                ],
-                bottomSlivers: [
-                  if (userAccount.userPermissions?.contains(
-                        UserPermission.enterMeasurementWithoutPlan,
-                      ) ==
-                      true) ...[
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: Paddings.horizontal16,
-                        child: Column(
-                          children: [
-                            if (state.measurements?.isNotEmpty == true) ...[
-                              Container(
-                                height: 0.5,
-                                color:
-                                    Theme.of(context).colorScheme.onSecondary,
-                              ),
-                              Gaps.gap16,
-                              Text(
-                                context.locale
-                                    .dashboard_screen_manual_measurement_info,
-                                style: ScaleTextStyles.text.apply(
-                                  color:
-                                      Theme.of(context).colorScheme.onSecondary,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                            Gaps.gap24,
-                            HighlightedElevatedButton(
-                              label: context.locale.common_manual_measurement,
-                              buttonType: ButtonType.primary,
-                              onPressed: () async {},
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
                   ],
                 ],
               ),

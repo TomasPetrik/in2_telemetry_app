@@ -83,17 +83,13 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
   @override
   UserAccount? getLast() {
     try {
-      final localAccount = box.values.reduce(
-        (acc, current) =>
-            acc.signedIn!.isAfter(current.signedIn!) ? acc : current,
-      );
+      final localAccounts = box.values.toList()
+        ..sort(
+          (a, b) => b.lastActiveIn!.millisecondsSinceEpoch
+              .compareTo(a.lastActiveIn!.millisecondsSinceEpoch),
+        );
 
-      final isZero = localAccount.signedIn!.isAtSameMomentAs(
-        DateTime.fromMillisecondsSinceEpoch(0),
-      );
-      if (isZero) return null;
-
-      return localAccount;
+      return localAccounts[0];
     } catch (_) {
       return null;
     }

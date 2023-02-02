@@ -13,7 +13,7 @@ abstract class DioModule {
           connectTimeout: 30000,
           receiveTimeout: 30000,
         ),
-      )..interceptors.add(
+      )..interceptors.addAll([
           PrettyDioLogger(
             requestHeader: true,
             requestBody: true,
@@ -23,6 +23,6 @@ abstract class DioModule {
             compact: false,
             maxWidth: 120,
           ),
-        );
-  // ..interceptors.add(HttpErrorInterceptor());
+          // HttpErrorInterceptor(),
+        ]);
 }

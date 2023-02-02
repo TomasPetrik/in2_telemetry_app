@@ -80,46 +80,48 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
       );
     });
 
-    on<ReloadCarePlansEvent>((event, emit) async {
-      final userAccount = event.userAccount;
+    on<ReloadCarePlansEvent>(
+      (event, emit) async {
+        final userAccount = event.userAccount;
 
-      //load and assign care plans, fulfillment_evaluation
-      final activeCarePlans = await _carePlansRepository.loadActiveCarePlans(
-        patientMuid: userAccount.user.muid,
-      );
-
-      for (final carePlan in activeCarePlans.items) {
-        final fulfillmentEvaluation =
-            await _carePlansRepository.loadFulFillmentEvaluation(
-          carePlanVersionId: carePlan.versionId,
+        //load and assign care plans, fulfillment_evaluation
+        final activeCarePlans = await _carePlansRepository.loadActiveCarePlans(
+          patientMuid: userAccount.user.muid,
         );
-        carePlan.fulfillmentEvaluation = fulfillmentEvaluation;
-      }
 
-      userAccount.carePlans = activeCarePlans.items;
-      if (userAccount.representedPeople?.isNotEmpty == true) {
-        for (final UserAccount representedPerson
-            in userAccount.representedPeople!) {
-          final activeCarePlans =
-              await _carePlansRepository.loadActiveCarePlans(
-            patientMuid: representedPerson.user.muid,
+        for (final carePlan in activeCarePlans.items) {
+          final fulfillmentEvaluation =
+              await _carePlansRepository.loadFulFillmentEvaluation(
+            carePlanVersionId: carePlan.versionId,
           );
-
-          for (final carePlan in activeCarePlans.items) {
-            final fulfillmentEvaluation =
-                await _carePlansRepository.loadFulFillmentEvaluation(
-              carePlanVersionId: carePlan.versionId,
-            );
-            carePlan.fulfillmentEvaluation = fulfillmentEvaluation;
-          }
-
-          representedPerson.carePlans = activeCarePlans.items;
+          carePlan.fulfillmentEvaluation = fulfillmentEvaluation;
         }
-      }
 
-      await _accountDbProvider.save(userAccount);
-      _session.userAccount = userAccount;
-      emit(state);
-    });
+        userAccount.carePlans = activeCarePlans.items;
+        if (userAccount.representedPeople?.isNotEmpty == true) {
+          for (final UserAccount representedPerson
+              in userAccount.representedPeople!) {
+            final activeCarePlans =
+                await _carePlansRepository.loadActiveCarePlans(
+              patientMuid: representedPerson.user.muid,
+            );
+
+            for (final carePlan in activeCarePlans.items) {
+              final fulfillmentEvaluation =
+                  await _carePlansRepository.loadFulFillmentEvaluation(
+                carePlanVersionId: carePlan.versionId,
+              );
+              carePlan.fulfillmentEvaluation = fulfillmentEvaluation;
+            }
+
+            representedPerson.carePlans = activeCarePlans.items;
+          }
+        }
+
+        await _accountDbProvider.save(userAccount);
+        _session.userAccount = userAccount;
+        emit(state);
+      },
+    );
   }
 }

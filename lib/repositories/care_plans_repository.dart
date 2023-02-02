@@ -26,7 +26,7 @@ class CarePlansRepository {
     required int carePlanVersionId,
   }) async {
     final items = await carePlanApiClient.loadFulFillmentEvaluation(
-      session.hospital!.authData.baseUrl,
+      session.userAccount!.hospital!.authData.baseUrl,
       carePlanVersionId,
     );
     return FulfillmentEvaluation(items);

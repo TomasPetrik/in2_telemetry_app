@@ -12,11 +12,13 @@ class UserItem extends StatelessWidget {
     required this.userAccount,
     this.userItemType,
     required this.hasNavigationIcon,
+    this.showWarning,
   });
 
   final UserAccount userAccount;
   final UserItemType? userItemType;
   final bool hasNavigationIcon;
+  final bool? showWarning;
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +29,20 @@ class UserItem extends StatelessWidget {
           if (userItemType == UserItemType.middle ||
               userItemType == UserItemType.last) ...[
             Gaps.gap16,
-            SizedBox(
-              height: 64,
-              child: UserItemShape(userItemType: userItemType!),
+            Stack(
+              children: [
+                SizedBox(
+                  height: 64,
+                  child: UserItemShape(userItemType: userItemType!),
+                ),
+              ],
             ),
           ],
           Expanded(
             child: SettingsItem(
               label: userAccount.user.fullName,
+              showWarning:
+                  showWarning == true && userAccount.hasParent == false,
               hasNavigationIcon: hasNavigationIcon,
               iconWidget: Padding(
                 padding: Paddings.all8,

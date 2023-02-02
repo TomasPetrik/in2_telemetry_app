@@ -7,10 +7,11 @@ class SettingsItem extends StatelessWidget {
     super.key,
     required this.label,
     this.subLabel,
-     this.onTap,
+    this.onTap,
     this.icon,
     this.iconWidget,
     this.hasNavigationIcon = true,
+    this.showWarning,
   }) : assert(
           icon != null || iconWidget != null,
           'Either icon or iconWidget should be used',
@@ -22,6 +23,7 @@ class SettingsItem extends StatelessWidget {
   final IconData? icon;
   final Widget? iconWidget;
   final bool hasNavigationIcon;
+  final bool? showWarning;
 
   @override
   Widget build(BuildContext context) {
@@ -29,19 +31,36 @@ class SettingsItem extends StatelessWidget {
       onTap: onTap,
       child: Row(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondary,
-              borderRadius: BorderRadii.radius8,
-            ),
-            height: 64,
-            width: 64,
-            child: icon != null
-                ? Icon(
-                    icon,
-                    color: Theme.of(context).colorScheme.onSecondary,
-                  )
-                : Center(child: iconWidget),
+          Stack(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondary,
+                  borderRadius: BorderRadii.radius8,
+                ),
+                height: 64,
+                width: 64,
+                child: icon != null
+                    ? Icon(
+                        icon,
+                        color: Theme.of(context).colorScheme.onSecondary,
+                      )
+                    : Center(child: iconWidget),
+              ),
+              if (showWarning == true)
+                Positioned(
+                  top: 4,
+                  right: 4,
+                  child: Container(
+                    height: 8,
+                    width: 8,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.error,
+                      borderRadius: BorderRadii.radius4,
+                    ),
+                  ),
+                ),
+            ],
           ),
           Gaps.gap16,
           Expanded(

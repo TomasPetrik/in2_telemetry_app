@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/ui/widgets/confimation_dialog.dart';
-import 'package:scalesoft_app/ui/widgets/hospital_selection_dialog.dart';
-import 'package:scalesoft_app/ui/widgets/measurement_time_dialog.dart';
-import 'package:scalesoft_app/ui/widgets/user_hospital_selection_dialog.dart';
-import 'package:scalesoft_app/ui/widgets/user_selection_dialog.dart';
+import 'package:scalesoft_app/ui/dialogs/confimation_dialog.dart';
+import 'package:scalesoft_app/ui/dialogs/device_selector_dialog.dart';
+import 'package:scalesoft_app/ui/dialogs/hospital_selection_dialog.dart';
+import 'package:scalesoft_app/ui/dialogs/measurement_time_dialog.dart';
+import 'package:scalesoft_app/ui/dialogs/user_hospital_selection_dialog.dart';
+import 'package:scalesoft_app/ui/dialogs/user_selection_dialog.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 mixin BottomSheetMixin {
@@ -102,10 +104,10 @@ mixin BottomSheetMixin {
         userAccounts: userHospitalSelectionResult.hospitalUsers!,
       );
 
-      if (userSelection!.action == SwitchUserAction.addUserAccount) {
+      if (userSelection?.action == SwitchUserAction.addUserAccount) {
         return SwitchUserResult(addNewUser: true);
       } else {
-        return SwitchUserResult(selectedUser: userSelection.selectedUser);
+        return SwitchUserResult(selectedUser: userSelection?.selectedUser);
       }
     } else {
       return SwitchUserResult();
@@ -132,6 +134,32 @@ mixin BottomSheetMixin {
 
     return userSelectionResult;
   }
+
+  Future<bool?> showDeviceSelector({
+    required final BuildContext context,
+    required final CarePlanActivity carePlanActivity,
+  }) async {
+    final result = await showModalBottomSheet<bool?>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return DeviceSelectorDialog(
+          carePlanActivity: carePlanActivity,
+        );
+      },
+    );
+    return result;
+  }
+}
+
+class DeviceSelectionResult {
+  bool? manualMeasurement;
+
+  DeviceSelectionResult({
+    this.manualMeasurement,
+  });
 }
 
 enum SwitchUserAction {

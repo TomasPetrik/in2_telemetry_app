@@ -1,8 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
-import 'package:scalesoft_app/bloc/auth/auth_event.dart';
-import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/utils/exceptions/exception/forbidden_exception.dart';
 import 'package:scalesoft_app/utils/exceptions/exception/internal_server_exception.dart';
 import 'package:scalesoft_app/utils/exceptions/exception/invalid_request_exception.dart';
@@ -16,11 +12,6 @@ void processException(
   Function(String) errorState,
 ) {
   if (exception is InvalidRequestException) {
-    getIt<AuthBloc>().add(
-      Authenticate(
-        hospital: getIt<Session>().userAccount!.hospital!,
-      ),
-    );
     emit(errorState('Invalid request.'));
   } else if (exception is UnauthorizedException) {
     emit(errorState('Unable to authenticate the user.'));

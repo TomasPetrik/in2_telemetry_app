@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/ui/widgets/popup_dialog.dart';
-import 'package:scalesoft_app/ui/widgets/popup_error.dart';
+import 'package:scalesoft_app/ui/dialogs/popup_dialog.dart';
+import 'package:scalesoft_app/ui/dialogs/popup_error.dart';
 import 'package:scalesoft_app/utils/scale_colors.dart';
 
 mixin PopupDialogMixin {

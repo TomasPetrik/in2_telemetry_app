@@ -7,6 +7,8 @@ import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
+import 'package:scalesoft_app/bloc/warning/warning_bloc.dart';
+import 'package:scalesoft_app/bloc/warning/warning_bloc_event.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/parsers/jwt_parser.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
@@ -40,6 +42,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<VerifyUser>(_verifyUser);
     on<LogoutUser>(_removeUser);
     on<CancelAuth>(_cancelAuth);
+    on<ErrorLoadDataEvent>(_onErrorLoadDataEvent);
   }
 
   Future<void> _onAuthenticate(
@@ -115,6 +118,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         signedIn: DateTime.now(),
         lastActiveIn: DateTime.now(),
         hasParent: false,
+        sessionExpired: false,
         representedPeople: userInfo.representedPeople
             ?.map(
               (representedPerson) => UserAccount(
@@ -126,6 +130,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                 lastActiveIn: null,
                 representedPeople: null,
                 hasParent: true,
+                sessionExpired: false,
               ),
             )
             .toList(),
@@ -169,6 +174,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       await _accountDbProvider.save(userAccount);
       _session.userAccount = userAccount;
+      getIt<WarningBloc>().add(const RemoveExpiredSessionWarningBlocEvent());
       emit(AuthState.userVerified(userAccount: userAccount));
     } on Exception {
       _session.token = null;
@@ -213,5 +219,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(const AuthState.cancelled());
+  }
+
+  Future<void> _onErrorLoadDataEvent(
+    ErrorLoadDataEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthState.errorLoadData());
   }
 }

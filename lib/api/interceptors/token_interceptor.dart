@@ -5,6 +5,10 @@ import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/account_api_client.dart';
 import 'package:scalesoft_app/api/client/auth_api_client.dart';
 import 'package:scalesoft_app/api/dto/auth_token.dart';
+import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
+import 'package:scalesoft_app/bloc/auth/auth_event.dart';
+import 'package:scalesoft_app/bloc/warning/warning_bloc.dart';
+import 'package:scalesoft_app/bloc/warning/warning_bloc_event.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
@@ -12,6 +16,7 @@ import 'package:scalesoft_app/utils/exceptions/exception/forbidden_exception.dar
 import 'package:scalesoft_app/utils/exceptions/exception/internal_server_exception.dart';
 import 'package:scalesoft_app/utils/exceptions/exception/invalid_request_exception.dart';
 import 'package:scalesoft_app/utils/exceptions/exception/no_internet_exception.dart';
+import 'package:scalesoft_app/utils/exceptions/exception/not_found_exception.dart';
 
 @injectable
 class TokenInterceptor extends Interceptor {
@@ -48,6 +53,9 @@ class TokenInterceptor extends Interceptor {
   Future<void> onError(DioError err, ErrorInterceptorHandler handler) async {
     switch (err.response?.statusCode) {
       case 400:
+        getIt<WarningBloc>().add(
+          const SessionExpiredWarningBlocEvent(),
+        );
         throw InvalidRequestException();
       case 401:
         final originReqOpt = err.requestOptions;
@@ -66,6 +74,9 @@ class TokenInterceptor extends Interceptor {
         return;
       case 403:
         throw ForbiddenException();
+      case 404:
+        getIt<AuthBloc>().add(const ErrorLoadDataEvent());
+        throw NotFoundException();
       case 500:
         throw InternalServerException();
       default:
@@ -75,33 +86,30 @@ class TokenInterceptor extends Interceptor {
   }
 
   Future<AuthToken?> refreshToken() async {
-    try {
-      final userId = session.userAccount?.user.muid;
-      final refreshToken = session.userAccount?.authToken?.refreshToken;
-      final tokenUrl = session.userAccount?.hospital?.authData.tokenUrl;
+    final userId = session.userAccount?.user.muid;
+    final refreshToken = session.userAccount?.authToken?.refreshToken;
+    final tokenUrl = session.userAccount?.hospital?.authData.tokenUrl;
 
-      if (userId != null && refreshToken != null && tokenUrl != null) {
-        final response = await getIt<AuthApiClient>().refreshToken(
-          tokenUrl,
-          'refresh_token',
-          refreshToken,
-          Constants.clientId,
-          Constants.clientSecret,
-        );
+    if (userId != null && refreshToken != null && tokenUrl != null) {
+      final response = await getIt<AuthApiClient>().refreshToken(
+        tokenUrl,
+        'refresh_token',
+        refreshToken,
+        Constants.clientId,
+        Constants.clientSecret,
+      );
 
-        final newToken = AuthToken(
-          response.accessToken,
-          response.refreshToken,
-          DateTime.now().add(const Duration(seconds: 3600)),
-        );
+      final newToken = AuthToken(
+        response.accessToken,
+        response.refreshToken,
+        DateTime.now().add(const Duration(seconds: 3600)),
+      );
 
-        session.token = newToken;
+      session.token = newToken;
 
-        return newToken;
-      }
-    } catch (e) {
-      return null;
+      return newToken;
     }
+
     return null;
   }
 }

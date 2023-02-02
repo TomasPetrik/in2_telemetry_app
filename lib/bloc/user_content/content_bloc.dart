@@ -7,7 +7,7 @@ import 'package:scalesoft_app/repositories/care_plans_repository.dart';
 import 'package:scalesoft_app/storage/session.dart';
 
 @singleton
-class ContentBloc extends Bloc<SwitchContentEvent, ContentState> {
+class ContentBloc extends Bloc<ContentEvent, ContentState> {
   final AccountDbProvider _accountDbProvider;
   final CarePlansRepository _carePlansRepository;
   final Session _session;
@@ -44,8 +44,11 @@ class ContentBloc extends Bloc<SwitchContentEvent, ContentState> {
     SwitchUserContentEvent event,
     Emitter<ContentState> emit,
   ) async {
-    _session.userAccount = event.userAccount;
+    _session.userAccount =
+        event.userAccount.copyWith(lastActiveIn: DateTime.now());
     _session.token = event.userAccount.authToken;
+
+    _accountDbProvider.save(_session.userAccount!);
 
     //todo.. try to load care plans,
     //if is in offline mode, then just switch user

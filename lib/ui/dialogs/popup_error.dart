@@ -29,16 +29,8 @@ class PopupError extends StatelessWidget {
               margin: Paddings.all16,
               padding: Paddings.all12,
               decoration: BoxDecoration(
-                color: ScaleColors.white,
+                color: Theme.of(context).colorScheme.background,
                 borderRadius: BorderRadii.radius20,
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    ScaleColors.redError,
-                    ScaleColors.white,
-                  ],
-                ),
               ),
               child: Row(
                 children: [
@@ -47,7 +39,9 @@ class PopupError extends StatelessWidget {
                   Expanded(
                     child: Text(
                       message,
-                      style: ScaleTextStyles.label.apply(color: ScaleColors.white),
+                      style: ScaleTextStyles.label.apply(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
                     ),
                   ),
                   Gaps.gap10,

@@ -4,11 +4,11 @@ import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
 import 'package:scalesoft_app/ui/screens/configuration_screen.dart';
 import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
 
-class SettingsRoute extends ApplicationRoute with PageBuilderMixin {
-  static const name = 'settings';
-  static const path = 'settings';
+class ConfigurationRoute extends ApplicationRoute with PageBuilderMixin {
+  static const name = 'configuration';
+  static const path = 'configuration';
 
-  SettingsRoute({
+  ConfigurationRoute({
     required super.navigator,
     super.routes,
   });

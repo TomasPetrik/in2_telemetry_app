@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
+import 'package:scalesoft_app/bloc/warning/warning_bloc.dart';
+import 'package:scalesoft_app/bloc/warning/warning_bloc_state.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_detail_route.dart';
@@ -40,52 +42,63 @@ class HospitalDetailScreen extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        return Material(
-          child: Stack(
-            children: [
-              CustomScrollView(
-                slivers: [
-                  SliverGap(
-                    MediaQuery.of(context).viewPadding.top +
-                        Constants.appBarHeight,
-                  ),
-                  const SliverGap(Dimensions.padding24),
-                  SliverToBoxAdapter(
-                    child: ListView.separated(
-                      padding: EdgeInsets.zero,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        final userAccount = userAccounts[index];
-                        return UserItemCompound(
-                          userAccount: userAccount,
-                          userItemCompoundType: UserItemCompoundType.settings,
-                          onUserSelected: (userAccount) {
-                            GoRouter.of(context).pushNamed(
-                              UserDetailRoute.name,
-                              extra: userAccount,
+        return BlocBuilder<WarningBloc, WarningBlocState>(
+          bloc: getIt<WarningBloc>(),
+          builder: (context, state) {
+            final bool showWarning = userAccounts.any(
+              (userAccount) => userAccount.hasProblem(),
+            );
+
+            return Material(
+              child: Stack(
+                children: [
+                  CustomScrollView(
+                    slivers: [
+                      SliverGap(
+                        MediaQuery.of(context).viewPadding.top +
+                            Constants.appBarHeight,
+                      ),
+                      const SliverGap(Dimensions.padding24),
+                      SliverToBoxAdapter(
+                        child: ListView.separated(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            final userAccount = userAccounts[index];
+                            return UserItemCompound(
+                              userAccount: userAccount,
+                              userItemCompoundType:
+                                  UserItemCompoundType.settings,
+                              onUserSelected: (userAccount) {
+                                GoRouter.of(context).pushNamed(
+                                  UserDetailRoute.name,
+                                  extra: userAccount,
+                                );
+                              },
+                              showWarning: showWarning,
                             );
                           },
-                        );
-                      },
-                      separatorBuilder: (_, __) {
-                        return Gaps.gap24;
-                      },
-                      itemCount: userAccounts.length,
+                          separatorBuilder: (_, __) {
+                            return Gaps.gap24;
+                          },
+                          itemCount: userAccounts.length,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: ScaleAppBar(
+                      title: hospital.title,
+                      onBackTap: () {},
                     ),
                   ),
                 ],
               ),
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: ScaleAppBar(
-                  title: hospital.title,
-                  onBackTap: () {},
-                ),
-              ),
-            ],
-          ),
+            );
+          },
         );
       },
     );

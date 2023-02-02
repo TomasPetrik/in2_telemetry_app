@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
+import 'package:scalesoft_app/bloc/warning/warning_bloc.dart';
+import 'package:scalesoft_app/bloc/warning/warning_bloc_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -81,46 +83,60 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                         ],
                       ),
                       Gaps.gap24,
-                      ListView.separated(
-                        padding: EdgeInsets.zero,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          final hospital = hospitalUserEntries.toList()[index];
-                          return SettingsItem(
-                            label: hospital.key.title,
-                            subLabel: '${hospital.value[0].user.fullName}'
-                                ' ${hospital.value.length > 1 ? context.locale.common_plus_n_others(hospital.value.length - 1) : ''}',
-                            iconWidget: Padding(
-                              padding: Paddings.all8,
-                              child: SvgPicture.asset(
-                                hospital.key.iconPath,
-                                color: Theme.of(context).hintColor,
-                              ),
-                            ),
-                            onTap: () {
-                              if (hospital.value.length == 1) {
-                                GoRouter.of(context).pushNamed(
-                                  UserDetailRoute.name,
-                                  extra: hospital.value[0],
-                                );
-                              } else {
-                                GoRouter.of(context).pushNamed(
-                                  HospitalDetailRoute.name,
-                                  extra: List.of([
-                                    hospital.key,
-                                    accountDbProvider.getRootUsersFromHospital(
-                                      hospital.key,
-                                    ),
-                                  ]),
-                                );
-                              }
+                      BlocBuilder<WarningBloc, WarningBlocState>(
+                        bloc: getIt<WarningBloc>(),
+                        builder: (context, state) {
+                          return ListView.separated(
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              final hospital =
+                                  hospitalUserEntries.toList()[index];
+
+                              final bool showWarning = hospital.value.any(
+                                (userAccount) => userAccount.hasProblem(),
+                              );
+
+                              return SettingsItem(
+                                key: ObjectKey(hospital),
+                                showWarning: showWarning,
+                                label: hospital.key.title,
+                                subLabel: '${hospital.value[0].user.fullName}'
+                                    ' ${hospital.value.length > 1 ? context.locale.common_plus_n_others(hospital.value.length - 1) : ''}',
+                                iconWidget: Padding(
+                                  padding: Paddings.all8,
+                                  child: SvgPicture.asset(
+                                    hospital.key.iconPath,
+                                    color: Theme.of(context).hintColor,
+                                  ),
+                                ),
+                                onTap: () {
+                                  if (hospital.value.length == 1) {
+                                    GoRouter.of(context).pushNamed(
+                                      UserDetailRoute.name,
+                                      extra: hospital.value[0],
+                                    );
+                                  } else {
+                                    GoRouter.of(context).pushNamed(
+                                      HospitalDetailRoute.name,
+                                      extra: List.of([
+                                        hospital.key,
+                                        accountDbProvider
+                                            .getRootUsersFromHospital(
+                                          hospital.key,
+                                        ),
+                                      ]),
+                                    );
+                                  }
+                                },
+                              );
                             },
+                            separatorBuilder: (_, __) {
+                              return Gaps.gap24;
+                            },
+                            itemCount: hospitalUserEntries.length,
                           );
                         },
-                        separatorBuilder: (_, __) {
-                          return Gaps.gap24;
-                        },
-                        itemCount: hospitalUserEntries.length,
                       ),
                       Gaps.gap24,
                       SettingsItem(

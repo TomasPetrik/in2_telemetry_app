@@ -29,6 +29,7 @@ class CarePlan with _$CarePlan {
     @HiveField(11) List<WeekDay>? weekDays,
     @HiveField(12) List<TimingDayWhen> timingDayWhen,
     @HiveField(13) FulfillmentEvaluation? fulfillmentEvaluation,
+    @HiveField(14) bool? wasChanged,
   ) = _CarePlan;
 
   factory CarePlan.fromJson(Map<String, dynamic> json) =>
