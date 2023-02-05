@@ -44,7 +44,7 @@ class MeasurementForm extends StatelessWidget {
 
     return Form(
       key: formKey,
-      autovalidateMode: AutovalidateMode.always,
+      //autovalidateMode: AutovalidateMode.,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -142,12 +142,17 @@ class MeasurementForm extends StatelessWidget {
             initialValue: DateTime.now().toTimeOfDay().toString(),
             hintText: '00:00',
             validator: (value) {
-              if (value?.isEmpty == true ||
-                  !RegExp(r'^(?:[01]?\d|2[0-3])(?::(?:[0-5]\d?)?)?$')
+              if (value?.isEmpty == false &&
+                  RegExp(r'^(?:[01]?\d|2[0-3])(?::(?:[0-5]\d?)?)?$')
                       .hasMatch(value!)) {
-                return context.locale.common_wrong_value;
-              } else {
+                if (DateTime.now().fromTimeOfDayString(value).isAfter(
+                      DateTime.now(),
+                    )) {
+                  return context.locale.common_wrong_value;
+                }
                 return null;
+              } else {
+                return context.locale.common_wrong_value;
               }
             },
             keyboardType: TextInputType.datetime,

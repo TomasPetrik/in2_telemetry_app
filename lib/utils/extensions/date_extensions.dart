@@ -33,6 +33,14 @@ extension DateParse on DateTime {
     return WeekDay.values[tomorrow.weekday - 1];
   }
 
+  DateTime fromTimeOfDayString(String tod) {
+    final parts = tod.split(":");
+    final int hours = int.parse(parts[0]);
+    final int minute = int.parse(parts[1]);
+    final returnDt = copyWith(hour: hours, minute: minute);
+    return returnDt;
+  }
+
   DateTime fromTimeOfDay(tdw.TimeOfDay timeOfDay) {
     return DateTime(
       year,
