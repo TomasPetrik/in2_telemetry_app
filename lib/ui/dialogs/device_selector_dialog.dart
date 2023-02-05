@@ -15,44 +15,48 @@ import 'package:scalesoft_app/ui/widgets/navigation_tab_chip.dart';
 class DeviceSelectorDialog extends StatefulWidget {
   const DeviceSelectorDialog({
     super.key,
-    this.selectedActivity,
-    this.allActivities,
+    required this.userId,
+    this.selectedMeasurementType,
+    required this.allMeasurementTypes,
   }) : assert(
-          selectedActivity != null || allActivities != null,
+          selectedMeasurementType != null ||
+              (allMeasurementTypes != null && allMeasurementTypes.length > 0),
           'Either selectedActivity or allActivities should be not empty !',
         );
 
-  final CarePlanActivity? selectedActivity;
-  final Set<CarePlanActivity>? allActivities;
+  final String userId;
+  final MeasurementType? selectedMeasurementType;
+  final Set<MeasurementType>? allMeasurementTypes;
 
   @override
   State<DeviceSelectorDialog> createState() => _DeviceSelectorDialogState();
 }
 
 class _DeviceSelectorDialogState extends State<DeviceSelectorDialog> {
-  CarePlanActivity? selectedActivity;
-  Set<CarePlanActivity>? allActivities;
+  MeasurementType? selectedMeasurementType;
+  Set<MeasurementType>? allMeasurementTypes;
 
   @override
   void initState() {
-    allActivities = widget.allActivities;
-    selectedActivity = widget.selectedActivity ?? allActivities?.first;
+    allMeasurementTypes = widget.allMeasurementTypes;
+    selectedMeasurementType =
+        widget.selectedMeasurementType ?? allMeasurementTypes?.first;
 
     super.initState();
   }
 
   String getTitle() {
     String title = context.locale.common_measurement;
-    if (selectedActivity != null &&
-        (allActivities == null || allActivities?.isEmpty == true)) {
+    if (selectedMeasurementType != null &&
+        (allMeasurementTypes == null || allMeasurementTypes?.isEmpty == true)) {
       title +=
-          ' ${context.locale.common_measurement_types_genitive(selectedActivity!.measurementType.name).toLowerCase()}';
+          ' ${context.locale.common_measurement_types_genitive(selectedMeasurementType!.name).toLowerCase()}';
     }
     return title;
   }
 
   bool hasMeasurementTabs() {
-    return (allActivities != null && allActivities!.length > 1);
+    return (allMeasurementTypes != null && allMeasurementTypes!.length > 1);
   }
 
   @override
@@ -61,11 +65,11 @@ class _DeviceSelectorDialogState extends State<DeviceSelectorDialog> {
 
     final List<Device> supportedDevices = [];
 
-    if (selectedActivity != null) {
+    if (selectedMeasurementType != null) {
       supportedDevices.addAll(
         Constants.supportedDevices.where(
           (device) => device.supportedMeasurementTypes.contains(
-            selectedActivity?.measurementType,
+            selectedMeasurementType,
           ),
         ),
       );
@@ -97,20 +101,22 @@ class _DeviceSelectorDialogState extends State<DeviceSelectorDialog> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  ...allActivities!
+                  ...allMeasurementTypes!
                       .map(
-                        (activity) => Row(
+                        (measurementType) => Row(
                           children: [
                             NavigationTabChip(
                               label: context.locale.common_measurement_types(
-                                activity.measurementType.name,
+                                measurementType.name,
                               ),
-                              isSelected: selectedActivity == activity,
+                              isSelected:
+                                  selectedMeasurementType == measurementType,
                               onTap: () {
-                                if (selectedActivity == activity) {
+                                if (selectedMeasurementType ==
+                                    measurementType) {
                                   return;
                                 }
-                                selectedActivity = activity;
+                                selectedMeasurementType = measurementType;
                                 setState(() {});
                               },
                             ),
@@ -177,7 +183,7 @@ class _DeviceSelectorDialogState extends State<DeviceSelectorDialog> {
                 Navigator.of(context, rootNavigator: true).pop();
                 GoRouter.of(context).pushNamed(
                   ManualMeasurementRoute.name,
-                  extra: selectedActivity!.measurementType,
+                  extra: [widget.userId, selectedMeasurementType!],
                 );
               },
             ),

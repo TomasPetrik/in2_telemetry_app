@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
@@ -9,12 +10,14 @@ import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 class ActionWidget extends StatelessWidget with BottomSheetMixin {
   const ActionWidget({
     super.key,
+    required this.userAccount,
     required this.measurement,
   });
 
+  final UserAccount userAccount;
   final Measurement? measurement;
 
-  MeasurementType get measurementType {
+  MeasurementWhenType get measurementType {
     final now = DateTime.now();
 
     measurement?.carePlan.hasMeasurementsToday();
@@ -23,36 +26,36 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
       final todayStart = measurement!.timingDayWhen.start.todayDateTime();
       final todayEnd = measurement!.timingDayWhen.end.todayDateTime();
       if (now.isBefore(todayEnd) && now.isAfter(todayStart)) {
-        return MeasurementType.ongoing;
+        return MeasurementWhenType.ongoing;
       } else if (now.isBefore(todayStart)) {
-        return MeasurementType.upcoming;
+        return MeasurementWhenType.upcoming;
       } else if (measurement?.carePlan.hasMeasurementsToday() == true) {
-        return MeasurementType.finished;
+        return MeasurementWhenType.finished;
       }
     }
 
-    return MeasurementType.noMeasurement;
+    return MeasurementWhenType.noMeasurement;
   }
 
   String getMeasurementText(BuildContext context) {
     switch (measurementType) {
-      case MeasurementType.ongoing:
+      case MeasurementWhenType.ongoing:
         return '${context.locale.common_measurement} ${context.locale.common_measurement_types(
               measurement!.carePlan.activity.measurementType.name,
             ).toLowerCase()} ${measurement!.timingDayWhen.whenCode != null ? context.locale.common_when_code(
               measurement!.timingDayWhen.whenCode!.name,
             ).toLowerCase() : ''}';
 
-      case MeasurementType.upcoming:
+      case MeasurementWhenType.upcoming:
         return '${context.locale.common_measurement} ${context.locale.common_measurement_types(
               measurement!.carePlan.activity.measurementType.name,
             ).toLowerCase()} ${measurement!.timingDayWhen.whenCode != null ? context.locale.common_when_code(
               measurement!.timingDayWhen.whenCode!.name,
             ).toLowerCase() : ''} ve ${measurement!.timingDayWhen.start.toString()}';
 
-      case MeasurementType.finished:
+      case MeasurementWhenType.finished:
         return context.locale.dashboard_screen_no_more_measurements;
-      case MeasurementType.noMeasurement:
+      case MeasurementWhenType.noMeasurement:
         return context.locale.dashboard_screen_no_todays_measurements;
     }
   }
@@ -87,13 +90,13 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
                   getMeasurementText(context),
                 ),
               ),
-              if (measurementType == MeasurementType.ongoing) ...[
+              if (measurementType == MeasurementWhenType.ongoing) ...[
                 Gaps.gap16,
                 Text(measurement?.timingDayWhen.start.toString() ?? ''),
               ],
             ],
           ),
-          if (measurementType == MeasurementType.ongoing &&
+          if (measurementType == MeasurementWhenType.ongoing &&
               measurement != null) ...[
             Gaps.gap16,
             HighlightedElevatedButton(
@@ -102,7 +105,8 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
               onPressed: () {
                 showDeviceSelector(
                   context: context,
-                  selectedActivity: measurement!.carePlan.activity,
+                  userId: measurement!.userId,
+                  selectedMeasurementType: measurement!.carePlan.activity.measurementType,
                 );
               },
             ),
@@ -113,4 +117,4 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
   }
 }
 
-enum MeasurementType { ongoing, upcoming, finished, noMeasurement }
+enum MeasurementWhenType { ongoing, upcoming, finished, noMeasurement }

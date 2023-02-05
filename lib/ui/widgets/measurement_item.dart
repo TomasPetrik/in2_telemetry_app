@@ -88,7 +88,8 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
               onTap: () {
                 showDeviceSelector(
                   context: context,
-                  selectedActivity: carePlan.activity,
+                  userId: carePlan.userId!,
+                  selectedMeasurementType: carePlan.activity.measurementType,
                 );
               },
             ),

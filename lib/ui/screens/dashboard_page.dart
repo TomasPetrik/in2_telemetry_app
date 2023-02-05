@@ -28,10 +28,11 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
     final UserAccount userAccount = getIt<Session>().userAccount!;
     final allCarePlans = userAccount.carePlans!;
 
-    final supportedActivities = <CarePlanActivity>{};
+    final supportedMeasurements = <MeasurementType>{};
     allCarePlans
         .where(
-          (carePlan) => supportedActivities.add(carePlan.activity),
+          (carePlan) =>
+              supportedMeasurements.add(carePlan.activity.measurementType),
         )
         .toList();
 
@@ -88,6 +89,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                         children: [
                           Gaps.gap16,
                           ActionWidget(
+                            userAccount: userAccount,
                             measurement: state.nextMeasurement,
                           ),
                           Gaps.gap26,
@@ -118,6 +120,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                           Gaps.gap16,
                           Flexible(
                             child: ActionWidget(
+                              userAccount: userAccount,
                               measurement: state.nextMeasurement,
                             ),
                           ),
@@ -165,6 +168,27 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                           ),
                         )
                       ],
+                      bottomSlivers: [
+                        if (userAccount.userPermissions?.contains(
+                              UserPermission.enterMeasurementWithoutPlan,
+                            ) ==
+                            true) ...{
+                          PersonalMeasurementFooter(
+                            showInfo: state.measurements?.isNotEmpty == true,
+                            onPressed: () async {
+                              showDeviceSelector(
+                                context: context,
+                                userId: userAccount.user.muid,
+                                allMeasurementTypes:
+                                    supportedMeasurements.isNotEmpty
+                                        ? supportedMeasurements
+                                        : Constants.supportedMeasurements.keys
+                                            .toSet(),
+                              );
+                            },
+                          ),
+                        },
+                      ],
                     )
                   } else ...[
                     if (allCarePlans.length > 1) ...{
@@ -188,7 +212,8 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                               onPressed: () async {
                                 showDeviceSelector(
                                   context: context,
-                                  allActivities: supportedActivities,
+                                  userId: userAccount.user.muid,
+                                  allMeasurementTypes: supportedMeasurements,
                                 );
                               },
                             ),
@@ -221,9 +246,13 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                                   onPressed: () async {
                                     showDeviceSelector(
                                       context: context,
-                                      selectedActivity:
-                                          state.currentCarePlans![0].activity,
-                                      allActivities: supportedActivities,
+                                      userId: userAccount.user.muid,
+                                      selectedMeasurementType: state
+                                          .currentCarePlans![0]
+                                          .activity
+                                          .measurementType,
+                                      allMeasurementTypes:
+                                          supportedMeasurements,
                                     );
                                   },
                                 ),

@@ -12,7 +12,7 @@ class ManualMeasurement with _$ManualMeasurement {
   @HiveType(typeId: 34, adapterName: 'ManualMeasurementAdapter')
   const factory ManualMeasurement({
     @HiveField(0) String? note,
-    @HiveField(1) String? measurementDateTime,
+    @HiveField(1) DateTime? measurementDateTime,
     @HiveField(2) double? temperature,
     @HiveField(3) ComposedIntValue? bloodPressure,
     @HiveField(4) int? heartRate,

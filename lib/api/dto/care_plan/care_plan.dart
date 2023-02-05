@@ -11,7 +11,7 @@ part 'care_plan.g.dart';
 
 @unfreezed
 class CarePlan with _$CarePlan {
-  const CarePlan._();
+  CarePlan._();
 
   @HiveType(typeId: 10, adapterName: 'CarePlanAdapter')
   factory CarePlan(
@@ -30,6 +30,7 @@ class CarePlan with _$CarePlan {
     @HiveField(12) List<TimingDayWhen> timingDayWhen,
     @HiveField(13) FulfillmentEvaluation? fulfillmentEvaluation,
     @HiveField(14) bool? wasChanged,
+    @HiveField(15) String? userId,
   ) = _CarePlan;
 
   factory CarePlan.fromJson(Map<String, dynamic> json) =>

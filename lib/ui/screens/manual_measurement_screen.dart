@@ -14,10 +14,12 @@ import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
 class ManualMeasurementScreen extends StatefulWidget {
   const ManualMeasurementScreen({
     super.key,
+    required this.userId,
     this.measurementType,
   });
 
   final MeasurementType? measurementType;
+  final String userId;
 
   @override
   State<ManualMeasurementScreen> createState() =>
@@ -37,6 +39,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen> {
   Widget build(BuildContext context) {
     final measurementForm = MeasurementForm(
       key: UniqueKey(),
+      userId: widget.userId,
       measurementType: dropdownValue,
     );
 

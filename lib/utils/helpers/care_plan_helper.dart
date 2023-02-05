@@ -54,10 +54,14 @@ class CarePlanHelper {
 
     switch (whenPeriod) {
       case WhenPeriod.today:
-        measurements = Calendar.getTodayMeasurements(carePlans: carePlans);
+        measurements = Calendar.getTodayMeasurements(
+          carePlans: carePlans,
+        );
         break;
       case WhenPeriod.tomorrow:
-        measurements = Calendar.getTomorrowMeasurements(carePlans: carePlans);
+        measurements = Calendar.getTomorrowMeasurements(
+          carePlans: carePlans,
+        );
         break;
       case WhenPeriod.next10:
         final upcomingMeasurements = Calendar.getNUpcomingMeasurements(
@@ -94,6 +98,7 @@ class Calendar {
       for (final timingDayWhen in timingDaysWhen) {
         measurements.add(
           Measurement(
+            userId: carePlan.userId!,
             whenStart: timingDayWhen.start.todayDateTime(),
             whenEnd: timingDayWhen.end.todayDateTime(),
             timingDayWhen: timingDayWhen,
@@ -121,6 +126,7 @@ class Calendar {
       for (final timingDayWhen in carePlan.timingDayWhen) {
         measurements.add(
           Measurement(
+            userId: carePlan.userId!,
             whenStart: timingDayWhen.start.tomorrowDateTime(),
             whenEnd: timingDayWhen.end.tomorrowDateTime(),
             timingDayWhen: timingDayWhen,
@@ -144,6 +150,7 @@ class Calendar {
       upcomingMeasurements.addAll(
         todayMeasurements.map(
           (timingDayWhen) => Measurement(
+            userId: carePlan.userId!,
             whenStart: timingDayWhen.start.todayDateTime(),
             whenEnd: timingDayWhen.end.todayDateTime(),
             timingDayWhen: timingDayWhen,
@@ -197,6 +204,7 @@ class Calendar {
     return carePlan.timingDayWhen
         .map(
           (timingDayWhen) => Measurement(
+            userId: carePlan.userId!,
             whenStart: timingDayWhen.start
                 .todayDateTime()
                 .add(Duration(days: daysShift)),
@@ -213,12 +221,14 @@ class Calendar {
 
 class Measurement {
   Measurement({
+    required this.userId,
     required this.whenStart,
     required this.whenEnd,
     required this.timingDayWhen,
     required this.carePlan,
   });
 
+  final String userId;
   final DateTime whenStart;
   final DateTime whenEnd;
   final TimingDayWhen timingDayWhen;

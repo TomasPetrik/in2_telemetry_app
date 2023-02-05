@@ -140,10 +140,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       //load and assign care plans, fulfillment_evaluation
       final activeCarePlans = await _carePlansRepository.loadActiveCarePlans(
-        patientMuid: userInfo.currentUser.muid,
+        userAccount: userAccount,
       );
 
       for (final carePlan in activeCarePlans.items) {
+        carePlan.userId = userAccount.user.muid;
         final fulfillmentEvaluation =
             await _carePlansRepository.loadFulFillmentEvaluation(
           carePlanVersionId: carePlan.versionId,
@@ -157,10 +158,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             in userAccount.representedPeople!) {
           final activeCarePlans =
               await _carePlansRepository.loadActiveCarePlans(
-            patientMuid: representedPerson.user.muid,
+            userAccount: representedPerson,
           );
 
           for (final carePlan in activeCarePlans.items) {
+            carePlan.userId = representedPerson.user.muid;
             final fulfillmentEvaluation =
                 await _carePlansRepository.loadFulFillmentEvaluation(
               carePlanVersionId: carePlan.versionId,

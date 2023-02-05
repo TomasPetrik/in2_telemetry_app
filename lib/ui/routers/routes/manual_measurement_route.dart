@@ -23,8 +23,11 @@ class ManualMeasurementRoute extends ApplicationRoute with PageBuilderMixin {
       pageBuilder: pageBuilder(
         withTransition: false,
         builder: (state) {
-          final measurementType = state.extra as MeasurementType?;
+          final extras = state.extra! as List;
+          final userId = extras[0] as String;
+          final measurementType = extras[1] as MeasurementType?;
           return ManualMeasurementScreen(
+            userId: userId,
             measurementType: measurementType,
           );
         },

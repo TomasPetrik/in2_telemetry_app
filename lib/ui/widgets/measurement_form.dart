@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/dto/measurement/composed_int_value.dart';
 import 'package:scalesoft_app/api/dto/measurement/manual_measurement.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
@@ -16,15 +17,60 @@ final List<GlobalKey<FormState>> fieldGlobalKeys = [
 ];
 
 class MeasurementForm extends StatelessWidget {
-  const MeasurementForm({
+  MeasurementForm({
     super.key,
     required this.measurementType,
+    required this.userId,
   });
 
   final MeasurementType measurementType;
+  final String userId;
+
+  double? _value1;
+  double? _value2;
+  DateTime? _measurementDateTime;
 
   ManualMeasurement? getMeasurement() {
-    if (formKey.currentState?.validate() == true) {}
+    if (formKey.currentState?.validate() == true) {
+      ManualMeasurement? manualMeasurement = ManualMeasurement(
+        measurementDateTime: _measurementDateTime,
+        patientMuid: userId,
+      );
+      switch (measurementType) {
+        case MeasurementType.temperature:
+          return manualMeasurement.copyWith(
+            temperature: _value1,
+          );
+        case MeasurementType.bloodPressure:
+          return manualMeasurement.copyWith(
+            bloodPressure: ComposedIntValue(
+              firstValue: _value1?.toInt(),
+              secondValue: _value2?.toInt(),
+            ),
+          );
+
+        case MeasurementType.oxygenSaturation:
+          return manualMeasurement.copyWith(
+            oxygenSaturation: _value1?.toInt(),
+          );
+        case MeasurementType.steps:
+          return manualMeasurement.copyWith();
+        case MeasurementType.globalPosition:
+          return manualMeasurement.copyWith();
+        case MeasurementType.heartRate:
+          return manualMeasurement.copyWith(
+            heartRate: _value1?.toInt(),
+          );
+        case MeasurementType.ews:
+          return manualMeasurement.copyWith(
+            heartRate: _value1?.toInt(),
+          );
+        case MeasurementType.respiratoryRate:
+          return manualMeasurement.copyWith(
+            respiratoryRate: _value1?.toInt(),
+          );
+      }
+    }
 
     return null;
   }
@@ -40,11 +86,11 @@ class MeasurementForm extends StatelessWidget {
   Widget build(BuildContext context) {
     final measurementConfig = Constants.supportedMeasurements[measurementType];
 
-    if (measurementConfig == null) return const SizedBox();
+    if (measurementConfig == null) return const SizedBox.shrink();
 
     return Form(
       key: formKey,
-      //autovalidateMode: AutovalidateMode.,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -81,6 +127,7 @@ class MeasurementForm extends StatelessWidget {
                             measurementConfig.max < double.parse(value)) {
                           return context.locale.common_wrong_value;
                         } else {
+                          _value1 = double.parse(value);
                           return null;
                         }
                       },
@@ -121,6 +168,7 @@ class MeasurementForm extends StatelessWidget {
                               measurementConfig.max < double.parse(value)) {
                             return context.locale.common_wrong_value;
                           } else {
+                            _value2 = double.parse(value);
                             return null;
                           }
                         },
@@ -145,11 +193,14 @@ class MeasurementForm extends StatelessWidget {
               if (value?.isEmpty == false &&
                   RegExp(r'^(?:[01]?\d|2[0-3])(?::(?:[0-5]\d?)?)?$')
                       .hasMatch(value!)) {
-                if (DateTime.now().fromTimeOfDayString(value).isAfter(
-                      DateTime.now(),
-                    )) {
+                final measurementDateTime =
+                    DateTime.now().fromTimeOfDayString(value);
+                if (measurementDateTime.isAfter(
+                  DateTime.now(),
+                )) {
                   return context.locale.common_wrong_value;
                 }
+                _measurementDateTime = measurementDateTime;
                 return null;
               } else {
                 return context.locale.common_wrong_value;
