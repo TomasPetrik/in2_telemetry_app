@@ -9,11 +9,11 @@ class CarePlanBlocState with _$CarePlanBlocState {
   const CarePlanBlocState._();
 
   factory CarePlanBlocState({
-    WhenPeriod? selectedPeriod,
+    WhenPeriod? selectedWhenPeriod,
     List<CarePlan>? currentCarePlans,
     Measurement? nextMeasurement,
     List<Measurement>? measurements,
-  }) = _HasData;
+  }) = _CarePlanBlocState;
 }
 
 @freezed

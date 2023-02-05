@@ -145,7 +145,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                       value: userAccount.user.emailAddresses![0],
                     ),
                   ],
-                  if (userAccount.hasParent == false) ...[
+                  if (userAccount.parentId == null) ...[
                     const SliverGap(Dimensions.padding24),
                     SliverToBoxAdapter(
                       child: Padding(

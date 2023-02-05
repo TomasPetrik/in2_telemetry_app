@@ -20,21 +20,25 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
     this._session,
   ) : super(CarePlanBlocState()) {
     on<CarePlanInitializeEvent>((event, emit) async {
-      final nextMeasurement = Calendar.getNUpcomingMeasurements(
-        carePlans: event.carePlans,
-        reqCount: 1,
-      );
+      final nextMeasurement = event.carePlans.isEmpty
+          ? null
+          : Calendar.getNUpcomingMeasurements(
+              carePlans: event.carePlans,
+              reqCount: 1,
+            );
 
-      final measurements = CarePlanHelper.getMeasurements(
-        event.carePlans,
-        event.periodTime,
-      );
+      final measurements = event.carePlans.isEmpty
+          ? null
+          : CarePlanHelper.getMeasurements(
+              event.carePlans,
+              event.whenPeriod,
+            );
 
       emit(
         CarePlanBlocState(
           currentCarePlans: event.carePlans,
-          selectedPeriod: event.periodTime,
-          nextMeasurement: nextMeasurement.first,
+          selectedWhenPeriod: event.whenPeriod,
+          nextMeasurement: nextMeasurement?.first,
           measurements: measurements,
         ),
       );
@@ -53,7 +57,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
 
       emit(
         state.copyWith(
-          selectedPeriod: event.periodTime,
+          selectedWhenPeriod: event.periodTime,
           nextMeasurement: nextMeasurement.first,
           measurements: measurements,
         ),
@@ -68,7 +72,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
 
       final measurements = CarePlanHelper.getMeasurements(
         event.carePlans,
-        state.selectedPeriod!,
+        state.selectedWhenPeriod!,
       );
 
       emit(

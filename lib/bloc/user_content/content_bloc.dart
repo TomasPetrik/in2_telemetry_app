@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_state.dart';
+import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/repositories/care_plans_repository.dart';
 import 'package:scalesoft_app/storage/session.dart';
@@ -44,11 +45,24 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     SwitchUserContentEvent event,
     Emitter<ContentState> emit,
   ) async {
-    _session.userAccount =
-        event.userAccount.copyWith(lastActiveIn: DateTime.now());
-    _session.token = event.userAccount.authToken;
+    late UserAccount parentAccount;
 
-    _accountDbProvider.save(_session.userAccount!);
+    if (event.userAccount.parentId?.isNotEmpty == true) {
+      parentAccount = _accountDbProvider.get(event.userAccount.parentId!)!;
+      final childAccount = parentAccount.representedPeople?.firstWhere(
+        (userAccount) => userAccount.user.muid == event.userAccount.user.muid,
+      );
+      childAccount?.lastActiveIn = DateTime.now();
+      _session.userAccount = childAccount;
+      _session.token = event.userAccount.authToken;
+    } else {
+      _session.userAccount =
+          event.userAccount.copyWith(lastActiveIn: DateTime.now());
+      _session.token = event.userAccount.authToken;
+      parentAccount = _session.userAccount!;
+    }
+
+    _accountDbProvider.save(parentAccount);
 
     //todo.. try to load care plans,
     //if is in offline mode, then just switch user

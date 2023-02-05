@@ -117,7 +117,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         hospital: _session.hospital,
         signedIn: DateTime.now(),
         lastActiveIn: DateTime.now(),
-        hasParent: false,
+        parentId: null,
         sessionExpired: false,
         representedPeople: userInfo.representedPeople
             ?.map(
@@ -129,7 +129,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                 signedIn: DateTime.now(),
                 lastActiveIn: null,
                 representedPeople: null,
-                hasParent: true,
+                parentId: userInfo.currentUser.muid,
                 sessionExpired: false,
               ),
             )

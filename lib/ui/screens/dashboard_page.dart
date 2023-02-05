@@ -39,14 +39,14 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
       ..add(
         CarePlanInitializeEvent(
           carePlans: allCarePlans,
-          periodTime: WhenPeriod.today,
+          whenPeriod: WhenPeriod.today,
         ),
       );
 
     return BlocBuilder<CarePlanBloc, CarePlanBlocState>(
       bloc: carePlanBloc,
       builder: (context, state) {
-        if (state.selectedPeriod == null) {
+        if (state.selectedWhenPeriod == null) {
           return const SizedBox.shrink();
         } else {
           Map<WhenPeriod, int>? measurements;
@@ -77,8 +77,8 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                   carePlanBloc.add(ReloadCarePlansEvent(userAccount));
                 },
                 topSlivers: [
-                  if ((state.selectedPeriod == WhenPeriod.today ||
-                          state.selectedPeriod == WhenPeriod.next10) &&
+                  if ((state.selectedWhenPeriod == WhenPeriod.today ||
+                          state.selectedWhenPeriod == WhenPeriod.next10) &&
                       (state.nextMeasurement?.carePlan
                               .getTodayRemainingMeasurements()
                               .isNotEmpty ==
@@ -96,8 +96,9 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                     ),
                   }
                 ],
-                topHeaderHeight: (state.selectedPeriod == WhenPeriod.today ||
-                            state.selectedPeriod == WhenPeriod.next10) &&
+                topHeaderHeight: (state.selectedWhenPeriod ==
+                                WhenPeriod.today ||
+                            state.selectedWhenPeriod == WhenPeriod.next10) &&
                         (state.nextMeasurement?.carePlan
                                 .getTodayRemainingMeasurements()
                                 .isNotEmpty ==
@@ -106,8 +107,8 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                         Constants.actionActiveWidgetHeight +
                         Dimensions.padding26
                     : 0,
-                topHeader: (state.selectedPeriod == WhenPeriod.today ||
-                            state.selectedPeriod == WhenPeriod.next10) &&
+                topHeader: (state.selectedWhenPeriod == WhenPeriod.today ||
+                            state.selectedWhenPeriod == WhenPeriod.next10) &&
                         (state.nextMeasurement?.carePlan
                                 .getTodayRemainingMeasurements()
                                 .isNotEmpty ==
@@ -126,11 +127,12 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                     : const SizedBox.shrink(),
                 navigationHeader: measurements?.isNotEmpty == true
                     ? MeasurementHeader(
-                        whenPeriod: state.selectedPeriod ?? WhenPeriod.today,
+                        whenPeriod:
+                            state.selectedWhenPeriod ?? WhenPeriod.today,
                         openTimeSelector: () async {
                           final selected = await showWhenSelector(
                             context,
-                            state.selectedPeriod,
+                            state.selectedWhenPeriod,
                             CarePlanHelper.getPossibleWhenPeriods(
                               state.currentCarePlans ?? allCarePlans,
                             ),
@@ -173,7 +175,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                             measurements: state.measurements!,
                             nextMeasurement: state.nextMeasurement!,
                             showDateHeader:
-                                state.selectedPeriod == WhenPeriod.next10,
+                                state.selectedWhenPeriod == WhenPeriod.next10,
                           ),
                         ],
                         bottomSlivers: [
@@ -204,8 +206,8 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                               MeasurementsList(
                                 measurements: state.measurements!,
                                 nextMeasurement: state.nextMeasurement!,
-                                showDateHeader:
-                                    state.selectedPeriod == WhenPeriod.next10,
+                                showDateHeader: state.selectedWhenPeriod ==
+                                    WhenPeriod.next10,
                               ),
                             ],
                             bottomSlivers: [

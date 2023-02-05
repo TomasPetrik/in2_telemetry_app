@@ -41,8 +41,7 @@ class UserItem extends StatelessWidget {
           Expanded(
             child: SettingsItem(
               label: userAccount.user.fullName,
-              showWarning:
-                  showWarning == true && userAccount.hasParent == false,
+              showWarning: showWarning == true && userAccount.parentId == null,
               hasNavigationIcon: hasNavigationIcon,
               iconWidget: Padding(
                 padding: Paddings.all8,

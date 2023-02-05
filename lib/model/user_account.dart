@@ -21,7 +21,7 @@ class UserAccount with _$UserAccount {
     @HiveField(4) DateTime? signedIn,
     @HiveField(5) DateTime? lastActiveIn,
     @HiveField(6) List<UserAccount>? representedPeople,
-    @HiveField(7) bool? hasParent,
+    @HiveField(7) String? parentId,
     @HiveField(8) List<CarePlan>? carePlans,
     @HiveField(9) bool? sessionExpired,
   }) = _UserAccount;

@@ -83,13 +83,23 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
   @override
   UserAccount? getLast() {
     try {
-      final localAccounts = box.values.toList()
-        ..sort(
-          (a, b) => b.lastActiveIn!.millisecondsSinceEpoch
-              .compareTo(a.lastActiveIn!.millisecondsSinceEpoch),
-        );
+      final rootAccounts = box.values.toList();
 
-      return localAccounts[0];
+      final List<UserAccount> allAccounts = [];
+
+      for (final UserAccount localAccount in rootAccounts) {
+        allAccounts.add(localAccount);
+        if (localAccount.representedPeople?.isNotEmpty == true) {
+          allAccounts.addAll(localAccount.representedPeople!);
+        }
+      }
+
+      allAccounts.sort(
+        (a, b) => b.lastActiveIn!.millisecondsSinceEpoch
+            .compareTo(a.lastActiveIn!.millisecondsSinceEpoch),
+      );
+
+      return allAccounts[0];
     } catch (_) {
       return null;
     }

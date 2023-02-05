@@ -10,11 +10,11 @@ abstract class CarePlanBlocEvent {
 
 class CarePlanInitializeEvent extends CarePlanBlocEvent {
   const CarePlanInitializeEvent({
-    required this.periodTime,
+    required this.whenPeriod,
     required this.carePlans,
   });
 
-  final WhenPeriod periodTime;
+  final WhenPeriod whenPeriod;
   final List<CarePlan> carePlans;
 }
 
