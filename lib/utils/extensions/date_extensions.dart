@@ -44,6 +44,10 @@ extension DateParse on DateTime {
     );
   }
 
+  tdw.TimeOfDay toTimeOfDay() {
+    return tdw.TimeOfDay(hour, minute, second);
+  }
+
   bool isSameDate(DateTime other) {
     return year == other.year && month == other.month && day == other.day;
   }

@@ -137,7 +137,8 @@ mixin BottomSheetMixin {
 
   Future<bool?> showDeviceSelector({
     required final BuildContext context,
-    required final CarePlanActivity carePlanActivity,
+    final CarePlanActivity? selectedActivity,
+    final Set<CarePlanActivity>? allActivities,
   }) async {
     final result = await showModalBottomSheet<bool?>(
       context: context,
@@ -146,7 +147,8 @@ mixin BottomSheetMixin {
       backgroundColor: Colors.transparent,
       builder: (context) {
         return DeviceSelectorDialog(
-          carePlanActivity: carePlanActivity,
+          selectedActivity: selectedActivity,
+          allActivities: allActivities,
         );
       },
     );

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
-class ActionWidget extends StatelessWidget {
+class ActionWidget extends StatelessWidget with BottomSheetMixin {
   const ActionWidget({
     super.key,
     required this.measurement,
@@ -92,11 +93,18 @@ class ActionWidget extends StatelessWidget {
               ],
             ],
           ),
-          if (measurementType == MeasurementType.ongoing) ...[
+          if (measurementType == MeasurementType.ongoing &&
+              measurement != null) ...[
             Gaps.gap16,
             HighlightedElevatedButton(
               label: context.locale.common_measure_now,
               buttonType: ButtonType.secondary,
+              onPressed: () {
+                showDeviceSelector(
+                  context: context,
+                  selectedActivity: measurement!.carePlan.activity,
+                );
+              },
             ),
           ],
         ],

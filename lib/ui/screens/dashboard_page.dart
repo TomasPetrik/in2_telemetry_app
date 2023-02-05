@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_state.dart';
@@ -11,13 +12,12 @@ import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/screens/navigation_screen.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
-import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/action_widget.dart';
 import 'package:scalesoft_app/ui/widgets/blured_user_app_bar.dart';
-import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/info_placeholder.dart';
 import 'package:scalesoft_app/ui/widgets/measurement_header.dart';
 import 'package:scalesoft_app/ui/widgets/measurements_list.dart';
+import 'package:scalesoft_app/ui/widgets/personal_measurement_footer.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 class DashboardPage extends StatelessWidget with BottomSheetMixin {
@@ -27,6 +27,13 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
   Widget build(BuildContext context) {
     final UserAccount userAccount = getIt<Session>().userAccount!;
     final allCarePlans = userAccount.carePlans!;
+
+    final supportedActivities = <CarePlanActivity>{};
+    allCarePlans
+        .where(
+          (carePlan) => supportedActivities.add(carePlan.activity),
+        )
+        .toList();
 
     final carePlanBloc = getIt<CarePlanBloc>()
       ..add(
@@ -169,6 +176,22 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                                 state.selectedPeriod == WhenPeriod.next10,
                           ),
                         ],
+                        bottomSlivers: [
+                          if (userAccount.userPermissions?.contains(
+                                UserPermission.enterMeasurementWithoutPlan,
+                              ) ==
+                              true) ...{
+                            PersonalMeasurementFooter(
+                              showInfo: state.measurements?.isNotEmpty == true,
+                              onPressed: () async {
+                                showDeviceSelector(
+                                  context: context,
+                                  allActivities: supportedActivities,
+                                );
+                              },
+                            ),
+                          },
+                        ],
                       ),
                     },
                     ...allCarePlans
@@ -189,50 +212,20 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                               if (userAccount.userPermissions?.contains(
                                     UserPermission.enterMeasurementWithoutPlan,
                                   ) ==
-                                  true) ...[
-                                SliverToBoxAdapter(
-                                  child: Padding(
-                                    padding: Paddings.horizontal16,
-                                    child: Column(
-                                      children: [
-                                        if (state.measurements?.isNotEmpty ==
-                                            true) ...[
-                                          Container(
-                                            height: 0.5,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSecondary,
-                                          ),
-                                          Gaps.gap16,
-                                          Text(
-                                            context.locale
-                                                .dashboard_screen_manual_measurement_info,
-                                            style: ScaleTextStyles.text.apply(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSecondary,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ],
-                                        Gaps.gap24,
-                                        HighlightedElevatedButton(
-                                          label: context
-                                              .locale.common_manual_measurement,
-                                          buttonType: ButtonType.primary,
-                                          onPressed: () async {
-                                            showDeviceSelector(
-                                              context: context,
-                                              carePlanActivity:
-                                                  carePlan.activity,
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                  true) ...{
+                                PersonalMeasurementFooter(
+                                  showInfo:
+                                      state.measurements?.isNotEmpty == true,
+                                  onPressed: () async {
+                                    showDeviceSelector(
+                                      context: context,
+                                      selectedActivity:
+                                          state.currentCarePlans![0].activity,
+                                      allActivities: supportedActivities,
+                                    );
+                                  },
                                 ),
-                              ],
+                              },
                             ],
                           ),
                         )

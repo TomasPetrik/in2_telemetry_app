@@ -9,7 +9,7 @@ part 'device.g.dart';
 class Device with _$Device {
   const Device._();
 
-  @HiveType(typeId: 32, adapterName: 'DeviceAdapter')
+  @HiveType(typeId: 33, adapterName: 'DeviceAdapter')
   const factory Device({
     @HiveField(0) String? deviceIdentifier,
     @HiveField(1) String? modelName,

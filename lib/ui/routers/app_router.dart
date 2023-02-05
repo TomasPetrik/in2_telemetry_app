@@ -10,6 +10,7 @@ import 'package:scalesoft_app/ui/routers/routes/care_plan_detail_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/configuration_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/hospital_detail_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/manual_measurement_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/no_user_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/notification_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_route.dart';
@@ -62,7 +63,9 @@ class AppRouter {
                 );
               },
               routes: [
-                DashboardRoute(navigator: navTabBar).route,
+                DashboardRoute(
+                  navigator: navTabBar,
+                ).route,
                 ResultsRoute(navigator: navTabBar).route,
                 ConfigurationRoute(
                   navigator: navTabBar,
@@ -78,6 +81,7 @@ class AppRouter {
             ),
             UserAddedRoute(navigator: navRoot).route,
             NoUserRoute(navigator: navRoot).route,
+            ManualMeasurementRoute(navigator: navRoot).route,
           ],
         ),
       ],

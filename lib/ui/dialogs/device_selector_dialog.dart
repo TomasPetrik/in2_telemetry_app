@@ -1,30 +1,75 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/dto/measurement/device.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
+import 'package:scalesoft_app/ui/routers/routes/manual_measurement_route.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
+import 'package:scalesoft_app/ui/widgets/navigation_tab_chip.dart';
 
-class DeviceSelectorDialog extends StatelessWidget {
+class DeviceSelectorDialog extends StatefulWidget {
   const DeviceSelectorDialog({
     super.key,
-    required this.carePlanActivity,
-  });
+    this.selectedActivity,
+    this.allActivities,
+  }) : assert(
+          selectedActivity != null || allActivities != null,
+          'Either selectedActivity or allActivities should be not empty !',
+        );
 
-  final CarePlanActivity carePlanActivity;
+  final CarePlanActivity? selectedActivity;
+  final Set<CarePlanActivity>? allActivities;
+
+  @override
+  State<DeviceSelectorDialog> createState() => _DeviceSelectorDialogState();
+}
+
+class _DeviceSelectorDialogState extends State<DeviceSelectorDialog> {
+  CarePlanActivity? selectedActivity;
+  Set<CarePlanActivity>? allActivities;
+
+  @override
+  void initState() {
+    allActivities = widget.allActivities;
+    selectedActivity = widget.selectedActivity ?? allActivities?.first;
+
+    super.initState();
+  }
+
+  String getTitle() {
+    String title = context.locale.common_measurement;
+    if (selectedActivity != null &&
+        (allActivities == null || allActivities?.isEmpty == true)) {
+      title +=
+          ' ${context.locale.common_measurement_types_genitive(selectedActivity!.measurementType.name).toLowerCase()}';
+    }
+    return title;
+  }
+
+  bool hasMeasurementTabs() {
+    return (allActivities != null && allActivities!.length > 1);
+  }
 
   @override
   Widget build(BuildContext context) {
     final session = getIt<Session>();
 
-    final supportedDevices = Constants.devices.where(
-      (device) => device.supportedMeasurementTypes.contains(
-        carePlanActivity.measurementType,
-      ),
-    );
+    final List<Device> supportedDevices = [];
+
+    if (selectedActivity != null) {
+      supportedDevices.addAll(
+        Constants.supportedDevices.where(
+          (device) => device.supportedMeasurementTypes.contains(
+            selectedActivity?.measurementType,
+          ),
+        ),
+      );
+    }
 
     return Container(
       padding: Paddings.horizontal16,
@@ -40,30 +85,44 @@ class DeviceSelectorDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Gaps.gap24,
-          Row(
-            children: [
-              Text(
-                context.locale.measurement_dialog_title(
-                  context.locale.common_measurement_types(
-                    carePlanActivity.measurementType.name,
-                  ),
-                ),
-                style: ScaleTextStyles.textAccent.apply(
-                  color: Theme.of(context).colorScheme.onSecondary,
-                ),
-              ),
-              if (session.userAccount!.userPermissions!.contains(
-                UserPermission.canManuallyEnterMeasurement,
-              )) ...{
-                const Spacer(),
-                Text(
-                  context.locale.common_manually,
-                  style: ScaleTextStyles.text
-                      .apply(color: Theme.of(context).colorScheme.primary),
-                ),
-              }
-            ],
+          Text(
+            getTitle(),
+            style: ScaleTextStyles.textAccent.apply(
+              color: Theme.of(context).colorScheme.onSecondary,
+            ),
           ),
+          if (hasMeasurementTabs()) ...[
+            Gaps.gap24,
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  ...allActivities!
+                      .map(
+                        (activity) => Row(
+                          children: [
+                            NavigationTabChip(
+                              label: context.locale.common_measurement_types(
+                                activity.measurementType.name,
+                              ),
+                              isSelected: selectedActivity == activity,
+                              onTap: () {
+                                if (selectedActivity == activity) {
+                                  return;
+                                }
+                                selectedActivity = activity;
+                                setState(() {});
+                              },
+                            ),
+                            Gaps.gap8,
+                          ],
+                        ),
+                      )
+                      .toList(),
+                ],
+              ),
+            ),
+          ],
           ...supportedDevices
               .map(
                 (supportedDevice) => Container(
@@ -108,6 +167,21 @@ class DeviceSelectorDialog extends StatelessWidget {
                 ),
               )
               .toList(),
+          if (session.userAccount!.userPermissions!.contains(
+            UserPermission.canManuallyEnterMeasurement,
+          )) ...[
+            Gaps.gap24,
+            HighlightedElevatedButton(
+              label: context.locale.common_manual_measurement,
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+                GoRouter.of(context).pushNamed(
+                  ManualMeasurementRoute.name,
+                  extra: selectedActivity!.measurementType,
+                );
+              },
+            ),
+          ],
           Gaps.gap24,
           HighlightedElevatedButton(
             label: context.locale.common_close,

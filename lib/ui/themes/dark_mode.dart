@@ -125,14 +125,22 @@ class DarkMode {
         ),
         inputDecorationTheme: InputDecorationTheme(
           fillColor: ScaleColorsDark.paper,
-          labelStyle: TextStyle(color: fontColor),
-          iconColor: ScaleColorsDark.primary,
-          hintStyle:
-              const TextStyle(fontSize: 16.0, color: ScaleColorsDark.content40),
-          border: InputBorder.none,
-          errorStyle: const TextStyle(
-            color: ScaleColorsDark.alert,
-            fontSize: 14,
+          labelStyle: ScaleTextStyles.text.apply(color: fontColor),
+          iconColor: primary,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: Dimensions.padding16,
+            vertical: Dimensions.padding14,
+          ),
+          hintStyle: ScaleTextStyles.text.apply(color: colorContent60),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadii.radius8,
+            borderSide: BorderSide(
+              color: colorContent60,
+              width: 1,
+            ),
+          ),
+          errorStyle: ScaleTextStyles.label.copyWith(
+            color: alertColor,
           ),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(

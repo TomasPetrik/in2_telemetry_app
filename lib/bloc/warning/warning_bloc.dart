@@ -12,7 +12,8 @@ class WarningBloc extends Bloc<WarningBlocEvent, WarningBlocState> {
   WarningBloc(this._session) : super(WarningBlocState(warnings: [])) {
     on<SessionExpiredWarningBlocEvent>(_onSessionExpiredWarningBlocEvent);
     on<RemoveExpiredSessionWarningBlocEvent>(
-        _onRemoveExpiredSessionWarningBlocEvent);
+      _onRemoveExpiredSessionWarningBlocEvent,
+    );
     on<CarePlanChangedWarningBlocEvent>(_onCarePlanChangedWarningBlocEvent);
   }
 

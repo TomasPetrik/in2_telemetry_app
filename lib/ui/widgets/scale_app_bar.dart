@@ -48,6 +48,7 @@ class ScaleAppBar extends StatelessWidget {
                           width: 56,
                           child: showClose
                               ? IconButton(
+                                  padding: EdgeInsets.zero,
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                   },

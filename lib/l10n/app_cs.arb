@@ -8,11 +8,14 @@
   "common_measure": "Měřit",
   "common_measure_now": "Měřit teď",
   "common_manually": "Manuálně",
-  "common_manual_measurement": "Vlastní měření",
+  "common_personal_measurement": "Vlastní měření",
+  "common_manual_measurement": "Manuální měření",
   "common_show_calendar": "Zobrazit kalendář",
   "common_telemedicine": "Telemedicína",
   "common_error_404": "Server Error",
   "common_log_in": "Přihlásit se",
+  "common_save": "Uložit",
+  "common_wrong_value": "Nesprávna hodnota",
   "common_measurement_times": "{measurementTime, select, today{Dnes} next10{Nejbližší} tomorrow{Zítra} other{Jiný}}",
   "@common_measurement_times": {
     "description": "Measurement times",
@@ -22,6 +25,13 @@
   },
   "common_measurement_types": "{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace Kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} other{Jiný}}",
   "@common_measurement_types": {
+    "description": "Measurement types",
+    "placeholders": {
+      "measurementType": {}
+    }
+  },
+  "common_measurement_types_genitive": "{measurementType, select, temperature{Teploty} bloodPressure{Krevního tlaku} oxygenSaturation{Saturace Kyslíku} steps{Krokov} globalPosition{Pozice} heartRate{Srdečního tepu} ews{Ews} respiratoryRate{Dechovej frekvence} other{Jiný}}",
+  "@common_measurement_types_genitive": {
     "description": "Measurement types",
     "placeholders": {
       "measurementType": {}
@@ -206,6 +216,18 @@
       "name": {
         "type": "String"
       }
+    }
+  },
+  "manual_measurement_screen_title": "Manuální měření",
+  "manual_measurement_screen_systolic": "Systolický",
+  "manual_measurement_screen_diasystolic": "Diastolický",
+  "manual_measurement_screen_pulse": "Puls",
+  "manual_measurement_screen_measurement_time": "Čas odečtu",
+  "common_measurement_units_names": "{measurementUnitName, select, systolic{Systolický} diastolic{Diastolický} temperature{Teplota} pulse{Puls} oxygenSaturation{Saturace Kyslíku} respiratoryRate{Dechová frekvence} steps{Kroky} lat{Lat} lng{Lng} ews{Ews} other{Jiný}}",
+  "@common_measurement_units_names": {
+    "description": "Measurement unit names",
+    "placeholders": {
+      "measurementUnitName": {}
     }
   }
 }

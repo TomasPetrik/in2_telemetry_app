@@ -65,7 +65,85 @@ class Constants {
     ),
   ];
 
-  static const List<Device> devices = [
+  static Map<MeasurementType, MeasurementConfig> supportedMeasurements = {
+    MeasurementType.bloodPressure: MeasurementConfig(
+      MeasurementConfigType.composed,
+      ['mmHg', 'mmHg'],
+      [UnitName.systolic, UnitName.diastolic],
+      30,
+      300,
+      TextInputType.number,
+      ['0', '0'],
+    ),
+    MeasurementType.temperature: MeasurementConfig(
+      MeasurementConfigType.single,
+      ['°C'],
+      [UnitName.temperature],
+      30,
+      45,
+      const TextInputType.numberWithOptions(decimal: true),
+      ['0'],
+    ),
+    MeasurementType.heartRate: MeasurementConfig(
+      MeasurementConfigType.single,
+      ['TF'],
+      [UnitName.pulse],
+      30,
+      250,
+      TextInputType.number,
+      ['0'],
+    ),
+    MeasurementType.oxygenSaturation: MeasurementConfig(
+      MeasurementConfigType.single,
+      ['%'],
+      [UnitName.oxygenSaturation],
+      50,
+      100,
+      const TextInputType.numberWithOptions(decimal: true),
+      ['0'],
+    ),
+    MeasurementType.respiratoryRate: MeasurementConfig(
+      MeasurementConfigType.single,
+      null,
+      [UnitName.respiratoryRate],
+      5,
+      60,
+      TextInputType.number,
+      ['0'],
+    ),
+    MeasurementType.steps: MeasurementConfig(
+      MeasurementConfigType.single,
+      null,
+      [UnitName.steps],
+      0,
+      1000000,
+      TextInputType.number,
+      ['0'],
+    ),
+    MeasurementType.globalPosition: MeasurementConfig(
+      MeasurementConfigType.composed,
+      null,
+      [UnitName.lat, UnitName.lng],
+      -100,
+      100,
+      const TextInputType.numberWithOptions(
+        signed: true,
+        decimal: true,
+      ),
+      ['48.2389', '17.3693'],
+    ),
+    MeasurementType.ews: MeasurementConfig(
+      MeasurementConfigType.single,
+      null,
+      [UnitName.ews],
+      0,
+      10,
+      TextInputType.number,
+      ['0'],
+    ),
+  };
+
+  static const List<Device> supportedDevices = [
     Device(
       modelName: 'Beurer BM 77',
       deviceModel: DeviceModel.beurerBm77,
@@ -85,6 +163,45 @@ class Constants {
       ],
     ),
   ];
+}
+
+class MeasurementConfig {
+  final MeasurementConfigType type;
+  final List<String>? units;
+
+  final List<UnitName> unitNames;
+  final double min;
+  final double max;
+  final TextInputType textInputType;
+  final List<String> hintText;
+
+  MeasurementConfig(
+    this.type,
+    this.units,
+    this.unitNames,
+    this.min,
+    this.max,
+    this.textInputType,
+    this.hintText,
+  );
+}
+
+enum MeasurementConfigType {
+  single,
+  composed,
+}
+
+enum UnitName {
+  systolic,
+  diastolic,
+  temperature,
+  pulse,
+  oxygenSaturation,
+  respiratoryRate,
+  steps,
+  lat,
+  lng,
+  ews,
 }
 
 class Paddings {
