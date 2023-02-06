@@ -18,9 +18,9 @@ import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/care_plan_item.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
+import 'package:scalesoft_app/ui/widgets/notification_item.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
 import 'package:scalesoft_app/ui/widgets/sliver_name_value_row.dart';
-import 'package:scalesoft_app/ui/widgets/warning_item.dart';
 
 class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
   const UserDetailScreen({
@@ -48,22 +48,26 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                   ),
                   const SliverGap(Dimensions.padding18),
                   if (sessionExpired) ...[
-                    WarningItem(
-                      title: context.locale.session_expired_title,
-                      description: context.locale.session_expired_description(
-                        userAccount.user.fullName,
+                    SliverPadding(
+                      padding: Paddings.horizontal16,
+                      sliver: NotificationItem(
+                        title: context.locale.session_expired_title,
+                        description: context.locale.session_expired_description(
+                          userAccount.user.fullName,
+                        ),
+                        buttonLabel: context.locale.common_log_in,
+                        icon: SvgPicture.asset(
+                          'assets/icons/icon_triangle_exclamation_medium.svg',
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                        onTap: () {
+                          getIt<AuthBloc>().add(
+                            Authenticate(
+                              hospital: userAccount.hospital!,
+                            ),
+                          );
+                        },
                       ),
-                      icon: SvgPicture.asset(
-                        'assets/icons/icon_triangle_exclamation.svg',
-                        color: Theme.of(context).colorScheme.error,
-                      ),
-                      onTap: () {
-                        getIt<AuthBloc>().add(
-                          Authenticate(
-                            hospital: userAccount.hospital!,
-                          ),
-                        );
-                      },
                     ),
                     const SliverGap(Dimensions.padding24),
                   ],

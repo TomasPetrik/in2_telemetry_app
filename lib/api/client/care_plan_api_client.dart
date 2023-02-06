@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:scalesoft_app/api/dto/active_care_plans_response.dart';
 import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
+import 'package:scalesoft_app/api/dto/measurement/manual_measurement.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 
 part 'care_plan_api_client.g.dart';
@@ -28,5 +29,11 @@ abstract class CarePlanApiClient {
   Future<List<FulfillmentEvaluationItem>> loadFulFillmentEvaluation(
     @Path('apiUrl') String apiUrl,
     @Path('carePlanVersionId') int carePlanVersionId,
+  );
+
+  @POST('{apiUrl}/patient/manual-measurement')
+  Future<void> sendManualMeasurement(
+     @Path('apiUrl') String apiUrl,
+    @Body() ManualMeasurement manualMeasurement,
   );
 }

@@ -138,6 +138,34 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
     return allAccounts
         .groupListsBy<Hospital>((userAccount) => userAccount.hospital!);
   }
+
+  Future<UserAccount?> setExpiredUserByToken(String refreshToken) async {
+    final rootAccounts = box.values.toList();
+
+    final expiredAccount = rootAccounts.firstWhereOrNull(
+      (userAccount) => userAccount.authToken?.refreshToken == refreshToken,
+    );
+
+    if (expiredAccount != null) {
+      expiredAccount.sessionExpired = true;
+      await box.put(
+        expiredAccount.user.muid,
+        expiredAccount,
+      );
+    }
+
+    return expiredAccount;
+  }
+
+  bool isAnyAccountExpired() {
+    final rootAccounts = box.values.toList();
+
+    if (rootAccounts.any((userAccount) => userAccount.sessionExpired == true)) {
+      return true;
+    }
+
+    return false;
+  }
 }
 
 abstract class AccountDb {

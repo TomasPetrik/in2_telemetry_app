@@ -20,4 +20,10 @@ class ManualMeasurement with _$ManualMeasurement {
     @HiveField(6) int? respiratoryRate,
     @HiveField(7) String? patientMuid,
   }) = _ManualMeasurement;
+
+  factory ManualMeasurement.fromJson(Map<String, dynamic> json) =>
+      _$ManualMeasurementFromJson(json);
+
+  @override
+  String toString() => toJson().toString();
 }

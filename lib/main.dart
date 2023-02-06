@@ -9,6 +9,7 @@ import 'package:scalesoft_app/globals_initialization.dart';
 import 'package:scalesoft_app/locales.dart';
 import 'package:scalesoft_app/model/app_settings.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
+import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/managers/content_manager.dart';
@@ -87,6 +88,9 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
 
     final accountDbProvider = getIt<AccountDbProvider>();
     await accountDbProvider.init();
+
+    final penrindResultsDbProvider = getIt<PendingResultsDbProvider>();
+    await penrindResultsDbProvider.init();
   }
 }
 

@@ -7,6 +7,8 @@ import 'package:scalesoft_app/api/client/auth_api_client.dart';
 import 'package:scalesoft_app/api/dto/auth_token.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
+import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
+import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/warning/warning_bloc.dart';
 import 'package:scalesoft_app/bloc/warning/warning_bloc_event.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -53,8 +55,12 @@ class TokenInterceptor extends Interceptor {
   Future<void> onError(DioError err, ErrorInterceptorHandler handler) async {
     switch (err.response?.statusCode) {
       case 400:
+        final refreshToken = err.requestOptions.data["refresh_token"];
         getIt<WarningBloc>().add(
-          const SessionExpiredWarningBlocEvent(),
+          SessionExpiredWarningBlocEvent(refreshToken),
+        );
+        getIt<SyncBloc>().add(
+          const SyncEvent.errorComm(),
         );
         throw InvalidRequestException();
       case 401:

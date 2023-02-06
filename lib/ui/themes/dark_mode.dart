@@ -30,6 +30,8 @@ class DarkMode {
 
   static Color get positive => ScaleColorsDark.positive;
 
+  static Color get warning => ScaleColorsDark.warning;
+
   static TextTheme get textTheme => TextTheme(
         headlineLarge: TextStyle(
           fontSize: 36,
@@ -93,7 +95,7 @@ class DarkMode {
         brightness: Brightness.dark,
         error: alertColor,
         onBackground: paperAccent,
-        onError: alertColor,
+        onError: warning,
         onPrimary: fontColor,
         onSecondary: colorContent80,
         surface: dark,

@@ -13,4 +13,10 @@ class ComposedIntValue with _$ComposedIntValue {
     @HiveField(0) int? firstValue,
     @HiveField(1) int? secondValue,
   }) = _ComposedIntValue;
+
+  factory ComposedIntValue.fromJson(Map<String, dynamic> json) =>
+      _$ComposedIntValueFromJson(json);
+
+  @override
+  String toString() => toJson().toString();
 }

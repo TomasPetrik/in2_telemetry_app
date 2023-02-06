@@ -176,7 +176,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       await _accountDbProvider.save(userAccount);
       _session.userAccount = userAccount;
-      getIt<WarningBloc>().add(const RemoveExpiredSessionWarningBlocEvent());
+      getIt<WarningBloc>()
+          .add(RemoveExpiredSessionWarningBlocEvent(userAccount));
       emit(AuthState.userVerified(userAccount: userAccount));
     } on Exception {
       _session.token = null;

@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/navigation_tab_chip.dart';
 
-class WarningItem extends StatelessWidget {
-  const WarningItem({
+class NotificationItem extends StatelessWidget {
+  const NotificationItem({
     super.key,
     required this.title,
     required this.description,
+    required this.buttonLabel,
+    this.buttonType = SmallButtonType.regular,
     this.icon,
     this.onTap,
   });
 
   final String title;
   final String description;
+  final String buttonLabel;
+  final SmallButtonType buttonType;
   final Widget? icon;
   final VoidCallback? onTap;
 
@@ -23,7 +26,6 @@ class WarningItem extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Container(
         padding: Paddings.all16,
-        margin: Paddings.horizontal16,
         decoration: BoxDecoration(
           borderRadius: BorderRadii.radius16,
           color: Theme.of(context).colorScheme.onBackground,
@@ -32,7 +34,6 @@ class WarningItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (icon != null) ...[
-              //icon_triangle_exclamation
               Container(
                 height: 64,
                 width: 64,
@@ -66,9 +67,9 @@ class WarningItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         NavigationTabChip(
-                          label: context.locale.common_log_in,
+                          label: buttonLabel,
                           onTap: onTap,
-                          isSelected: true,
+                          isSelected: buttonType == SmallButtonType.regular,
                         ),
                       ],
                     )
@@ -81,4 +82,9 @@ class WarningItem extends StatelessWidget {
       ),
     );
   }
+}
+
+enum SmallButtonType {
+  none,
+  regular,
 }

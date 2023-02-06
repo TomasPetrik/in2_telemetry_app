@@ -2,6 +2,7 @@ import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/care_plan_api_client.dart';
 import 'package:scalesoft_app/api/dto/active_care_plans_response.dart';
 import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
+import 'package:scalesoft_app/api/dto/measurement/manual_measurement.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/storage/session.dart';
 
@@ -40,4 +41,13 @@ class CarePlansRepository {
     );
     return FulfillmentEvaluation(items);
   }
+
+  Future<void> sendManualMeasurement({
+    required UserAccount userAccount,
+    required ManualMeasurement manualMeasurement,
+  }) =>
+      carePlanApiClient.sendManualMeasurement(
+        userAccount.hospital!.authData.baseUrl,
+        manualMeasurement,
+      );
 }

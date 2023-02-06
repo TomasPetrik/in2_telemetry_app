@@ -17,7 +17,9 @@ import 'package:scalesoft_app/ui/widgets/blured_user_app_bar.dart';
 import 'package:scalesoft_app/ui/widgets/info_placeholder.dart';
 import 'package:scalesoft_app/ui/widgets/measurement_header.dart';
 import 'package:scalesoft_app/ui/widgets/measurements_list.dart';
+import 'package:scalesoft_app/ui/widgets/notification_widget.dart';
 import 'package:scalesoft_app/ui/widgets/personal_measurement_footer.dart';
+import 'package:scalesoft_app/ui/widgets/sync_widget.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 class DashboardPage extends StatelessWidget with BottomSheetMixin {
@@ -78,6 +80,8 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                   carePlanBloc.add(ReloadCarePlansEvent(userAccount));
                 },
                 topSlivers: [
+                  const NotificationWidget(),
+                  const SyncWidget(),
                   if ((state.selectedWhenPeriod == WhenPeriod.today ||
                           state.selectedWhenPeriod == WhenPeriod.next10) &&
                       (state.nextMeasurement?.carePlan

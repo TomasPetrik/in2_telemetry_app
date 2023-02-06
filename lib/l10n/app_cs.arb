@@ -229,5 +229,16 @@
     "placeholders": {
       "measurementUnitName": {}
     }
-  }
+  },
+
+
+  "sync_widget_sync_in_progress": "Probíhá synchronizace...",
+  "sync_widget_synced": "Synchronizováno",
+  "sync_widget_sync_failed": "Synchronizace se nepovedla",
+
+  "notification_widget_info_title": "Informace o změnách",
+  "notification_widget_info_desc": "Sledujte červenou tečku v navigaci a dozvíte se více.",
+  "notification_widget_info_understand": "Rozumím"
+
+
 }

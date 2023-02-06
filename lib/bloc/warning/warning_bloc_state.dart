@@ -4,8 +4,10 @@ part 'warning_bloc_state.freezed.dart';
 
 @unfreezed
 class WarningBlocState with _$WarningBlocState {
-  factory WarningBlocState({required List<Warning> warnings}) =
-      _WarningBlocState;
+  factory WarningBlocState({
+    required List<Warning> warnings,
+    bool? wasResolved,
+  }) = _WarningBlocState;
 }
 
 enum WarningType {
