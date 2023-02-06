@@ -180,7 +180,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                           PersonalMeasurementFooter(
                             showInfo: state.measurements?.isNotEmpty == true,
                             onPressed: () async {
-                              showDeviceSelector(
+                              doMeasurement(
                                 context: context,
                                 userId: userAccount.user.muid,
                                 allMeasurementTypes:
@@ -214,7 +214,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                             PersonalMeasurementFooter(
                               showInfo: state.measurements?.isNotEmpty == true,
                               onPressed: () async {
-                                showDeviceSelector(
+                                doMeasurement(
                                   context: context,
                                   userId: userAccount.user.muid,
                                   allMeasurementTypes: supportedMeasurements,
@@ -248,7 +248,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                                   showInfo:
                                       state.measurements?.isNotEmpty == true,
                                   onPressed: () async {
-                                    showDeviceSelector(
+                                    doMeasurement(
                                       context: context,
                                       userId: userAccount.user.muid,
                                       selectedMeasurementType: state

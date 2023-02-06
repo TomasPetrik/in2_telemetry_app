@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/measurement/device.dart';
@@ -129,56 +130,78 @@ class _DeviceSelectorDialogState extends State<DeviceSelectorDialog> {
               ),
             ),
           ],
-          ...supportedDevices
-              .map(
-                (supportedDevice) => Container(
-                  padding: Paddings.top24,
-                  child: Row(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadii.radius8,
-                        child: Container(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                          height: 128,
-                          width: 128,
-                          child: Image.asset(supportedDevice.imagePath),
-                        ),
-                      ),
-                      Gaps.gap16,
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              supportedDevice.modelName ?? '',
-                              style: ScaleTextStyles.text.apply(
-                                color: Theme.of(context).colorScheme.onPrimary,
-                              ),
-                            ),
-                            Gaps.gap6,
-                            Text(
-                              context.locale.measurement_dialog_device_desc(
-                                supportedDevice.deviceModel.name,
-                              ),
-                              style: ScaleTextStyles.label.apply(
-                                color:
-                                    Theme.of(context).colorScheme.onSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+          if (supportedDevices.isEmpty) ...[
+            Gaps.gap24,
+            Center(
+              child: SvgPicture.asset(
+                'assets/icons/icon_wave_pulse_big.svg',
+                color: Theme.of(context).colorScheme.tertiary,
+              ),
+            ),
+            Gaps.gap24,
+            Padding(
+              padding: Paddings.horizontal48,
+              child: Center(
+                child: Text(
+                  context.locale.device_selector_unsupported_devices,
+                  style: ScaleTextStyles.text
+                      .apply(color: Theme.of(context).colorScheme.onSecondary),
+                  textAlign: TextAlign.center,
                 ),
-              )
-              .toList(),
+              ),
+            ),
+          ] else
+            ...supportedDevices
+                .map(
+                  (supportedDevice) => Container(
+                    padding: Paddings.top24,
+                    child: Row(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadii.radius8,
+                          child: Container(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            height: 128,
+                            width: 128,
+                            child: Image.asset(supportedDevice.imagePath),
+                          ),
+                        ),
+                        Gaps.gap16,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                supportedDevice.modelName ?? '',
+                                style: ScaleTextStyles.text.apply(
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
+                                ),
+                              ),
+                              Gaps.gap6,
+                              Text(
+                                context.locale.measurement_dialog_device_desc(
+                                  supportedDevice.deviceModel.name,
+                                ),
+                                style: ScaleTextStyles.label.apply(
+                                  color:
+                                      Theme.of(context).colorScheme.onSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+                .toList(),
           if (session.userAccount!.userPermissions!.contains(
             UserPermission.canManuallyEnterMeasurement,
           )) ...[
             Gaps.gap24,
             HighlightedElevatedButton(
-              label: context.locale.common_manual_measurement,
+              label: context.locale.common_personal_record,
               onPressed: () {
                 Navigator.of(context, rootNavigator: true).pop();
                 GoRouter.of(context).pushNamed(

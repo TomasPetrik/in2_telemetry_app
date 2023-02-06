@@ -9,7 +9,7 @@
   "common_measure_now": "Měřit teď",
   "common_manually": "Manuálně",
   "common_personal_measurement": "Vlastní měření",
-  "common_manual_measurement": "Manuální měření",
+  "common_personal_record": "Vlastní zápis hodnot",
   "common_show_calendar": "Zobrazit kalendář",
   "common_telemedicine": "Telemedicína",
   "common_error_404": "Server Error",
@@ -218,7 +218,7 @@
       }
     }
   },
-  "manual_measurement_screen_title": "Manuální měření",
+  "manual_measurement_screen_title": "Vlastní zápis hodnot",
   "manual_measurement_screen_systolic": "Systolický",
   "manual_measurement_screen_diasystolic": "Diastolický",
   "manual_measurement_screen_pulse": "Puls",
@@ -230,15 +230,11 @@
       "measurementUnitName": {}
     }
   },
-
-
   "sync_widget_sync_in_progress": "Probíhá synchronizace...",
   "sync_widget_synced": "Synchronizováno",
   "sync_widget_sync_failed": "Synchronizace se nepovedla",
-
   "notification_widget_info_title": "Informace o změnách",
   "notification_widget_info_desc": "Sledujte červenou tečku v navigaci a dozvíte se více.",
-  "notification_widget_info_understand": "Rozumím"
-
-
+  "notification_widget_info_understand": "Rozumím",
+  "device_selector_unsupported_devices": "Pro tento typ měření není podporováno žádné zařízení. Hodnoty odečtěte z manuálního měření."
 }

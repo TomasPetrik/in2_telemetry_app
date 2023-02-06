@@ -86,7 +86,7 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
               label: context.locale.common_measure,
               isSelected: true,
               onTap: () {
-                showDeviceSelector(
+                doMeasurement(
                   context: context,
                   userId: carePlan.userId!,
                   selectedMeasurementType: carePlan.activity.measurementType,

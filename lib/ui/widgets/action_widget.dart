@@ -103,10 +103,11 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
               label: context.locale.common_measure_now,
               buttonType: ButtonType.secondary,
               onPressed: () {
-                showDeviceSelector(
+                doMeasurement(
                   context: context,
                   userId: measurement!.userId,
-                  selectedMeasurementType: measurement!.carePlan.activity.measurementType,
+                  selectedMeasurementType:
+                      measurement!.carePlan.activity.measurementType,
                 );
               },
             ),
