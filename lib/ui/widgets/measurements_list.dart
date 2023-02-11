@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -7,15 +8,20 @@ import 'package:scalesoft_app/ui/widgets/info_placeholder.dart';
 import 'package:scalesoft_app/ui/widgets/measurement_item.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
+import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
 
 class MeasurementsList extends StatelessWidget {
   const MeasurementsList({
     super.key,
+    required this.whenPeriod,
+    required this.carePlans,
     required this.measurements,
     required this.nextMeasurement,
     required this.planWhenPeriod,
   });
 
+  final PlanWhenPeriod whenPeriod;
+  final List<CarePlan> carePlans;
   final List<PlannedMeasurement> measurements;
   final PlannedMeasurement nextMeasurement;
   final PlanWhenPeriod planWhenPeriod;
@@ -31,27 +37,27 @@ class MeasurementsList extends StatelessWidget {
     }
   }
 
-  bool isTodaysPlanFinished() {
-    final todayPlanFinished = measurements.any(
-      (measurement) =>
-          measurement.carePlan.getTodayRemainingMeasurements().isEmpty &&
-          measurement.carePlan.hasMeasurementsToday(),
-    );
-    return todayPlanFinished;
+  bool _isTodaysPlanFinished() {
+    return whenPeriod == PlanWhenPeriod.today &&
+        nextMeasurement.carePlan.hasMeasurementsToday() == true;
+  }
+
+  int _getPlanEvaluation() {
+    return EvaluationPlanHelper.getProgressFromPlan(carePlans);
   }
 
   @override
   Widget build(BuildContext context) {
-    return isTodaysPlanFinished()
+    return _isTodaysPlanFinished()
         ? SliverPadding(
             padding: Paddings.horizontal64,
             sliver: InfoPlaceholder(
               icon: SvgPicture.asset(
                 'assets/icons/icon_circle_check_big.svg',
-                color: Theme.of(context).colorScheme.tertiary,
+                color: Theme.of(context).colorScheme.onTertiary,
               ),
               label: context.locale.dashboard_screen_todays_plan_finished(
-                56,
+                _getPlanEvaluation(),
               ),
             ),
           )

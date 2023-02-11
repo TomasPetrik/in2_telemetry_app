@@ -45,6 +45,24 @@ class UserAccount with _$UserAccount {
 
     return false;
   }
+
+  bool get enterMeasurementWithoutPlan =>
+      userPermissions?.contains(
+        UserPermission.enterMeasurementWithoutPlan,
+      ) ==
+      true;
+
+  bool get viewOwnMeasurementData =>
+      userPermissions?.contains(
+        UserPermission.viewOwnMeasurementData,
+      ) ==
+      true;
+
+  bool get canManuallyEnterMeasurement =>
+      userPermissions?.contains(
+        UserPermission.canManuallyEnterMeasurement,
+      ) ==
+      true;
 }
 
 @HiveType(typeId: 6)

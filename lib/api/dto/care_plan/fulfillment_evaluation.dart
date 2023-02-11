@@ -18,18 +18,6 @@ class FulfillmentEvaluation with _$FulfillmentEvaluation {
 
   @override
   String toString() => toJson().toString();
-
-  int get progress {
-    if (items.isEmpty) return 0;
-
-    int allActualMeasurementCount =
-        items.fold(0, (sum, current) => sum + current.actualMeasurementCount);
-    int allRequiredMeasurementCount =
-        items.fold(0, (sum, current) => sum + current.requiredMeasurementCount);
-
-    return (allActualMeasurementCount / allRequiredMeasurementCount * 100)
-        .round();
-  }
 }
 
 @freezed

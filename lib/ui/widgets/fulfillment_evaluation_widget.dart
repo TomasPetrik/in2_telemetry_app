@@ -4,6 +4,7 @@ import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
 
 class FulfillmentEvaluationWidget extends StatelessWidget {
   const FulfillmentEvaluationWidget({
@@ -15,6 +16,8 @@ class FulfillmentEvaluationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int progress =
+        EvaluationPlanHelper.getProgressFromEvaluation(fulfillmentEvaluation);
     return SliverToBoxAdapter(
       child: Container(
         margin: Paddings.horizontal16,
@@ -42,7 +45,7 @@ class FulfillmentEvaluationWidget extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(
-                  '${fulfillmentEvaluation.progress} %',
+                  '$progress %',
                   style: ScaleTextStyles.text.apply(
                     color: Theme.of(context).colorScheme.onTertiary,
                   ),
@@ -58,7 +61,7 @@ class FulfillmentEvaluationWidget extends StatelessWidget {
                 child: Row(
                   children: [
                     Expanded(
-                      flex: fulfillmentEvaluation.progress,
+                      flex: progress,
                       child: ClipRRect(
                         borderRadius: BorderRadii.radius4,
                         child: Container(
@@ -67,7 +70,7 @@ class FulfillmentEvaluationWidget extends StatelessWidget {
                       ),
                     ),
                     Spacer(
-                      flex: 100 - fulfillmentEvaluation.progress,
+                      flex: 100 - progress,
                     ),
                   ],
                 ),

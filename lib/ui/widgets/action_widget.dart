@@ -11,25 +11,23 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
   const ActionWidget({
     super.key,
     required this.userAccount,
-    required this.measurement,
+    required this.nextMeasurement,
   });
 
   final UserAccount userAccount;
-  final PlannedMeasurement? measurement;
+  final PlannedMeasurement? nextMeasurement;
 
   MeasurementWhenType get measurementType {
     final now = DateTime.now();
 
-    measurement?.carePlan.hasMeasurementsToday();
-
-    if (measurement != null) {
-      final todayStart = measurement!.timingDayWhen.start.todayDateTime();
-      final todayEnd = measurement!.timingDayWhen.end.todayDateTime();
+    if (nextMeasurement != null) {
+      final todayStart = nextMeasurement!.timingDayWhen.start.todayDateTime();
+      final todayEnd = nextMeasurement!.timingDayWhen.end.todayDateTime();
       if (now.isBefore(todayEnd) && now.isAfter(todayStart)) {
         return MeasurementWhenType.ongoing;
       } else if (now.isBefore(todayStart)) {
         return MeasurementWhenType.upcoming;
-      } else if (measurement?.carePlan.hasMeasurementsToday() == true) {
+      } else if (nextMeasurement?.carePlan.hasMeasurementsToday() == true) {
         return MeasurementWhenType.finished;
       }
     }
@@ -41,17 +39,17 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
     switch (measurementType) {
       case MeasurementWhenType.ongoing:
         return '${context.locale.common_measurement} ${context.locale.common_measurement_types_genitive(
-              measurement!.carePlan.activity.measurementType.name,
-            ).toLowerCase()} ${measurement!.timingDayWhen.whenCode != null ? context.locale.common_when_code(
-              measurement!.timingDayWhen.whenCode!.name,
+              nextMeasurement!.carePlan.activity.measurementType.name,
+            ).toLowerCase()} ${nextMeasurement!.timingDayWhen.whenCode != null ? context.locale.common_when_code(
+              nextMeasurement!.timingDayWhen.whenCode!.name,
             ).toLowerCase() : ''}';
 
       case MeasurementWhenType.upcoming:
         return '${context.locale.common_measurement} ${context.locale.common_measurement_types_genitive(
-              measurement!.carePlan.activity.measurementType.name,
-            ).toLowerCase()} ${measurement!.timingDayWhen.whenCode != null ? context.locale.common_when_code(
-              measurement!.timingDayWhen.whenCode!.name,
-            ).toLowerCase() : ''} ve ${measurement!.timingDayWhen.start.toString()}';
+              nextMeasurement!.carePlan.activity.measurementType.name,
+            ).toLowerCase()} ${nextMeasurement!.timingDayWhen.whenCode != null ? context.locale.common_when_code(
+              nextMeasurement!.timingDayWhen.whenCode!.name,
+            ).toLowerCase() : ''} ve ${nextMeasurement!.timingDayWhen.start.toString()}';
 
       case MeasurementWhenType.finished:
         return context.locale.dashboard_screen_no_more_measurements;
@@ -92,12 +90,12 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
               ),
               if (measurementType == MeasurementWhenType.ongoing) ...[
                 Gaps.gap16,
-                Text(measurement?.timingDayWhen.start.toString() ?? ''),
+                Text(nextMeasurement?.timingDayWhen.start.toString() ?? ''),
               ],
             ],
           ),
           if (measurementType == MeasurementWhenType.ongoing &&
-              measurement != null) ...[
+              nextMeasurement != null) ...[
             Gaps.gap16,
             HighlightedElevatedButton(
               label: context.locale.common_measure_now,
@@ -105,9 +103,9 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
               onPressed: () {
                 doMeasurement(
                   context: context,
-                  userId: measurement!.userId,
+                  userId: nextMeasurement!.userId,
                   selectedMeasurementType:
-                      measurement!.carePlan.activity.measurementType,
+                      nextMeasurement!.carePlan.activity.measurementType,
                 );
               },
             ),
