@@ -112,20 +112,6 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                         ),
                       }
                     ],
-                    topHeader: (state.selectedWhenPeriod ==
-                                PlanWhenPeriod.today ||
-                            state.selectedWhenPeriod == PlanWhenPeriod.next10)
-                        ? Column(
-                            children: [
-                              Gaps.gap16,
-                              ActionWidget(
-                                userAccount: userAccount,
-                                measurement: state.nextMeasurement,
-                              ),
-                              Gaps.gap26,
-                            ],
-                          )
-                        : const SizedBox.shrink(),
                     navigationHeader: measurements?.isNotEmpty == true
                         ? PlannedMeasurementHeader(
                             whenPeriod: state.selectedWhenPeriod ??

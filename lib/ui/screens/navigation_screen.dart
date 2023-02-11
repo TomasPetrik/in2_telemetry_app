@@ -26,7 +26,6 @@ class NavigationScreen extends StatefulWidget {
     required this.tabs,
     this.topSlivers = const [],
     this.currentTab = 0,
-    required this.topHeader,
     required this.navigationHeader,
     this.onTabSelected,
     this.onRefresh,
@@ -37,7 +36,6 @@ class NavigationScreen extends StatefulWidget {
   final List<NavigationBarTabItem> tabs;
   final List<Widget> topSlivers;
   final int currentTab;
-  final Widget topHeader;
   final Widget? navigationHeader;
   final Function(int tabIndex)? onTabSelected;
 
@@ -177,7 +175,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
                       ),
                     ),
                     ...widget.tabs[currentTab].slivers,
-                    if (widget.tabs[currentTab].bottomSlivers?.isNotEmpty == true)
+                    if (widget.tabs[currentTab].bottomSlivers?.isNotEmpty ==
+                        true)
                       ...widget.tabs[currentTab].bottomSlivers!,
                     const SliverFillRemaining(),
                   ],

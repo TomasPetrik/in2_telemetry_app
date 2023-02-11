@@ -172,7 +172,6 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                             .toList(),
                       ],
                     ],
-                    topHeader: const SizedBox.shrink(),
                   ),
                   Positioned(
                     top: 0,
