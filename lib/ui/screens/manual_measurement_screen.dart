@@ -42,7 +42,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen> {
 
   void _goToMainAndSync() {
     GoRouter.of(context).pop();
-    getIt<SyncBloc>().add(const SyncEvent.sync());
+    getIt<SyncBloc>().add(const SyncEvent.syncResults());
   }
 
   @override

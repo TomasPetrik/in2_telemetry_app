@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scalesoft_app/api/dto/auth_token.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
+import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/api/dto/user.dart';
 
 part 'user_account.freezed.dart';
@@ -24,6 +25,7 @@ class UserAccount with _$UserAccount {
     @HiveField(7) String? parentId,
     @HiveField(8) List<CarePlan>? carePlans,
     @HiveField(9) bool? sessionExpired,
+    @HiveField(10) List<MeasurementResult>? measurementResults,
   }) = _UserAccount;
 
   factory UserAccount.fromJson(Map<String, dynamic> json) =>

@@ -86,6 +86,9 @@ class TokenInterceptor extends Interceptor {
       case 500:
         throw InternalServerException();
       default:
+        getIt<SyncBloc>().add(
+          const SyncEvent.errorComm(),
+        );
         if (NoInternetException.isNoInternet(err)) throw NoInternetException();
         throw Exception();
     }

@@ -16,7 +16,8 @@
   "common_log_in": "Přihlásit se",
   "common_save": "Uložit",
   "common_wrong_value": "Nesprávna hodnota",
-  "common_measurement_times": "{measurementTime, select, today{Dnes} next10{Nejbližší} tomorrow{Zítra} other{Jiný}}",
+  "common_not_measured": "Nenaměřeno",
+  "common_measurement_times": "{measurementTime, select, yesterday{Včera} today{Dnes} next10{Nejbližší} tomorrow{Zítra} other{Jiný}}",
   "@common_measurement_times": {
     "description": "Measurement times",
     "placeholders": {
@@ -193,6 +194,14 @@
     }
   },
   "dashboard_screen_no_more_measurements": "Dnes plánované měření skončilo.",
+  "dashboard_screen_todays_plan_finished": "Dnešní plán byl splněn na {percentage} %.",
+  "@dashboard_screen_todays_plan_finished": {
+    "placeholders": {
+      "percentage": {
+        "type": "int"
+      }
+    }
+  },
   "dashboard_screen_no_todays_measurements": "Dnes nemáte naplánované žádné měření.",
   "measurement_dialog_title": "Měření {label}",
   "@measurement_dialog_title": {
@@ -236,5 +245,23 @@
   "notification_widget_info_title": "Informace o změnách",
   "notification_widget_info_desc": "Sledujte červenou tečku v navigaci a dozvíte se více.",
   "notification_widget_info_understand": "Rozumím",
-  "device_selector_unsupported_devices": "Pro tento typ měření není podporováno žádné zařízení. Hodnoty odečtěte z manuálního měření."
+  "device_selector_unsupported_devices": "Pro tento typ měření není podporováno žádné zařízení. Hodnoty odečtěte z manuálního měření.",
+  "results_screen_results_title": "Výsledky",
+  "results_screen_no_results": "Je nám líto, ale výsledky pro účet {name} nejsou dostupné.",
+  "@results_screen_no_results": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "results_measurements_when_selector_title": "Plnění plánu",
+  "results_plan_fulfilled_on": "Plán splněn na {percentage}%",
+  "@results_plan_fulfilled_on": {
+    "placeholders": {
+      "percentage": {
+        "type": "int"
+      }
+    }
+  }
 }

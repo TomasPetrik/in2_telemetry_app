@@ -13,4 +13,10 @@ class ComposedDoubleValue with _$ComposedDoubleValue {
     @HiveField(0) double? firstValue,
     @HiveField(1) double? secondValue,
   }) = _ComposedDoubleValue;
+
+  factory ComposedDoubleValue.fromJson(Map<String, dynamic> json) =>
+      _$ComposedDoubleValueFromJson(json);
+
+  @override
+  String toString() => toJson().toString();
 }

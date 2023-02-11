@@ -56,6 +56,16 @@ class TimeOfDay extends HiveObject {
       second: second,
     );
   }
+
+  DateTime yesterdayDateTime() {
+    final today = DateTime.now();
+    return today.copyWith(
+      day: today.day - 1,
+      hour: hour,
+      minute: minute,
+      second: second,
+    );
+  }
 }
 
 class TimeOfDayConverter implements JsonConverter<TimeOfDay, String> {
@@ -136,7 +146,7 @@ enum WhenCode {
   @JsonValue('before-dinner')
   @HiveField(19)
   beforeDinner,
-  @JsonValue('before-breakfast')
+  @JsonValue('after-breakfast')
   @HiveField(20)
   afterBreakfast,
   @JsonValue('after-lunch')

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class FindBeurerDeviceScreen extends StatefulWidget {
@@ -12,7 +12,7 @@ class FindBeurerDeviceScreen extends StatefulWidget {
 }
 
 class _FindBeurerDeviceScreenState extends State<FindBeurerDeviceScreen> {
-  FlutterBlue flutterBlue = FlutterBlue.instance;
+  FlutterBluePlus flutterBlue = FlutterBluePlus.instance;
   BluetoothDevice? device;
   List<String> events = [];
   StreamSubscription? subscription;

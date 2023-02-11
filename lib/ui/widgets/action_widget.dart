@@ -15,7 +15,7 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
   });
 
   final UserAccount userAccount;
-  final Measurement? measurement;
+  final PlannedMeasurement? measurement;
 
   MeasurementWhenType get measurementType {
     final now = DateTime.now();
@@ -40,14 +40,14 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
   String getMeasurementText(BuildContext context) {
     switch (measurementType) {
       case MeasurementWhenType.ongoing:
-        return '${context.locale.common_measurement} ${context.locale.common_measurement_types(
+        return '${context.locale.common_measurement} ${context.locale.common_measurement_types_genitive(
               measurement!.carePlan.activity.measurementType.name,
             ).toLowerCase()} ${measurement!.timingDayWhen.whenCode != null ? context.locale.common_when_code(
               measurement!.timingDayWhen.whenCode!.name,
             ).toLowerCase() : ''}';
 
       case MeasurementWhenType.upcoming:
-        return '${context.locale.common_measurement} ${context.locale.common_measurement_types(
+        return '${context.locale.common_measurement} ${context.locale.common_measurement_types_genitive(
               measurement!.carePlan.activity.measurementType.name,
             ).toLowerCase()} ${measurement!.timingDayWhen.whenCode != null ? context.locale.common_when_code(
               measurement!.timingDayWhen.whenCode!.name,

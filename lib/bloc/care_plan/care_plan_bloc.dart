@@ -1,30 +1,41 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
+import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_state.dart';
-import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
-import 'package:scalesoft_app/repositories/care_plans_repository.dart';
-import 'package:scalesoft_app/storage/session.dart';
+import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
+import 'package:scalesoft_app/bloc/sync/sync_event.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
+import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
-@injectable
+@singleton
 class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
-  final CarePlansRepository _carePlansRepository;
-  final AccountDbProvider _accountDbProvider;
-  final Session _session;
+  final List<MeasurementResult> _uncategorizedResults = [];
+  final List<Measurement> _pendingResults = [];
 
-  CarePlanBloc(
-    this._carePlansRepository,
-    this._accountDbProvider,
-    this._session,
-  ) : super(CarePlanBlocState()) {
+  CarePlanBloc() : super(CarePlanBlocState()) {
     on<CarePlanInitializeEvent>((event, emit) async {
+      _uncategorizedResults.clear();
+      _uncategorizedResults.addAll(event.uncategorizedResults);
+      _pendingResults.clear();
+      _pendingResults.addAll(event.pendingResults ?? []);
+
+      final List<MeasurementResult> todayResults = MeasurementHelper.getResults(
+        _uncategorizedResults,
+        _pendingResults,
+        ResultsWhenPeriod.today,
+        null,
+      );
+
       final nextMeasurement = event.carePlans.isEmpty
           ? null
           : Calendar.getNUpcomingMeasurements(
               carePlans: event.carePlans,
               reqCount: 1,
+              measurementResults: todayResults,
             );
 
       final measurements = event.carePlans.isEmpty
@@ -32,6 +43,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
           : CarePlanHelper.getMeasurements(
               event.carePlans,
               event.whenPeriod,
+              todayResults,
             );
 
       emit(
@@ -40,24 +52,35 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
           selectedWhenPeriod: event.whenPeriod,
           nextMeasurement: nextMeasurement?.first,
           measurements: measurements,
+          results: todayResults,
+          measurementType: null,
         ),
       );
     });
 
     on<TimePeriodChangeEvent>((event, emit) {
+      final List<MeasurementResult> todayResults = MeasurementHelper.getResults(
+        _uncategorizedResults,
+        _pendingResults,
+        ResultsWhenPeriod.today,
+        state.measurementType,
+      );
+
       final nextMeasurement = Calendar.getNUpcomingMeasurements(
         carePlans: state.currentCarePlans!,
         reqCount: 1,
+        measurementResults: todayResults,
       );
 
       final measurements = CarePlanHelper.getMeasurements(
         state.currentCarePlans!,
-        event.periodTime,
+        event.whenPeriod,
+        todayResults,
       );
 
       emit(
         state.copyWith(
-          selectedWhenPeriod: event.periodTime,
+          selectedWhenPeriod: event.whenPeriod,
           nextMeasurement: nextMeasurement.first,
           measurements: measurements,
         ),
@@ -65,14 +88,23 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
     });
 
     on<CurrentPlansChangeEvent>((event, emit) {
+      final List<MeasurementResult> todayResults = MeasurementHelper.getResults(
+        _uncategorizedResults,
+        _pendingResults,
+        ResultsWhenPeriod.today,
+        state.measurementType,
+      );
+
       final nextMeasurement = Calendar.getNUpcomingMeasurements(
         carePlans: event.carePlans,
         reqCount: 1,
+        measurementResults: todayResults,
       );
 
       final measurements = CarePlanHelper.getMeasurements(
         event.carePlans,
         state.selectedWhenPeriod!,
+        todayResults,
       );
 
       emit(
@@ -80,6 +112,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
           currentCarePlans: event.carePlans,
           nextMeasurement: nextMeasurement.first,
           measurements: measurements,
+          measurementType: state.measurementType,
         ),
       );
     });
@@ -88,45 +121,9 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
       (event, emit) async {
         final userAccount = event.userAccount;
 
-        //load and assign care plans, fulfillment_evaluation
-        final activeCarePlans = await _carePlansRepository.loadActiveCarePlans(
-          userAccount: userAccount,
+        getIt<SyncBloc>().add(
+          SyncEvent.syncAll([userAccount]),
         );
-
-        for (final carePlan in activeCarePlans.items) {
-          carePlan.userId = userAccount.user.muid;
-          final fulfillmentEvaluation =
-              await _carePlansRepository.loadFulFillmentEvaluation(
-            carePlanVersionId: carePlan.versionId,
-          );
-          carePlan.fulfillmentEvaluation = fulfillmentEvaluation;
-        }
-
-        userAccount.carePlans = activeCarePlans.items;
-        if (userAccount.representedPeople?.isNotEmpty == true) {
-          for (final UserAccount representedPerson
-              in userAccount.representedPeople!) {
-            final activeCarePlans =
-                await _carePlansRepository.loadActiveCarePlans(
-              userAccount: representedPerson,
-            );
-
-            for (final carePlan in activeCarePlans.items) {
-              carePlan.userId = representedPerson.user.muid;
-              final fulfillmentEvaluation =
-                  await _carePlansRepository.loadFulFillmentEvaluation(
-                carePlanVersionId: carePlan.versionId,
-              );
-              carePlan.fulfillmentEvaluation = fulfillmentEvaluation;
-            }
-
-            representedPerson.carePlans = activeCarePlans.items;
-          }
-        }
-
-        await _accountDbProvider.save(userAccount);
-        _session.userAccount = userAccount;
-        emit(state);
       },
     );
   }

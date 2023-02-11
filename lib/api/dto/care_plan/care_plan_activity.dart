@@ -34,26 +34,29 @@ enum ActivityType {
 enum MeasurementType {
   @JsonValue('Temperature')
   @HiveField(0)
-  temperature,
+  temperature('Temperature'),
   @JsonValue('BloodPressure')
   @HiveField(1)
-  bloodPressure,
+  bloodPressure('BloodPressure'),
   @JsonValue('OxygenSaturation')
   @HiveField(2)
-  oxygenSaturation,
+  oxygenSaturation('OxygenSaturation'),
   @JsonValue('Steps')
   @HiveField(3)
-  steps,
+  steps('Steps'),
   @JsonValue('GlobalPosition')
   @HiveField(4)
-  globalPosition,
+  globalPosition('GlobalPosition'),
   @JsonValue('HeartRate')
   @HiveField(5)
-  heartRate,
+  heartRate('HeartRate'),
   @JsonValue('Ews')
   @HiveField(6)
-  ews,
+  ews('Ews'),
   @JsonValue('RespiratoryRate')
   @HiveField(7)
-  respiratoryRate;
+  respiratoryRate('RespiratoryRate');
+
+  const MeasurementType(this.key);
+  final String key;
 }

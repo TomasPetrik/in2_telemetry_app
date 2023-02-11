@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/measurement/composed_int_value.dart';
-import 'package:scalesoft_app/api/dto/measurement/manual_measurement.dart';
+import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -30,43 +30,44 @@ class MeasurementForm extends StatelessWidget {
   double? _value2;
   DateTime? _measurementDateTime;
 
-  ManualMeasurement? getMeasurement() {
+  Measurement? getMeasurement() {
     if (formKey.currentState?.validate() == true) {
-      ManualMeasurement? manualMeasurement = ManualMeasurement(
+      Measurement? measurement = Measurement(
         measurementDateTime: _measurementDateTime,
         patientMuid: userId,
+        measurementType: measurementType,
       );
       switch (measurementType) {
         case MeasurementType.temperature:
-          return manualMeasurement.copyWith(
+          return measurement.copyWith(
             temperature: _value1,
           );
         case MeasurementType.bloodPressure:
-          return manualMeasurement.copyWith(
-            bloodPressure: ComposedIntValue(
-              firstValue: _value1?.toInt(),
-              secondValue: _value2?.toInt(),
+          return measurement.copyWith(
+            bloodPressure: BloodPressureValue(
+              systolic: _value1?.toInt(),
+              diastolic: _value2?.toInt(),
             ),
           );
 
         case MeasurementType.oxygenSaturation:
-          return manualMeasurement.copyWith(
+          return measurement.copyWith(
             oxygenSaturation: _value1?.toInt(),
           );
         case MeasurementType.steps:
-          return manualMeasurement.copyWith();
+          return measurement.copyWith();
         case MeasurementType.globalPosition:
-          return manualMeasurement.copyWith();
+          return measurement.copyWith();
         case MeasurementType.heartRate:
-          return manualMeasurement.copyWith(
+          return measurement.copyWith(
             heartRate: _value1?.toInt(),
           );
         case MeasurementType.ews:
-          return manualMeasurement.copyWith(
+          return measurement.copyWith(
             heartRate: _value1?.toInt(),
           );
         case MeasurementType.respiratoryRate:
-          return manualMeasurement.copyWith(
+          return measurement.copyWith(
             respiratoryRate: _value1?.toInt(),
           );
       }

@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/cubit/omron/omron_connection_state.dart';
 import 'package:scalesoft_app/model/device_info.dart';
+import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/model/measurement_info.dart';
-import 'package:scalesoft_app/model/measurement_result.dart';
 import 'package:scalesoft_app/ui/screens/constants.dart';
 
 enum Service { genericAccess, deviceInfo, bloodPressure, batteryService }
@@ -20,7 +20,7 @@ const String batteryService = '0000180F-0000-1000-8000-00805f9b34fb';
 
 @singleton
 class OmronConnectionCubit extends Cubit<OmronConnectionState> {
-  FlutterBlue flutterBlue = FlutterBlue.instance;
+  FlutterBluePlus flutterBlue = FlutterBluePlus.instance;
   bool search = true;
 
   OmronConnectionCubit()
@@ -68,7 +68,9 @@ class OmronConnectionCubit extends Cubit<OmronConnectionState> {
         // do something with scan results
 
         for (final result in results) {
-          if (result.advertisementData.serviceUuids.map((uuid) => uuid.toLowerCase()).contains(bloodPressureServiceUuid)) {
+          if (result.advertisementData.serviceUuids
+              .map((uuid) => uuid.toLowerCase())
+              .contains(bloodPressureServiceUuid)) {
             search = false;
             flutterBlue.stopScan();
             BluetoothDevice device = result.device;
@@ -106,7 +108,12 @@ class OmronConnectionCubit extends Cubit<OmronConnectionState> {
   Future<void> verifyDevice(BluetoothDevice device) async {
     final deviceInfo = await requestDeviceInfo(device);
     if (deviceInfo != null) {
-      emit(OmronConnectionState.verified(device: device, deviceInfo: deviceInfo));
+      emit(
+        OmronConnectionState.verified(
+          device: device,
+          deviceInfo: deviceInfo,
+        ),
+      );
     } else {
       emit(const OmronConnectionState.notVerified());
       return;
@@ -131,16 +138,17 @@ class OmronConnectionCubit extends Cubit<OmronConnectionState> {
     }
   }
 
-  Future<MeasurementResult> requestBPData(BluetoothDevice device) async {
+  Future<HwMeasurementResult> requestBPData(BluetoothDevice device) async {
     final services = await device.discoverServices();
     final bloodPressureInfoService = services.firstWhereOrNull(
       (service) => service.uuid.toString().toLowerCase() == bloodPressure,
     );
     if (bloodPressureInfoService != null) {
-      final measurementResult = await getBPInfoFromService(bloodPressureInfoService);
+      final measurementResult =
+          await getBPInfoFromService(bloodPressureInfoService);
       return measurementResult;
     } else {
-      return MeasurementResult(resultState: ResultState.connectionError);
+      return HwMeasurementResult(resultState: ResultState.connectionError);
     }
   }
 
@@ -149,14 +157,16 @@ class OmronConnectionCubit extends Cubit<OmronConnectionState> {
       3.1 Device is not connected,
       3.2 Device should be paired first,
   */
-  Future<MeasurementResult> getBPInfoFromService(BluetoothService service) async {
+  Future<HwMeasurementResult> getBPInfoFromService(
+    BluetoothService service,
+  ) async {
     final characteristics = service.characteristics;
     final bpCharacteristic = getBloodPressureChar(characteristics);
     final completer = Completer();
-    MeasurementResult? measurementResult;
+    HwMeasurementResult? measurementResult;
 
     if (bpCharacteristic == null) {
-      return MeasurementResult(resultState: ResultState.connectionError);
+      return HwMeasurementResult(resultState: ResultState.connectionError);
     }
 
     listenOnBloodPressureData(
@@ -165,7 +175,7 @@ class OmronConnectionCubit extends Cubit<OmronConnectionState> {
         if (data.isNotEmpty) {
           final measurementInfo = MeasurementInfo.fromIntList(data);
 
-          measurementResult = MeasurementResult(
+          measurementResult = HwMeasurementResult(
             resultState: ResultState.success,
             measurementInfo: measurementInfo,
           );
@@ -179,7 +189,7 @@ class OmronConnectionCubit extends Cubit<OmronConnectionState> {
       [completer.future, Future.delayed(const Duration(seconds: 4))],
     );
 
-    measurementResult ??= MeasurementResult(resultState: ResultState.noData);
+    measurementResult ??= HwMeasurementResult(resultState: ResultState.noData);
 
     return measurementResult!;
   }
@@ -195,8 +205,13 @@ class OmronConnectionCubit extends Cubit<OmronConnectionState> {
   
     */
 
-  Future<String> readCharData(List<BluetoothCharacteristic> characteristics, DeviceChar characteristic) async {
-    String address = deviceCharAddress.entries.firstWhere((entry) => entry.key == characteristic).value;
+  Future<String> readCharData(
+    List<BluetoothCharacteristic> characteristics,
+    DeviceChar characteristic,
+  ) async {
+    String address = deviceCharAddress.entries
+        .firstWhere((entry) => entry.key == characteristic)
+        .value;
     final speficicChar = characteristics.firstWhereOrNull(
       (char) => char.uuid.toString().toUpperCase().substring(4, 8) == address,
     );
@@ -219,9 +234,14 @@ class OmronConnectionCubit extends Cubit<OmronConnectionState> {
     });
   }
 
-  BluetoothCharacteristic? getBloodPressureChar(List<BluetoothCharacteristic> characteristics) {
-    String address =
-        measurementCharAddress.entries.firstWhere((entry) => entry.key == MeasurementChar.bloodPressureMeasurement).value;
+  BluetoothCharacteristic? getBloodPressureChar(
+    List<BluetoothCharacteristic> characteristics,
+  ) {
+    String address = measurementCharAddress.entries
+        .firstWhere(
+          (entry) => entry.key == MeasurementChar.bloodPressureMeasurement,
+        )
+        .value;
     final speficicChar = characteristics.firstWhereOrNull(
       (char) => char.uuid.toString().toUpperCase().substring(4, 8) == address,
     );
@@ -238,12 +258,18 @@ class OmronConnectionCubit extends Cubit<OmronConnectionState> {
   Future<DeviceInfo> getDeviceInfoFromService(BluetoothService service) async {
     final characteristics = service.characteristics;
 
-    final modelNumber = await readCharData(characteristics, DeviceChar.modelNumber);
-    final serialNumber = await readCharData(characteristics, DeviceChar.serialNumber);
-    final firmwareRevision = await readCharData(characteristics, DeviceChar.firmwareRevision);
-    final hardwareRevision = await readCharData(characteristics, DeviceChar.hardwareRevision);
-    final softwareRevision = await readCharData(characteristics, DeviceChar.softwareRevision);
-    final manufacturerName = await readCharData(characteristics, DeviceChar.manufacturerName);
+    final modelNumber =
+        await readCharData(characteristics, DeviceChar.modelNumber);
+    final serialNumber =
+        await readCharData(characteristics, DeviceChar.serialNumber);
+    final firmwareRevision =
+        await readCharData(characteristics, DeviceChar.firmwareRevision);
+    final hardwareRevision =
+        await readCharData(characteristics, DeviceChar.hardwareRevision);
+    final softwareRevision =
+        await readCharData(characteristics, DeviceChar.softwareRevision);
+    final manufacturerName =
+        await readCharData(characteristics, DeviceChar.manufacturerName);
 
     final DeviceInfo deviceInfo = DeviceInfo(
       modelNumber: modelNumber,
@@ -266,7 +292,8 @@ class OmronConnectionCubit extends Cubit<OmronConnectionState> {
     for (final characteristic in characteristics) {
       final List<int> charInfo = await characteristic.read();
       String charInfoString = String.fromCharCodes(charInfo);
-      debugPrint('0x${characteristic.uuid.toString().toUpperCase().substring(4, 8)}\n'
+      debugPrint(
+          '0x${characteristic.uuid.toString().toUpperCase().substring(4, 8)}\n'
           ' $charInfoString');
     }
   }
@@ -278,7 +305,8 @@ class OmronConnectionCubit extends Cubit<OmronConnectionState> {
     for (final characteristic in characteristics) {
       final List<int> charInfo = await characteristic.read();
       String charInfoString = String.fromCharCodes(charInfo);
-      debugPrint('0x${characteristic.uuid.toString().toUpperCase().substring(4, 8)}\n'
+      debugPrint(
+          '0x${characteristic.uuid.toString().toUpperCase().substring(4, 8)}\n'
           ' $charInfoString');
     }
   }

@@ -13,9 +13,9 @@ import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/parsers/jwt_parser.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/repositories/account_repository.dart';
-import 'package:scalesoft_app/repositories/care_plans_repository.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/auth_service.dart';
+import 'package:scalesoft_app/services/sync_service.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 
@@ -23,8 +23,8 @@ import 'package:scalesoft_app/ui/themes/constants.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthService _authService;
   final AccountRepository _accountRepository;
-  final CarePlansRepository _carePlansRepository;
   final AccountDbProvider _accountDbProvider;
+  final SyncService _syncService;
   final Session _session;
   AuthorizationCodeGrant? _grant;
   final Dio _dio;
@@ -32,10 +32,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(
     this._authService,
     this._accountRepository,
-    this._carePlansRepository,
     this._session,
     this._accountDbProvider,
     @Named(Constants.privateDioName) this._dio,
+    this._syncService,
   ) : super(const AuthState.unauthenticated()) {
     on<Authenticate>(_onAuthenticate);
     on<HandleAuthResponse>(_onHandleAuthResponse);
@@ -136,44 +136,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             .toList(),
       );
 
-      _session.userAccount = userAccount;
-
-      //load and assign care plans, fulfillment_evaluation
-      final activeCarePlans = await _carePlansRepository.loadActiveCarePlans(
-        userAccount: userAccount,
-      );
-
-      for (final carePlan in activeCarePlans.items) {
-        carePlan.userId = userAccount.user.muid;
-        final fulfillmentEvaluation =
-            await _carePlansRepository.loadFulFillmentEvaluation(
-          carePlanVersionId: carePlan.versionId,
-        );
-        carePlan.fulfillmentEvaluation = fulfillmentEvaluation;
-      }
-
-      userAccount.carePlans = activeCarePlans.items;
-      if (userAccount.representedPeople?.isNotEmpty == true) {
-        for (final UserAccount representedPerson
-            in userAccount.representedPeople!) {
-          final activeCarePlans =
-              await _carePlansRepository.loadActiveCarePlans(
-            userAccount: representedPerson,
-          );
-
-          for (final carePlan in activeCarePlans.items) {
-            carePlan.userId = representedPerson.user.muid;
-            final fulfillmentEvaluation =
-                await _carePlansRepository.loadFulFillmentEvaluation(
-              carePlanVersionId: carePlan.versionId,
-            );
-            carePlan.fulfillmentEvaluation = fulfillmentEvaluation;
-          }
-
-          representedPerson.carePlans = activeCarePlans.items;
-        }
-      }
-
+      await _syncService.loadUserData(userAccount);
       await _accountDbProvider.save(userAccount);
       _session.userAccount = userAccount;
       getIt<WarningBloc>()

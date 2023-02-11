@@ -1,8 +1,10 @@
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/care_plan_api_client.dart';
 import 'package:scalesoft_app/api/dto/active_care_plans_response.dart';
+import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
-import 'package:scalesoft_app/api/dto/measurement/manual_measurement.dart';
+import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
+import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/storage/session.dart';
 
@@ -12,9 +14,9 @@ class CarePlansRepository {
   final Session session;
 
   CarePlansRepository(this.carePlanApiClient, this.session);
+
   Future<ActiveCarePlansResponse> loadActiveCarePlans({
     required UserAccount userAccount,
-    // required String patientMuid,
     int start = 0,
     int count = 100,
   }) async {
@@ -32,11 +34,29 @@ class CarePlansRepository {
     return resp;
   }
 
+  Future<List<MeasurementResult>> loadResults({
+    required UserAccount userAccount,
+    required MeasurementType measurementType,
+    required String startDateTime,
+    required String endDateTime,
+  }) async {
+    final results = await carePlanApiClient.loadResults(
+      userAccount.hospital!.authData.baseUrl,
+      userAccount.user.muid,
+      measurementType.key,
+      startDateTime,
+      endDateTime,
+    );
+
+    return results;
+  }
+
   Future<FulfillmentEvaluation> loadFulFillmentEvaluation({
+    required UserAccount userAccount,
     required int carePlanVersionId,
   }) async {
     final items = await carePlanApiClient.loadFulFillmentEvaluation(
-      session.userAccount!.hospital!.authData.baseUrl,
+      userAccount.hospital!.authData.baseUrl,
       carePlanVersionId,
     );
     return FulfillmentEvaluation(items);
@@ -44,7 +64,7 @@ class CarePlansRepository {
 
   Future<void> sendManualMeasurement({
     required UserAccount userAccount,
-    required ManualMeasurement manualMeasurement,
+    required Measurement manualMeasurement,
   }) =>
       carePlanApiClient.sendManualMeasurement(
         userAccount.hospital!.authData.baseUrl,

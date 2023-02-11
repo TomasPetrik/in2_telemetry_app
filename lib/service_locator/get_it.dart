@@ -5,7 +5,8 @@ import 'package:scalesoft_app/service_locator/get_it.config.dart';
 final getIt = GetIt.instance;
 
 @InjectableInit(
+  initializerName: 'init',
   preferRelativeImports: true, // default
   asExtension: false, // default
 )
-Future<GetIt> configureDependencies() async => $initGetIt(getIt);
+Future<GetIt> configureDependencies() => init(getIt);

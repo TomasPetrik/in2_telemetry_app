@@ -22,6 +22,22 @@ extension DateParse on DateTime {
     return DateFormat('dd.MM.yyyy').format(toLocal());
   }
 
+  bool isToday() {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final checkDate = DateTime(year, month, day);
+    final isToday = today == checkDate;
+    return isToday;
+  }
+
+  bool wasYesterday() {
+    final now = DateTime.now();
+    final yesterday = DateTime(now.year, now.month, now.day - 1);
+    final checkDate = DateTime(year, month, day);
+    final wasYesterday = yesterday == checkDate;
+    return wasYesterday;
+  }
+
   WeekDay currentWeekDay() {
     final today = DateTime(year, month, day);
 
@@ -29,8 +45,27 @@ extension DateParse on DateTime {
   }
 
   WeekDay tomorrowWeekDay() {
-    final tomorrow = DateTime(year, month, day + 1);
+    final today = DateTime(year, month, day);
+    final tomorrow = today.add(const Duration(days: 1));
     return WeekDay.values[tomorrow.weekday - 1];
+  }
+
+  WeekDay yesterdaywWeekDay() {
+    final today = DateTime(year, month, day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    return WeekDay.values[yesterday.weekday - 1];
+  }
+
+  DateTime getYesterdayMidnight() {
+    final today = DateTime(year, month, day);
+    final yesterdayMidnight = today.subtract(const Duration(days: 1));
+    return yesterdayMidnight;
+  }
+
+  DateTime getTomorrowMidnight() {
+    final today = DateTime(year, month, day);
+    final tomorrowMidnight = today.add(const Duration(days: 1));
+    return tomorrowMidnight;
   }
 
   DateTime fromTimeOfDayString(String tod) {
@@ -71,9 +106,10 @@ extension DateParse on DateTime {
     final difference = daysBetween(currentDt, this).abs();
 
     if (difference == 0) {
-      return context.locale.common_measurement_times(WhenPeriod.today.name);
+      return context.locale.common_measurement_times(PlanWhenPeriod.today.name);
     } else if (difference == 1) {
-      return context.locale.common_measurement_times(WhenPeriod.tomorrow.name);
+      return context.locale
+          .common_measurement_times(PlanWhenPeriod.tomorrow.name);
     } else {
       return toRegularDate();
     }

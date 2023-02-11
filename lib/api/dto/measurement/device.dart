@@ -14,15 +14,20 @@ class Device with _$Device {
     @HiveField(0) String? deviceIdentifier,
     @HiveField(1) String? modelName,
     @HiveField(2) String? deviceManufacturer,
-    @HiveField(4) @JsonKey(ignore: true) required DeviceModel deviceModel,
-    @HiveField(5)
+    @JsonKey(ignore: true) @HiveField(4) DeviceModel? deviceModel,
     @JsonKey(ignore: true)
-        required List<MeasurementType> supportedMeasurementTypes,
-    @HiveField(6) @JsonKey(ignore: true) required String imagePath,
+    @HiveField(5)
+        List<MeasurementType>? supportedMeasurementTypes,
+    @JsonKey(ignore: true) @HiveField(6) String? imagePath,
   }) = _Device;
+
+  factory Device.fromJson(Map<String, dynamic> json) => _$DeviceFromJson(json);
+
+  @override
+  String toString() => toJson().toString();
 }
 
-@HiveType(typeId: 33)
+@HiveType(typeId: 34)
 enum DeviceModel {
   @HiveField(0)
   beurerBm77,

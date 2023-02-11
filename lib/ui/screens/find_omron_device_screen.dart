@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scalesoft_app/cubit/omron/omron_connection_cubit.dart';
 import 'package:scalesoft_app/cubit/omron/omron_connection_state.dart';
-import 'package:scalesoft_app/model/measurement_result.dart';
+import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/measurement_result_screen.dart';
 import 'package:scalesoft_app/ui/screens/mixins/popup_dialog_mixin.dart';

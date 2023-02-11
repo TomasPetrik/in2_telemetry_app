@@ -89,8 +89,8 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
     final accountDbProvider = getIt<AccountDbProvider>();
     await accountDbProvider.init();
 
-    final penrindResultsDbProvider = getIt<PendingResultsDbProvider>();
-    await penrindResultsDbProvider.init();
+    final pendindResultsDbProvider = getIt<PendingResultsDbProvider>();
+    await pendindResultsDbProvider.init();
   }
 }
 

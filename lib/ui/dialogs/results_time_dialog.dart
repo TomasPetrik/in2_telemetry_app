@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
-import 'package:scalesoft_app/ui/widgets/period_item.dart';
-import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
+import 'package:scalesoft_app/ui/widgets/result_period_item.dart';
 
-class MeasurementTimeDialog extends StatelessWidget {
-  const MeasurementTimeDialog({
+class ResultsTimeDialog extends StatelessWidget {
+  const ResultsTimeDialog({
     super.key,
     required this.whenPeriod,
-    required this.measurements,
+    required this.fulfillmentPlan,
   });
 
-  final WhenPeriod whenPeriod;
-  final Map<WhenPeriod, int> measurements;
+  final ResultsWhenPeriod whenPeriod;
+  final Map<ResultsWhenPeriod, int> fulfillmentPlan;
 
   @override
   Widget build(BuildContext context) {
@@ -35,23 +35,23 @@ class MeasurementTimeDialog extends StatelessWidget {
           Padding(
             padding: Paddings.horizontal16,
             child: Text(
-              context.locale.common_measurement,
+              context.locale.results_measurements_when_selector_title,
               style: ScaleTextStyles.textAccent
                   .apply(color: Theme.of(context).colorScheme.onSecondary),
             ),
           ),
           Gaps.gap24,
-          ...measurements.entries.map(
+          ...fulfillmentPlan.entries.map(
             (entry) {
               return InkWell(
                 onTap: () {
-                  Navigator.of(context).pop(
-                    TypePeriodSelection(selectedPeriod: entry.key),
+                  GoRouter.of(context).pop(
+                    ResultPeriodSelection(selectedPeriod: entry.key),
                   );
                 },
                 child: Padding(
                   padding: Paddings.horizontal16,
-                  child: PeriodItem(
+                  child: ResultPeriodItem(
                     whenPeriod: entry.key,
                     isSelected: whenPeriod == entry.key,
                     count: entry.value,
@@ -66,9 +66,20 @@ class MeasurementTimeDialog extends StatelessWidget {
             child: HighlightedElevatedButton(
               label: context.locale.common_show_calendar,
               onPressed: () {
-                Navigator.of(context)
-                    .pop(TypePeriodSelection(showCalendar: true));
+                GoRouter.of(context)
+                    .pop(ResultPeriodSelection(showCalendar: true));
               },
+            ),
+          ),
+          Gaps.gap24,
+          Padding(
+            padding: Paddings.horizontal16,
+            child: HighlightedElevatedButton(
+              label: context.locale.common_close,
+              onPressed: () {
+                GoRouter.of(context).pop();
+              },
+              buttonType: ButtonType.secondary,
             ),
           ),
           Gaps.gap48,
@@ -76,4 +87,9 @@ class MeasurementTimeDialog extends StatelessWidget {
       ),
     );
   }
+}
+
+enum ResultsWhenPeriod {
+  yesterday,
+  today,
 }

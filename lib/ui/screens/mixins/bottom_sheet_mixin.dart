@@ -6,7 +6,8 @@ import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/ui/dialogs/confimation_dialog.dart';
 import 'package:scalesoft_app/ui/dialogs/device_selector_dialog.dart';
 import 'package:scalesoft_app/ui/dialogs/hospital_selection_dialog.dart';
-import 'package:scalesoft_app/ui/dialogs/measurement_time_dialog.dart';
+import 'package:scalesoft_app/ui/dialogs/planned_measurement_time_dialog.dart';
+import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/ui/dialogs/user_hospital_selection_dialog.dart';
 import 'package:scalesoft_app/ui/dialogs/user_selection_dialog.dart';
 import 'package:scalesoft_app/ui/routers/routes/manual_measurement_route.dart';
@@ -33,20 +34,40 @@ mixin BottomSheetMixin {
     return result;
   }
 
-  Future<TypePeriodSelection?> showWhenSelector(
+  Future<PlannedPeriodSelection?> showPlannedMeasurementsSelector(
     final BuildContext context,
-    final WhenPeriod? whenPeriod,
-    final Map<WhenPeriod, int> measurements,
+    final PlanWhenPeriod? whenPeriod,
+    final Map<PlanWhenPeriod, int> measurements,
   ) async {
-    final selected = await showModalBottomSheet<TypePeriodSelection>(
+    final selected = await showModalBottomSheet<PlannedPeriodSelection>(
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
-        return MeasurementTimeDialog(
-          whenPeriod: whenPeriod ?? WhenPeriod.today,
+        return PlannedMeasurementTimeDialog(
+          whenPeriod: whenPeriod ?? PlanWhenPeriod.today,
           measurements: measurements,
+        );
+      },
+    );
+    return selected;
+  }
+
+  Future<ResultPeriodSelection?> showResultsWhenSelector(
+    final BuildContext context,
+    final ResultsWhenPeriod? whenPeriod,
+    final Map<ResultsWhenPeriod, int> fulfillmentPlan,
+  ) async {
+    final selected = await showModalBottomSheet<ResultPeriodSelection>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return ResultsTimeDialog(
+          whenPeriod: whenPeriod ?? ResultsWhenPeriod.today,
+          fulfillmentPlan: fulfillmentPlan,
         );
       },
     );
@@ -146,7 +167,7 @@ mixin BottomSheetMixin {
   }) async {
     if (selectedMeasurementType == null ||
         Constants.supportedDevices.any(
-          (supportedDevice) => supportedDevice.supportedMeasurementTypes
+          (supportedDevice) => supportedDevice.supportedMeasurementTypes!
               .contains(selectedMeasurementType),
         )) {
       showModalBottomSheet(
@@ -209,13 +230,24 @@ class UserSelection {
   });
 }
 
-class TypePeriodSelection {
-  WhenPeriod? selectedPeriod;
+class PlannedPeriodSelection {
+  PlanWhenPeriod? selectedPeriod;
   bool? showCalendar;
 
-  TypePeriodSelection({this.selectedPeriod, this.showCalendar})
+  PlannedPeriodSelection({this.selectedPeriod, this.showCalendar})
       : assert(
           selectedPeriod != null || showCalendar != null,
-          'Either selectedTime or showCalendar should be set !',
+          'Either selectedPeriod or showCalendar should be set !',
+        );
+}
+
+class ResultPeriodSelection {
+  ResultsWhenPeriod? selectedPeriod;
+  bool? showCalendar;
+
+  ResultPeriodSelection({this.selectedPeriod, this.showCalendar})
+      : assert(
+          selectedPeriod != null || showCalendar != null,
+          'Either selectedPeriod or showCalendar should be set !',
         );
 }

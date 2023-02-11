@@ -5,33 +5,33 @@ import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
-class PeriodItem extends StatelessWidget {
-  const PeriodItem({
+class PlannedPeriodItem extends StatelessWidget {
+  const PlannedPeriodItem({
     super.key,
     required this.whenPeriod,
     required this.count,
     this.isSelected = false,
   });
 
-  final WhenPeriod whenPeriod;
+  final PlanWhenPeriod whenPeriod;
   final int count;
   final bool isSelected;
 
-  static final Map<WhenPeriod, String> periodItemIcons = {
-    WhenPeriod.today: 'assets/icons/icon_calendar_today.svg',
-    WhenPeriod.tomorrow: 'assets/icons/icon_calendar_tomorrow.svg',
-    WhenPeriod.next10: 'assets/icons/icon_calendar_upcomming.svg',
+  static final Map<PlanWhenPeriod, String> periodItemIcons = {
+    PlanWhenPeriod.today: 'assets/icons/icon_calendar_today.svg',
+    PlanWhenPeriod.tomorrow: 'assets/icons/icon_calendar_tomorrow.svg',
+    PlanWhenPeriod.next10: 'assets/icons/icon_calendar_upcomming.svg',
   };
 
   String _getSubtitle(BuildContext context, int measurements) {
     switch (whenPeriod) {
-      case WhenPeriod.today:
+      case PlanWhenPeriod.today:
         return context.locale
             .measurement_screen_today_n_measurements(measurements);
-      case WhenPeriod.next10:
+      case PlanWhenPeriod.next10:
         return context.locale
             .measurement_screen_upcomming_n_measurements(measurements);
-      case WhenPeriod.tomorrow:
+      case PlanWhenPeriod.tomorrow:
         return context.locale
             .measurement_screen_tomorrow_n_measurements(measurements);
     }

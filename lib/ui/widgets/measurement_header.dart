@@ -3,14 +3,14 @@ import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
-class MeasurementHeader extends StatelessWidget {
-  const MeasurementHeader({
+class PlannedMeasurementHeader extends StatelessWidget {
+  const PlannedMeasurementHeader({
     super.key,
     required this.whenPeriod,
     required this.openTimeSelector,
   });
 
-  final WhenPeriod whenPeriod;
+  final PlanWhenPeriod whenPeriod;
   final Function openTimeSelector;
 
   @override

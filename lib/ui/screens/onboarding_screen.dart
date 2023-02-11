@@ -23,50 +23,69 @@ class OnboardingScreen extends StatelessWidget with BottomSheetMixin {
           Positioned.fill(
             child: Padding(
               padding: Paddings.horizontal16,
-              child: Column(
-                children: [
-                  Gap(MediaQuery.of(context).viewPadding.top + Constants.appBarHeight),
-                  Gaps.gap48,
-                  SvgPicture.asset(
-                    'assets/icons/icon_onboard_user.svg',
-                    color: Theme.of(context).colorScheme.tertiary,
-                  ),
-                  Gaps.gap36,
-                  Text(
-                    context.locale.onboarding_add_account_screen_add_account_subtitle,
-                    textAlign: TextAlign.center,
-                    style: ScaleTextStyles.text.apply(color: Theme.of(context).colorScheme.onSecondary),
-                  ),
-                  Gaps.gap24,
-                  OnboardingItemDesc(
-                    imagePath: 'assets/icons/icon_hospital_user.svg',
-                    desc: context.locale.onboarding_add_account_screen_add_account_text1,
-                  ),
-                  OnboardingItemDesc(
-                    imagePath: 'assets/icons/icon_shield_keyhole.svg',
-                    desc: context.locale.onboarding_add_account_screen_add_account_text2,
-                  ),
-                  OnboardingItemDesc(
-                    imagePath: 'assets/icons/icon_wave_pulse.svg',
-                    desc: context.locale.onboarding_add_account_screen_add_account_text3,
-                  ),
-                  Gaps.gap24,
-                  HighlightedElevatedButton(
-                    label: context.locale.onboarding_add_account_screen_add_account_button,
-                    onPressed: () async {
-                      final hospitalSelection = await selectHospital(context: context);
-                      if (hospitalSelection?.selectedHospital != null) {
-                        getIt<AuthBloc>().add(Authenticate(hospital: hospitalSelection!.selectedHospital!));
-                      }
-                    },
-                  ),
-                  Gaps.gap24,
-                  HighlightedElevatedButton(
-                    label: context.locale.onboarding_add_account_screen_add_account_how_it_works_button,
-                    buttonType: ButtonType.secondary,
-                    onPressed: () async {},
-                  ),
-                ],
+              child: SingleChildScrollView(
+                physics: const NeverScrollableScrollPhysics(),
+                child: Column(
+                  children: [
+                    Gap(
+                      MediaQuery.of(context).viewPadding.top +
+                          Constants.appBarHeight,
+                    ),
+                    Gaps.gap48,
+                    SvgPicture.asset(
+                      'assets/icons/icon_onboard_user.svg',
+                      color: Theme.of(context).colorScheme.tertiary,
+                    ),
+                    Gaps.gap36,
+                    Text(
+                      context.locale
+                          .onboarding_add_account_screen_add_account_subtitle,
+                      textAlign: TextAlign.center,
+                      style: ScaleTextStyles.text.apply(
+                        color: Theme.of(context).colorScheme.onSecondary,
+                      ),
+                    ),
+                    Gaps.gap24,
+                    OnboardingItemDesc(
+                      imagePath: 'assets/icons/icon_hospital_user.svg',
+                      desc: context.locale
+                          .onboarding_add_account_screen_add_account_text1,
+                    ),
+                    OnboardingItemDesc(
+                      imagePath: 'assets/icons/icon_shield_keyhole.svg',
+                      desc: context.locale
+                          .onboarding_add_account_screen_add_account_text2,
+                    ),
+                    OnboardingItemDesc(
+                      imagePath: 'assets/icons/icon_wave_pulse.svg',
+                      desc: context.locale
+                          .onboarding_add_account_screen_add_account_text3,
+                    ),
+                    Gaps.gap24,
+                    HighlightedElevatedButton(
+                      label: context.locale
+                          .onboarding_add_account_screen_add_account_button,
+                      onPressed: () async {
+                        final hospitalSelection =
+                            await selectHospital(context: context);
+                        if (hospitalSelection?.selectedHospital != null) {
+                          getIt<AuthBloc>().add(
+                            Authenticate(
+                              hospital: hospitalSelection!.selectedHospital!,
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                    Gaps.gap24,
+                    HighlightedElevatedButton(
+                      label: context.locale
+                          .onboarding_add_account_screen_add_account_how_it_works_button,
+                      buttonType: ButtonType.secondary,
+                      onPressed: () async {},
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -75,7 +94,8 @@ class OnboardingScreen extends StatelessWidget with BottomSheetMixin {
             left: 0,
             right: 0,
             child: ScaleAppBar(
-              title: context.locale.onboarding_add_account_screen_add_account_title,
+              title: context
+                  .locale.onboarding_add_account_screen_add_account_title,
             ),
           ),
         ],

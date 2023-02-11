@@ -5,17 +5,17 @@ part 'composed_int_value.freezed.dart';
 part 'composed_int_value.g.dart';
 
 @freezed
-class ComposedIntValue with _$ComposedIntValue {
-  const ComposedIntValue._();
+class BloodPressureValue with _$BloodPressureValue {
+  const BloodPressureValue._();
 
-  @HiveType(typeId: 32, adapterName: 'ComposedIntValueAdapter')
-  const factory ComposedIntValue({
-    @HiveField(0) int? firstValue,
-    @HiveField(1) int? secondValue,
+  @HiveType(typeId: 32, adapterName: 'BloodPressureValueAdapter')
+  const factory BloodPressureValue({
+    @HiveField(0) int? systolic,
+    @HiveField(1) int? diastolic,
   }) = _ComposedIntValue;
 
-  factory ComposedIntValue.fromJson(Map<String, dynamic> json) =>
-      _$ComposedIntValueFromJson(json);
+  factory BloodPressureValue.fromJson(Map<String, dynamic> json) =>
+      _$BloodPressureValueFromJson(json);
 
   @override
   String toString() => toJson().toString();

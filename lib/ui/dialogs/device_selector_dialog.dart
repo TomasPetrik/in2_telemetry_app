@@ -69,7 +69,7 @@ class _DeviceSelectorDialogState extends State<DeviceSelectorDialog> {
     if (selectedMeasurementType != null) {
       supportedDevices.addAll(
         Constants.supportedDevices.where(
-          (device) => device.supportedMeasurementTypes.contains(
+          (device) => device.supportedMeasurementTypes!.contains(
             selectedMeasurementType,
           ),
         ),
@@ -163,7 +163,7 @@ class _DeviceSelectorDialogState extends State<DeviceSelectorDialog> {
                             color: Theme.of(context).colorScheme.onPrimary,
                             height: 128,
                             width: 128,
-                            child: Image.asset(supportedDevice.imagePath),
+                            child: Image.asset(supportedDevice.imagePath!),
                           ),
                         ),
                         Gaps.gap16,
@@ -181,7 +181,7 @@ class _DeviceSelectorDialogState extends State<DeviceSelectorDialog> {
                               Gaps.gap6,
                               Text(
                                 context.locale.measurement_dialog_device_desc(
-                                  supportedDevice.deviceModel.name,
+                                  supportedDevice.deviceModel!.name,
                                 ),
                                 style: ScaleTextStyles.label.apply(
                                   color:

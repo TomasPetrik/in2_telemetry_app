@@ -28,7 +28,6 @@ class NavigationScreen extends StatefulWidget {
     this.currentTab = 0,
     required this.topHeader,
     required this.navigationHeader,
-    required this.topHeaderHeight,
     this.onTabSelected,
     this.onRefresh,
   })  : assert(tabs.isNotEmpty),
@@ -40,7 +39,6 @@ class NavigationScreen extends StatefulWidget {
   final int currentTab;
   final Widget topHeader;
   final Widget? navigationHeader;
-  final double topHeaderHeight;
   final Function(int tabIndex)? onTabSelected;
 
   final Future<void> Function()? onRefresh;

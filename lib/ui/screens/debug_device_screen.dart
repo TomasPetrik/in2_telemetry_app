@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class DebugDeviceScreen extends StatelessWidget {
   const DebugDeviceScreen({Key? key, required this.device}) : super(key: key);
@@ -83,7 +83,10 @@ class DebugDeviceScreen extends StatelessWidget {
                 onPressed: onPressed,
                 child: Text(
                   text,
-                  style: Theme.of(context).primaryTextTheme.button?.copyWith(color: Colors.white),
+                  style: Theme.of(context)
+                      .primaryTextTheme
+                      .labelLarge
+                      ?.copyWith(color: Colors.white),
                 ),
               );
             },
@@ -178,8 +181,8 @@ class ServiceTile extends StatelessWidget {
             const Text('Service'),
             Text(
               '0x${service.uuid.toString().toUpperCase().substring(4, 8)}',
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                    color: Theme.of(context).textTheme.caption?.color,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Theme.of(context).textTheme.bodySmall?.color,
                   ),
             )
           ],
@@ -189,7 +192,8 @@ class ServiceTile extends StatelessWidget {
     } else {
       return ListTile(
         title: const Text('Service'),
-        subtitle: Text('0x${service.uuid.toString().toUpperCase().substring(4, 8)}'),
+        subtitle:
+            Text('0x${service.uuid.toString().toUpperCase().substring(4, 8)}'),
       );
     }
   }
@@ -227,8 +231,8 @@ class CharacteristicTile extends StatelessWidget {
                 const Text('Characteristic'),
                 Text(
                   '0x${characteristic.uuid.toString().toUpperCase().substring(4, 8)}',
-                  style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                        color: Theme.of(context).textTheme.caption?.color,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: Theme.of(context).textTheme.bodySmall?.color,
                       ),
                 )
               ],
@@ -291,7 +295,10 @@ class DescriptorTile extends StatelessWidget {
           const Text('Descriptor'),
           Text(
             '0x${descriptor.uuid.toString().toUpperCase().substring(4, 8)}',
-            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).textTheme.caption?.color),
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge
+                ?.copyWith(color: Theme.of(context).textTheme.bodySmall?.color),
           )
         ],
       ),
@@ -324,7 +331,8 @@ class DescriptorTile extends StatelessWidget {
 }
 
 class ScanResultTile extends StatelessWidget {
-  const ScanResultTile({Key? key, required this.result, this.onTap}) : super(key: key);
+  const ScanResultTile({Key? key, required this.result, this.onTap})
+      : super(key: key);
 
   final ScanResult result;
   final VoidCallback? onTap;
@@ -341,7 +349,7 @@ class ScanResultTile extends StatelessWidget {
           ),
           Text(
             result.device.id.toString(),
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.bodySmall,
           )
         ],
       );
@@ -356,14 +364,17 @@ class ScanResultTile extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(title, style: Theme.of(context).textTheme.caption),
+          Text(title, style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(
             width: 12.0,
           ),
           Expanded(
             child: Text(
               value,
-              style: Theme.of(context).textTheme.caption?.apply(color: Colors.black),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.apply(color: Colors.black),
               softWrap: true,
             ),
           ),
@@ -373,7 +384,8 @@ class ScanResultTile extends StatelessWidget {
   }
 
   String getNiceHexArray(List<int> bytes) {
-    return '[${bytes.map((i) => i.toRadixString(16).padLeft(2, '0')).join(', ')}]'.toUpperCase();
+    return '[${bytes.map((i) => i.toRadixString(16).padLeft(2, '0')).join(', ')}]'
+        .toUpperCase();
   }
 
   String getNiceManufacturerData(Map<int, List<int>> data) {

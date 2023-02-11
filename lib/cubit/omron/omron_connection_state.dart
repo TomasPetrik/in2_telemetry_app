@@ -1,7 +1,8 @@
-import 'package:flutter_blue/flutter_blue.dart';
+
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scalesoft_app/model/device_info.dart';
-import 'package:scalesoft_app/model/measurement_result.dart';
+import 'package:scalesoft_app/model/hw_measurement_result.dart';
 
 part 'omron_connection_state.freezed.dart';
 
@@ -25,7 +26,7 @@ class OmronConnectionState with _$OmronConnectionState {
   const factory OmronConnectionState.disconnected() = _Disconnected;
   const factory OmronConnectionState.syncing() = _Syncing;
   const factory OmronConnectionState.synced({
-    required MeasurementResult measurementResult,
+    required HwMeasurementResult measurementResult,
   }) = _Synced;
   const factory OmronConnectionState.error(Exception exception) = _Error;
 }

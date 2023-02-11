@@ -1,6 +1,6 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class BluetoothOffScreen extends StatelessWidget {
   const BluetoothOffScreen({Key? key, this.state}) : super(key: key);
@@ -22,7 +22,10 @@ class BluetoothOffScreen extends StatelessWidget {
             ),
             Text(
               'Bluetooth Adapter is ${state != null ? state.toString().substring(15) : 'not available'}.',
-              style: Theme.of(context).primaryTextTheme.subtitle1?.copyWith(color: Colors.black12),
+              style: Theme.of(context)
+                  .primaryTextTheme
+                  .titleMedium
+                  ?.copyWith(color: Colors.black12),
             ),
             TextButton(
               onPressed: () {
@@ -30,7 +33,10 @@ class BluetoothOffScreen extends StatelessWidget {
               },
               child: Text(
                 'Open settings',
-                style: Theme.of(context).primaryTextTheme.subtitle1?.copyWith(color: Colors.white),
+                style: Theme.of(context)
+                    .primaryTextTheme
+                    .titleMedium
+                    ?.copyWith(color: Colors.white),
               ),
             ),
           ],

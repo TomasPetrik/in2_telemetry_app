@@ -4,6 +4,7 @@ import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/widgets/rotating_icon.dart';
 
 class SyncItem extends StatelessWidget {
   const SyncItem({
@@ -48,6 +49,13 @@ class SyncItem extends StatelessWidget {
       failed: () => 'assets/icons/icon_rotate.svg',
     );
 
+    final iconWidget = SvgPicture.asset(
+      _getLeadinIconPath(
+        context,
+      ),
+      color: _getLeadinIconColor(context),
+    );
+
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.onBackground,
@@ -57,12 +65,10 @@ class SyncItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SvgPicture.asset(
-            _getLeadinIconPath(
-              context,
-            ),
-            color: _getLeadinIconColor(context),
-          ),
+          if (syncState == const SyncState.inProgress())
+            RotatingIcon(child: iconWidget)
+          else
+            iconWidget,
           Gaps.gap16,
           Expanded(
             child: Text(

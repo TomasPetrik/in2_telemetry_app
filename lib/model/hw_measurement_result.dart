@@ -1,10 +1,10 @@
 import 'package:scalesoft_app/model/measurement_info.dart';
 
-class MeasurementResult {
+class HwMeasurementResult {
   final MeasurementInfo? measurementInfo;
   final ResultState resultState;
 
-  MeasurementResult({required this.resultState, this.measurementInfo});
+  HwMeasurementResult({required this.resultState, this.measurementInfo});
 }
 
 enum ResultState { success, noData, connectionError }
