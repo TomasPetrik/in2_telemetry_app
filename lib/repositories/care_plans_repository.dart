@@ -55,12 +55,29 @@ class CarePlansRepository {
     required UserAccount userAccount,
     required int carePlanVersionId,
   }) async {
-    final items = await carePlanApiClient.loadFulFillmentEvaluation(
+    final items = await carePlanApiClient.loadFullPlanEvaluation(
       userAccount.hospital!.authData.baseUrl,
       carePlanVersionId,
     );
     return FulfillmentEvaluation(items);
   }
+
+  Future<FulfillmentEvaluation> loadPartPlanEvaluation({
+    required UserAccount userAccount,
+    required int carePlanId,
+    required String fromDateTime,
+    required String toDateTime,
+  }) async {
+    final items = await carePlanApiClient.loadPartPlanEvaluation(
+      userAccount.hospital!.authData.baseUrl,
+      carePlanId,
+      fromDateTime,
+      toDateTime,
+    );
+    return FulfillmentEvaluation(items);
+  }
+
+  
 
   Future<void> sendManualMeasurement({
     required UserAccount userAccount,

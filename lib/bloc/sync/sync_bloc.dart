@@ -67,7 +67,7 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
                 if (userId != null) {
                   final userAccount = _accountDbProvider.get(userId);
                   await _syncService.loadMeasurementResults(userAccount!);
-                  await _syncService.loadFulfillmentEvaluation(userAccount);
+                  await _syncService.loadPartPlanEvaluation(userAccount);
                   await _accountDbProvider.save(userAccount);
                 }
               }

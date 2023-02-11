@@ -23,7 +23,7 @@ class SyncService {
 
     userAccount.carePlans = activeCarePlans.items;
 
-    await loadFulfillmentEvaluation(userAccount);
+    await loadPartPlanEvaluation(userAccount);
     await loadMeasurementResults(userAccount);
 
     userAccount.carePlans = activeCarePlans.items;
@@ -40,23 +40,28 @@ class SyncService {
 
         representedPerson.carePlans = activeCarePlans.items;
 
-         await loadFulfillmentEvaluation(representedPerson);
+        await loadPartPlanEvaluation(representedPerson);
         await loadMeasurementResults(representedPerson);
       }
     }
   }
 
-  Future<void> loadFulfillmentEvaluation(final UserAccount userAccount) async {
+  Future<void> loadPartPlanEvaluation(final UserAccount userAccount) async {
     final carePlans = userAccount.carePlans;
     if (carePlans == null) {
       return;
     }
 
+    final yesterdayMidnight = DateTime.now().getYesterdayMidnight();
+    final tomorrowMidnight = DateTime.now().getTomorrowMidnight();
+
     for (final carePlan in carePlans) {
       final fulfillmentEvaluation =
-          await _carePlansRepository.loadFulFillmentEvaluation(
+          await _carePlansRepository.loadPartPlanEvaluation(
         userAccount: userAccount,
-        carePlanVersionId: carePlan.versionId,
+        carePlanId: carePlan.id,
+        fromDateTime: yesterdayMidnight.toIso8601String(),
+        toDateTime: tomorrowMidnight.toIso8601String(),
       );
       carePlan.fulfillmentEvaluation = fulfillmentEvaluation;
     }

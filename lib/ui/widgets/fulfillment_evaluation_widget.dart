@@ -69,9 +69,10 @@ class FulfillmentEvaluationWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Spacer(
-                      flex: 100 - progress,
-                    ),
+                    if (progress < 100)
+                      Spacer(
+                        flex: 100 - progress,
+                      ),
                   ],
                 ),
               ),

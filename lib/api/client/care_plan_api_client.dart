@@ -36,9 +36,19 @@ abstract class CarePlanApiClient {
   @GET(
     '{apiUrl}/patient/me/care-plan/version/{carePlanVersionId}/fulfillment-evaluation',
   )
-  Future<List<FulfillmentEvaluationItem>> loadFulFillmentEvaluation(
+  Future<List<FulfillmentEvaluationItem>> loadFullPlanEvaluation(
     @Path('apiUrl') String apiUrl,
     @Path('carePlanVersionId') int carePlanVersionId,
+  );
+
+  @GET(
+    '{apiUrl}/patient/me/care-plan/{carePlanId}/fulfillment-evaluation?from={from}&to={to}',
+  )
+  Future<List<FulfillmentEvaluationItem>> loadPartPlanEvaluation(
+    @Path('apiUrl') String apiUrl,
+    @Path('carePlanId') int carePlanId,
+    @Path('from') String fromDate,
+    @Path('to') String toDate,
   );
 
   @POST('{apiUrl}/patient/manual-measurement')

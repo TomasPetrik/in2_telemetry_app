@@ -54,7 +54,7 @@ class ResultsTimeDialog extends StatelessWidget {
                   child: ResultPeriodItem(
                     whenPeriod: entry.key,
                     isSelected: whenPeriod == entry.key,
-                    count: entry.value,
+                    percentage: entry.value,
                   ),
                 ),
               );

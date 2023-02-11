@@ -5,21 +5,23 @@ import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
+import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 class ResultsHelper {
   static Map<ResultsWhenPeriod, int> getPeriodFultillments(
     List<CarePlan> carePlans,
   ) {
-    Map<ResultsWhenPeriod, int> periods = {
-      ResultsWhenPeriod.yesterday: 33,
-      ResultsWhenPeriod.today: 55
+    return {
+      ResultsWhenPeriod.yesterday: EvaluationPlanHelper.getProgressFromPlan(
+        carePlans: carePlans,
+        whenPeriod: ResultsWhenPeriod.yesterday,
+      ),
+      ResultsWhenPeriod.today: EvaluationPlanHelper.getProgressFromPlan(
+        carePlans: carePlans,
+        whenPeriod: ResultsWhenPeriod.today,
+      )
     };
-
-    //TODO.. find  List<MeasurementResult> measurementResults,
-    //base on plan->userId, then fetch results from this user and compare with this plans
-
-    return periods;
   }
 
   static List<PlannedMeasurement> getMeasurements(

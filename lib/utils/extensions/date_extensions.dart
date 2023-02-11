@@ -68,6 +68,11 @@ extension DateParse on DateTime {
     return tomorrowMidnight;
   }
 
+  DateTime getTodayMidnight() {
+    final today = DateTime(year, month, day);
+    return today;
+  }
+
   DateTime fromTimeOfDayString(String tod) {
     final parts = tod.split(":");
     final int hours = int.parse(parts[0]);
