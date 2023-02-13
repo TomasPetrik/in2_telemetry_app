@@ -78,7 +78,7 @@ class CarePlanHelper {
       case PlanWhenPeriod.tomorrow:
         measurements = Calendar.getTomorrowMeasurements(
           carePlans: carePlans,
-          weekDay: DateTime.now().yesterdaywWeekDay(),
+          weekDay: DateTime.now().tomorrowWeekDay(),
         );
         break;
       case PlanWhenPeriod.next10:

@@ -32,10 +32,8 @@ class TimePeriodChangeEvent extends CarePlanBlocEvent {
 
 class CurrentPlansChangeEvent extends CarePlanBlocEvent {
   CurrentPlansChangeEvent(
-    this.carePlans,
     this.measurementType,
   );
-  final List<CarePlan> carePlans;
   MeasurementType? measurementType;
 }
 

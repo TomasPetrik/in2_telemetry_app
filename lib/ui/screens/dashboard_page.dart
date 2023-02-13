@@ -59,7 +59,8 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
             if (allCarePlans.isEmpty)
               NoPlansPlaceholder(
                 userAccount: userAccount,
-                enterMeasurementWithoutPlan: userAccount.enterMeasurementWithoutPlan,
+                enterMeasurementWithoutPlan:
+                    userAccount.enterMeasurementWithoutPlan,
                 supportedMeasurementTypes: supportedMeasurementTypes,
               )
             else
@@ -67,31 +68,27 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                 bloc: carePlanBloc,
                 builder: (context, state) {
                   if (state.selectedWhenPeriod == null ||
+                      state.currentCarePlans == null ||
                       state.measurements == null) {
                     return const SizedBox.shrink();
                   } else {
                     Map<PlanWhenPeriod, int>? measurements;
 
-                    if (allCarePlans.isNotEmpty) {
+                    if (state.currentCarePlans?.isNotEmpty == true) {
                       measurements =
-                          CarePlanHelper.getPossibleWhenPeriods(allCarePlans);
+                          CarePlanHelper.getPossibleWhenPeriods(state.currentCarePlans!);
                     }
 
                     return NavigationScreen(
                       onTabSelected: (tabIndex) {
                         if (tabIndex == 0) {
                           carePlanBloc.add(
-                            CurrentPlansChangeEvent(allCarePlans, null),
+                            CurrentPlansChangeEvent(null),
                           );
                         } else {
                           carePlanBloc.add(
                             CurrentPlansChangeEvent(
-                              [
-                                allCarePlans[tabIndex - 1],
-                              ],
-                              allCarePlans[tabIndex - 1]
-                                  .activity
-                                  .measurementType,
+                              supportedMeasurementTypes.toList()[tabIndex - 1],
                             ),
                           );
                         }
@@ -102,10 +99,9 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                       topSlivers: [
                         const NotificationWidget(),
                         SyncWidget(syncState: syncState),
-                        if (allCarePlans.isNotEmpty == true &&
-                            (state.selectedWhenPeriod == PlanWhenPeriod.today ||
-                                state.selectedWhenPeriod ==
-                                    PlanWhenPeriod.next10)) ...{
+                        if ((state.selectedWhenPeriod == PlanWhenPeriod.today ||
+                            state.selectedWhenPeriod ==
+                                PlanWhenPeriod.next10)) ...{
                           SliverToBoxAdapter(
                             child: Column(
                               children: [
@@ -146,7 +142,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                             )
                           : null,
                       tabs: [
-                        if (allCarePlans.length > 1) ...{
+                        if (supportedMeasurementTypes.length > 1) ...{
                           NavigationBarTabItem(
                             label: context.locale.dashboard_screen_all,
                             slivers: [
@@ -179,11 +175,11 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                             ],
                           ),
                         },
-                        ...allCarePlans
+                        ...supportedMeasurementTypes
                             .map(
-                              (carePlan) => NavigationBarTabItem(
+                              (measurementType) => NavigationBarTabItem(
                                 label: context.locale.common_measurement_types(
-                                  carePlan.activity.measurementType.name,
+                                  measurementType.name,
                                 ),
                                 slivers: [
                                   MeasurementsList(

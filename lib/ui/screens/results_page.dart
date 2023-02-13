@@ -66,33 +66,29 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                 bloc: resultsBloc,
                 builder: (context, state) {
                   if (state.selectedWhenPeriod == null ||
+                      state.currentCarePlans == null ||
                       state.results == null) {
                     return const SizedBox.shrink();
                   } else {
                     Map<ResultsWhenPeriod, int>? measurements;
 
-                    if (allCarePlans.isNotEmpty) {
-                      measurements =
-                          ResultsHelper.getPeriodFultillments(allCarePlans);
+                    if (state.currentCarePlans?.isNotEmpty == true) {
+                      measurements = ResultsHelper.getPeriodFultillments(
+                        state.currentCarePlans!,
+                      );
                     }
                     return NavigationScreen(
                       onTabSelected: (tabIndex) {
                         if (tabIndex == 0) {
                           resultsBloc.add(
-                            ResultsBlocEvent.curentPlansChange(
-                              allCarePlans,
+                            const ResultsBlocEvent.curentPlansChange(
                               null,
                             ),
                           );
                         } else {
                           resultsBloc.add(
                             ResultsBlocEvent.curentPlansChange(
-                              [
-                                allCarePlans[tabIndex - 1],
-                              ],
-                              allCarePlans[tabIndex - 1]
-                                  .activity
-                                  .measurementType,
+                              supportedMeasurementTypes.toList()[tabIndex - 1],
                             ),
                           );
                         }
@@ -131,7 +127,7 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                             )
                           : null,
                       tabs: [
-                        if (allCarePlans.length > 1) ...{
+                        if (supportedMeasurementTypes.length > 1) ...{
                           NavigationBarTabItem(
                             label: context.locale.dashboard_screen_all,
                             slivers: [
@@ -143,11 +139,11 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                             bottomSlivers: [],
                           ),
                         },
-                        ...allCarePlans
+                        ...supportedMeasurementTypes
                             .map(
-                              (carePlan) => NavigationBarTabItem(
+                              (measurementType) => NavigationBarTabItem(
                                 label: context.locale.common_measurement_types(
-                                  carePlan.activity.measurementType.name,
+                                  measurementType.name,
                                 ),
                                 slivers: [
                                   ResultsList(

@@ -11,6 +11,7 @@ import 'package:scalesoft_app/utils/helpers/results_helper.dart';
 @singleton
 class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
   final List<Measurement> _pendingResults = [];
+  final List<CarePlan> _allCarePlans = [];
 
   ResultsBloc() : super(ResultsBlocState()) {
     on<ResultsBlocEvent>((event, emit) async {
@@ -21,6 +22,8 @@ class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
           final List<MeasurementResult> uncategorizedResults,
           final List<Measurement>? pendingResults,
         ) async {
+          _allCarePlans.clear();
+          _allCarePlans.addAll(carePlans);
           _pendingResults.clear();
           _pendingResults.addAll(pendingResults ?? []);
 
@@ -43,7 +46,16 @@ class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
             ),
           );
         },
-        curentPlansChange: (final carePlans, final measurementType) {
+        curentPlansChange: (final measurementType) {
+          final carePlans = measurementType == null
+          ? _allCarePlans
+          : _allCarePlans
+              .where(
+                (carePlan) =>
+                    carePlan.activity.measurementType == measurementType,
+              )
+              .toList();
+
           final results = ResultsHelper.getResults(
             carePlans: carePlans,
             whenPeriod: state.selectedWhenPeriod!,

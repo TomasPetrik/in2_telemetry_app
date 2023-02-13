@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
@@ -15,9 +16,12 @@ import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
   final List<MeasurementResult> _uncategorizedResults = [];
   final List<Measurement> _pendingResults = [];
+  final List<CarePlan> _allCarePlans = [];
 
   CarePlanBloc() : super(CarePlanBlocState()) {
     on<CarePlanInitializeEvent>((event, emit) async {
+      _allCarePlans.clear();
+      _allCarePlans.addAll(event.carePlans);
       _uncategorizedResults.clear();
       _uncategorizedResults.addAll(event.uncategorizedResults);
       _pendingResults.clear();
@@ -95,21 +99,30 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
         state.measurementType,
       );
 
+      final carePlans = event.measurementType == null
+          ? _allCarePlans
+          : _allCarePlans
+              .where(
+                (carePlan) =>
+                    carePlan.activity.measurementType == event.measurementType,
+              )
+              .toList();
+
       final nextMeasurement = Calendar.getNUpcomingMeasurements(
-        carePlans: event.carePlans,
+        carePlans: carePlans,
         reqCount: 1,
         measurementResults: todayResults,
       );
 
       final measurements = CarePlanHelper.getMeasurements(
-        event.carePlans,
+        carePlans,
         state.selectedWhenPeriod!,
         todayResults,
       );
 
       emit(
         state.copyWith(
-          currentCarePlans: event.carePlans,
+          currentCarePlans: carePlans,
           nextMeasurement: nextMeasurement.first,
           measurements: measurements,
           measurementType: state.measurementType,

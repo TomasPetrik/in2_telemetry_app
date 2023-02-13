@@ -39,7 +39,8 @@ class MeasurementsList extends StatelessWidget {
   }
 
   bool _isTodaysPlanFinished() {
-    return whenPeriod == PlanWhenPeriod.today &&
+    return measurements.isEmpty &&
+        whenPeriod == PlanWhenPeriod.today &&
         nextMeasurement.carePlan.hasMeasurementsToday() == true;
   }
 
