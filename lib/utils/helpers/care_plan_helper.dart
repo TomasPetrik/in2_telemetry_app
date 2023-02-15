@@ -19,24 +19,15 @@ class CarePlanHelper {
   }
 
   static Map<PlanWhenPeriod, int> getPossibleWhenPeriods(
-    List<CarePlan> carePlans,
+    final List<CarePlan> carePlans,
+    final List<MeasurementResult> todayResults,
   ) {
     Map<PlanWhenPeriod, int> periods = {};
 
-    final currentWeekDay = DateTime.now().currentWeekDay();
     final tomorrowWeekDay = DateTime.now().tomorrowWeekDay();
 
-    final todayMeasurements = carePlans
-        .where(
-          (final CarePlan carePlan) => ((carePlan.periodUnit == TimeUnit.day &&
-                  carePlan.weekDays?.isEmpty == true) ||
-              carePlan.weekDays?.contains(currentWeekDay) == true),
-        )
-        .fold(
-          0,
-          (sum, carePlan) =>
-              sum + carePlan.getTodayRemainingMeasurements().length,
-        );
+    final todayMeasurements =
+        getMeasurements(carePlans, PlanWhenPeriod.today, todayResults).length;
 
     final tomorrowMeasurements = carePlans
         .where(

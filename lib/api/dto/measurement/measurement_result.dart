@@ -13,7 +13,9 @@ class MeasurementResult with _$MeasurementResult {
 
   @HiveType(typeId: 30, adapterName: 'MeasurementResultAdapter')
   factory MeasurementResult({
-    @HiveField(0) required DateTime measurementDateTime,
+    @JsonKey(fromJson: _fromJson)
+    @HiveField(0)
+        required DateTime measurementDateTime,
     @HiveField(1) double? value,
     @HiveField(2) ComposedDoubleValue? composedValue,
     @HiveField(3) Device? sourceDevice,
@@ -28,4 +30,9 @@ class MeasurementResult with _$MeasurementResult {
 
   @override
   String toString() => toJson().toString();
+}
+
+DateTime _fromJson(String dtUtc) {
+  final dtLocal = DateTime.parse(dtUtc).toLocal();
+  return dtLocal;
 }

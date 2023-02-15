@@ -125,17 +125,15 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
           currentCarePlans: carePlans,
           nextMeasurement: nextMeasurement.first,
           measurements: measurements,
-          measurementType: state.measurementType,
+          measurementType: event.measurementType,
         ),
       );
     });
 
     on<ReloadCarePlansEvent>(
       (event, emit) async {
-        final userAccount = event.userAccount;
-
         getIt<SyncBloc>().add(
-          SyncEvent.syncAll([userAccount]),
+          const SyncEvent.syncAll(),
         );
       },
     );

@@ -7,8 +7,9 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
-import 'package:scalesoft_app/bloc/warning/warning_bloc.dart';
-import 'package:scalesoft_app/bloc/warning/warning_bloc_state.dart';
+import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
+import 'package:scalesoft_app/bloc/sync/sync_event.dart';
+import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -21,6 +22,8 @@ import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/notification_item.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
 import 'package:scalesoft_app/ui/widgets/sliver_name_value_row.dart';
+import 'package:scalesoft_app/ui/widgets/sync_process_item.dart';
+import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
   const UserDetailScreen({
@@ -32,10 +35,83 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WarningBloc, WarningBlocState>(
-      bloc: getIt<WarningBloc>(),
+    return BlocBuilder<SyncBloc, SyncState>(
+      bloc: getIt<SyncBloc>(),
       builder: (context, state) {
-        final bool sessionExpired = userAccount.sessionExpired == true;
+        final warningInner = state.whenOrNull(
+          inProgress: () => SyncProcessItem(
+            syncProcessType: SyncProcessType.inProgress,
+            label: context.locale.sync_widget_sync_in_progress,
+          ),
+          synced: () => SyncProcessItem(
+            syncProcessType: SyncProcessType.done,
+            label: context.locale.sync_widget_synced,
+          ),
+          userSessionExpired: (userAccount) => WarningItem(
+            title: context.locale.session_expired_title,
+            description: context.locale.session_expired_description(
+              userAccount.user.fullName,
+            ),
+            buttonLabel: context.locale.common_log_in,
+            icon: SvgPicture.asset(
+              'assets/icons/icon_triangle_exclamation_medium.svg',
+              color: Theme.of(context).colorScheme.error,
+            ),
+            onTap: () {
+              getIt<AuthBloc>().add(
+                Authenticate(
+                  hospital: userAccount.hospital!,
+                ),
+              );
+            },
+          ),
+          syncUserDataFailed: (lastSync) => WarningItem(
+            title: context.locale.sync_widget_sync_failed_title,
+            description: lastSync != null
+                ? context.locale.sync_widget_sync_failed_desc(
+                    lastSync.toDateOrDay(context),
+                    lastSync.toTimeOfDay().toString(),
+                  )
+                : '',
+            buttonLabel: context.locale.common_do_sync,
+            icon: SvgPicture.asset(
+              'assets/icons/icon_triangle_exclamation_medium.svg',
+              color: Theme.of(context).colorScheme.error,
+            ),
+            onTap: () {
+              getIt<SyncBloc>().add(
+                const SyncEvent.syncAll(),
+              );
+            },
+          ),
+          userResultsFailed: (measurements, lasySync) => WarningItem(
+            title: context.locale.sync_widget_sync_results_failed_title,
+            description: context.locale.sync_widget_sync_results_failed_desc,
+            buttonLabel: context.locale.common_do_sync,
+            icon: SvgPicture.asset(
+              'assets/icons/icon_triangle_exclamation_medium.svg',
+              color: Theme.of(context).colorScheme.error,
+            ),
+            onTap: () {
+              getIt<SyncBloc>().add(
+                const SyncEvent.syncAll(),
+              );
+            },
+          ),
+        );
+
+        final userWarning = warningInner != null
+            ? SliverPadding(
+                padding: const EdgeInsets.only(
+                  left: Dimensions.padding16,
+                  right: Dimensions.padding16,
+                  bottom: Dimensions.padding24,
+                ),
+                sliver: warningInner,
+              )
+            : const SliverToBoxAdapter(
+                child: SizedBox.shrink(),
+              );
 
         return Material(
           child: Stack(
@@ -46,43 +122,20 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                     MediaQuery.of(context).viewPadding.top +
                         Constants.appBarHeight,
                   ),
-                  const SliverGap(Dimensions.padding18),
-                  if (sessionExpired) ...[
-                    SliverPadding(
-                      padding: Paddings.horizontal16,
-                      sliver: NotificationItem(
-                        title: context.locale.session_expired_title,
-                        description: context.locale.session_expired_description(
-                          userAccount.user.fullName,
-                        ),
-                        buttonLabel: context.locale.common_log_in,
-                        icon: SvgPicture.asset(
-                          'assets/icons/icon_triangle_exclamation_medium.svg',
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                        onTap: () {
-                          getIt<AuthBloc>().add(
-                            Authenticate(
-                              hospital: userAccount.hospital!,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    const SliverGap(Dimensions.padding24),
-                  ],
-                  SliverPadding(
-                    padding: Paddings.left16,
-                    sliver: SliverToBoxAdapter(
-                      child: Text(
-                        context.locale.user_detail_screen_measurement_plans,
-                        style: ScaleTextStyles.textAccent.apply(
-                          color: Theme.of(context).colorScheme.onSecondary,
-                        ),
-                      ),
-                    ),
-                  ),
+                  const SliverGap(Dimensions.padding16),
+                  userWarning,
                   if (userAccount.carePlans?.isNotEmpty == true) ...[
+                    SliverPadding(
+                      padding: Paddings.left16,
+                      sliver: SliverToBoxAdapter(
+                        child: Text(
+                          context.locale.user_detail_screen_measurement_plans,
+                          style: ScaleTextStyles.textAccent.apply(
+                            color: Theme.of(context).colorScheme.onSecondary,
+                          ),
+                        ),
+                      ),
+                    ),
                     const SliverGap(Dimensions.padding26),
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
@@ -112,8 +165,8 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                         childCount: userAccount.carePlans!.length,
                       ),
                     ),
+                    const SliverGap(Dimensions.padding24),
                   ],
-                  const SliverGap(Dimensions.padding24),
                   SliverPadding(
                     padding: Paddings.left16,
                     sliver: SliverToBoxAdapter(

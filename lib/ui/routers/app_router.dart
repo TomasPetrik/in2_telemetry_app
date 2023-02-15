@@ -17,41 +17,46 @@ import 'package:scalesoft_app/ui/routers/routes/results_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_added_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_detail_route.dart';
 import 'package:scalesoft_app/ui/screens/home_screen.dart';
+import 'package:scalesoft_app/ui/screens/not_found_screen.dart';
 
 class AppRouter {
   final navRoot = GlobalKey<NavigatorState>();
-
+  final navAuthManager = GlobalKey<NavigatorState>();
   final navTabBar = GlobalKey<NavigatorState>();
   final settingsKey = GlobalKey<NavigatorState>();
 
   GoRouter get router {
     return GoRouter(
       navigatorKey: navRoot,
+      initialLocation: '/',
+      errorBuilder: (context, state) => const NotFoundScreen(),
+      redirect: (context, state) {
+        if (state.location.isNotEmpty && state.location != '/') {
+          return state.location;
+        }
+
+        final ContentState userContentState = getIt<ContentBloc>().state;
+
+        final path = userContentState.whenOrNull(
+          unauthenticated: () => '/${NoUserRoute.name}',
+          onAppearanceChanged: () =>
+              '/${ConfigurationRoute.name}/${AppearanceRoute.name}',
+          onUserAdded: (UserAccount userAccount) =>
+              '/${UserAddedRoute.name}/${userAccount.user.muid}',
+          activeSingleUser: (UserAccount userAccount) =>
+              '/${DashboardRoute.name}',
+          activeAllUsers: () => '/multi-user',
+        );
+
+        return path;
+      },
       routes: [
-        GoRoute(
-          path: '/',
-          builder: (_, __) {
-            return const AuthManager();
-          },
-          redirect: (context, state) {
-            if (state.location != '/') {
-              return state.location;
-            }
-
-            final ContentState userContentState = getIt<ContentBloc>().state;
-
-            final path = userContentState.whenOrNull(
-              unauthenticated: () => '/${NoUserRoute.name}',
-              onAppearanceChanged: () =>
-                  '/${ConfigurationRoute.name}/${AppearanceRoute.name}',
-              onUserAdded: (UserAccount userAccount) =>
-                  '/${UserAddedRoute.name}/${userAccount.user.muid}',
-              activeSingleUser: (UserAccount userAccount) =>
-                  '/${DashboardRoute.name}',
-              activeAllUsers: () => '/multi-user',
+        ShellRoute(
+          navigatorKey: navAuthManager,
+          builder: (context, __, child) {
+            return AuthManager(
+              child: child,
             );
-
-            return path;
           },
           routes: [
             ShellRoute(
@@ -79,9 +84,9 @@ class AppRouter {
                 ).route,
               ],
             ),
-            UserAddedRoute(navigator: navRoot).route,
-            NoUserRoute(navigator: navRoot).route,
-            ManualMeasurementRoute(navigator: navRoot).route,
+            UserAddedRoute(navigator: navAuthManager).route,
+            NoUserRoute(navigator: navAuthManager).route,
+            ManualMeasurementRoute(navigator: navAuthManager).route,
           ],
         ),
       ],

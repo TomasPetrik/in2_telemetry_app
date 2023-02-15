@@ -16,7 +16,6 @@ import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/screens/navigation_screen.dart';
 import 'package:scalesoft_app/ui/widgets/blured_user_app_bar.dart';
 import 'package:scalesoft_app/ui/widgets/no_plans_placeholder.dart';
-import 'package:scalesoft_app/ui/widgets/notification_widget.dart';
 import 'package:scalesoft_app/ui/widgets/results_header.dart';
 import 'package:scalesoft_app/ui/widgets/results_list.dart';
 import 'package:scalesoft_app/ui/widgets/sync_widget.dart';
@@ -94,10 +93,9 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                         }
                       },
                       onRefresh: () async {
-                        syncBloc.add(SyncEvent.syncAll([userAccount]));
+                        syncBloc.add(const SyncEvent.syncAll());
                       },
                       topSlivers: [
-                        const NotificationWidget(),
                         SyncWidget(
                           syncState: syncState,
                         ),

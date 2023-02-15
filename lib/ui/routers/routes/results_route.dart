@@ -6,7 +6,7 @@ import 'package:scalesoft_app/ui/screens/results_page.dart';
 
 class ResultsRoute extends ApplicationRoute with PageBuilderMixin {
   static const name = 'single-user-results';
-  static const path = 'single-user-results';
+  static const path = '/single-user-results';
 
   ResultsRoute({
     required super.navigator,

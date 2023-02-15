@@ -17,11 +17,11 @@ class PendingResultsDbProvider extends BoxProvider<Measurement> {
     Hive.registerAdapter(SourceDeviceInfoAdapter());
   }
 
-  List<Measurement>? getAll() {
+  List<Measurement> getAll() {
     if (box.isNotEmpty) {
       return box.values.toList();
     }
-    return null;
+    return [];
   }
 
   List<Measurement>? getPerUser(String userId) {
@@ -41,7 +41,7 @@ class PendingResultsDbProvider extends BoxProvider<Measurement> {
     final Measurement manualMeasurement,
   ) async {
     await box.put(
-      manualMeasurement.measurementDateTime!.toIso8601String(),
+      '${manualMeasurement.measurementDateTime!.millisecondsSinceEpoch}',
       manualMeasurement,
     );
     return manualMeasurement;
@@ -50,7 +50,19 @@ class PendingResultsDbProvider extends BoxProvider<Measurement> {
   Future<Measurement> remove(
     final Measurement manualMeasurement,
   ) async {
-    await box.delete(manualMeasurement.measurementDateTime!.toIso8601String());
+    final measurementId =
+        manualMeasurement.measurementDateTime!.millisecondsSinceEpoch;
+    await box.delete('$measurementId');
     return manualMeasurement;
+  }
+
+  Future<void> removeUserResults(
+    final String userId,
+  ) async {
+    final userMeasurements = getPerUser(userId);
+    if (userMeasurements == null) return;
+    for (final userMeasurement in userMeasurements) {
+      await remove(userMeasurement);
+    }
   }
 }

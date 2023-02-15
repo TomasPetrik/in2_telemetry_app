@@ -6,7 +6,7 @@ import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
 
 class DashboardRoute extends ApplicationRoute with PageBuilderMixin {
   static const name = 'single-user-dashboard';
-  static const path = 'single-user-dashboard';
+  static const path = '/single-user-dashboard';
 
   DashboardRoute({
     required super.navigator,

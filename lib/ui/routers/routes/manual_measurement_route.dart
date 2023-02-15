@@ -6,7 +6,7 @@ import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
 
 class ManualMeasurementRoute extends ApplicationRoute with PageBuilderMixin {
   static const name = 'manual-measurement';
-  static const path = 'manual-measurement';
+  static const path = '/manual-measurement';
 
   ManualMeasurementRoute({
     required super.navigator,

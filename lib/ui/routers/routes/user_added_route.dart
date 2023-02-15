@@ -6,7 +6,7 @@ import 'package:scalesoft_app/ui/screens/user_added_screen.dart';
 
 class UserAddedRoute extends ApplicationRoute {
   static const name = 'user-added';
-  static const path = 'user-added/:userId';
+  static const path = '/user-added/:userId';
 
   UserAddedRoute({
     required super.navigator,

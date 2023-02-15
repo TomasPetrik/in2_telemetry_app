@@ -4,16 +4,14 @@ import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_state.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
-import 'package:scalesoft_app/repositories/care_plans_repository.dart';
 import 'package:scalesoft_app/storage/session.dart';
 
 @singleton
 class ContentBloc extends Bloc<ContentEvent, ContentState> {
   final AccountDbProvider _accountDbProvider;
-  final CarePlansRepository _carePlansRepository;
   final Session _session;
 
-  ContentBloc(this._accountDbProvider, this._session, this._carePlansRepository)
+  ContentBloc(this._accountDbProvider, this._session)
       : super(const ContentState.initial()) {
     on<CheckLastLoggedUserContentEvent>(_checkLastLoggedUserContentEvent);
     on<OnUserAddedContentEvent>(_onUserAddedContentEvent);

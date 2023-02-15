@@ -7,11 +7,10 @@ import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
-import 'package:scalesoft_app/bloc/warning/warning_bloc.dart';
-import 'package:scalesoft_app/bloc/warning/warning_bloc_event.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/parsers/jwt_parser.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
+import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/repositories/account_repository.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/auth_service.dart';
@@ -24,6 +23,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthService _authService;
   final AccountRepository _accountRepository;
   final AccountDbProvider _accountDbProvider;
+  final PendingResultsDbProvider _pendingResultsDbProvider;
   final SyncService _syncService;
   final Session _session;
   AuthorizationCodeGrant? _grant;
@@ -34,6 +34,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     this._accountRepository,
     this._session,
     this._accountDbProvider,
+    this._pendingResultsDbProvider,
     @Named(Constants.privateDioName) this._dio,
     this._syncService,
   ) : super(const AuthState.unauthenticated()) {
@@ -119,6 +120,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         lastActiveIn: DateTime.now(),
         parentId: null,
         sessionExpired: false,
+        lastSyncAt: DateTime.now(),
+        lastSyncFailed: false,
         representedPeople: userInfo.representedPeople
             ?.map(
               (representedPerson) => UserAccount(
@@ -131,6 +134,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                 representedPeople: null,
                 parentId: userInfo.currentUser.muid,
                 sessionExpired: false,
+                lastSyncAt: DateTime.now(),
+                lastSyncFailed: false,
               ),
             )
             .toList(),
@@ -139,8 +144,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await _syncService.loadUserData(userAccount);
       await _accountDbProvider.save(userAccount);
       _session.userAccount = userAccount;
-      getIt<WarningBloc>()
-          .add(RemoveExpiredSessionWarningBlocEvent(userAccount));
       emit(AuthState.userVerified(userAccount: userAccount));
     } on Exception {
       _session.token = null;
@@ -154,6 +157,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       await _accountDbProvider.remove(event.userAccount);
+      await _pendingResultsDbProvider
+          .removeUserResults(event.userAccount.user.muid);
 
       if (event.userAccount.user.muid == _session.userAccount?.user.muid) {
         _session.token = null;

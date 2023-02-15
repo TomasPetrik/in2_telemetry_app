@@ -6,7 +6,7 @@ import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
 
 class ConfigurationRoute extends ApplicationRoute with PageBuilderMixin {
   static const name = 'configuration';
-  static const path = 'configuration';
+  static const path = '/configuration';
 
   ConfigurationRoute({
     required super.navigator,

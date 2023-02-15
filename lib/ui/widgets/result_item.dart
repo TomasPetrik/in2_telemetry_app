@@ -22,8 +22,11 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
       child: Row(
         children: [
           Text(
-            mResult.measurementFinishDateTime?.toTimeOfDay().toString() ??
-                mResult.measurementDateTime.toTimeOfDay().toString(),
+            mResult.measurementFinishDateTime
+                    ?.toLocal()
+                    .toTimeOfDay()
+                    .toString() ??
+                mResult.measurementDateTime.toLocal().toTimeOfDay().toString(),
             style: ScaleTextStyles.label.apply(
               color: Theme.of(context).colorScheme.onPrimary,
             ),
@@ -52,8 +55,14 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                 Gaps.gap6,
                 Text(
                   context.locale.dashboard_screen_measurement_interval(
-                    mResult.measurementDateTime.toTimeOfDay().toString(),
-                    mResult.measurementFinishDateTime!.toTimeOfDay().toString(),
+                    mResult.measurementDateTime
+                        .toLocal()
+                        .toTimeOfDay()
+                        .toString(),
+                    mResult.measurementFinishDateTime!
+                        .toLocal()
+                        .toTimeOfDay()
+                        .toString(),
                   ),
                   style: ScaleTextStyles.label.apply(
                     color: Theme.of(context).colorScheme.onPrimary,

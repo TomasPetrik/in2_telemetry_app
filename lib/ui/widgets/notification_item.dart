@@ -3,8 +3,8 @@ import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/navigation_tab_chip.dart';
 
-class NotificationItem extends StatelessWidget {
-  const NotificationItem({
+class WarningItem extends StatelessWidget {
+  const WarningItem({
     super.key,
     required this.title,
     required this.description,

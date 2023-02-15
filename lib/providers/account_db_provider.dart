@@ -73,10 +73,23 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
 
   @override
   Future<UserAccount> save(UserAccount userAccount) async {
-    await box.put(
-      userAccount.user.muid,
-      userAccount,
-    );
+    if (userAccount.parentId != null) {
+      final parentAccount = get(userAccount.parentId!)!;
+      parentAccount.representedPeople?.removeWhere(
+        (representedPerson) =>
+            representedPerson.user.muid == userAccount.user.muid,
+      );
+      parentAccount.representedPeople?.add(userAccount);
+      await box.put(
+        parentAccount.user.muid,
+        parentAccount,
+      );
+    } else {
+      await box.put(
+        userAccount.user.muid,
+        userAccount,
+      );
+    }
     return userAccount;
   }
 
@@ -171,6 +184,13 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
     }
 
     return false;
+  }
+
+  UserAccount? getFirstExpiredAccount() {
+    final rootAccounts = box.values.toList();
+
+    return rootAccounts
+        .firstWhereOrNull((userAccount) => userAccount.sessionExpired == true);
   }
 }
 

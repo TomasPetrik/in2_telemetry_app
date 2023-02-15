@@ -1,12 +1,13 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 
 part 'sync_event.freezed.dart';
 
 @freezed
 class SyncEvent with _$SyncEvent {
   const factory SyncEvent.init() = _Init;
-  const factory SyncEvent.syncAll(List<UserAccount> userAccounts) = _SyncAll;
+  const factory SyncEvent.syncAll() = _SyncAll;
   const factory SyncEvent.syncResults() = _SyncResults;
-  const factory SyncEvent.errorComm() = _ErrorComm;
+  factory SyncEvent.userSessionExpired(String refreshToken) = _UserExpired;
+  factory SyncEvent.resolveUpdatedPlan(CarePlan carePlan) = _ResolveUpdatedPlan;
 }

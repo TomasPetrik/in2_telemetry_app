@@ -3,14 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
-import 'package:scalesoft_app/bloc/warning/warning_bloc.dart';
-import 'package:scalesoft_app/bloc/warning/warning_bloc_state.dart';
+import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
+import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/appearance_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/hospital_detail_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/notification_route.dart';
@@ -83,8 +85,8 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                         ],
                       ),
                       Gaps.gap24,
-                      BlocBuilder<WarningBloc, WarningBlocState>(
-                        bloc: getIt<WarningBloc>(),
+                      BlocBuilder<SyncBloc, SyncState>(
+                        bloc: getIt<SyncBloc>(),
                         builder: (context, state) {
                           return ListView.separated(
                             padding: EdgeInsets.zero,
@@ -94,7 +96,8 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                                   hospitalUserEntries.toList()[index];
 
                               final bool showWarning = hospital.value.any(
-                                (userAccount) => userAccount.hasProblem(),
+                                (userAccount) => getIt<Session>()
+                                    .userHasProblem(userAccount),
                               );
 
                               return SettingsItem(
@@ -195,7 +198,32 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                           GoRouter.of(context).pushNamed(AppearanceRoute.name);
                         },
                       ),
-                      const Gap(300),
+                      FutureBuilder(
+                        future: PackageInfo.fromPlatform(),
+                        builder: ((context, snapshot) {
+                          final packageInfo = snapshot.data;
+                          if (packageInfo == null) {
+                            return const SizedBox.shrink();
+                          }
+
+                          return Column(
+                            children: [
+                              Gaps.gap24,
+                              Center(
+                                child: Text(
+                                  context.locale
+                                      .app_version(packageInfo.version),
+                                  style: ScaleTextStyles.label.apply(
+                                    color:
+                                        Theme.of(context).colorScheme.tertiary,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }),
+                      ),
+                      Gaps.gap24,
                     ],
                   ),
                 ),

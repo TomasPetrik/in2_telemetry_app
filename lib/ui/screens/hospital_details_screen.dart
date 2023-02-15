@@ -5,10 +5,11 @@ import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
-import 'package:scalesoft_app/bloc/warning/warning_bloc.dart';
-import 'package:scalesoft_app/bloc/warning/warning_bloc_state.dart';
+import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
+import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_detail_route.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
@@ -42,11 +43,11 @@ class HospitalDetailScreen extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        return BlocBuilder<WarningBloc, WarningBlocState>(
-          bloc: getIt<WarningBloc>(),
+        return BlocBuilder<SyncBloc, SyncState>(
+          bloc: getIt<SyncBloc>(),
           builder: (context, state) {
             final bool showWarning = userAccounts.any(
-              (userAccount) => userAccount.hasProblem(),
+              (userAccount) => getIt<Session>().userHasProblem(userAccount),
             );
 
             return Material(

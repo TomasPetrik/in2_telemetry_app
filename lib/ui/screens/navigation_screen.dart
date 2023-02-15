@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/widgets/fixed_item_height_delegate.dart';
 import 'package:scalesoft_app/ui/widgets/navigation_tab_bar.dart';
@@ -83,108 +84,104 @@ class _NavigationScreenState extends State<NavigationScreen> {
     final topGap = MediaQuery.of(context).viewPadding.top;
     final fixedHeight = topGap + Constants.twoLinedBarHeight;
 
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
-      child: Material(
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: RefreshIndicator(
-                edgeOffset: fixedHeight,
-                color: Theme.of(context).hintColor,
-                backgroundColor: Theme.of(context).colorScheme.background,
-                onRefresh: () async => widget.onRefresh?.call(),
-                child: CustomScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  controller: scrollController,
-                  slivers: [
-                    /*
+    return Material(
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: RefreshIndicator(
+              edgeOffset: fixedHeight,
+              color: Theme.of(context).hintColor,
+              backgroundColor: Theme.of(context).colorScheme.background,
+              onRefresh: () async => widget.onRefresh?.call(),
+              child: CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                controller: scrollController,
+                slivers: [
+                  /*
                     SliverGap(
                       topGap + Constants.twoLinedBarHeight,
                     ),
                     */
-                    SliverPersistentHeader(
-                      pinned: true,
-                      delegate: FixedHeightItemDelegate(
-                        child: const SizedBox.shrink(),
-                        fixedHeight: topGap + Constants.twoLinedBarHeight,
-                      ),
+                  SliverPersistentHeader(
+                    pinned: true,
+                    delegate: FixedHeightItemDelegate(
+                      child: const SizedBox.shrink(),
+                      fixedHeight: topGap + Constants.twoLinedBarHeight,
                     ),
-                    ...widget.topSlivers,
-                    SliverPersistentHeader(
-                      pinned: true,
-                      delegate: FixedHeightItemDelegate(
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: ClipRRect(
-                                child: BackdropFilter(
-                                  filter:
-                                      ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                                  child: Container(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .background
-                                        .withOpacity(0.8),
-                                  ),
+                  ),
+                  ...widget.topSlivers,
+                  SliverPersistentHeader(
+                    pinned: true,
+                    delegate: FixedHeightItemDelegate(
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: ClipRRect(
+                              child: BackdropFilter(
+                                filter:
+                                    ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                child: Container(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .background
+                                      .withOpacity(0.8),
                                 ),
                               ),
                             ),
-                            Column(
-                              children: [
-                                if (widget.navigationHeader != null) ...[
-                                  Gaps.gap16,
-                                  Padding(
-                                    padding: Paddings.horizontal16,
-                                    child: widget.navigationHeader!,
-                                  ),
-                                ],
-                                if (widget.tabs.length > 1) ...[
-                                  Gaps.gap26,
-                                  Padding(
-                                    padding: Paddings.horizontal16,
-                                    child: NavigationTabBar(
-                                      tabs: widget.tabs,
-                                      onTabChanged: (
-                                        int newTabIndex,
-                                        int previousTabIndex,
-                                      ) {
-                                        onTabTap(
-                                          newTabIndex,
-                                          previousTabIndex,
-                                        );
-                                      },
-                                      currentTab: currentTab,
-                                    ),
-                                  ),
-                                ],
-                                Gaps.gap24,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (widget.navigationHeader != null) ...[
+                                Gaps.gap16,
+                                Padding(
+                                  padding: Paddings.horizontal16,
+                                  child: widget.navigationHeader!,
+                                ),
                               ],
-                            ),
-                          ],
-                        ),
-                        fixedHeight: Dimensions.padding16 +
-                            (widget.tabs.length > 1
-                                ? Dimensions.padding26 +
-                                    Constants.navigationTabBarHeight
-                                : 0) +
-                            Dimensions.padding24 +
-                            Dimensions.padding20,
+                              if (widget.tabs.length > 1) ...[
+                                Gaps.gap26,
+                                Padding(
+                                  padding: Paddings.horizontal16,
+                                  child: NavigationTabBar(
+                                    tabs: widget.tabs,
+                                    onTabChanged: (
+                                      int newTabIndex,
+                                      int previousTabIndex,
+                                    ) {
+                                      onTabTap(
+                                        newTabIndex,
+                                        previousTabIndex,
+                                      );
+                                    },
+                                    currentTab: currentTab,
+                                  ),
+                                ),
+                              ],
+                              Gaps.gap24,
+                            ],
+                          ),
+                        ],
                       ),
+                      fixedHeight: Dimensions.padding16 +
+                          (widget.tabs.length > 1
+                              ? Dimensions.padding26 +
+                                  Constants.navigationTabBarHeight
+                              : 0) +
+                          Dimensions.padding24 +
+                          Dimensions.padding20,
                     ),
-                    ...widget.tabs[currentTab].slivers,
-                    if (widget.tabs[currentTab].bottomSlivers?.isNotEmpty ==
-                        true)
-                      ...widget.tabs[currentTab].bottomSlivers!,
-                    const SliverFillRemaining(),
-                  ],
-                ),
+                  ),
+                  ...widget.tabs[currentTab].slivers,
+                  if (widget.tabs[currentTab].bottomSlivers?.isNotEmpty == true)
+                    ...widget.tabs[currentTab].bottomSlivers!,
+                  // const SliverFillRemaining(),
+                  const SliverGap(Dimensions.padding16),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

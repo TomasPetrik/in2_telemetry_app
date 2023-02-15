@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_state.dart';
@@ -11,6 +12,7 @@ import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
+import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/screens/navigation_screen.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
@@ -19,10 +21,10 @@ import 'package:scalesoft_app/ui/widgets/blured_user_app_bar.dart';
 import 'package:scalesoft_app/ui/widgets/measurement_header.dart';
 import 'package:scalesoft_app/ui/widgets/measurements_list.dart';
 import 'package:scalesoft_app/ui/widgets/no_plans_placeholder.dart';
-import 'package:scalesoft_app/ui/widgets/notification_widget.dart';
 import 'package:scalesoft_app/ui/widgets/personal_measurement_footer.dart';
 import 'package:scalesoft_app/ui/widgets/sync_widget.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
+import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 class DashboardPage extends StatelessWidget with BottomSheetMixin {
   const DashboardPage({super.key});
@@ -74,9 +76,19 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                   } else {
                     Map<PlanWhenPeriod, int>? measurements;
 
+                    final List<MeasurementResult> todayResults =
+                        MeasurementHelper.getResults(
+                      allMeasurementResults,
+                      allPendingResults ?? [],
+                      ResultsWhenPeriod.today,
+                      state.measurementType,
+                    );
+
                     if (state.currentCarePlans?.isNotEmpty == true) {
-                      measurements =
-                          CarePlanHelper.getPossibleWhenPeriods(state.currentCarePlans!);
+                      measurements = CarePlanHelper.getPossibleWhenPeriods(
+                        state.currentCarePlans!,
+                        todayResults,
+                      );
                     }
 
                     return NavigationScreen(
@@ -94,10 +106,9 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                         }
                       },
                       onRefresh: () async {
-                        syncBloc.add(SyncEvent.syncAll([userAccount]));
+                        syncBloc.add(const SyncEvent.syncAll());
                       },
                       topSlivers: [
-                        const NotificationWidget(),
                         SyncWidget(syncState: syncState),
                         if ((state.selectedWhenPeriod == PlanWhenPeriod.today ||
                             state.selectedWhenPeriod ==
@@ -121,12 +132,21 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                               whenPeriod: state.selectedWhenPeriod ??
                                   PlanWhenPeriod.today,
                               openTimeSelector: () async {
+                                final List<MeasurementResult> todayResults =
+                                    MeasurementHelper.getResults(
+                                  allMeasurementResults,
+                                  allPendingResults ?? [],
+                                  ResultsWhenPeriod.today,
+                                  state.measurementType,
+                                );
+
                                 final selected =
                                     await showPlannedMeasurementsSelector(
                                   context,
                                   state.selectedWhenPeriod,
                                   CarePlanHelper.getPossibleWhenPeriods(
                                     state.currentCarePlans!,
+                                    todayResults,
                                   ),
                                 );
                                 if (selected?.selectedPeriod != null) {

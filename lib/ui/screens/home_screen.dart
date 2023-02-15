@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/bloc/warning/warning_bloc.dart';
-import 'package:scalesoft_app/bloc/warning/warning_bloc_state.dart';
+import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
+import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/storage/session.dart';
+import 'package:scalesoft_app/ui/routers/routes/configuration_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_route.dart';
-import 'package:scalesoft_app/ui/routers/routes/configuration_route.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/tab_icon_widget.dart';
 
@@ -54,13 +54,12 @@ class HomeScreen extends StatelessWidget {
       body: Center(
         child: child,
       ),
-      bottomNavigationBar: BlocBuilder<WarningBloc, WarningBlocState>(
-        bloc: getIt<WarningBloc>(),
+      bottomNavigationBar: BlocBuilder<SyncBloc, SyncState>(
+        bloc: getIt<SyncBloc>(),
         builder: (context, state) {
-          final accountDbProvider = getIt<AccountDbProvider>();
-          final showWarning = accountDbProvider.getAll().any(
-                (userAccount) => userAccount.hasProblem(),
-              );
+          final session = getIt<Session>();
+          final showWarning =
+              session.detectSyncState() != const SyncState.synced();
 
           return BottomNavigationBar(
             elevation: 0,

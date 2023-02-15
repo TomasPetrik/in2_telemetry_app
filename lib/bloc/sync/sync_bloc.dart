@@ -1,24 +1,22 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
-import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
-import 'package:scalesoft_app/repositories/care_plans_repository.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
+import 'package:scalesoft_app/storage/session.dart';
 
 @singleton
 class SyncBloc extends Bloc<SyncEvent, SyncState> {
-  final PendingResultsDbProvider _pendingResultsDbProvider;
   final AccountDbProvider _accountDbProvider;
-  final CarePlansRepository _carePlansRepository;
   final SyncService _syncService;
+  final Session _session;
 
   SyncBloc(
-    this._pendingResultsDbProvider,
     this._accountDbProvider,
-    this._carePlansRepository,
     this._syncService,
+    this._session,
   ) : super(const SyncState.none()) {
     on<SyncEvent>((event, emit) async {
       await event.when(
@@ -27,66 +25,48 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
             return;
           }
 
-          final manualMeasurements = _pendingResultsDbProvider.getAll();
-          if (manualMeasurements?.isNotEmpty == true) {
-            emit(const SyncState.failed());
+          final syncState = _session.detectSyncState();
+
+          if (syncState != const SyncState.synced()) {
+            emit(syncState);
           } else {
             emit(const SyncState.none());
           }
         },
-        syncAll: (userAccounts) async {
+        syncAll: () async {
           emit(const SyncState.inProgress());
-          for (final userAccount in userAccounts) {
-            await _syncService.loadUserData(userAccount);
-            await _accountDbProvider.save(userAccount);
+
+          await _syncService.syncResults();
+
+          await _syncService.syncAllData();
+
+          final currentSyncState = _session.detectSyncState();
+          emit(currentSyncState);
+
+          if (currentSyncState == const SyncState.synced()) {
+            await Future.delayed(const Duration(seconds: 2));
+            emit(const SyncState.none());
           }
-          emit(const SyncState.synced());
-          await Future.delayed(const Duration(seconds: 2));
-          emit(const SyncState.none());
         },
         syncResults: () async {
-          try {
-            final pendingMeasurements = _pendingResultsDbProvider.getAll();
+          emit(const SyncState.inProgress());
 
-            if (pendingMeasurements?.isNotEmpty == true) {
-              emit(const SyncState.inProgress());
-              final Set<String?> usersIds = {};
-              for (final pendingMeasurement in pendingMeasurements!) {
-                final assignedAccount =
-                    _accountDbProvider.get(pendingMeasurement.patientMuid!);
-                //TODO.. distinguish if it was manual or regular measurement by sourceDevice presence
-                await _carePlansRepository.sendManualMeasurement(
-                  userAccount: assignedAccount!,
-                  manualMeasurement: pendingMeasurement,
-                );
-                await _pendingResultsDbProvider.remove(pendingMeasurement);
-                usersIds.add(pendingMeasurement.patientMuid);
-              }
-              //reload users results
-              for (final userId in usersIds) {
-                if (userId != null) {
-                  final userAccount = _accountDbProvider.get(userId);
-                  await _syncService.loadMeasurementResults(userAccount!);
-                  await _syncService.loadPartPlanEvaluation(userAccount);
-                  await _accountDbProvider.save(userAccount);
-                }
-              }
+          await _syncService.syncResults();
 
-              emit(const SyncState.synced());
-              await Future.delayed(const Duration(seconds: 2));
-              emit(const SyncState.none());
-            } else {
-              emit(const SyncState.none());
-            }
-          } catch (_) {
-            emit(const SyncState.failed());
+          final currentSyncState = _session.detectSyncState();
+          emit(currentSyncState);
+
+          if (currentSyncState == const SyncState.synced()) {
+            await Future.delayed(const Duration(seconds: 2));
+            emit(const SyncState.none());
           }
         },
-        errorComm: () {
-          if (state == const SyncState.inProgress()) {
-            emit(const SyncState.failed());
-          }
+        userSessionExpired: (String refreshToken) async {
+          await _accountDbProvider.setExpiredUserByToken(refreshToken);
+
+          emit(_session.detectSyncState());
         },
+        resolveUpdatedPlan: (CarePlan carePlan) {},
       );
     });
   }

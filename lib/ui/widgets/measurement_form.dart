@@ -201,16 +201,32 @@ class MeasurementForm extends StatelessWidget {
                 )) {
                   return context.locale.common_wrong_value;
                 }
-                _measurementDateTime = measurementDateTime;
+                _measurementDateTime = measurementDateTime.toUtc();
                 return null;
               } else {
                 return context.locale.common_wrong_value;
               }
             },
             keyboardType: TextInputType.datetime,
-            suffixIcon: SvgPicture.asset(
-              'assets/icons/icon_clock.svg',
-              color: Theme.of(context).colorScheme.primary,
+            suffixIcon: InkWell(
+              onTap: () {
+                /*
+                final setTime = DatePicker.showTimePicker(
+                  context,
+                  theme: const DatePickerTheme(
+                    containerHeight: 210.0,
+                  ),
+                  showTitleActions: true,
+                  currentTime: DateTime.now(),
+                  locale: LocaleType.en,
+                );
+                debugPrint(setTime.toString());
+                */
+              },
+              child: SvgPicture.asset(
+                'assets/icons/icon_clock.svg',
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
             inputFormatters: [
               TimeTextFormatter(),

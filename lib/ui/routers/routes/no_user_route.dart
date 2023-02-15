@@ -4,7 +4,7 @@ import 'package:scalesoft_app/ui/screens/onboarding_screen.dart';
 
 class NoUserRoute extends ApplicationRoute {
   static const name = 'no-user';
-  static const path = 'no-user';
+  static const path = '/no-user';
 
   NoUserRoute({
     required super.navigator,

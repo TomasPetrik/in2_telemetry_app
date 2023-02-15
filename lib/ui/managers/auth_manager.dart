@@ -13,7 +13,12 @@ import 'package:scalesoft_app/ui/screens/mixins/popup_dialog_mixin.dart';
 import 'package:scalesoft_app/ui/widgets/loading_indicator.dart';
 
 class AuthManager extends StatelessWidget with PopupDialogMixin {
-  const AuthManager({super.key});
+  const AuthManager({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -64,9 +69,7 @@ class AuthManager extends StatelessWidget with PopupDialogMixin {
           },
         );
       },
-      child: const Scaffold(
-        body: Center(child: LoadingIndicator()),
-      ),
+      child: child,
     );
   }
 }

@@ -26,6 +26,8 @@ class UserAccount with _$UserAccount {
     @HiveField(8) List<CarePlan>? carePlans,
     @HiveField(9) bool? sessionExpired,
     @HiveField(10) List<MeasurementResult>? measurementResults,
+    @HiveField(11) DateTime? lastSyncAt,
+    @HiveField(12) bool? lastSyncFailed,
   }) = _UserAccount;
 
   factory UserAccount.fromJson(Map<String, dynamic> json) =>
@@ -36,6 +38,10 @@ class UserAccount with _$UserAccount {
 
   bool hasProblem() {
     if (sessionExpired == true) {
+      return true;
+    }
+
+    if (lastSyncFailed == true) {
       return true;
     }
 

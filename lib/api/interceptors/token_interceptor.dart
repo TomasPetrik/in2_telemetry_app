@@ -5,20 +5,12 @@ import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/account_api_client.dart';
 import 'package:scalesoft_app/api/client/auth_api_client.dart';
 import 'package:scalesoft_app/api/dto/auth_token.dart';
-import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
-import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
-import 'package:scalesoft_app/bloc/warning/warning_bloc.dart';
-import 'package:scalesoft_app/bloc/warning/warning_bloc_event.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
-import 'package:scalesoft_app/utils/exceptions/exception/forbidden_exception.dart';
-import 'package:scalesoft_app/utils/exceptions/exception/internal_server_exception.dart';
 import 'package:scalesoft_app/utils/exceptions/exception/invalid_request_exception.dart';
-import 'package:scalesoft_app/utils/exceptions/exception/no_internet_exception.dart';
-import 'package:scalesoft_app/utils/exceptions/exception/not_found_exception.dart';
 
 @injectable
 class TokenInterceptor extends Interceptor {
@@ -56,11 +48,8 @@ class TokenInterceptor extends Interceptor {
     switch (err.response?.statusCode) {
       case 400:
         final refreshToken = err.requestOptions.data["refresh_token"];
-        getIt<WarningBloc>().add(
-          SessionExpiredWarningBlocEvent(refreshToken),
-        );
         getIt<SyncBloc>().add(
-          const SyncEvent.errorComm(),
+          SyncEvent.userSessionExpired(refreshToken),
         );
         throw InvalidRequestException();
       case 401:
@@ -78,6 +67,8 @@ class TokenInterceptor extends Interceptor {
         }
 
         return;
+
+      /*
       case 403:
         throw ForbiddenException();
       case 404:
@@ -85,12 +76,9 @@ class TokenInterceptor extends Interceptor {
         throw NotFoundException();
       case 500:
         throw InternalServerException();
+        */
       default:
-        getIt<SyncBloc>().add(
-          const SyncEvent.errorComm(),
-        );
-        if (NoInternetException.isNoInternet(err)) throw NoInternetException();
-        throw Exception();
+        return handler.next(err);
     }
   }
 

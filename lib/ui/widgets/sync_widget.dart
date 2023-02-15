@@ -16,24 +16,21 @@ class SyncWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return syncState.whenOrNull(none: () => true) == true
         ? const SliverToBoxAdapter(
             child: SizedBox.shrink(),
           )
-        : SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                left: Dimensions.padding16,
-                right: Dimensions.padding16,
-                top: Dimensions.padding16,
-              ),
-              child: SyncItem(
-                syncState: syncState,
-                onRefresh: () {
-                  getIt<SyncBloc>().add(const SyncEvent.syncResults());
-                },
-              ),
+        : SliverPadding(
+            padding: const EdgeInsets.only(
+              left: Dimensions.padding16,
+              right: Dimensions.padding16,
+              top: Dimensions.padding16,
+            ),
+            sliver: SyncItem(
+              syncState: syncState,
+              onRefresh: () {
+                getIt<SyncBloc>().add(const SyncEvent.syncAll());
+              },
             ),
           );
   }

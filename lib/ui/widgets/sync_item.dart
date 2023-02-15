@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
+import 'package:scalesoft_app/bloc/auth/auth_event.dart';
+import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
+import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
-import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
-import 'package:scalesoft_app/ui/widgets/rotating_icon.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/ui/widgets/notification_item.dart';
+import 'package:scalesoft_app/ui/widgets/sync_process_item.dart';
+import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 class SyncItem extends StatelessWidget {
   const SyncItem({
@@ -16,77 +21,101 @@ class SyncItem extends StatelessWidget {
   final SyncState syncState;
   final VoidCallback? onRefresh;
 
-  Color _getLeadinIconColor(BuildContext context) {
-    return syncState.when(
-      none: () => Theme.of(context).colorScheme.onTertiary,
-      inProgress: () => Theme.of(context).colorScheme.onError,
-      synced: () => Theme.of(context).colorScheme.onTertiary,
-      failed: () => Theme.of(context).colorScheme.error,
-    );
-  }
-
-  String _getLeadinIconPath(BuildContext context) {
-    return syncState.when(
-      none: () => 'assets/icons/icon_check.svg',
-      inProgress: () => 'assets/icons/icon_loader.svg',
-      synced: () => 'assets/icons/icon_check.svg',
-      failed: () => 'assets/icons/icon_triangle_exclamation.svg',
-    );
-  }
-
-  String _getLabel(BuildContext context) {
-    return syncState.when(
-      none: () => context.locale.sync_widget_synced,
-      inProgress: () => context.locale.sync_widget_sync_in_progress,
-      synced: () => context.locale.sync_widget_synced,
-      failed: () => context.locale.sync_widget_sync_failed,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final failedRefreshIconPath = syncState.whenOrNull(
-      failed: () => 'assets/icons/icon_rotate.svg',
-    );
-
-    final iconWidget = SvgPicture.asset(
-      _getLeadinIconPath(
-        context,
+    return syncState.when(
+      none: () => const SliverToBoxAdapter(child: SizedBox.shrink()),
+      inProgress: () => SyncProcessItem(
+        syncProcessType: SyncProcessType.inProgress,
+        label: context.locale.sync_widget_sync_in_progress,
       ),
-      color: _getLeadinIconColor(context),
-    );
-
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onBackground,
-        borderRadius: BorderRadii.radius16,
+      synced: () => SyncProcessItem(
+        syncProcessType: SyncProcessType.done,
+        label: context.locale.sync_widget_synced,
       ),
-      padding: Paddings.all16,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          if (syncState == const SyncState.inProgress())
-            RotatingIcon(child: iconWidget)
-          else
-            iconWidget,
-          Gaps.gap16,
-          Expanded(
-            child: Text(
-              _getLabel(context),
-              style: ScaleTextStyles.text.apply(
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
+      userSessionExpired: (userAccount) => WarningItem(
+        title: context.locale.session_expired_title,
+        description: context.locale.session_expired_description(
+          userAccount.user.fullName,
+        ),
+        buttonLabel: context.locale.common_log_in,
+        icon: SvgPicture.asset(
+          'assets/icons/icon_triangle_exclamation_medium.svg',
+          color: Theme.of(context).colorScheme.error,
+        ),
+        onTap: () {
+          getIt<AuthBloc>().add(
+            Authenticate(
+              hospital: userAccount.hospital!,
             ),
+          );
+        },
+      ),
+      syncUserDataFailed: (lastSync) => SyncProcessItem(
+        syncProcessType: SyncProcessType.error,
+        label: context.locale.sync_widget_sync_failed_title,
+        desc: lastSync != null
+            ? context.locale.sync_widget_sync_failed_desc(
+                lastSync.toDateOrDay(context),
+                lastSync.toTimeOfDay().toString(),
+              )
+            : null,
+        onRefresh: onRefresh,
+      ),
+      syncSomeUsersDataFailed: () => SyncProcessItem(
+        syncProcessType: SyncProcessType.error,
+        label: context.locale.sync_widget_sync_failed_title,
+        onRefresh: onRefresh,
+      ),
+      userResultsFailed: (measurements, lastSync) => SyncProcessItem(
+        syncProcessType: SyncProcessType.error,
+        label: context.locale.sync_widget_sync_failed_title,
+        desc: lastSync != null
+            ? context.locale.sync_widget_sync_failed_desc(
+                lastSync.toDateOrDay(context),
+                lastSync.toTimeOfDay().toString(),
+              )
+            : null,
+        onRefresh: onRefresh,
+      ),
+      someUsersResultsFailed: (measurements) => SyncProcessItem(
+        syncProcessType: SyncProcessType.error,
+        label: context.locale.sync_widget_sync_failed_title,
+        onRefresh: onRefresh,
+      ),
+      userCarePlanChanged: (carePlan) => WarningItem(
+        title: context.locale.notification_widget_plan_changed_title,
+        description: context.locale.notification_widget_plan_changed_desc(
+          context.locale.common_measurement_types_genitive(
+            carePlan.activity.measurementType.name,
           ),
-          if (failedRefreshIconPath != null)
-            InkWell(
-              onTap: onRefresh,
-              child: SvgPicture.asset(
-                failedRefreshIconPath,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-        ],
+        ),
+        buttonLabel: context.locale.common_do_sync,
+        icon: SvgPicture.asset(
+          'assets/icons/icon_circle_exclamation.svg',
+          color: Theme.of(context).colorScheme.tertiary,
+        ),
+        onTap: () {
+          getIt<SyncBloc>().add(SyncEvent.resolveUpdatedPlan(carePlan));
+        },
+      ),
+      someUsersCarePlanChanged: (userAccount, carePlan) => WarningItem(
+        title: context.locale.notification_widget_plan_changed_title,
+        description:
+            context.locale.notification_widget_plan_changed_for_user_desc(
+          userAccount.user.fullName,
+          context.locale.common_measurement_types_genitive(
+            carePlan.activity.measurementType.name,
+          ),
+        ),
+        buttonLabel: context.locale.common_do_sync,
+        icon: SvgPicture.asset(
+          'assets/icons/icon_circle_exclamation.svg',
+          color: Theme.of(context).colorScheme.tertiary,
+        ),
+        onTap: () {
+          getIt<SyncBloc>().add(SyncEvent.resolveUpdatedPlan(carePlan));
+        },
       ),
     );
   }
