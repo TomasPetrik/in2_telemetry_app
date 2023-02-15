@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/ui/painters/user_item_painter.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
@@ -41,6 +42,7 @@ class UserItem extends StatelessWidget {
           Expanded(
             child: SettingsItem(
               label: userAccount.user.fullName,
+              subLabel: _getCarePlansLabel(context, userAccount),
               showWarning: showWarning == true && userAccount.parentId == null,
               hasNavigationIcon: hasNavigationIcon,
               iconWidget: Padding(
@@ -58,5 +60,18 @@ class UserItem extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String? _getCarePlansLabel(BuildContext context, UserAccount userAccount) {
+    final carePlans = userAccount.carePlans;
+    if (carePlans?.isEmpty == true) return null;
+
+    String label = context.locale
+        .common_measurement_types(carePlans![0].activity.measurementType.name);
+
+    if (carePlans.length > 1) {
+      label += ' ${context.locale.common_plus_n_others(carePlans.length - 1)}';
+    }
+    return label;
   }
 }
