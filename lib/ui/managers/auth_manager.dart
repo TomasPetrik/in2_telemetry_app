@@ -65,6 +65,11 @@ class AuthManager extends StatelessWidget with PopupDialogMixin {
             GoRouter.of(context).pop();
           },
           errorLoadData: () {
+            GoRouter.of(context).pop();
+            showError(context, message: context.locale.common_error_404);
+          },
+          unauthenticated: () {
+            GoRouter.of(context).pop();
             showError(context, message: context.locale.common_error_404);
           },
         );

@@ -11,13 +11,13 @@ class MeasurementHelper {
     PlannedMeasurement plannedMeasurement,
     List<MeasurementResult> measurementResults,
   ) {
-    final measuredTimesSet = measurementResults
-        .where(
-          (mResult) =>
-              mResult.measurementType ==
-              plannedMeasurement.carePlan.activity.measurementType,
-        )
-        .map((mResult) => mResult.measurementDateTime);
+    final measuredTimesSet = measurementResults.where(
+      (mResult) {
+        return mResult.measurementType ==
+                plannedMeasurement.carePlan.activity.measurementType &&
+            mResult.userId == plannedMeasurement.userId;
+      },
+    ).map((mResult) => mResult.measurementDateTime);
 
     for (final measuredTime in measuredTimesSet) {
       if (plannedMeasurement.whenStart.isBefore(measuredTime) &&

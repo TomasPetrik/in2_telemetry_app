@@ -23,6 +23,7 @@ class MeasurementResult with _$MeasurementResult {
     @JsonKey(name: 'type') @HiveField(5) MeasurementType? measurementType,
     @JsonKey(ignore: true) @HiveField(6) bool? wasMeasured,
     @JsonKey(ignore: true) @HiveField(7) DateTime? measurementFinishDateTime,
+    @JsonKey(ignore: true) @HiveField(8) String? userId,
   }) = _MeasurementResult;
 
   factory MeasurementResult.fromJson(Map<String, dynamic> json) =>

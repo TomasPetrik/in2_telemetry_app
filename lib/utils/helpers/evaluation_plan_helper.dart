@@ -10,7 +10,7 @@ class EvaluationPlanHelper {
     return _calculateProgress(fulfillmentEvaluation.items);
   }
 
-  static int getProgressFromPlan({
+  static int getProgressFromPlans({
     required List<CarePlan> carePlans,
     ResultsWhenPeriod? whenPeriod,
   }) {
@@ -35,6 +35,19 @@ class EvaluationPlanHelper {
     }
 
     return _calculateProgress(items);
+  }
+
+  static int getProgressFromSinglePlan(
+    CarePlan carePlan,
+    ResultsWhenPeriod whenPeriod,
+  ) {
+    int reqMeasurement = whenPeriod == ResultsWhenPeriod.today
+        ? carePlan.getTodayMeasurements().length
+        : carePlan.getYesterdayMeasurements().length;
+
+    return 0;
+
+    // int currentMeasurement
   }
 
   static int _calculateProgress(List<FulfillmentEvaluationItem> items) {

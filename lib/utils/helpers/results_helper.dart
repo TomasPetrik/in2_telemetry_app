@@ -13,11 +13,11 @@ class ResultsHelper {
     List<CarePlan> carePlans,
   ) {
     return {
-      ResultsWhenPeriod.yesterday: EvaluationPlanHelper.getProgressFromPlan(
+      ResultsWhenPeriod.yesterday: EvaluationPlanHelper.getProgressFromPlans(
         carePlans: carePlans,
         whenPeriod: ResultsWhenPeriod.yesterday,
       ),
-      ResultsWhenPeriod.today: EvaluationPlanHelper.getProgressFromPlan(
+      ResultsWhenPeriod.today: EvaluationPlanHelper.getProgressFromPlans(
         carePlans: carePlans,
         whenPeriod: ResultsWhenPeriod.today,
       )

@@ -48,6 +48,10 @@ class CarePlansRepository {
       endDateTime,
     );
 
+    for (final result in results) {
+      result.userId = userAccount.user.muid;
+    }
+
     return results;
   }
 
@@ -76,8 +80,6 @@ class CarePlansRepository {
     );
     return FulfillmentEvaluation(items);
   }
-
-  
 
   Future<void> sendManualMeasurement({
     required UserAccount userAccount,

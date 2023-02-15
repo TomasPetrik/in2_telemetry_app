@@ -39,6 +39,30 @@ class CarePlan with _$CarePlan {
   @override
   String toString() => toJson().toString();
 
+  List<TimingDayWhen> getYesterdayMeasurements() {
+    final now = DateTime.now();
+    final currentWeekDay = now.currentWeekDay();
+
+    if ((periodUnit == TimeUnit.day && weekDays?.isEmpty == true) ||
+        weekDays?.contains(currentWeekDay) == true) {
+      return timingDayWhen;
+    } else {
+      return [];
+    }
+  }
+
+  List<TimingDayWhen> getTodayMeasurements() {
+    final now = DateTime.now();
+    final currentWeekDay = now.currentWeekDay();
+
+    if ((periodUnit == TimeUnit.day && weekDays?.isEmpty == true) ||
+        weekDays?.contains(currentWeekDay) == true) {
+      return timingDayWhen;
+    } else {
+      return [];
+    }
+  }
+
   List<TimingDayWhen> getTodayRemainingMeasurements() {
     final now = DateTime.now();
     final currentWeekDay = now.currentWeekDay();
