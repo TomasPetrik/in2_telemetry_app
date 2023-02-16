@@ -141,6 +141,20 @@ class DarkMode {
               width: 1,
             ),
           ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadii.radius8,
+            borderSide: BorderSide(
+              color: colorContent60,
+              width: 1,
+            ),
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadii.radius8,
+            borderSide: BorderSide(
+              color: colorContent60,
+              width: 1,
+            ),
+          ),
           errorStyle: ScaleTextStyles.label.copyWith(
             color: alertColor,
           ),

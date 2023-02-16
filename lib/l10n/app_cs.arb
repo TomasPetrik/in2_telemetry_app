@@ -11,6 +11,8 @@
       }
     }
   },
+  "common_cancel": "Zrušit",
+  "common_confirm": "Potvrdit",
   "common_close": "Zavřít",
   "common_measurement": "Měření",
   "common_measure": "Měřit",

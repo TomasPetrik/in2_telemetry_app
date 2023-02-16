@@ -4,19 +4,19 @@ import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/measurement/composed_int_value.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/scale_text_form_field.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 final formKey = GlobalKey<FormState>();
-final timeFieldKey = GlobalKey<FormFieldState>();
 final List<GlobalKey<FormState>> fieldGlobalKeys = [
   GlobalKey<FormState>(),
   GlobalKey<FormState>()
 ];
 
-class MeasurementForm extends StatelessWidget {
+class MeasurementForm extends StatelessWidget with BottomSheetMixin {
   MeasurementForm({
     super.key,
     required this.measurementType,
@@ -88,6 +88,12 @@ class MeasurementForm extends StatelessWidget {
     final measurementConfig = Constants.supportedMeasurements[measurementType];
 
     if (measurementConfig == null) return const SizedBox.shrink();
+
+    final currentDateTime = DateTime.now();
+    TextEditingController timeEditingController = TextEditingController(
+      text: currentDateTime.toTimeOfDay().toString(),
+    );
+    _measurementDateTime = currentDateTime.toUtc();
 
     return Form(
       key: formKey,
@@ -186,50 +192,37 @@ class MeasurementForm extends StatelessWidget {
             context.locale.manual_measurement_screen_measurement_time,
           ),
           Gaps.gap8,
-          ScaleTextFormField(
-            textFormKey: timeFieldKey,
-            initialValue: DateTime.now().toTimeOfDay().toString(),
-            hintText: '00:00',
-            validator: (value) {
-              if (value?.isEmpty == false &&
-                  RegExp(r'^(?:[01]?\d|2[0-3])(?::(?:[0-5]\d?)?)?$')
-                      .hasMatch(value!)) {
-                final measurementDateTime =
-                    DateTime.now().fromTimeOfDayString(value);
-                if (measurementDateTime.isAfter(
-                  DateTime.now(),
-                )) {
-                  return context.locale.common_wrong_value;
-                }
-                _measurementDateTime = measurementDateTime.toUtc();
-                return null;
-              } else {
-                return context.locale.common_wrong_value;
-              }
-            },
-            keyboardType: TextInputType.datetime,
-            suffixIcon: InkWell(
-              onTap: () {
-                /*
-                final setTime = DatePicker.showTimePicker(
-                  context,
-                  theme: const DatePickerTheme(
-                    containerHeight: 210.0,
-                  ),
-                  showTitleActions: true,
-                  currentTime: DateTime.now(),
-                  locale: LocaleType.en,
-                );
-                debugPrint(setTime.toString());
-                */
-              },
-              child: SvgPicture.asset(
-                'assets/icons/icon_clock.svg',
-                color: Theme.of(context).colorScheme.primary,
+          Stack(
+            children: [
+              TextField(
+                enabled: false,
+                controller: timeEditingController,
+                style: ScaleTextStyles.text
+                    .apply(color: Theme.of(context).colorScheme.tertiary),
               ),
-            ),
-            inputFormatters: [
-              TimeTextFormatter(),
+              Positioned(
+                right: Dimensions.padding16,
+                top: Dimensions.padding12,
+                bottom: Dimensions.padding12,
+                child: InkWell(
+                  onTap: () async {
+                    final newDateTime = await showRestrictedTimePicker(
+                      context: context,
+                      currentDateTime: DateTime.now(),
+                    );
+
+                    if (newDateTime != null) {
+                      _measurementDateTime = newDateTime.toUtc();
+                      timeEditingController.text =
+                          newDateTime.toTimeOfDay().toString();
+                    }
+                  },
+                  child: SvgPicture.asset(
+                    'assets/icons/icon_clock.svg',
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              )
             ],
           ),
         ],

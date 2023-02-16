@@ -12,9 +12,29 @@ import 'package:scalesoft_app/ui/dialogs/user_hospital_selection_dialog.dart';
 import 'package:scalesoft_app/ui/dialogs/user_selection_dialog.dart';
 import 'package:scalesoft_app/ui/routers/routes/manual_measurement_route.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/widgets/scale_time_picker.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 mixin BottomSheetMixin {
+  Future<DateTime?> showRestrictedTimePicker({
+    required final BuildContext context,
+    required final DateTime currentDateTime,
+  }) async {
+    final result = await showModalBottomSheet<DateTime?>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return const FractionallySizedBox(
+          heightFactor: 0.4,
+          child: ScaleTimePicker(),
+        );
+      },
+    );
+    return result;
+  }
+
   Future<bool?> showAccounRemovalConfirmation({
     required final BuildContext context,
     required final String accountName,
