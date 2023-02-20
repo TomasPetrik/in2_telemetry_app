@@ -7,6 +7,24 @@ import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 class CarePlanHelper {
+  static List<CarePlan> getCarePlansContainingMeasurements({
+    required List<CarePlan> allCarePlans,
+    required ResultsWhenPeriod whenPeriod,
+  }) {
+    List<CarePlan> carePlans = [];
+    for (final carePlan in allCarePlans) {
+      if (carePlan.fihisned == false &&
+          ((whenPeriod == ResultsWhenPeriod.today &&
+                  carePlan.hasMeasurementsToday()) ||
+              (whenPeriod == ResultsWhenPeriod.yesterday &&
+                  carePlan.hasMeasurementsYesterday()))) {
+        carePlans.add(carePlan);
+      }
+    }
+
+    return carePlans;
+  }
+
   static Set<MeasurementType> getMeasurementTypes(List<CarePlan> carePlans) {
     final measurementTypes = <MeasurementType>{};
     carePlans
@@ -116,12 +134,14 @@ class Calendar {
           whenEnd: timingDayWhen.end.todayDateTime(),
           timingDayWhen: timingDayWhen,
           carePlan: carePlan,
+          reqCount: carePlan.frequency,
         );
 
-        if (!MeasurementHelper.wasMeasured(
-          plannedMeasurement,
-          measurementResults,
-        )) {
+        if (MeasurementHelper.getEvaluation(
+              plannedMeasurement,
+              measurementResults,
+            )?.wasMeasured() ==
+            false) {
           measurements.add(plannedMeasurement);
         }
       }
@@ -144,19 +164,25 @@ class Calendar {
     );
     for (final carePlan in dailyCarePlans) {
       for (final timingDayWhen in carePlan.timingDayWhen) {
-        measurements.add(
-          PlannedMeasurement(
-            userId: carePlan.userId!,
-            whenStart: resultsWhenPeriod == ResultsWhenPeriod.today
+        final measurementStartTime =
+            resultsWhenPeriod == ResultsWhenPeriod.today
                 ? timingDayWhen.start.todayDateTime()
-                : timingDayWhen.start.yesterdayDateTime(),
-            whenEnd: resultsWhenPeriod == ResultsWhenPeriod.today
-                ? timingDayWhen.end.todayDateTime()
-                : timingDayWhen.end.yesterdayDateTime(),
-            timingDayWhen: timingDayWhen,
-            carePlan: carePlan,
-          ),
-        );
+                : timingDayWhen.start.yesterdayDateTime();
+
+        if (measurementStartTime.isAfter(carePlan.scheduledStart)) {
+          measurements.add(
+            PlannedMeasurement(
+              userId: carePlan.userId!,
+              whenStart: measurementStartTime,
+              whenEnd: resultsWhenPeriod == ResultsWhenPeriod.today
+                  ? timingDayWhen.end.todayDateTime()
+                  : timingDayWhen.end.yesterdayDateTime(),
+              timingDayWhen: timingDayWhen,
+              carePlan: carePlan,
+              reqCount: carePlan.frequency,
+            ),
+          );
+        }
       }
     }
 
@@ -183,6 +209,7 @@ class Calendar {
             whenEnd: timingDayWhen.end.tomorrowDateTime(),
             timingDayWhen: timingDayWhen,
             carePlan: carePlan,
+            reqCount: carePlan.frequency,
           ),
         );
       }
@@ -207,11 +234,13 @@ class Calendar {
           whenEnd: plannedTimingWhen.end.todayDateTime(),
           timingDayWhen: plannedTimingWhen,
           carePlan: carePlan,
+          reqCount: carePlan.frequency,
         );
-        if (!MeasurementHelper.wasMeasured(
-          plannedMeasurement,
-          measurementResults,
-        )) {
+        if (MeasurementHelper.getEvaluation(
+              plannedMeasurement,
+              measurementResults,
+            )?.wasMeasured() ==
+            false) {
           upcomingMeasurements.add(plannedMeasurement);
         }
       }
@@ -270,6 +299,7 @@ class Calendar {
                 .add(Duration(days: daysShift)),
             timingDayWhen: timingDayWhen,
             carePlan: carePlan,
+            reqCount: carePlan.frequency,
           ),
         )
         .toList();
@@ -283,6 +313,7 @@ class PlannedMeasurement {
     required this.whenEnd,
     required this.timingDayWhen,
     required this.carePlan,
+    required this.reqCount,
   });
 
   final String userId;
@@ -290,6 +321,15 @@ class PlannedMeasurement {
   final DateTime whenEnd;
   final TimingDayWhen timingDayWhen;
   final CarePlan carePlan;
+  final int reqCount;
+
+  bool hasMeasurementAt(DateTime dateTime) {
+    if (dateTime.isBefore(whenEnd) && dateTime.isAfter(whenStart)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
 
 enum PlanWhenPeriod {

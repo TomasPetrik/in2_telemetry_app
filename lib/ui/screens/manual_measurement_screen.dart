@@ -10,11 +10,13 @@ import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/measurement_form.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
+import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 class ManualMeasurementScreen extends StatefulWidget {
   const ManualMeasurementScreen({
@@ -31,12 +33,22 @@ class ManualMeasurementScreen extends StatefulWidget {
       _ManualMeasurementScreenState();
 }
 
-class _ManualMeasurementScreenState extends State<ManualMeasurementScreen> {
+class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
+    with BottomSheetMixin {
   late MeasurementType dropdownValue;
+
+  late TextEditingController timeEditingController;
+  late DateTime measurementDateTime;
 
   @override
   void initState() {
     dropdownValue = widget.measurementType ?? MeasurementType.values.first;
+
+    final currentDateTime = DateTime.now();
+    timeEditingController = TextEditingController(
+      text: currentDateTime.toTimeOfDay().toString(),
+    );
+    measurementDateTime = currentDateTime;
     super.initState();
   }
 
@@ -99,14 +111,56 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen> {
                     Gaps.gap24,
                     measurementForm,
                     Gaps.gap24,
+                    Text(
+                      context.locale.manual_measurement_screen_measurement_time,
+                    ),
+                    Gaps.gap8,
+                    InkWell(
+                      onTap: () async {
+                        final newDateTime = await showRestrictedTimePicker(
+                          context: context,
+                          currentDateTime: DateTime.now(),
+                        );
+
+                        if (newDateTime != null) {
+                          measurementDateTime = newDateTime;
+                          timeEditingController.text =
+                              newDateTime.toTimeOfDay().toString();
+                        }
+                      },
+                      child: Stack(
+                        children: [
+                          TextField(
+                            enabled: false,
+                            controller: timeEditingController,
+                            style: ScaleTextStyles.text.apply(
+                              color: Theme.of(context).colorScheme.tertiary,
+                            ),
+                          ),
+                          Positioned(
+                            right: Dimensions.padding16,
+                            top: Dimensions.padding12,
+                            bottom: Dimensions.padding12,
+                            child: SvgPicture.asset(
+                              'assets/icons/icon_clock.svg',
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Gaps.gap24,
                     HighlightedElevatedButton(
                       label: context.locale.common_save,
                       buttonType: ButtonType.primary,
                       onPressed: () async {
                         final measurement = measurementForm.getMeasurement();
                         if (measurement != null) {
+                          final measurementWithTime = measurement.copyWith(
+                            measurementDateTime: measurementDateTime.toUtc(),
+                          );
                           await getIt<PendingResultsDbProvider>()
-                              .save(measurement);
+                              .save(measurementWithTime);
                           _goToMainAndSync();
                         }
                       },

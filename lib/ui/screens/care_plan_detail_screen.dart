@@ -5,7 +5,7 @@ import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
-import 'package:scalesoft_app/ui/widgets/fulfillment_evaluation_widget.dart';
+import 'package:scalesoft_app/ui/widgets/fullplan_evaluation_widget.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
 import 'package:scalesoft_app/ui/widgets/sliver_name_value_row.dart';
@@ -30,9 +30,9 @@ class CarePlanDetailScreen extends StatelessWidget {
                 MediaQuery.of(context).viewPadding.top + Constants.appBarHeight,
               ),
               const SliverGap(Dimensions.padding24),
-              if (carePlan.fulfillmentEvaluation != null)
-                FulfillmentEvaluationWidget(
-                  fulfillmentEvaluation: carePlan.fulfillmentEvaluation!,
+              if (carePlan.fullPlanEvaluation != null)
+                FullPlanEvaluationWidget(
+                  carePlan: carePlan,
                 ),
               const SliverGap(Dimensions.padding42),
               SliverPadding(

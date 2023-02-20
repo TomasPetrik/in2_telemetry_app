@@ -14,7 +14,6 @@ import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 @singleton
 class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
-  final List<MeasurementResult> _uncategorizedResults = [];
   final List<Measurement> _pendingResults = [];
   final List<CarePlan> _allCarePlans = [];
 
@@ -22,15 +21,13 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
     on<CarePlanInitializeEvent>((event, emit) async {
       _allCarePlans.clear();
       _allCarePlans.addAll(event.carePlans);
-      _uncategorizedResults.clear();
-      _uncategorizedResults.addAll(event.uncategorizedResults);
       _pendingResults.clear();
       _pendingResults.addAll(event.pendingResults ?? []);
 
-      final List<MeasurementResult> todayResults = MeasurementHelper.getResults(
-        _uncategorizedResults,
+      final List<MeasurementResult> todayResults =
+          MeasurementHelper.getOffilneResultsConverted(
         _pendingResults,
-        ResultsWhenPeriod.today,
+        [ResultsWhenPeriod.today],
         null,
       );
 
@@ -63,10 +60,10 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
     });
 
     on<TimePeriodChangeEvent>((event, emit) {
-      final List<MeasurementResult> todayResults = MeasurementHelper.getResults(
-        _uncategorizedResults,
+      final List<MeasurementResult> todayResults =
+          MeasurementHelper.getOffilneResultsConverted(
         _pendingResults,
-        ResultsWhenPeriod.today,
+        [ResultsWhenPeriod.today],
         state.measurementType,
       );
 
@@ -87,15 +84,16 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
           selectedWhenPeriod: event.whenPeriod,
           nextMeasurement: nextMeasurement.first,
           measurements: measurements,
+          results: todayResults,
         ),
       );
     });
 
     on<CurrentPlansChangeEvent>((event, emit) {
-      final List<MeasurementResult> todayResults = MeasurementHelper.getResults(
-        _uncategorizedResults,
+      final List<MeasurementResult> todayResults =
+          MeasurementHelper.getOffilneResultsConverted(
         _pendingResults,
-        ResultsWhenPeriod.today,
+        [ResultsWhenPeriod.today],
         state.measurementType,
       );
 
@@ -126,6 +124,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
           nextMeasurement: nextMeasurement.first,
           measurements: measurements,
           measurementType: event.measurementType,
+          results: todayResults,
         ),
       );
     });

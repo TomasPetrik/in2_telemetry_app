@@ -34,7 +34,7 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
           Gaps.gap16,
           SvgPicture.asset(
             'assets/icons/icon_wave_pulse.svg',
-            color: mResult.wasMeasured == false
+            color: mResult.evaluationItem?.wasMeasured() == false
                 ? Theme.of(context).colorScheme.error
                 : Theme.of(context).colorScheme.onTertiary,
           ),
@@ -50,7 +50,7 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                   color: Theme.of(context).colorScheme.onPrimary,
                 ),
               ),
-              if (mResult.wasMeasured == false &&
+              if (mResult.evaluationItem?.wasMeasured() == false &&
                   mResult.measurementFinishDateTime != null) ...[
                 Gaps.gap6,
                 Text(
@@ -71,7 +71,7 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
               ]
             ],
           ),
-          if (mResult.wasMeasured == false) ...[
+          if (mResult.evaluationItem?.wasMeasured() == false) ...[
             const Spacer(),
             Text(
               context.locale.common_not_measured,

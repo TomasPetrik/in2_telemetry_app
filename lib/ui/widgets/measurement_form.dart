@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/measurement/composed_int_value.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
-import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/scale_text_form_field.dart';
-import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 final formKey = GlobalKey<FormState>();
 final List<GlobalKey<FormState>> fieldGlobalKeys = [
   GlobalKey<FormState>(),
-  GlobalKey<FormState>()
+  GlobalKey<FormState>(),
 ];
 
-class MeasurementForm extends StatelessWidget with BottomSheetMixin {
+class MeasurementForm extends StatelessWidget {
   MeasurementForm({
     super.key,
     required this.measurementType,
@@ -28,12 +25,10 @@ class MeasurementForm extends StatelessWidget with BottomSheetMixin {
 
   double? _value1;
   double? _value2;
-  DateTime? _measurementDateTime;
 
   Measurement? getMeasurement() {
     if (formKey.currentState?.validate() == true) {
       Measurement? measurement = Measurement(
-        measurementDateTime: _measurementDateTime,
         patientMuid: userId,
         measurementType: measurementType,
       );
@@ -88,12 +83,6 @@ class MeasurementForm extends StatelessWidget with BottomSheetMixin {
     final measurementConfig = Constants.supportedMeasurements[measurementType];
 
     if (measurementConfig == null) return const SizedBox.shrink();
-
-    final currentDateTime = DateTime.now();
-    TextEditingController timeEditingController = TextEditingController(
-      text: currentDateTime.toTimeOfDay().toString(),
-    );
-    _measurementDateTime = currentDateTime.toUtc();
 
     return Form(
       key: formKey,
@@ -185,44 +174,6 @@ class MeasurementForm extends StatelessWidget with BottomSheetMixin {
                   ),
                 ),
               ]
-            ],
-          ),
-          Gaps.gap24,
-          Text(
-            context.locale.manual_measurement_screen_measurement_time,
-          ),
-          Gaps.gap8,
-          Stack(
-            children: [
-              TextField(
-                enabled: false,
-                controller: timeEditingController,
-                style: ScaleTextStyles.text
-                    .apply(color: Theme.of(context).colorScheme.tertiary),
-              ),
-              Positioned(
-                right: Dimensions.padding16,
-                top: Dimensions.padding12,
-                bottom: Dimensions.padding12,
-                child: InkWell(
-                  onTap: () async {
-                    final newDateTime = await showRestrictedTimePicker(
-                      context: context,
-                      currentDateTime: DateTime.now(),
-                    );
-
-                    if (newDateTime != null) {
-                      _measurementDateTime = newDateTime.toUtc();
-                      timeEditingController.text =
-                          newDateTime.toTimeOfDay().toString();
-                    }
-                  },
-                  child: SvgPicture.asset(
-                    'assets/icons/icon_clock.svg',
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-              )
             ],
           ),
         ],

@@ -33,7 +33,7 @@ class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
                   carePlans: carePlans,
                   whenPeriod: whenPeriod,
                   measurementResults: uncategorizedResults,
-                  pendingResults: _pendingResults,
+                  offlineResults: _pendingResults,
                   measurementType: null,
                 );
 
@@ -48,19 +48,19 @@ class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
         },
         curentPlansChange: (final measurementType) {
           final carePlans = measurementType == null
-          ? _allCarePlans
-          : _allCarePlans
-              .where(
-                (carePlan) =>
-                    carePlan.activity.measurementType == measurementType,
-              )
-              .toList();
+              ? _allCarePlans
+              : _allCarePlans
+                  .where(
+                    (carePlan) =>
+                        carePlan.activity.measurementType == measurementType,
+                  )
+                  .toList();
 
           final results = ResultsHelper.getResults(
             carePlans: carePlans,
             whenPeriod: state.selectedWhenPeriod!,
             measurementResults: state.uncategorizedResults!,
-            pendingResults: _pendingResults,
+            offlineResults: _pendingResults,
             measurementType: measurementType,
           );
 
@@ -77,7 +77,7 @@ class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
             carePlans: state.currentCarePlans!,
             whenPeriod: whenPeriod,
             measurementResults: state.uncategorizedResults!,
-            pendingResults: _pendingResults,
+            offlineResults: _pendingResults,
             measurementType: state.measurementType,
           );
 

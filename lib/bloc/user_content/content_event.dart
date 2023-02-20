@@ -13,6 +13,13 @@ class CheckLastLoggedUserContentEvent extends ContentEvent {
   List<Object?> get props => [];
 }
 
+class SwitchMultiUserContentEvent extends ContentEvent {
+  const SwitchMultiUserContentEvent();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class SwitchUserContentEvent extends ContentEvent {
   final UserAccount userAccount;
 

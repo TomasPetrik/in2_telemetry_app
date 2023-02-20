@@ -3,6 +3,7 @@ import 'package:scalesoft_app/api/client/care_plan_api_client.dart';
 import 'package:scalesoft_app/api/dto/active_care_plans_response.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
+import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaulation_aggregated.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/model/user_account.dart';
@@ -55,15 +56,15 @@ class CarePlansRepository {
     return results;
   }
 
-  Future<FulfillmentEvaluation> loadFulFillmentEvaluation({
+  Future<FulfillmentEvaluationAggregated> loadFullPlanEvaluation({
     required UserAccount userAccount,
     required int carePlanVersionId,
   }) async {
-    final items = await carePlanApiClient.loadFullPlanEvaluation(
+    final fulfillmentPlan = await carePlanApiClient.loadFullPlanEvaluation(
       userAccount.hospital!.authData.baseUrl,
       carePlanVersionId,
     );
-    return FulfillmentEvaluation(items);
+    return fulfillmentPlan;
   }
 
   Future<FulfillmentEvaluation> loadPartPlanEvaluation({

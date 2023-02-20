@@ -28,88 +28,90 @@ class UserSelectionDialog extends StatelessWidget {
           topRight: Radius.circular(RadiusSize.radius16),
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Gaps.gap34,
-          Padding(
-            padding: Paddings.horizontal16,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Icon(
-                    Icons.arrow_back,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-                Gaps.gap20,
-                Expanded(
-                  child: Text(
-                    context.locale
-                        .user_selection_dialog_measurement_in_hospital(
-                      hospital.title,
-                    ),
-                    style: ScaleTextStyles.textAccent.apply(
-                      color: Theme.of(context).colorScheme.onSecondary,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Gaps.gap34,
+            Padding(
+              padding: Paddings.horizontal16,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Icon(
+                      Icons.arrow_back,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
-                ),
-                InkWell(
-                  onTap: () {
+                  Gaps.gap20,
+                  Expanded(
+                    child: Text(
+                      context.locale
+                          .user_selection_dialog_measurement_in_hospital(
+                        hospital.title,
+                      ),
+                      style: ScaleTextStyles.textAccent.apply(
+                        color: Theme.of(context).colorScheme.onSecondary,
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop(
+                        UserSelection(action: SwitchUserAction.addUserAccount),
+                      );
+                    },
+                    child: Icon(
+                      Icons.add,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Gaps.gap24,
+            ListView.separated(
+              padding: EdgeInsets.zero,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                final userAccount = userAccounts[index];
+                return UserItemCompound(
+                  userAccount: userAccount,
+                  userItemCompoundType: UserItemCompoundType.bottomSheet,
+                  onUserSelected: (userAccount) {
                     Navigator.of(context).pop(
-                      UserSelection(action: SwitchUserAction.addUserAccount),
+                      UserSelection(
+                        action: SwitchUserAction.selectedUser,
+                        selectedUser: userAccount,
+                      ),
                     );
                   },
-                  child: Icon(
-                    Icons.add,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                )
-              ],
-            ),
-          ),
-          Gaps.gap24,
-          ListView.separated(
-            padding: EdgeInsets.zero,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              final userAccount = userAccounts[index];
-              return UserItemCompound(
-                userAccount: userAccount,
-                userItemCompoundType: UserItemCompoundType.bottomSheet,
-                onUserSelected: (userAccount) {
-                  Navigator.of(context).pop(
-                    UserSelection(
-                      action: SwitchUserAction.selectedUser,
-                      selectedUser: userAccount,
-                    ),
-                  );
-                },
-              );
-            },
-            separatorBuilder: (_, __) {
-              return Gaps.gap24;
-            },
-            itemCount: userAccounts.length,
-          ),
-          Gaps.gap24,
-          Padding(
-            padding: Paddings.horizontal16,
-            child: HighlightedElevatedButton(
-              label: context.locale.common_close,
-              buttonType: ButtonType.secondary,
-              onPressed: () {
-                Navigator.of(context).pop();
+                );
               },
+              separatorBuilder: (_, __) {
+                return Gaps.gap24;
+              },
+              itemCount: userAccounts.length,
             ),
-          ),
-          Gaps.gap48,
-        ],
+            Gaps.gap24,
+            Padding(
+              padding: Paddings.horizontal16,
+              child: HighlightedElevatedButton(
+                label: context.locale.common_close,
+                buttonType: ButtonType.secondary,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+            Gaps.gap48,
+          ],
+        ),
       ),
     );
   }

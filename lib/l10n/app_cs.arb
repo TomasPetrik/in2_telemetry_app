@@ -28,6 +28,16 @@
   "common_wrong_value": "Nesprávna hodnota",
   "common_not_measured": "Nenaměřeno",
   "common_do_sync": "Synchronizovat",
+  "common_all_accounts": "Všechny účty",
+  "common_plan_fulfillment": "Plnění plánu",
+  "common_overall": "Celkem",
+  "common_when_day_name": "{whenDayName, select, today{dnešek} yesterday{včerejšek} other{zvolené období}}",
+  "@common_when_day_name": {
+    "description": "When day names",
+    "placeholders": {
+      "whenDayName": {}
+    }
+  },
   "common_measurement_times": "{measurementTime, select, yesterday{Včera} today{Dnes} next10{Nejbližší} tomorrow{Zítra} other{Jiný}}",
   "@common_measurement_times": {
     "description": "Measurement times",
@@ -35,6 +45,8 @@
       "measurementTime": {}
     }
   },
+  "server_error_title": "Ooops!",
+  "server_error_desc": "Zde je něco v nepořádku. Zkuste akci opakovat později.",
   "not_found_screen_title": "Neznama obrazovka",
   "common_measurement_types": "{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace Kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} other{Jiný}}",
   "@common_measurement_types": {
@@ -298,6 +310,14 @@
   "@results_screen_no_results": {
     "placeholders": {
       "name": {
+        "type": "String"
+      }
+    }
+  },
+  "results_screen_no_results_at_period": "Pro {whenName} nejsou dostupné žádné výsledky.",
+  "@results_screen_no_results_at": {
+    "placeholders": {
+      "whenName": {
         "type": "String"
       }
     }

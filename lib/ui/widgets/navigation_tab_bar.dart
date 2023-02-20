@@ -13,7 +13,7 @@ class NavigationTabBar extends StatelessWidget {
         assert(currentTab < tabs.length),
         super(key: key);
 
-  final List<NavigationBarTabItem> tabs;
+  final List<NavigationTabBarItem> tabs;
   final int currentTab;
   final Function onTabChanged;
 

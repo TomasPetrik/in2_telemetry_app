@@ -1,8 +1,10 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/dto/measurement/composed_double_value.dart';
 import 'package:scalesoft_app/api/dto/measurement/device.dart';
+import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 part 'measurement_result.freezed.dart';
 part 'measurement_result.g.dart';
@@ -13,7 +15,7 @@ class MeasurementResult with _$MeasurementResult {
 
   @HiveType(typeId: 30, adapterName: 'MeasurementResultAdapter')
   factory MeasurementResult({
-    @JsonKey(fromJson: _fromJson)
+    @JsonKey(fromJson: toLocalDate)
     @HiveField(0)
         required DateTime measurementDateTime,
     @HiveField(1) double? value,
@@ -21,7 +23,7 @@ class MeasurementResult with _$MeasurementResult {
     @HiveField(3) Device? sourceDevice,
     @HiveField(4) bool? isVerified,
     @JsonKey(name: 'type') @HiveField(5) MeasurementType? measurementType,
-    @JsonKey(ignore: true) @HiveField(6) bool? wasMeasured,
+    @JsonKey(ignore: true) @HiveField(6) FulfillmentEvaluationItem? evaluationItem,
     @JsonKey(ignore: true) @HiveField(7) DateTime? measurementFinishDateTime,
     @JsonKey(ignore: true) @HiveField(8) String? userId,
   }) = _MeasurementResult;
@@ -31,9 +33,4 @@ class MeasurementResult with _$MeasurementResult {
 
   @override
   String toString() => toJson().toString();
-}
-
-DateTime _fromJson(String dtUtc) {
-  final dtLocal = DateTime.parse(dtUtc).toLocal();
-  return dtLocal;
 }

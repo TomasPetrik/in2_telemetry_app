@@ -16,7 +16,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     on<CheckLastLoggedUserContentEvent>(_checkLastLoggedUserContentEvent);
     on<OnUserAddedContentEvent>(_onUserAddedContentEvent);
     on<SwitchUserContentEvent>(_switchUserContentEvent);
-    on<SwitchAllUsersContentEvent>(_switchAllUsersContentEvent);
+    on<SwitchMultiUserContentEvent>(_switchMultiUserContentEvent);
     on<SwitchNoUserContentEvent>(_switchNoUserContentEvent);
     on<OnAppearanceChangedContentEvent>(_onAppearanceChangedContentEvent);
   }
@@ -25,6 +25,9 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     CheckLastLoggedUserContentEvent event,
     Emitter<ContentState> emit,
   ) async {
+    //TODO.. _session.isMultiUser should be kept in memory 
+    //and any switch content should re-write this _session.isMultiUser value
+
     final userAccount = _accountDbProvider.getLast();
     if (userAccount == null) {
       emit(const ContentState.unauthenticated());
@@ -43,6 +46,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     SwitchUserContentEvent event,
     Emitter<ContentState> emit,
   ) async {
+    _session.isMultiUser = false;
     late UserAccount parentAccount;
 
     if (event.userAccount.parentId?.isNotEmpty == true) {
@@ -62,7 +66,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
 
     _accountDbProvider.save(parentAccount);
 
-    //todo.. try to load care plans,
+    //todo.. try to re-load care plans automatically,
     //if is in offline mode, then just switch user
     /*
     final activePlans = await _carePlansRepository.loadActiveCarePlans(
@@ -84,10 +88,11 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     emit(ContentState.onUserAdded(event.userAccount));
   }
 
-  Future<void> _switchAllUsersContentEvent(
-    SwitchAllUsersContentEvent event,
+  Future<void> _switchMultiUserContentEvent(
+    SwitchMultiUserContentEvent event,
     Emitter<ContentState> emit,
   ) async {
+    _session.isMultiUser = true;
     emit(const ContentState.activeAllUsers());
   }
 
@@ -95,6 +100,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     SwitchNoUserContentEvent event,
     Emitter<ContentState> emit,
   ) async {
+    _session.isMultiUser = false;
     emit(const ContentState.unauthenticated());
   }
 

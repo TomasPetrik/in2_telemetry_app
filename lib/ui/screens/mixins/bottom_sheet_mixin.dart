@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/ui/dialogs/confimation_dialog.dart';
+import 'package:scalesoft_app/ui/dialogs/bottom_dialog.dart';
 import 'package:scalesoft_app/ui/dialogs/device_selector_dialog.dart';
 import 'package:scalesoft_app/ui/dialogs/hospital_selection_dialog.dart';
 import 'package:scalesoft_app/ui/dialogs/planned_measurement_time_dialog.dart';
@@ -35,6 +35,18 @@ mixin BottomSheetMixin {
     return result;
   }
 
+  Future<void> showServerError(BuildContext context) async {
+    await showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return BottomDialog.serverError(context: context);
+      },
+    );
+  }
+
   Future<bool?> showAccounRemovalConfirmation({
     required final BuildContext context,
     required final String accountName,
@@ -45,7 +57,7 @@ mixin BottomSheetMixin {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
-        return ConfirmationDialog.accountRemoval(
+        return BottomDialog.accountConfirmationRemoval(
           context: context,
           accountName: accountName,
         );
@@ -120,6 +132,7 @@ mixin BottomSheetMixin {
 
   Future<SwitchUserResult?> switchUser({
     required final BuildContext context,
+    final bool? supportMultiUser,
   }) async {
     final userHospitalSelectionResult =
         await showModalBottomSheet<UserSelection>(
@@ -128,11 +141,16 @@ mixin BottomSheetMixin {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
-        return const UserHospitalSelectionDialog();
+        return UserHospitalSelectionDialog(
+          supportMultiUser: supportMultiUser,
+        );
       },
     );
 
     if (userHospitalSelectionResult?.action ==
+        SwitchUserAction.selectedMultiUser) {
+      return SwitchUserResult(activeMultiUser: true);
+    } else if (userHospitalSelectionResult?.action ==
         SwitchUserAction.addUserAccount) {
       return SwitchUserResult(addNewUser: true);
     } else if (userHospitalSelectionResult?.action ==
@@ -224,15 +242,18 @@ enum SwitchUserAction {
   addUserAccount,
   selectedUser,
   selectedHospital,
+  selectedMultiUser,
 }
 
 class SwitchUserResult {
   UserAccount? selectedUser;
   bool? addNewUser;
+  bool? activeMultiUser;
 
   SwitchUserResult({
     this.selectedUser,
     this.addNewUser,
+    this.activeMultiUser,
   });
 }
 

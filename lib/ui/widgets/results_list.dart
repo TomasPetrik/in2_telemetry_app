@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/widgets/info_placeholder.dart';
 import 'package:scalesoft_app/ui/widgets/result_item.dart';
@@ -12,10 +13,12 @@ class ResultsList extends StatelessWidget {
     super.key,
     required this.mResults,
     required this.userAccount,
+    required this.whenPeriod,
   });
 
   final List<MeasurementResult> mResults;
   final UserAccount userAccount;
+  final ResultsWhenPeriod whenPeriod;
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +30,9 @@ class ResultsList extends StatelessWidget {
                 'assets/icons/icon_chart_pie_simple_big.svg',
                 color: Theme.of(context).colorScheme.tertiary,
               ),
-              label: context.locale
-                  .results_screen_no_results(userAccount.user.fullName),
+              label: context.locale.results_screen_no_results_at_period(
+                context.locale.common_when_day_name(whenPeriod.name),
+              ),
             ),
           )
         : SliverList(

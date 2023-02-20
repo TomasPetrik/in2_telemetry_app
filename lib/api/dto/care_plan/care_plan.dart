@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scalesoft_app/api/dto/care_plan/author.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
+import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaulation_aggregated.dart';
 import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
@@ -21,16 +22,19 @@ class CarePlan with _$CarePlan {
     @HiveField(3) CarePlanActivity activity,
     @HiveField(4) int versionId,
     @HiveField(5) Author author,
-    @HiveField(6) DateTime scheduledStart,
-    @HiveField(7) DateTime? scheduledEnd,
+    @JsonKey(fromJson: toLocalDate) @HiveField(6) DateTime scheduledStart,
+    @JsonKey(fromJson: toLocalDateNullable)
+    @HiveField(7)
+        DateTime? scheduledEnd,
     @HiveField(8) int frequency,
     @HiveField(9) int period,
     @HiveField(10) TimeUnit periodUnit,
     @HiveField(11) List<WeekDay>? weekDays,
     @HiveField(12) List<TimingDayWhen> timingDayWhen,
-    @HiveField(13) FulfillmentEvaluation? fulfillmentEvaluation,
-    @HiveField(14) bool? wasChanged,
-    @HiveField(15) String? userId,
+    @HiveField(13) FulfillmentEvaluationAggregated? fullPlanEvaluation,
+    @HiveField(14) FulfillmentEvaluation? lastTwoDaysEvaluation,
+    @HiveField(15) bool? wasChanged,
+    @HiveField(16) String? userId,
   ) = _CarePlan;
 
   factory CarePlan.fromJson(Map<String, dynamic> json) =>
@@ -39,9 +43,26 @@ class CarePlan with _$CarePlan {
   @override
   String toString() => toJson().toString();
 
+  bool get fihisned => scheduledEnd?.isBefore(DateTime.now()) == true;
+
+  bool hasMeasurementAt(DateTime dateTime) {
+    final currentWeekDay = dateTime.currentWeekDay();
+    if ((periodUnit == TimeUnit.day && weekDays?.isEmpty == true) ||
+        weekDays?.contains(currentWeekDay) == true) {
+      if (timingDayWhen
+          .any((when) => when.isInInterval(dateTime.toTimeOfDay()))) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
   List<TimingDayWhen> getYesterdayMeasurements() {
-    final now = DateTime.now();
-    final currentWeekDay = now.currentWeekDay();
+    final dtYesterday = DateTime.now().subtract(const Duration(days: 1));
+    final currentWeekDay = dtYesterday.currentWeekDay();
 
     if ((periodUnit == TimeUnit.day && weekDays?.isEmpty == true) ||
         weekDays?.contains(currentWeekDay) == true) {
@@ -84,6 +105,18 @@ class CarePlan with _$CarePlan {
   bool hasMeasurementsToday() {
     final now = DateTime.now();
     final currentWeekDay = now.currentWeekDay();
+
+    if ((periodUnit == TimeUnit.day && weekDays?.isEmpty == true) ||
+        weekDays?.contains(currentWeekDay) == true) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  bool hasMeasurementsYesterday() {
+    final dtYesterday = DateTime.now().subtract(const Duration(days: 1));
+    final currentWeekDay = dtYesterday.currentWeekDay();
 
     if ((periodUnit == TimeUnit.day && weekDays?.isEmpty == true) ||
         weekDays?.contains(currentWeekDay) == true) {

@@ -6,8 +6,8 @@ import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/widgets/fixed_item_height_delegate.dart';
 import 'package:scalesoft_app/ui/widgets/navigation_tab_bar.dart';
 
-class NavigationBarTabItem {
-  NavigationBarTabItem({
+class NavigationTabBarItem {
+  NavigationTabBarItem({
     required this.label,
     required this.slivers,
     this.bottomSlivers,
@@ -27,14 +27,14 @@ class NavigationScreen extends StatefulWidget {
     required this.tabs,
     this.topSlivers = const [],
     this.currentTab = 0,
-    required this.navigationHeader,
+    this.navigationHeader,
     this.onTabSelected,
     this.onRefresh,
   })  : assert(tabs.isNotEmpty),
         assert(currentTab < tabs.length),
         super(key: key);
 
-  final List<NavigationBarTabItem> tabs;
+  final List<NavigationTabBarItem> tabs;
   final List<Widget> topSlivers;
   final int currentTab;
   final Widget? navigationHeader;
@@ -139,7 +139,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                                   child: widget.navigationHeader!,
                                 ),
                               ],
-                              if (widget.tabs.length > 1) ...[
+                              if (widget.tabs.isNotEmpty) ...[
                                 Gaps.gap26,
                                 Padding(
                                   padding: Paddings.horizontal16,
@@ -164,7 +164,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                         ],
                       ),
                       fixedHeight: Dimensions.padding16 +
-                          (widget.tabs.length > 1
+                          (widget.tabs.isNotEmpty
                               ? Dimensions.padding26 +
                                   Constants.navigationTabBarHeight
                               : 0) +
@@ -175,7 +175,10 @@ class _NavigationScreenState extends State<NavigationScreen> {
                   ...widget.tabs[currentTab].slivers,
                   if (widget.tabs[currentTab].bottomSlivers?.isNotEmpty == true)
                     ...widget.tabs[currentTab].bottomSlivers!,
-                  // const SliverFillRemaining(),
+                  const SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: SizedBox.shrink(),
+                  ),
                   const SliverGap(Dimensions.padding16),
                 ],
               ),

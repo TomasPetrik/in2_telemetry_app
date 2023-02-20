@@ -6,6 +6,8 @@ part 'timing_day_when.g.dart';
 
 @freezed
 class TimingDayWhen with _$TimingDayWhen {
+  TimingDayWhen._();
+
   @HiveType(typeId: 17, adapterName: 'TimingDayWhenAdapter')
   factory TimingDayWhen(
     @HiveField(0) TimingDayWhenType type,
@@ -20,6 +22,14 @@ class TimingDayWhen with _$TimingDayWhen {
 
   @override
   String toString() => toJson().toString();
+
+  bool isInInterval(TimeOfDay exactTime) {
+    if (exactTime.isBefore(end) && exactTime.isAfter(start)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
 
 @HiveType(typeId: 18)
@@ -43,8 +53,26 @@ class TimeOfDay extends HiveObject {
     return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
   }
 
+  bool isBefore(TimeOfDay exactTime) {
+    final todayDayTime = todayDateTime();
+    final cmpTime = exactTime.todayDateTime();
+    return todayDayTime.isBefore(cmpTime);
+  }
+
+  bool isAfter(TimeOfDay exactTime) {
+    final todayDayTime = todayDateTime();
+    final cmpTime = exactTime.todayDateTime();
+    return todayDayTime.isAfter(cmpTime);
+  }
+
   DateTime todayDateTime() {
-    return DateTime.now().copyWith(hour: hour, minute: minute, second: second);
+    return DateTime.now().copyWith(
+      hour: hour,
+      minute: minute,
+      second: second,
+      millisecond: 0,
+      microsecond: 0,
+    );
   }
 
   DateTime tomorrowDateTime() {
@@ -64,6 +92,8 @@ class TimeOfDay extends HiveObject {
       hour: hour,
       minute: minute,
       second: second,
+      millisecond: 0,
+      microsecond: 0,
     );
   }
 }

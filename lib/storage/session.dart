@@ -8,6 +8,7 @@ import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
+import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 
 @singleton
 class Session {
@@ -22,7 +23,11 @@ class Session {
 
   Session(this._accountDbProvider, this._pendingResultsDbProvider);
 
-  List<UserAccount> getCurrentUsers() {
+  bool supportMultiUser() {
+    return _accountDbProvider.getAll().length > 1;
+  }
+
+  List<UserAccount> getSessionAccounts() {
     if (isMultiUser == true) {
       return _accountDbProvider.getAll().toList();
     } else {
@@ -30,8 +35,34 @@ class Session {
     }
   }
 
+  List<CarePlan> getActiveCarePlans() {
+    List<CarePlan> carePlans = [];
+    for (final userAccount in getSessionAccounts()) {
+      for (final carePlan in userAccount.carePlans!) {
+        if (carePlan.fihisned == false) {
+          carePlans.add(carePlan);
+        }
+      }
+    }
+
+    return carePlans;
+  }
+
+  List<Measurement> getPendingResults() {
+    List<Measurement> pendingResults = [];
+    for (final userAccount in getSessionAccounts()) {
+      final userPendingResults =
+          _pendingResultsDbProvider.getPerUser(userAccount.user.muid);
+      if (userPendingResults != null && userPendingResults.isNotEmpty == true) {
+        pendingResults.addAll(userPendingResults);
+      }
+    }
+
+    return pendingResults;
+  }
+
   SyncState detectSyncState() {
-    List<UserAccount> userAccounts = getCurrentUsers();
+    List<UserAccount> userAccounts = getSessionAccounts();
 
     //1. check if any user session was expired
     final expiredAccount = userAccounts

@@ -142,6 +142,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
 
       await _syncService.loadUserData(userAccount);
+      //syncResults() in case if user has some offline results not synced due session expiration
+      await _syncService.syncResults();
       await _accountDbProvider.save(userAccount);
       _session.userAccount = userAccount;
       emit(AuthState.userVerified(userAccount: userAccount));

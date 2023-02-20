@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 part 'fulfillment_evaluation.freezed.dart';
 part 'fulfillment_evaluation.g.dart';
@@ -22,10 +23,12 @@ class FulfillmentEvaluation with _$FulfillmentEvaluation {
 
 @freezed
 class FulfillmentEvaluationItem with _$FulfillmentEvaluationItem {
+  FulfillmentEvaluationItem._();
+
   @HiveType(typeId: 22, adapterName: 'FulfillmentEvaluationItemAdapter')
   factory FulfillmentEvaluationItem(
-    @HiveField(0) DateTime start,
-    @HiveField(1) DateTime end,
+    @JsonKey(fromJson: toLocalDate) @HiveField(0) DateTime start,
+    @JsonKey(fromJson: toLocalDate) @HiveField(1) DateTime end,
     @HiveField(2) int requiredMeasurementCount,
     @HiveField(3) int actualMeasurementCount,
   ) = _FulfillmentEvaluationItem;
@@ -35,4 +38,6 @@ class FulfillmentEvaluationItem with _$FulfillmentEvaluationItem {
 
   @override
   String toString() => toJson().toString();
+
+  bool wasMeasured() => actualMeasurementCount >= requiredMeasurementCount;
 }

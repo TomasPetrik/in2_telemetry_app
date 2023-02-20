@@ -1,4 +1,5 @@
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/dto/measurement/composed_double_value.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
@@ -7,11 +8,28 @@ import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 class MeasurementHelper {
-  static bool wasMeasured(
+  static FulfillmentEvaluationItem? getEvaluation(
     PlannedMeasurement plannedMeasurement,
-    List<MeasurementResult> measurementResults,
+    List<MeasurementResult> offlineResults,
   ) {
-    final measuredTimesSet = measurementResults.where(
+    //check if was measured
+    final evaluationItems =
+        plannedMeasurement.carePlan.lastTwoDaysEvaluation?.items;
+    if (evaluationItems?.isNotEmpty == true) {
+      for (final measurementEvalutionItem in evaluationItems!) {
+        if (plannedMeasurement.whenStart
+                .isAtSameMomentAs(measurementEvalutionItem.start) &&
+            (measurementEvalutionItem.end
+                    .isBefore(plannedMeasurement.whenEnd) ||
+                plannedMeasurement.whenEnd
+                    .isAtSameMomentAs(measurementEvalutionItem.end))) {
+          return measurementEvalutionItem;
+        }
+      }
+    }
+
+    //check if was measured offline
+    final measuredTimesSet = offlineResults.where(
       (mResult) {
         return mResult.measurementType ==
                 plannedMeasurement.carePlan.activity.measurementType &&
@@ -19,39 +37,63 @@ class MeasurementHelper {
       },
     ).map((mResult) => mResult.measurementDateTime);
 
+    int matchedResultCount = 0;
     for (final measuredTime in measuredTimesSet) {
       if (plannedMeasurement.whenStart.isBefore(measuredTime) &&
           plannedMeasurement.whenEnd.isAfter(measuredTime)) {
-        return true;
+        matchedResultCount += 1;
       }
     }
 
-    return false;
+    return FulfillmentEvaluationItem(
+      plannedMeasurement.whenStart,
+      plannedMeasurement.whenEnd,
+      plannedMeasurement.reqCount,
+      matchedResultCount,
+    );
   }
 
   static List<MeasurementResult> getResults(
     List<MeasurementResult> measurementResults,
     List<Measurement> pendingResults,
-    ResultsWhenPeriod whenPeriod,
+    List<ResultsWhenPeriod> whenPeriods,
     MeasurementType? measurementType,
   ) {
     List<MeasurementResult> results = measurementResults.where((mResult) {
       return ((measurementType == null ||
               (measurementType == mResult.measurementType)) &&
-          ((whenPeriod == ResultsWhenPeriod.today &&
+          ((whenPeriods.contains(ResultsWhenPeriod.today) &&
                   mResult.measurementDateTime.isToday()) ||
-              (whenPeriod == ResultsWhenPeriod.yesterday &&
+              (whenPeriods.contains(ResultsWhenPeriod.yesterday) &&
                   mResult.measurementDateTime.wasYesterday())));
     }).toList();
 
     //include not synced results
-    final filteredPendingResults = pendingResults
+
+    final filteredPendingResults = getOffilneResultsConverted(
+      pendingResults,
+      whenPeriods,
+      measurementType,
+    );
+
+    results.addAll(filteredPendingResults);
+
+    return results;
+  }
+
+  static List<MeasurementResult> getOffilneResultsConverted(
+    List<Measurement> pendingResults,
+    List<ResultsWhenPeriod> whenPeriods,
+    MeasurementType? measurementType,
+  ) {
+    //offline (not synced results)
+    final measurementResults = pendingResults
         .where((pResult) {
           return ((measurementType == null ||
                   (measurementType == pResult.measurementType)) &&
-              ((whenPeriod == ResultsWhenPeriod.today &&
+              ((whenPeriods.contains(ResultsWhenPeriod.today) &&
                       pResult.measurementDateTime?.isToday() == true) ||
-                  (whenPeriod == ResultsWhenPeriod.yesterday &&
+                  (whenPeriods.contains(ResultsWhenPeriod.yesterday) &&
                       pResult.measurementDateTime?.wasYesterday() == true)));
         })
         .map(
@@ -60,15 +102,13 @@ class MeasurementHelper {
             value: getValueByMeasurement(pResult),
             composedValue: getComposedDoubleValue(pResult),
             sourceDevice: pResult.sourceDeviceWithMetadata?.sourceDevice,
-            wasMeasured: true,
             measurementType: pResult.measurementType,
+            userId: pResult.patientMuid,
           ),
         )
         .toList();
 
-    results.addAll(filteredPendingResults);
-
-    return results;
+    return measurementResults;
   }
 
   static ComposedDoubleValue? getComposedDoubleValue(Measurement measurement) {

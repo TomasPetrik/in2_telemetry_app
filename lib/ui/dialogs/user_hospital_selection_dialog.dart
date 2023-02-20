@@ -12,7 +12,10 @@ import 'package:scalesoft_app/ui/widgets/settings_item.dart';
 class UserHospitalSelectionDialog extends StatelessWidget {
   const UserHospitalSelectionDialog({
     super.key,
+    this.supportMultiUser,
   });
+
+  final bool? supportMultiUser;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +61,32 @@ class UserHospitalSelectionDialog extends StatelessWidget {
               ],
             ),
           ),
+          if (supportMultiUser == true) ...[
+            Gaps.gap24,
+            Padding(
+              padding: Paddings.horizontal16,
+              child: SettingsItem(
+                label: context.locale.common_all_accounts,
+                subLabel: '${hospitalUserEntries.first.value[0].user.fullName}'
+                    ' ${hospitalUserEntries.first.value.length > 1 ? context.locale.common_plus_n_others(hospitalUserEntries.first.value.length - 1) : ''}',
+                iconWidget: Padding(
+                  padding: Paddings.all8,
+                  child: SvgPicture.asset(
+                    'assets/icons/icon_hospitals.svg',
+                    color: Theme.of(context).hintColor,
+                  ),
+                ),
+                onTap: () {
+                  Navigator.of(context).pop(
+                    UserSelection(
+                      action: SwitchUserAction.selectedMultiUser,
+                    ),
+                  );
+                },
+                hasNavigationIcon: false,
+              ),
+            ),
+          ],
           Gaps.gap24,
           ListView.separated(
             padding: EdgeInsets.zero,

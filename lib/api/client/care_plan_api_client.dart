@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:scalesoft_app/api/dto/active_care_plans_response.dart';
 import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
+import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaulation_aggregated.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
@@ -36,7 +37,15 @@ abstract class CarePlanApiClient {
   @GET(
     '{apiUrl}/patient/me/care-plan/version/{carePlanVersionId}/fulfillment-evaluation',
   )
-  Future<List<FulfillmentEvaluationItem>> loadFullPlanEvaluation(
+  Future<List<FulfillmentEvaluationItem>> loadFullPlanEvaluationIntervalls(
+    @Path('apiUrl') String apiUrl,
+    @Path('carePlanVersionId') int carePlanVersionId,
+  );
+
+  @GET(
+    '{apiUrl}/patient/me/care-plan/version/{carePlanVersionId}/fulfillment-evaluation-aggregated',
+  )
+  Future<FulfillmentEvaluationAggregated> loadFullPlanEvaluation(
     @Path('apiUrl') String apiUrl,
     @Path('carePlanVersionId') int carePlanVersionId,
   );
@@ -50,6 +59,8 @@ abstract class CarePlanApiClient {
     @Path('from') String fromDate,
     @Path('to') String toDate,
   );
+
+  
 
   @POST('{apiUrl}/patient/manual-measurement')
   Future<void> sendManualMeasurement(

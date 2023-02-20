@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
+import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
@@ -19,6 +20,7 @@ class MeasurementsList extends StatelessWidget {
     required this.measurements,
     required this.nextMeasurement,
     required this.planWhenPeriod,
+    required this.results,
   });
 
   final PlanWhenPeriod whenPeriod;
@@ -26,6 +28,7 @@ class MeasurementsList extends StatelessWidget {
   final List<PlannedMeasurement> measurements;
   final PlannedMeasurement nextMeasurement;
   final PlanWhenPeriod planWhenPeriod;
+  final List<MeasurementResult> results;
 
   MeasurementNeed getMeasurementNeed(PlannedMeasurement measurement) {
     final dtNow = DateTime.now();
@@ -50,6 +53,7 @@ class MeasurementsList extends StatelessWidget {
       whenPeriod: whenPeriod == PlanWhenPeriod.today
           ? ResultsWhenPeriod.today
           : ResultsWhenPeriod.yesterday,
+      offlineResults: results,
     );
   }
 

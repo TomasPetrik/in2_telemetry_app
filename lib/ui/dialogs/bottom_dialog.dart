@@ -5,8 +5,8 @@ import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 
-class ConfirmationDialog extends StatelessWidget {
-  const ConfirmationDialog({
+class BottomDialog extends StatelessWidget {
+  const BottomDialog({
     super.key,
     required this.title,
     required this.description,
@@ -18,15 +18,15 @@ class ConfirmationDialog extends StatelessWidget {
   final String title;
   final String description;
   final String iconPath;
-  final ButtonStyle positiveButtonStyle;
-  final ButtonStyle negativeButtonStyle;
+  final ButtonStyle? positiveButtonStyle;
+  final ButtonStyle? negativeButtonStyle;
 
-  factory ConfirmationDialog.accountRemoval({
+  factory BottomDialog.accountConfirmationRemoval({
     Key? key,
     required BuildContext context,
     required String accountName,
   }) {
-    return _AccountRemovalConfirmation(
+    return _BottomDialog(
       title: context.locale.dialog_account_removal_confirmation_title,
       description: context.locale
           .dialog_account_removal_confirmation_description(accountName),
@@ -43,9 +43,24 @@ class ConfirmationDialog extends StatelessWidget {
     );
   }
 
+  factory BottomDialog.serverError({
+    Key? key,
+    required BuildContext context,
+  }) {
+    return _BottomDialog(
+      title: context.locale.server_error_title,
+      description: context.locale.server_error_desc,
+      iconPath: 'assets/icons/icon_triangle_exclamation_big.svg',
+      positiveButtonStyle: ButtonStyle(
+        buttonType: ButtonType.secondary,
+        label: context.locale.common_close,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return _AccountRemovalConfirmation(
+    return _BottomDialog(
       title: title,
       description: description,
       iconPath: iconPath,
@@ -55,13 +70,13 @@ class ConfirmationDialog extends StatelessWidget {
   }
 }
 
-class _AccountRemovalConfirmation extends ConfirmationDialog {
-  const _AccountRemovalConfirmation({
+class _BottomDialog extends BottomDialog {
+  const _BottomDialog({
     required super.title,
     required super.description,
     required super.iconPath,
-    required super.positiveButtonStyle,
-    required super.negativeButtonStyle,
+    super.positiveButtonStyle,
+    super.negativeButtonStyle,
   });
 
   @override
@@ -95,36 +110,43 @@ class _AccountRemovalConfirmation extends ConfirmationDialog {
             ),
           ),
           Gaps.gap24,
-          Center(
-            child: Text(
-              description,
-              style: ScaleTextStyles.text
-                  .apply(color: Theme.of(context).colorScheme.onSecondary),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Gaps.gap24,
           Padding(
-            padding: Paddings.horizontal16,
-            child: HighlightedElevatedButton(
-              label: positiveButtonStyle.label,
-              buttonType: positiveButtonStyle.buttonType,
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
+            padding: Paddings.horizontal64,
+            child: Center(
+              child: Text(
+                description,
+                style: ScaleTextStyles.text
+                    .apply(color: Theme.of(context).colorScheme.onSecondary),
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
-          Gaps.gap24,
-          Padding(
-            padding: Paddings.horizontal16,
-            child: HighlightedElevatedButton(
-              label: negativeButtonStyle.label,
-              buttonType: negativeButtonStyle.buttonType,
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
+          if (positiveButtonStyle != null) ...[
+            Gaps.gap24,
+            Padding(
+              padding: Paddings.horizontal16,
+              child: HighlightedElevatedButton(
+                label: positiveButtonStyle!.label,
+                buttonType: positiveButtonStyle!.buttonType,
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
             ),
-          ),
+          ],
+          if (negativeButtonStyle != null) ...[
+            Gaps.gap24,
+            Padding(
+              padding: Paddings.horizontal16,
+              child: HighlightedElevatedButton(
+                label: negativeButtonStyle!.label,
+                buttonType: negativeButtonStyle!.buttonType,
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+            ),
+          ],
           Gaps.gap48,
         ],
       ),

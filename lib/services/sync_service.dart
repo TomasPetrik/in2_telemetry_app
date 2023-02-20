@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaulation_aggregated.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
@@ -35,8 +37,11 @@ class SyncService {
 
     userAccount.carePlans = activeCarePlans.items;
 
+    await loadFulFillmentEvaluation(userAccount);
     await loadPartPlanEvaluation(userAccount);
-    await loadMeasurementResults(userAccount);
+    if (userAccount.viewOwnMeasurementData) {
+      await loadMeasurementResults(userAccount);
+    }
 
     userAccount.carePlans = activeCarePlans.items;
     if (userAccount.representedPeople?.isNotEmpty == true) {
@@ -53,7 +58,36 @@ class SyncService {
         representedPerson.carePlans = activeCarePlans.items;
 
         await loadPartPlanEvaluation(representedPerson);
-        await loadMeasurementResults(representedPerson);
+
+        if (userAccount.viewOwnMeasurementData) {
+          await loadMeasurementResults(representedPerson);
+        }
+      }
+    }
+  }
+
+  Future<void> loadFulFillmentEvaluation(final UserAccount userAccount) async {
+    final carePlans = userAccount.carePlans;
+    if (carePlans == null) {
+      return;
+    }
+
+    for (final carePlan in carePlans) {
+      try {
+        final fullPlanEvaluation =
+            await _carePlansRepository.loadFullPlanEvaluation(
+          userAccount: userAccount,
+          carePlanVersionId: carePlan.versionId,
+        );
+        carePlan.fullPlanEvaluation = fullPlanEvaluation;
+      } catch (e) {
+        carePlan.fullPlanEvaluation = FulfillmentEvaluationAggregated(
+          DateTime.now(),
+          DateTime.now(),
+          0,
+          0,
+          0,
+        );
       }
     }
   }
@@ -65,17 +99,27 @@ class SyncService {
     }
 
     final yesterdayMidnight = DateTime.now().getYesterdayMidnight();
-    final tomorrowMidnight = DateTime.now().getTomorrowMidnight();
+    var tomorrowMidnight = DateTime.now().getTomorrowMidnight();
 
     for (final carePlan in carePlans) {
-      final fulfillmentEvaluation =
+      if (carePlan.scheduledEnd?.isBefore(tomorrowMidnight) == true) {
+        if (carePlan.scheduledEnd?.isBefore(yesterdayMidnight) == true) {
+          debugPrint(
+            'skipping load last two days evaluation for planId = ${carePlan.id}',
+          );
+          continue;
+        }
+        tomorrowMidnight = carePlan.scheduledEnd!.toUtc();
+      }
+
+      final lastTwoDaysEvaluation =
           await _carePlansRepository.loadPartPlanEvaluation(
         userAccount: userAccount,
         carePlanId: carePlan.id,
         fromDateTime: yesterdayMidnight.toIso8601String(),
         toDateTime: tomorrowMidnight.toIso8601String(),
       );
-      carePlan.fulfillmentEvaluation = fulfillmentEvaluation;
+      carePlan.lastTwoDaysEvaluation = lastTwoDaysEvaluation;
     }
   }
 
@@ -108,7 +152,7 @@ class SyncService {
   }
 
   Future<void> syncAllData() async {
-    final userAccounts = _session.getCurrentUsers();
+    final userAccounts = _session.getSessionAccounts();
 
     for (final userAccount in userAccounts) {
       try {
@@ -127,7 +171,7 @@ class SyncService {
 
   Future<void> syncResults() async {
     final Set<String> allowedUsersMuids = _session
-        .getCurrentUsers()
+        .getSessionAccounts()
         .map((userAccount) => userAccount.user.muid)
         .toSet();
 
@@ -153,8 +197,11 @@ class SyncService {
           await _pendingResultsDbProvider.remove(userMeasurement);
         }
         //reload user results
-        await loadMeasurementResults(userAccount);
+        await loadFulFillmentEvaluation(userAccount);
         await loadPartPlanEvaluation(userAccount);
+        if (userAccount.viewOwnMeasurementData) {
+          await loadMeasurementResults(userAccount);
+        }
         userAccount.lastSyncAt = DateTime.now();
         userAccount.lastSyncFailed = false;
         await _accountDbProvider.save(userAccount);

@@ -14,7 +14,7 @@ abstract class ScaleColorsDark {
   static const content40 = Color(0xFF455A64);
   static const content20 = Color(0xFF32424A);
 
-  static const warning = Color(0xFFECB307);
+  static const warning = Color(0xFFF3D26F);
   static const alert = Color(0xFFD26668);
   static const positive = Color(0xFF32B585);
 

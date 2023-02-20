@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
+import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/widgets/single_plan_full_evaluation_progress_indicator.dart';
 import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
 
-class FulfillmentEvaluationWidget extends StatelessWidget {
-  const FulfillmentEvaluationWidget({
+class FullPlanEvaluationWidget extends StatelessWidget {
+  const FullPlanEvaluationWidget({
     super.key,
-    required this.fulfillmentEvaluation,
+    required this.carePlan,
   });
 
-  final FulfillmentEvaluation fulfillmentEvaluation;
+  final CarePlan carePlan;
 
   @override
   Widget build(BuildContext context) {
-    int progress =
-        EvaluationPlanHelper.getProgressFromEvaluation(fulfillmentEvaluation);
+    int progress = EvaluationPlanHelper.getProgressFromFullPlanEvaluation(
+      carePlan.fullPlanEvaluation!,
+    );
+
     return SliverToBoxAdapter(
       child: Container(
         margin: Paddings.horizontal16,
@@ -53,29 +56,8 @@ class FulfillmentEvaluationWidget extends StatelessWidget {
               ],
             ),
             Gaps.gap16,
-            ClipRRect(
-              borderRadius: BorderRadii.radius4,
-              child: Container(
-                height: 8,
-                color: Theme.of(context).colorScheme.secondary,
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: progress,
-                      child: ClipRRect(
-                        borderRadius: BorderRadii.radius4,
-                        child: Container(
-                          color: Theme.of(context).colorScheme.onTertiary,
-                        ),
-                      ),
-                    ),
-                    if (progress < 100)
-                      Spacer(
-                        flex: 100 - progress,
-                      ),
-                  ],
-                ),
-              ),
+            SinglePlanFullEvaluationProgressIndicator(
+              progress: progress,
             )
           ],
         ),
