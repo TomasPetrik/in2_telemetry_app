@@ -26,6 +26,8 @@ class LightMode {
 
   static Color get light => ScaleColorsLight.light;
 
+  static Color get lightTransparent => ScaleColorsLight.lightTransparent;
+
   static Color get dark => ScaleColorsLight.dark;
 
   static Color get positive => ScaleColorsLight.positive;
@@ -81,6 +83,7 @@ class LightMode {
         onSecondary: colorContent80,
         surface: dark,
         onSurface: light,
+        surfaceTint: lightTransparent,
         primary: primary,
         secondary: colorContent20,
         primaryContainer: actionStartColor,

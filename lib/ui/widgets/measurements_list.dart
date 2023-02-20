@@ -130,7 +130,7 @@ class MeasurementsList extends StatelessWidget {
                           Container(
                             margin: Paddings.horizontal16,
                             height: 0.5,
-                            color: Theme.of(context).colorScheme.onSecondary,
+                            color: Theme.of(context).colorScheme.surfaceTint,
                           ),
                       ],
                     );

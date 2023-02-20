@@ -2,19 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/providers/account_db_provider.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 class ActionWidget extends StatelessWidget with BottomSheetMixin {
   const ActionWidget({
     super.key,
-    required this.userAccount,
     required this.nextMeasurement,
   });
 
-  final UserAccount userAccount;
   final PlannedMeasurement? nextMeasurement;
 
   MeasurementWhenType get measurementType {
@@ -60,6 +62,12 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
 
   @override
   Widget build(BuildContext context) {
+    final isMultiUser = getIt<Session>().isMultiUser == true;
+    UserAccount? userAccount;
+    if (nextMeasurement?.userId != null && isMultiUser) {
+      userAccount = getIt<AccountDbProvider>().get(nextMeasurement!.userId);
+    }
+
     return Container(
       margin: Paddings.horizontal16,
       padding: Paddings.all16,
@@ -75,6 +83,7 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
         ),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
@@ -94,6 +103,27 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
               ],
             ],
           ),
+          if (userAccount != null) ...[
+            Gaps.gap16,
+            Container(
+              height: 0.5,
+              color: Theme.of(context).colorScheme.surfaceTint,
+            ),
+            Gaps.gap12,
+            Text(
+              userAccount.user.fullName,
+              style: ScaleTextStyles.text.apply(
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            Gaps.gap6,
+            Text(
+              userAccount.hospital!.title,
+              style: ScaleTextStyles.label.apply(
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+          ],
           if (measurementType == MeasurementWhenType.ongoing &&
               nextMeasurement != null) ...[
             Gaps.gap16,

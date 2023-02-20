@@ -103,7 +103,6 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                               children: [
                                 Gaps.gap16,
                                 ActionWidget(
-                                  userAccount: userAccount,
                                   nextMeasurement: state.nextMeasurement,
                                 ),
                                 Gaps.gap26,
