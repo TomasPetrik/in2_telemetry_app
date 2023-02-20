@@ -105,16 +105,11 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                           ),
                           whenPeriod: state.selectedWhenPeriod!,
                           openTimeSelector: () async {
-                            final List<MeasurementResult>
-                                todayAndYesterdayResults =
-                                MeasurementHelper.getResults(
-                              allMeasurementResults,
+                            final List<MeasurementResult> offlineResults =
+                                MeasurementHelper.getOffilneResultsConverted(
                               allPendingResults,
-                              [
-                                ResultsWhenPeriod.today,
-                                ResultsWhenPeriod.yesterday
-                              ],
-                              state.measurementType,
+                              [state.selectedWhenPeriod!],
+                              null,
                             );
 
                             final selected = await showResultsWhenSelector(
@@ -122,7 +117,7 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                               state.selectedWhenPeriod,
                               ResultsHelper.getPeriodFultillments(
                                 state.currentCarePlans!,
-                                todayAndYesterdayResults,
+                                offlineResults,
                               ),
                             );
                             if (selected?.selectedPeriod != null) {
