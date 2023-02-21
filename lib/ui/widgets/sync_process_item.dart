@@ -54,51 +54,53 @@ class SyncProcessItem extends StatelessWidget {
     );
 
     return SliverToBoxAdapter(
-      child: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.onBackground,
-          borderRadius: BorderRadii.radius16,
-        ),
-        padding: Paddings.all16,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            if (syncProcessType == SyncProcessType.inProgress)
-              RotatingIcon(child: iconWidget)
-            else
-              iconWidget,
-            Gaps.gap16,
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: ScaleTextStyles.text.apply(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                  ),
-                  if (desc != null) ...[
-                    Gaps.gap6,
+      child: Card(
+        child: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.onBackground,
+            borderRadius: BorderRadii.radius16,
+          ),
+          padding: Paddings.all16,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (syncProcessType == SyncProcessType.inProgress)
+                RotatingIcon(child: iconWidget)
+              else
+                iconWidget,
+              Gaps.gap16,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Text(
-                      desc!,
-                      style: ScaleTextStyles.label.apply(
-                        color: Theme.of(context).colorScheme.onSecondary,
+                      label,
+                      style: ScaleTextStyles.text.apply(
+                        color: Theme.of(context).colorScheme.onPrimary,
                       ),
                     ),
+                    if (desc != null) ...[
+                      Gaps.gap6,
+                      Text(
+                        desc!,
+                        style: ScaleTextStyles.label.apply(
+                          color: Theme.of(context).colorScheme.onSecondary,
+                        ),
+                      ),
+                    ],
                   ],
-                ],
-              ),
-            ),
-            if (failedRefreshIconPath != null)
-              InkWell(
-                onTap: onRefresh,
-                child: SvgPicture.asset(
-                  failedRefreshIconPath,
-                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
-          ],
+              if (failedRefreshIconPath != null)
+                InkWell(
+                  onTap: onRefresh,
+                  child: SvgPicture.asset(
+                    failedRefreshIconPath,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

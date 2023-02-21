@@ -20,7 +20,9 @@ abstract class ScaleColorsLight {
 
   static const dark = Color(0xFF263238);
   static const light = Color(0xFFFFFFFF);
-  static const lightTransparent = Color.fromARGB(82, 0, 0, 0);
+  static const lightTransparent = Color.fromARGB(82, 255, 255, 255);
+
+  static const cardShadow = Color.fromARGB(100, 0, 0, 0);
 
   static const actionStart = Color(0xFF32B585);
   static const actionEnd = Color(0xFF109383);

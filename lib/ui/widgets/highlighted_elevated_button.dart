@@ -51,8 +51,11 @@ class HighlightedElevatedButton extends StatelessWidget {
             children: [
               Text(
                 label,
-                style: ScaleTextStyles.textAccent
-                    .apply(color: Theme.of(context).colorScheme.onPrimary),
+                style: buttonType == ButtonType.primary
+                    ? ScaleTextStyles.textAccent
+                        .apply(color: Theme.of(context).colorScheme.onSurface)
+                    : ScaleTextStyles.textAccent
+                        .apply(color: Theme.of(context).colorScheme.onPrimary),
               ),
             ],
           ),

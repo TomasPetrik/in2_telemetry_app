@@ -226,6 +226,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                         ),
                       ),
                     ),
+                    const SliverGap(Dimensions.padding16),
                   ],
                 ],
               ),

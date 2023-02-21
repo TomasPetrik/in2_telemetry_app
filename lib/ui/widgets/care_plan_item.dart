@@ -16,65 +16,67 @@ class CarePlanItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.maxFinite,
-      padding: Paddings.all16,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadii.radius16,
-        color: Theme.of(context).colorScheme.onBackground,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              SvgPicture.asset(
-                'assets/icons/icon_wave_pulse.svg',
-                color: Theme.of(context).colorScheme.tertiary,
-              ),
-              Gaps.gap16,
-              Text(
-                context.locale.common_measurement_types(
-                  carePlan.activity.measurementType.name,
+    return Card(
+      child: Container(
+        width: double.maxFinite,
+        padding: Paddings.all16,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadii.radius16,
+          color: Theme.of(context).colorScheme.onBackground,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                SvgPicture.asset(
+                  'assets/icons/icon_wave_pulse.svg',
+                  color: Theme.of(context).colorScheme.tertiary,
                 ),
-                style: ScaleTextStyles.textAccent.apply(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
-              ),
-              const Spacer(),
-              SvgPicture.asset(
-                'assets/icons/icon_chart_pie_simple.svg',
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ],
-          ),
-          Gaps.gap16,
-          Container(
-            height: 0.5,
-            color: Theme.of(context).colorScheme.surfaceTint,
-          ),
-          Gaps.gap16,
-          Text(
-            carePlan.author.fullName,
-            style: ScaleTextStyles.textAccent.apply(
-              color: Theme.of(context).colorScheme.onPrimary,
-            ),
-          ),
-          Gaps.gap6,
-          Text(
-            carePlan.scheduledEnd != null
-                ? context.locale.user_details_screen_plan_active_from_to_date(
-                    carePlan.scheduledStart.toRegularDate(),
-                    carePlan.scheduledEnd!.toRegularDate(),
-                  )
-                : context.locale.user_details_screen_plan_active_from_date(
-                    carePlan.scheduledStart.toRegularDate(),
+                Gaps.gap16,
+                Text(
+                  context.locale.common_measurement_types(
+                    carePlan.activity.measurementType.name,
                   ),
-            style: ScaleTextStyles.textAccent.apply(
-              color: Theme.of(context).colorScheme.onSecondary,
+                  style: ScaleTextStyles.textAccent.apply(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
+                const Spacer(),
+                SvgPicture.asset(
+                  'assets/icons/icon_chart_pie_simple.svg',
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ],
             ),
-          ),
-        ],
+            Gaps.gap16,
+            Container(
+              height: 0.5,
+              color: Theme.of(context).colorScheme.surfaceTint,
+            ),
+            Gaps.gap16,
+            Text(
+              carePlan.author.fullName,
+              style: ScaleTextStyles.textAccent.apply(
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            ),
+            Gaps.gap6,
+            Text(
+              carePlan.scheduledEnd != null
+                  ? context.locale.user_details_screen_plan_active_from_to_date(
+                      carePlan.scheduledStart.toRegularDate(),
+                      carePlan.scheduledEnd!.toRegularDate(),
+                    )
+                  : context.locale.user_details_screen_plan_active_from_date(
+                      carePlan.scheduledStart.toRegularDate(),
+                    ),
+              style: ScaleTextStyles.textAccent.apply(
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

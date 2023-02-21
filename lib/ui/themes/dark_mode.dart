@@ -14,6 +14,8 @@ class DarkMode {
 
   static Color get colorContent60 => ScaleColorsDark.content60;
 
+  static Color get colorContent40 => ScaleColorsDark.content40;
+
   static Color get colorContent20 => ScaleColorsDark.content20;
 
   static Color get paperAccent => ScaleColorsDark.paperAccent;
@@ -33,6 +35,8 @@ class DarkMode {
   static Color get positive => ScaleColorsDark.positive;
 
   static Color get warning => ScaleColorsDark.warning;
+
+  static Color get cardShadow => ScaleColorsDark.cardShadow;
 
   static TextTheme get textTheme => TextTheme(
         headlineLarge: TextStyle(
@@ -103,6 +107,7 @@ class DarkMode {
         surface: dark,
         onSurface: light,
         surfaceTint: lightTransparent,
+        onSurfaceVariant: colorContent40,
         primary: primary,
         secondary: colorContent20,
         primaryContainer: actionStartColor,
@@ -113,13 +118,22 @@ class DarkMode {
 
   static ThemeData get theme => ThemeData(
         primaryColor: ScaleColorsDark.primary,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
         canvasColor: backgroundColor,
         scaffoldBackgroundColor: backgroundColor,
         cardColor: paperAccent,
-        highlightColor: primary,
         textTheme: textTheme,
         hintColor: colorContent80,
         colorScheme: colorScheme,
+        cardTheme: CardTheme(
+          elevation: Constants.cardElevation,
+          shadowColor: cardShadow,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadii.radius16,
+          ),
+          margin: EdgeInsets.zero,
+        ),
         appBarTheme: AppBarTheme(
           iconTheme: IconThemeData(color: primary),
           backgroundColor: ScaleColorsDark.paperTransparent,

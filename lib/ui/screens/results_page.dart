@@ -22,6 +22,7 @@ import 'package:scalesoft_app/ui/widgets/care_plans_evaluation_header.dart';
 import 'package:scalesoft_app/ui/widgets/no_plans_placeholder.dart';
 import 'package:scalesoft_app/ui/widgets/results_list.dart';
 import 'package:scalesoft_app/ui/widgets/sync_widget.dart';
+import 'package:scalesoft_app/ui/widgets/users_profiles_evaluation_header.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 import 'package:scalesoft_app/utils/helpers/results_helper.dart';
@@ -68,6 +69,33 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
               BlocBuilder<ResultsBloc, ResultsBlocState>(
                 bloc: resultsBloc,
                 builder: (context, state) {
+                  Future<void> openWhenSelector() async {
+                    final List<MeasurementResult> offlineResults =
+                        MeasurementHelper.getOffilneResultsConverted(
+                      allPendingResults,
+                      [state.selectedWhenPeriod!],
+                      null,
+                    );
+
+                    final selected = await showResultsWhenSelector(
+                      context,
+                      state.selectedWhenPeriod,
+                      ResultsHelper.getPeriodFultillments(
+                        state.currentCarePlans!,
+                        offlineResults,
+                      ),
+                    );
+                    if (selected?.selectedPeriod != null) {
+                      resultsBloc.add(
+                        ResultsBlocEvent.whenPeriodChange(
+                          selected!.selectedPeriod!,
+                        ),
+                      );
+                    } else if (selected?.showCalendar == true) {
+                      //TODO.. show calendar
+                    }
+                  }
+
                   if (state.selectedWhenPeriod == null ||
                       state.currentCarePlans == null ||
                       state.results == null) {
@@ -97,40 +125,21 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                           syncState: syncState,
                         ),
                         const SliverGap(Dimensions.padding16),
-                        CarePlansEvaluationHeader(
-                          carePlans:
-                              CarePlanHelper.getCarePlansContainingMeasurements(
-                            allCarePlans: state.currentCarePlans!,
-                            whenPeriod: state.selectedWhenPeriod!,
-                          ),
-                          whenPeriod: state.selectedWhenPeriod!,
-                          openTimeSelector: () async {
-                            final List<MeasurementResult> offlineResults =
-                                MeasurementHelper.getOffilneResultsConverted(
-                              allPendingResults,
-                              [state.selectedWhenPeriod!],
-                              null,
-                            );
-
-                            final selected = await showResultsWhenSelector(
-                              context,
-                              state.selectedWhenPeriod,
-                              ResultsHelper.getPeriodFultillments(
-                                state.currentCarePlans!,
-                                offlineResults,
-                              ),
-                            );
-                            if (selected?.selectedPeriod != null) {
-                              resultsBloc.add(
-                                ResultsBlocEvent.whenPeriodChange(
-                                  selected!.selectedPeriod!,
+                        session.isMultiUser == true
+                            ? UsersProfilesEvaluationHeader(
+                                userAccounts: session.getSessionAccounts(),
+                                whenPeriod: state.selectedWhenPeriod!,
+                                openWhenSelector: openWhenSelector,
+                              )
+                            : CarePlansEvaluationHeader(
+                                carePlans: CarePlanHelper
+                                    .getCarePlansContainingMeasurements(
+                                  allCarePlans: state.currentCarePlans!,
+                                  whenPeriod: state.selectedWhenPeriod!,
                                 ),
-                              );
-                            } else if (selected?.showCalendar == true) {
-                              //TODO.. show calendar
-                            }
-                          },
-                        ),
+                                whenPeriod: state.selectedWhenPeriod!,
+                                openWhenSelector: openWhenSelector,
+                              ),
                         const SliverGap(Dimensions.padding24),
                       ],
                       navigationHeader: Row(

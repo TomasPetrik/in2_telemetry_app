@@ -68,79 +68,91 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
       userAccount = getIt<AccountDbProvider>().get(nextMeasurement!.userId);
     }
 
-    return Container(
-      margin: Paddings.horizontal16,
-      padding: Paddings.all16,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadii.radius16,
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Theme.of(context).colorScheme.primaryContainer,
-            Theme.of(context).colorScheme.onPrimaryContainer,
-          ],
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+    return Padding(
+      padding: Paddings.horizontal16,
+      child: Card(
+        child: Container(
+          padding: Paddings.all16,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadii.radius16,
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Theme.of(context).colorScheme.primaryContainer,
+                Theme.of(context).colorScheme.onPrimaryContainer,
+              ],
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SvgPicture.asset(
-                'assets/icons/icon_wave_pulse.svg',
-                color: Theme.of(context).colorScheme.onSurface,
+              Row(
+                children: [
+                  SvgPicture.asset(
+                    'assets/icons/icon_wave_pulse.svg',
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  Gaps.gap16,
+                  Expanded(
+                    child: Text(
+                      getMeasurementText(context),
+                      style: ScaleTextStyles.text.apply(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                  ),
+                  if (measurementType == MeasurementWhenType.ongoing) ...[
+                    Gaps.gap16,
+                    Text(
+                      nextMeasurement?.timingDayWhen.start.toString() ?? '',
+                      style: ScaleTextStyles.text.apply(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                  ],
+                ],
               ),
-              Gaps.gap16,
-              Expanded(
-                child: Text(
-                  getMeasurementText(context),
-                ),
-              ),
-              if (measurementType == MeasurementWhenType.ongoing) ...[
+              if (userAccount != null) ...[
                 Gaps.gap16,
-                Text(nextMeasurement?.timingDayWhen.start.toString() ?? ''),
+                Container(
+                  height: 0.5,
+                  color: Theme.of(context).colorScheme.surfaceTint,
+                ),
+                Gaps.gap12,
+                Text(
+                  userAccount.user.fullName,
+                  style: ScaleTextStyles.text.apply(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                Gaps.gap6,
+                Text(
+                  userAccount.hospital!.title,
+                  style: ScaleTextStyles.label.apply(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+              ],
+              if (measurementType == MeasurementWhenType.ongoing &&
+                  nextMeasurement != null) ...[
+                Gaps.gap16,
+                HighlightedElevatedButton(
+                  label: context.locale.common_measure_now,
+                  buttonType: ButtonType.secondary,
+                  onPressed: () {
+                    doMeasurement(
+                      context: context,
+                      userId: nextMeasurement!.userId,
+                      selectedMeasurementType:
+                          nextMeasurement!.carePlan.activity.measurementType,
+                    );
+                  },
+                ),
               ],
             ],
           ),
-          if (userAccount != null) ...[
-            Gaps.gap16,
-            Container(
-              height: 0.5,
-              color: Theme.of(context).colorScheme.surfaceTint,
-            ),
-            Gaps.gap12,
-            Text(
-              userAccount.user.fullName,
-              style: ScaleTextStyles.text.apply(
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-            Gaps.gap6,
-            Text(
-              userAccount.hospital!.title,
-              style: ScaleTextStyles.label.apply(
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-          ],
-          if (measurementType == MeasurementWhenType.ongoing &&
-              nextMeasurement != null) ...[
-            Gaps.gap16,
-            HighlightedElevatedButton(
-              label: context.locale.common_measure_now,
-              buttonType: ButtonType.secondary,
-              onPressed: () {
-                doMeasurement(
-                  context: context,
-                  userId: nextMeasurement!.userId,
-                  selectedMeasurementType:
-                      nextMeasurement!.carePlan.activity.measurementType,
-                );
-              },
-            ),
-          ],
-        ],
+        ),
       ),
     );
   }

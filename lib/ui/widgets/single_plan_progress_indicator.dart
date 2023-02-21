@@ -4,7 +4,7 @@ import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/widgets/single_progress_indicator.dart';
 import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
@@ -37,29 +37,8 @@ class SinglePlanProgressIndicator extends StatelessWidget {
           )
         : 0;
 
-    return ClipRRect(
-      borderRadius: BorderRadii.radius4,
-      child: Container(
-        height: 8,
-        color: Theme.of(context).colorScheme.secondary,
-        child: Row(
-          children: [
-            Expanded(
-              flex: progress,
-              child: ClipRRect(
-                borderRadius: BorderRadii.radius4,
-                child: Container(
-                  color: Theme.of(context).colorScheme.onTertiary,
-                ),
-              ),
-            ),
-            if (progress < 100)
-              Spacer(
-                flex: 100 - progress,
-              ),
-          ],
-        ),
-      ),
+    return SingleProgressIndicator(
+      progress: progress,
     );
   }
 }

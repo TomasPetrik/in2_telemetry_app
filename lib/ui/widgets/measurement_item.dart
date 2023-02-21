@@ -69,7 +69,7 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
                     userAccount.user.fullName,
                     style: ScaleTextStyles.textAccent.apply(
                       color: measurementNeed == MeasurementNeed.now
-                          ? Theme.of(context).colorScheme.onSurface
+                          ? Theme.of(context).colorScheme.onPrimary
                           : Theme.of(context).colorScheme.tertiary,
                     ),
                   ),
@@ -78,14 +78,14 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
                     userAccount.hospital!.title,
                     style: ScaleTextStyles.label.apply(
                       color: measurementNeed == MeasurementNeed.now
-                          ? Theme.of(context).colorScheme.onSurface
+                          ? Theme.of(context).colorScheme.onPrimary
                           : Theme.of(context).colorScheme.tertiary,
                     ),
                   ),
                   Gaps.gap16,
                   Container(
                     height: 0.5,
-                    color: Theme.of(context).colorScheme.surfaceTint,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                   Gaps.gap16,
                 ],

@@ -14,6 +14,8 @@ class LightMode {
 
   static Color get colorContent60 => ScaleColorsLight.content60;
 
+  static Color get colorContent40 => ScaleColorsLight.content60;
+
   static Color get colorContent20 => ScaleColorsLight.content20;
 
   static Color get paperAccent => ScaleColorsLight.paperAccent;
@@ -33,6 +35,8 @@ class LightMode {
   static Color get positive => ScaleColorsLight.positive;
 
   static Color get warning => ScaleColorsLight.warning;
+
+  static Color get cardShadow => ScaleColorsLight.cardShadow;
 
   static TextTheme get textTheme => TextTheme(
         headlineLarge: TextStyle(
@@ -84,6 +88,7 @@ class LightMode {
         surface: dark,
         onSurface: light,
         surfaceTint: lightTransparent,
+        onSurfaceVariant: colorContent40,
         primary: primary,
         secondary: colorContent20,
         primaryContainer: actionStartColor,
@@ -93,13 +98,22 @@ class LightMode {
       );
   static ThemeData get theme => ThemeData(
         primaryColor: ScaleColorsLight.primary,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
         canvasColor: backgroundColor,
         scaffoldBackgroundColor: backgroundColor,
         cardColor: paperAccent,
-        highlightColor: primary,
         hintColor: colorContent80,
         textTheme: textTheme,
         colorScheme: colorScheme,
+        cardTheme: CardTheme(
+          elevation: Constants.cardElevation,
+          shadowColor: cardShadow,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadii.radius16,
+          ),
+          margin: EdgeInsets.zero,
+        ),
         appBarTheme: AppBarTheme(
           iconTheme: IconThemeData(color: primary),
           backgroundColor: ScaleColorsLight.paperTransparent,

@@ -34,6 +34,9 @@ class NavigationTabChip extends StatelessWidget {
               maxLines: 1,
               style: ScaleTextStyles.label.copyWith(
                 height: 1.0,
+                color: isSelected
+                    ? Theme.of(context).colorScheme.onSurface
+                    : Theme.of(context).colorScheme.onPrimary,
               ),
             ),
           ),

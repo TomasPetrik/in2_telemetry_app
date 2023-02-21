@@ -66,20 +66,20 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                   Text(
                     userAccount.user.fullName,
                     style: ScaleTextStyles.textAccent.apply(
-                      color: Theme.of(context).colorScheme.onSurface,
+                      color: Theme.of(context).colorScheme.onPrimary,
                     ),
                   ),
                   Gaps.gap6,
                   Text(
                     userAccount.hospital!.title,
                     style: ScaleTextStyles.label.apply(
-                      color: Theme.of(context).colorScheme.onSurface,
+                      color: Theme.of(context).colorScheme.onPrimary,
                     ),
                   ),
                   Gaps.gap16,
                   Container(
                     height: 0.5,
-                    color: Theme.of(context).colorScheme.surfaceTint,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                   Gaps.gap16,
                 ],

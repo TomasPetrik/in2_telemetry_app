@@ -31,6 +31,7 @@ class Constants {
   static const double actionActiveWidgetHeight =
       16 + 20 + 16 + buttonHeight + 16;
   static const double actionPassiveWidgetHeight = 16 + 20 + 16;
+  static const double cardElevation = 10;
 
   static const List<Hospital> hospitals = [
     Hospital(

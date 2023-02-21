@@ -24,60 +24,62 @@ class WarningItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
-      child: Container(
-        padding: Paddings.all16,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadii.radius16,
-          color: Theme.of(context).colorScheme.onBackground,
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (icon != null) ...[
-              Container(
-                height: 64,
-                width: 64,
-                padding: Paddings.all14,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadii.radius8,
-                  color: Theme.of(context).colorScheme.secondary,
+      child: Card(
+        child: Container(
+          padding: Paddings.all16,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadii.radius16,
+            color: Theme.of(context).colorScheme.onBackground,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (icon != null) ...[
+                Container(
+                  height: 64,
+                  width: 64,
+                  padding: Paddings.all14,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadii.radius8,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                  child: icon,
                 ),
-                child: icon,
-              ),
-              Gaps.gap16,
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: ScaleTextStyles.textAccent.apply(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      ),
-                    ),
-                    Gaps.gap16,
-                    Text(
-                      description,
-                      style: ScaleTextStyles.text.apply(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      ),
-                    ),
-                    Gaps.gap16,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        NavigationTabChip(
-                          label: buttonLabel,
-                          onTap: onTap,
-                          isSelected: buttonType == SmallButtonType.regular,
+                Gaps.gap16,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: ScaleTextStyles.textAccent.apply(
+                          color: Theme.of(context).colorScheme.onPrimary,
                         ),
-                      ],
-                    )
-                  ],
+                      ),
+                      Gaps.gap16,
+                      Text(
+                        description,
+                        style: ScaleTextStyles.text.apply(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                      ),
+                      Gaps.gap16,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          NavigationTabChip(
+                            label: buttonLabel,
+                            onTap: onTap,
+                            isSelected: buttonType == SmallButtonType.regular,
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
