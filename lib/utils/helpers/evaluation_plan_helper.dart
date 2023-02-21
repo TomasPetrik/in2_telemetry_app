@@ -17,7 +17,9 @@ class EvaluationPlanHelper {
     //TODO.. here should be included also offline results if this plan contains planned measurements
     //and their intervals are matching with offline results
 
-    int percentage = (actualCount / requiredMeasurementCount * 100).round();
+    int percentage = requiredMeasurementCount == 0
+        ? requiredMeasurementCount
+        : (actualCount / requiredMeasurementCount * 100).round();
     return percentage;
   }
 
