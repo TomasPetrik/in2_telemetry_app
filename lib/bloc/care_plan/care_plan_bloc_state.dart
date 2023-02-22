@@ -17,5 +17,6 @@ class CarePlanBlocState with _$CarePlanBlocState {
     List<PlannedMeasurement>? measurements,
     List<MeasurementResult>? results,
     MeasurementType? measurementType,
+    Map<PlanWhenPeriod, int>? allMeasurementCountsPerPeriod,
   }) = _CarePlanBlocState;
 }

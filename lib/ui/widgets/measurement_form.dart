@@ -101,6 +101,9 @@ class MeasurementForm extends StatelessWidget {
                       context.locale.common_measurement_units_names(
                         measurementConfig.unitNames[0].name,
                       ),
+                      style: ScaleTextStyles.text.apply(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
                     ),
                     Gaps.gap8,
                     ScaleTextFormField(
@@ -141,6 +144,9 @@ class MeasurementForm extends StatelessWidget {
                       Text(
                         context.locale.common_measurement_units_names(
                           measurementConfig.unitNames[1].name,
+                        ),
+                        style: ScaleTextStyles.text.apply(
+                          color: Theme.of(context).colorScheme.onPrimary,
                         ),
                       ),
                       Gaps.gap8,

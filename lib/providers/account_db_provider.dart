@@ -121,11 +121,11 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
           )
           .toList()
         ..sort(
-          (a, b) => b.lastActiveIn!.millisecondsSinceEpoch
-              .compareTo(a.lastActiveIn!.millisecondsSinceEpoch),
+          (a, b) => a.lastActiveIn!.millisecondsSinceEpoch
+              .compareTo(b.lastActiveIn!.millisecondsSinceEpoch),
         );
 
-      return lastActiveAccounts[0];
+      return lastActiveAccounts.last;
     } catch (_) {
       return null;
     }

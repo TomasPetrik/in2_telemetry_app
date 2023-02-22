@@ -12,6 +12,7 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_detail_route.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/widgets/blured_app_bar.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
 import 'package:scalesoft_app/ui/widgets/user_item_compound.dart';
 
@@ -46,10 +47,6 @@ class HospitalDetailScreen extends StatelessWidget {
         return BlocBuilder<SyncBloc, SyncState>(
           bloc: getIt<SyncBloc>(),
           builder: (context, state) {
-            final bool showWarning = userAccounts.any(
-              (userAccount) => getIt<Session>().userHasProblem(userAccount),
-            );
-
             return Material(
               child: Stack(
                 children: [
@@ -60,29 +57,34 @@ class HospitalDetailScreen extends StatelessWidget {
                             Constants.appBarHeight,
                       ),
                       const SliverGap(Dimensions.padding24),
-                      SliverToBoxAdapter(
-                        child: ListView.separated(
-                          padding: EdgeInsets.zero,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (_, int index) {
                             final userAccount = userAccounts[index];
-                            return UserItemCompound(
-                              userAccount: userAccount,
-                              userItemCompoundType:
-                                  UserItemCompoundType.settings,
-                              onUserSelected: (userAccount) {
-                                GoRouter.of(context).pushNamed(
-                                  UserDetailRoute.name,
-                                  extra: userAccount,
-                                );
-                              },
-                              showWarning: showWarning,
+                            final bool showWarning = getIt<Session>()
+                                    .getProblemIfExists(userAccount) !=
+                                null;
+
+                            return Column(
+                              children: [
+                                UserItemCompound(
+                                  userAccount: userAccount,
+                                  userItemCompoundType:
+                                      UserItemCompoundType.settings,
+                                  onUserSelected: (userAccount) {
+                                    GoRouter.of(context).pushNamed(
+                                      UserDetailRoute.name,
+                                      extra: userAccount,
+                                    );
+                                  },
+                                  showWarning: showWarning,
+                                ),
+                                if (index != (userAccounts.length - 1))
+                                  Gaps.gap24,
+                              ],
                             );
                           },
-                          separatorBuilder: (_, __) {
-                            return Gaps.gap24;
-                          },
-                          itemCount: userAccounts.length,
+                          childCount: userAccounts.length,
                         ),
                       ),
                     ],
@@ -91,9 +93,11 @@ class HospitalDetailScreen extends StatelessWidget {
                     top: 0,
                     left: 0,
                     right: 0,
-                    child: ScaleAppBar(
-                      title: hospital.title,
-                      onBackTap: () {},
+                    child: BluredAppBar(
+                      child: ScaleAppBar(
+                        title: hospital.title,
+                        onBackTap: () {},
+                      ),
                     ),
                   ),
                 ],

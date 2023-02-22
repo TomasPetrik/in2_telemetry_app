@@ -21,10 +21,8 @@ class SyncWidget extends StatelessWidget {
             child: SizedBox.shrink(),
           )
         : SliverPadding(
-            padding: const EdgeInsets.only(
-              left: Dimensions.padding16,
-              right: Dimensions.padding16,
-              top: Dimensions.padding16,
+            padding: const EdgeInsets.all(
+              Dimensions.padding16,
             ),
             sliver: SyncItem(
               syncState: syncState,

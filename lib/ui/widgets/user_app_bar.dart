@@ -22,8 +22,7 @@ class UserAppBar extends StatelessWidget with BottomSheetMixin {
     final sessionAccounts = session.getSessionAccounts();
 
     return Material(
-      color: Colors
-          .transparent, // Theme.of(context).backgroundColor.withOpacity(0.5),
+      color: Colors.transparent,
       child: Padding(
         padding: EdgeInsets.only(
           top: MediaQuery.of(context).viewPadding.top,

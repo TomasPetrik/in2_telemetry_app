@@ -52,7 +52,7 @@ class CarePlanItem extends StatelessWidget {
             Gaps.gap16,
             Container(
               height: 0.5,
-              color: Theme.of(context).colorScheme.surfaceTint,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
             Gaps.gap16,
             Text(

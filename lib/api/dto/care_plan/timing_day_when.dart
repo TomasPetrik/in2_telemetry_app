@@ -65,6 +65,16 @@ class TimeOfDay extends HiveObject {
     return todayDayTime.isAfter(cmpTime);
   }
 
+  DateTime ofExactDate(DateTime dateTime) {
+    return dateTime.copyWith(
+      hour: hour,
+      minute: minute,
+      second: second,
+      millisecond: 0,
+      microsecond: 0,
+    );
+  }
+
   DateTime todayDateTime() {
     return DateTime.now().copyWith(
       hour: hour,

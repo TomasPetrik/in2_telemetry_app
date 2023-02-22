@@ -6,6 +6,7 @@ import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc_event.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc_state.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
+import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 import 'package:scalesoft_app/utils/helpers/results_helper.dart';
 
 @singleton
@@ -27,6 +28,19 @@ class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
           _pendingResults.clear();
           _pendingResults.addAll(pendingResults ?? []);
 
+          final List<MeasurementResult> offlineResults =
+              MeasurementHelper.getOffilneResultsConverted(
+            _pendingResults,
+            [ResultsWhenPeriod.today, ResultsWhenPeriod.yesterday],
+            null,
+          );
+
+          final Map<ResultsWhenPeriod, int?> plansEvaluationPerPeriod =
+              ResultsHelper.getPeriodFultillments(
+            _allCarePlans,
+            offlineResults,
+          );
+
           final results = carePlans.isEmpty
               ? null
               : ResultsHelper.getResults(
@@ -43,6 +57,7 @@ class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
               selectedWhenPeriod: whenPeriod,
               uncategorizedResults: uncategorizedResults,
               results: results,
+              plansEvaluationPerPeriod: plansEvaluationPerPeriod,
             ),
           );
         },

@@ -4,7 +4,9 @@ import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
-import 'package:scalesoft_app/ui/widgets/single_plan_full_evaluation_progress_indicator.dart';
+import 'package:scalesoft_app/ui/widgets/single_progress_indicator.dart';
+import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
+import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
 
 class FullPlanEvaluationWidget extends StatelessWidget {
@@ -17,8 +19,12 @@ class FullPlanEvaluationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int progress = EvaluationPlanHelper.getProgressFromFullPlanEvaluation(
+    final progress = EvaluationPlanHelper.getProgressFromFullPlanEvaluation(
       carePlan.fullPlanEvaluation!,
+    );
+
+    final veryFirstMeasurement = Calendar.getVeryFirstMeasurement(
+      carePlan: carePlan,
     );
 
     return SliverToBoxAdapter(
@@ -53,13 +59,30 @@ class FullPlanEvaluationWidget extends StatelessWidget {
                     Text(
                       '$progress %',
                       style: ScaleTextStyles.text.apply(
-                        color: Theme.of(context).colorScheme.onTertiary,
+                        color: progress >= 100
+                            ? Theme.of(context).colorScheme.onTertiary
+                            : progress == 0
+                                ? Theme.of(context).colorScheme.onSecondary
+                                : Theme.of(context).colorScheme.onError,
                       ),
                     ),
                   ],
                 ),
+                if (veryFirstMeasurement.whenEnd.isAfter(DateTime.now())) ...[
+                  Gaps.gap6,
+                  Text(
+                    context.locale
+                        .care_plan_detail_screen_fulfillment_evaluation_valid_from(
+                      veryFirstMeasurement.whenStart.toDateOrDay(context),
+                      veryFirstMeasurement.whenStart.toTimeShort(),
+                    ),
+                    style: ScaleTextStyles.label.apply(
+                      color: Theme.of(context).colorScheme.onSecondary,
+                    ),
+                  ),
+                ],
                 Gaps.gap16,
-                SinglePlanFullEvaluationProgressIndicator(
+                SingleProgressIndicator(
                   progress: progress,
                 )
               ],

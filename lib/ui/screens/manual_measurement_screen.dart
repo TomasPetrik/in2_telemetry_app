@@ -77,10 +77,18 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
               right: 16,
               child: SingleChildScrollView(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Gap(
                       MediaQuery.of(context).viewPadding.top +
                           Constants.appBarHeight,
+                    ),
+                    Gaps.gap16,
+                    Text(
+                      context.locale.manual_measurement_screen_type,
+                      style: ScaleTextStyles.text.apply(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
                     ),
                     Gaps.gap16,
                     DropdownButtonFormField<MeasurementType>(
@@ -113,6 +121,9 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                     Gaps.gap24,
                     Text(
                       context.locale.manual_measurement_screen_measurement_time,
+                      style: ScaleTextStyles.text.apply(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
                     ),
                     Gaps.gap8,
                     InkWell(
@@ -134,7 +145,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                             enabled: false,
                             controller: timeEditingController,
                             style: ScaleTextStyles.text.apply(
-                              color: Theme.of(context).colorScheme.tertiary,
+                              color: Theme.of(context).colorScheme.onPrimary,
                             ),
                           ),
                           Positioned(

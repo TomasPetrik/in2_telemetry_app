@@ -36,20 +36,20 @@ class UserAccount with _$UserAccount {
   @override
   String toString() => toJson().toString();
 
-  bool hasProblem() {
+  UserProblemType? getProblemIfExists() {
     if (sessionExpired == true) {
-      return true;
+      return UserProblemType.sessionExpired;
     }
 
     if (lastSyncFailed == true) {
-      return true;
+      return UserProblemType.lastSyncFailed;
     }
 
     if (carePlans?.any((carePlan) => carePlan.wasChanged == true) == true) {
-      return true;
+      return UserProblemType.carePlanUpdated;
     }
 
-    return false;
+    return null;
   }
 
   bool get enterMeasurementWithoutPlan =>
@@ -69,6 +69,13 @@ class UserAccount with _$UserAccount {
         UserPermission.canManuallyEnterMeasurement,
       ) ==
       true;
+}
+
+enum UserProblemType {
+  sessionExpired,
+  lastSyncFailed,
+  carePlanUpdated,
+  syncResultsFailed,
 }
 
 @HiveType(typeId: 6)

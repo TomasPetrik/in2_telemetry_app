@@ -14,7 +14,7 @@ class ResultPeriodItem extends StatelessWidget {
   });
 
   final ResultsWhenPeriod whenPeriod;
-  final int percentage;
+  final int? percentage;
   final bool isSelected;
 
   static final Map<ResultsWhenPeriod, String> periodItemIcons = {
@@ -23,11 +23,14 @@ class ResultPeriodItem extends StatelessWidget {
   };
 
   String _getSubtitle(BuildContext context) {
+    if (percentage == null) {
+      return context.locale.results_plan_no_measurement_needed;
+    }
     switch (whenPeriod) {
       case ResultsWhenPeriod.today:
-        return context.locale.results_plan_fulfilled_on(percentage);
+        return context.locale.results_plan_fulfilled_on(percentage!);
       case ResultsWhenPeriod.yesterday:
-        return context.locale.results_plan_fulfilled_on(percentage);
+        return context.locale.results_plan_fulfilled_on(percentage!);
     }
   }
 

@@ -31,6 +31,12 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
         null,
       );
 
+      final Map<PlanWhenPeriod, int> allMeasurementCountsPerPeriod =
+          CarePlanHelper.getPossibleWhenPeriods(
+        _allCarePlans,
+        todayResults,
+      );
+
       final nextMeasurement = event.carePlans.isEmpty
           ? null
           : Calendar.getNUpcomingMeasurements(
@@ -55,6 +61,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
           measurements: measurements,
           results: todayResults,
           measurementType: null,
+          allMeasurementCountsPerPeriod: allMeasurementCountsPerPeriod,
         ),
       );
     });

@@ -115,11 +115,13 @@ class Calendar {
     required List<MeasurementResult> measurementResults,
   }) {
     List<PlannedMeasurement> measurements = [];
-    final currentWeekDay = DateTime.now().currentWeekDay();
+    final dtNow = DateTime.now();
+    final currentWeekDay = dtNow.currentWeekDay();
     final todayCarePlans = carePlans.where(
-      (final CarePlan carePlan) => ((carePlan.periodUnit == TimeUnit.day &&
-              carePlan.weekDays?.isEmpty == true) ||
-          carePlan.weekDays?.contains(currentWeekDay) == true),
+      (final CarePlan carePlan) => (carePlan.scheduledStart.isBefore(dtNow) &&
+          ((carePlan.periodUnit == TimeUnit.day &&
+                  carePlan.weekDays?.isEmpty == true) ||
+              carePlan.weekDays?.contains(currentWeekDay) == true)),
     );
 
     for (final carePlan in todayCarePlans) {
@@ -202,6 +204,8 @@ class Calendar {
     );
     for (final carePlan in dailyCarePlans) {
       for (final timingDayWhen in carePlan.timingDayWhen) {
+        final whenStart = timingDayWhen.start.tomorrowDateTime();
+        if (carePlan.scheduledStart.isAfter(whenStart)) continue;
         measurements.add(
           PlannedMeasurement(
             userId: carePlan.userId!,
@@ -218,6 +222,46 @@ class Calendar {
     return measurements;
   }
 
+  static PlannedMeasurement getVeryFirstMeasurement({
+    required CarePlan carePlan,
+  }) {
+    final List<PlannedMeasurement> upcomingMeasurements = [];
+
+    //start populating tomorrow and other days
+    final currentDate = carePlan.scheduledStart;
+    int daysShift = 1;
+    while (upcomingMeasurements.isEmpty) {
+      if (carePlan.periodUnit == TimeUnit.day) {
+        if (carePlan.weekDays?.isNotEmpty == true) {
+          //add them only in specific days
+          final shiftedDate = currentDate.add(Duration(days: daysShift));
+          final shiftedWeekDay = WeekDay.values[shiftedDate.weekday - 1];
+          if (carePlan.weekDays?.contains(shiftedWeekDay) == true) {
+            upcomingMeasurements.addAll(
+              getMeasurementsAtDate(carePlan, currentDate, daysShift),
+            );
+          }
+        } else {
+          //add daily routes
+          upcomingMeasurements.addAll(
+            getMeasurementsAtDate(carePlan, currentDate, daysShift),
+          );
+        }
+      }
+
+      daysShift += 1;
+    }
+
+    upcomingMeasurements.sort(
+      (a, b) => a.whenStart.millisecondsSinceEpoch
+          .compareTo(b.whenStart.millisecondsSinceEpoch),
+    );
+
+    final veryFirstMeasurement = upcomingMeasurements.first;
+
+    return veryFirstMeasurement;
+  }
+
   static List<PlannedMeasurement> getNUpcomingMeasurements({
     required List<CarePlan> carePlans,
     required int reqCount,
@@ -225,7 +269,11 @@ class Calendar {
   }) {
     final List<PlannedMeasurement> upcomingMeasurements = [];
 
+    final currentDt = DateTime.now();
+
+    //1. add today remaining measurements if exists
     for (final carePlan in carePlans) {
+      if (carePlan.scheduledStart.isAfter(currentDt)) continue;
       final plannedTimingsWhen = carePlan.getTodayRemainingMeasurements();
       for (final plannedTimingWhen in plannedTimingsWhen) {
         final plannedMeasurement = PlannedMeasurement(
@@ -246,15 +294,19 @@ class Calendar {
       }
     }
 
-    //start populating tomorrow and other days
-    final currentDate = DateTime.now();
+    //2. start populating tomorrow and other days
     int daysShift = 1;
     while (upcomingMeasurements.length < reqCount) {
       for (final carePlan in carePlans) {
         if (carePlan.periodUnit == TimeUnit.day) {
+          final shiftedDate = currentDt.add(Duration(days: daysShift));
+          if (Calendar.getVeryFirstMeasurement(carePlan: carePlan)
+              .whenStart
+              .isAfter(shiftedDate)) continue;
+
           if (carePlan.weekDays?.isNotEmpty == true) {
             //add them only in specific days
-            final shiftedDate = currentDate.add(Duration(days: daysShift));
+
             final shiftedWeekDay = WeekDay.values[shiftedDate.weekday - 1];
             if (carePlan.weekDays?.contains(shiftedWeekDay) == true) {
               upcomingMeasurements.addAll(
@@ -262,7 +314,8 @@ class Calendar {
               );
             }
           } else {
-            //add daily routes
+            //add daily routines
+
             upcomingMeasurements.addAll(
               getShiftedMeasurements(carePlan, daysShift),
             );
@@ -296,6 +349,29 @@ class Calendar {
                 .add(Duration(days: daysShift)),
             whenEnd: timingDayWhen.end
                 .todayDateTime()
+                .add(Duration(days: daysShift)),
+            timingDayWhen: timingDayWhen,
+            carePlan: carePlan,
+            reqCount: carePlan.frequency,
+          ),
+        )
+        .toList();
+  }
+
+  static List<PlannedMeasurement> getMeasurementsAtDate(
+    CarePlan carePlan,
+    DateTime dateTime,
+    int daysShift,
+  ) {
+    return carePlan.timingDayWhen
+        .map(
+          (timingDayWhen) => PlannedMeasurement(
+            userId: carePlan.userId!,
+            whenStart: timingDayWhen.start
+                .ofExactDate(dateTime)
+                .add(Duration(days: daysShift)),
+            whenEnd: timingDayWhen.end
+                .ofExactDate(dateTime)
                 .add(Duration(days: daysShift)),
             timingDayWhen: timingDayWhen,
             carePlan: carePlan,

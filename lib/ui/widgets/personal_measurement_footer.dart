@@ -24,7 +24,7 @@ class PersonalMeasurementFooter extends StatelessWidget {
             if (showInfo) ...[
               Container(
                 height: 0.5,
-                color: Theme.of(context).colorScheme.onSecondary,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
               Gaps.gap16,
               Text(

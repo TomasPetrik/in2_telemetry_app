@@ -89,10 +89,12 @@ class _ScaleTextFormFieldState extends State<ScaleTextFormField> {
             cursorColor:
                 widget.cursorColor ?? Theme.of(context).colorScheme.onPrimary,
             style: TextStyle(
-              color: Theme.of(context).colorScheme.surface,
-            ).merge(
+              color: Theme.of(context).colorScheme.onPrimary,
+            )
+            /*.merge(
               focusNode.hasFocus ? focusedStyle : unfocusedStyle,
-            ),
+            )*/
+            ,
           ),
           if (widget.suffixIcon != null)
             Positioned(

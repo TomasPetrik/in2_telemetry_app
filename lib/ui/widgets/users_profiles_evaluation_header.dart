@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
+import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
+import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/widgets/progress_header.dart';
 import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
@@ -42,13 +44,23 @@ class UsersProfilesEvaluationHeader extends StatelessWidget {
         whenPeriod: whenPeriod,
       );
 
-      progressItems.add(ProgressItem(userAccount.user.fullName, progress));
+      if (progress != null) {
+        progressItems.add(ProgressItem(userAccount.user.fullName, progress));
+      }
     }
 
-    return ProgressHeader(
-      whenPeriod: whenPeriod,
-      openWhenSelector: openWhenSelector,
-      progressItems: progressItems,
+    return SliverToBoxAdapter(
+      child: Column(
+        children: [
+          ProgressHeader(
+            whenPeriod: whenPeriod,
+            openWhenSelector: openWhenSelector,
+            progressItems: progressItems,
+            label: context.locale.common_plan_fulfillment,
+          ),
+          Gaps.gap24,
+        ],
+      ),
     );
   }
 }

@@ -32,7 +32,9 @@ class CircularIndicator extends StatelessWidget {
       ),
       circularStrokeCap: CircularStrokeCap.round,
       backgroundColor: Theme.of(context).colorScheme.secondary,
-      progressColor: Theme.of(context).colorScheme.onError,
+      progressColor: percent >= 1
+          ? Theme.of(context).colorScheme.onTertiary
+          : Theme.of(context).colorScheme.onError,
     );
   }
 }

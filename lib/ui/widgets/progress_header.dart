@@ -13,91 +13,106 @@ class ProgressHeader extends StatelessWidget {
     required this.whenPeriod,
     required this.openWhenSelector,
     required this.progressItems,
+    required this.label,
   });
 
   final ResultsWhenPeriod whenPeriod;
   final Function openWhenSelector;
   final List<ProgressItem> progressItems;
-
+  final String label;
   @override
   Widget build(BuildContext context) {
-    final itemWidth =
-        (MediaQuery.of(context).size.width - (4 * Dimensions.padding16)) / 4;
+    int parts = (progressItems.length < 5 ? progressItems.length : 5);
 
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: Paddings.horizontal16,
-        child: Card(
-          child: Container(
-            width: double.maxFinite,
-            padding: Paddings.all16,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadii.radius16,
-              color: Theme.of(context).colorScheme.onBackground,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    SvgPicture.asset(
-                      'assets/icons/icon_chart_pie_simple.svg',
-                      color: Theme.of(context).colorScheme.tertiary,
+    var itemWidth =
+        (MediaQuery.of(context).size.width - (4 * Dimensions.padding16)) /
+            parts;
+
+    if (parts > 4) {
+      itemWidth *= 1.15;
+    }
+
+    ScrollController scrollController = ScrollController(
+      initialScrollOffset: parts > 4 ? Dimensions.padding16 : 0,
+    );
+
+    return Padding(
+      padding: Paddings.horizontal16,
+      child: Card(
+        child: Container(
+          width: double.maxFinite,
+          padding: Paddings.all16,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadii.radius16,
+            color: Theme.of(context).colorScheme.onBackground,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  SvgPicture.asset(
+                    'assets/icons/icon_chart_pie_simple.svg',
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+                  Gaps.gap16,
+                  Text(
+                    label,
+                    style: ScaleTextStyles.text.apply(
+                      color: Theme.of(context).colorScheme.onPrimary,
                     ),
-                    Gaps.gap16,
-                    Text(
-                      context.locale.common_plan_fulfillment,
-                      style: ScaleTextStyles.text.apply(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      ),
-                    ),
-                    const Spacer(),
-                    InkWell(
-                      onTap: () {
-                        openWhenSelector.call();
-                      },
-                      child: Text(
-                        context.locale
-                            .common_measurement_times(whenPeriod.name),
-                        style: ScaleTextStyles.text.apply(
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Gaps.gap16,
-                if (progressItems.length == 1) ...{
-                  Builder(
-                    builder: (context) {
-                      return SingleProgressIndicator(
-                        progress: progressItems.first.progress,
-                      );
+                  ),
+                  const Spacer(),
+                  InkWell(
+                    onTap: () {
+                      openWhenSelector.call();
                     },
-                  )
-                } else
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ...progressItems
-                            .map(
-                              (progressItem) => SizedBox(
-                                width: itemWidth,
+                    child: Text(
+                      context.locale
+                          .common_measurement_times(whenPeriod.name),
+                      style: ScaleTextStyles.text.apply(
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Gaps.gap16,
+              if (progressItems.length == 1) ...{
+                Builder(
+                  builder: (context) {
+                    return SingleProgressIndicator(
+                      progress: progressItems.first.progress,
+                      label: progressItems.first.label,
+                    );
+                  },
+                )
+              } else
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  controller: scrollController,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ...progressItems
+                          .map(
+                            (progressItem) => SizedBox(
+                              width: itemWidth,
+                              child: Padding(
+                                padding: Paddings.horizontal4,
                                 child: CircularIndicator(
                                   label: progressItem.label,
                                   percent: progressItem.progress / 100,
                                 ),
                               ),
-                            )
-                            .toList(),
-                      ],
-                    ),
+                            ),
+                          )
+                          .toList(),
+                    ],
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
         ),
       ),

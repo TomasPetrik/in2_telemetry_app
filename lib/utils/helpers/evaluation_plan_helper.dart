@@ -29,7 +29,7 @@ class EvaluationPlanHelper {
     return _calculateProgress(fulfillmentEvaluation.items);
   }
 
-  static int getProgressFromPlans({
+  static int? getProgressFromPlans({
     required List<CarePlan> carePlans,
     required List<MeasurementResult> offlineResults,
     required ResultsWhenPeriod whenPeriod,
@@ -113,7 +113,9 @@ class EvaluationPlanHelper {
       }
     }
 
-    return expectedCount == 0 ? 0 : (actualCount / expectedCount * 100).round();
+    return expectedCount == 0
+        ? null
+        : (actualCount / expectedCount * 100).round();
   }
 
   static int _calculateProgress(List<FulfillmentEvaluationItem> items) {

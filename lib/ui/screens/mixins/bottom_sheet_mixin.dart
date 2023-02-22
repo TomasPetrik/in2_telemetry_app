@@ -89,7 +89,7 @@ mixin BottomSheetMixin {
   Future<ResultPeriodSelection?> showResultsWhenSelector(
     final BuildContext context,
     final ResultsWhenPeriod? whenPeriod,
-    final Map<ResultsWhenPeriod, int> fulfillmentPlan,
+    final Map<ResultsWhenPeriod, int?> fulfillmentPlan,
   ) async {
     final selected = await showModalBottomSheet<ResultPeriodSelection>(
       context: context,

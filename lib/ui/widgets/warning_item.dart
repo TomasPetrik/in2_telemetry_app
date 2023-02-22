@@ -23,6 +23,36 @@ class WarningItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return _WarningItem(
+      title: title,
+      description: description,
+      buttonLabel: buttonLabel,
+      buttonType: buttonType,
+      icon: icon,
+      onTap: onTap,
+    );
+  }
+}
+
+class _WarningItem extends WarningItem {
+  const _WarningItem({
+    required String title,
+    required String description,
+    required String buttonLabel,
+    required SmallButtonType buttonType,
+    Widget? icon,
+    VoidCallback? onTap,
+  }) : super(
+          title: title,
+          description: description,
+          buttonLabel: buttonLabel,
+          buttonType: buttonType,
+          icon: icon,
+          onTap: onTap,
+        );
+
+  @override
+  Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Card(
         child: Container(

@@ -96,8 +96,10 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                                   hospitalUserEntries.toList()[index];
 
                               final bool showWarning = hospital.value.any(
-                                (userAccount) => getIt<Session>()
-                                    .userHasProblem(userAccount),
+                                (userAccount) =>
+                                    getIt<Session>()
+                                        .getProblemIfExists(userAccount) !=
+                                    null,
                               );
 
                               return SettingsItem(

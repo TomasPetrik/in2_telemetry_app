@@ -111,10 +111,13 @@ extension DateParse on DateTime {
     final difference = daysBetween(currentDt, this).abs();
 
     if (difference == 0) {
-      return context.locale.common_measurement_times(PlanWhenPeriod.today.name);
+      return context.locale
+          .common_measurement_times(PlanWhenPeriod.today.name)
+          .toLowerCase();
     } else if (difference == 1) {
       return context.locale
-          .common_measurement_times(PlanWhenPeriod.tomorrow.name);
+          .common_measurement_times(PlanWhenPeriod.tomorrow.name)
+          .toLowerCase();
     } else {
       return toRegularDate();
     }

@@ -67,15 +67,6 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                       state.results == null) {
                     return const SizedBox.shrink();
                   } else {
-                    Map<PlanWhenPeriod, int>? measurements;
-
-                    if (state.currentCarePlans?.isNotEmpty == true) {
-                      measurements = CarePlanHelper.getPossibleWhenPeriods(
-                        state.currentCarePlans!,
-                        state.results!,
-                      );
-                    }
-
                     return NavigationScreen(
                       onTabSelected: (tabIndex) {
                         if (tabIndex == 0) {
@@ -111,32 +102,31 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                           ),
                         }
                       ],
-                      navigationHeader: measurements?.isNotEmpty == true
-                          ? PlannedMeasurementHeader(
-                              whenPeriod: state.selectedWhenPeriod ??
-                                  PlanWhenPeriod.today,
-                              openTimeSelector: () async {
-                                final selected =
-                                    await showPlannedMeasurementsSelector(
-                                  context,
-                                  state.selectedWhenPeriod,
-                                  CarePlanHelper.getPossibleWhenPeriods(
-                                    state.currentCarePlans!,
-                                    state.results!,
-                                  ),
-                                );
-                                if (selected?.selectedPeriod != null) {
-                                  carePlanBloc.add(
-                                    TimePeriodChangeEvent(
-                                      selected!.selectedPeriod!,
-                                    ),
-                                  );
-                                } else if (selected?.showCalendar == true) {
-                                  //TODO.. show calendar
-                                }
-                              },
-                            )
-                          : null,
+                      navigationHeader:
+                          state.allMeasurementCountsPerPeriod?.isNotEmpty ==
+                                  true
+                              ? PlannedMeasurementHeader(
+                                  whenPeriod: state.selectedWhenPeriod ??
+                                      PlanWhenPeriod.today,
+                                  openTimeSelector: () async {
+                                    final selected =
+                                        await showPlannedMeasurementsSelector(
+                                      context,
+                                      state.selectedWhenPeriod,
+                                      state.allMeasurementCountsPerPeriod!,
+                                    );
+                                    if (selected?.selectedPeriod != null) {
+                                      carePlanBloc.add(
+                                        TimePeriodChangeEvent(
+                                          selected!.selectedPeriod!,
+                                        ),
+                                      );
+                                    } else if (selected?.showCalendar == true) {
+                                      //TODO.. show calendar
+                                    }
+                                  },
+                                )
+                              : null,
                       tabs: [
                         if (supportedMeasurementTypes.length > 1) ...{
                           NavigationTabBarItem(

@@ -9,7 +9,7 @@ import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 class ResultsHelper {
-  static Map<ResultsWhenPeriod, int> getPeriodFultillments(
+  static Map<ResultsWhenPeriod, int?> getPeriodFultillments(
     List<CarePlan> carePlans,
     final List<MeasurementResult> todayAndYesterdayResults,
   ) {
@@ -150,7 +150,7 @@ class ResultsHelper {
     allResults.addAll(ongoingResolvedResults);
 
     //4. Add pending results
-    //they are cover in ongoing already measured results (offline included)
+    //they are covered in ongoing already measured results (offline included)
     //allResults.addAll(offlineResultsConverted);
 
     //5. Add other patient/measurement (s) not included in previous ongoing resolved results

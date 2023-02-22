@@ -30,6 +30,13 @@
   "common_do_sync": "Synchronizovat",
   "common_all_accounts": "Všechny účty",
   "common_plan_fulfillment": "Plnění plánu",
+  "common_plans_fulfillment_plural": "{count, plural, zero{Plnění plánu} one{Plnění plánu} other{Plnění plánů}}",
+  "@common_plan_fulfillment_plural": {
+    "description": "Count of plans fulfillment",
+    "placeholders": {
+      "count": {}
+    }
+  },
   "common_overall": "Celkem",
   "common_when_day_name": "{whenDayName, select, today{dnešek} yesterday{včerejšek} other{zvolené období}}",
   "@common_when_day_name": {
@@ -185,6 +192,17 @@
     }
   },
   "care_plan_detail_screen_fulfillment_evaluation": "Dosavadní plnění plánu",
+  "care_plan_detail_screen_fulfillment_evaluation_valid_from": "Plánované měření začíná {fromTime} o {atTime}",
+  "@care_plan_detail_screen_fulfillment_evaluation_valid_from": {
+    "placeholders": {
+      "fromTime": {
+        "type": "String"
+      },
+      "atTime": {
+        "type": "String"
+      }
+    }
+  },
   "care_plan_detail_screen_show_calendar": "Zobrazit kalendář",
   "care_plan_detail_screen_plan_info": "Informace o plánu",
   "care_plan_detail_screen_managed_by": "Spravuje",
@@ -253,6 +271,7 @@
     }
   },
   "manual_measurement_screen_title": "Vlastní zápis hodnot",
+  "manual_measurement_screen_type": "Typ",
   "manual_measurement_screen_systolic": "Systolický",
   "manual_measurement_screen_diasystolic": "Diastolický",
   "manual_measurement_screen_pulse": "Puls",
@@ -278,7 +297,7 @@
       }
     }
   },
-  "sync_widget_sync_results_failed_title":  "Synchronizace se nepovedla",
+  "sync_widget_sync_results_failed_title": "Synchronizace se nepovedla",
   "sync_widget_sync_results_failed_desc": "Některé výsledky se nepovedlo odeslat. Zkontrolujte připojení a zkuste synchronizaci spustit znovu",
   "notification_widget_plan_changed_title": "Změna plánu",
   "notification_widget_plan_changed_desc": "Byl Vám upraven plán pro měření {measurementType}.",
@@ -324,6 +343,7 @@
   },
   "results_measurements_when_selector_title": "Plnění plánu",
   "results_plan_fulfilled_on": "Plán splněn na {percentage}%",
+  "results_plan_no_measurement_needed": "Plán nevyžadoval žádné měření",
   "@results_plan_fulfilled_on": {
     "placeholders": {
       "percentage": {

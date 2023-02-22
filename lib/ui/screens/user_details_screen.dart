@@ -1,29 +1,26 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
-import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/care_plan_detail_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/widgets/blured_app_bar.dart';
 import 'package:scalesoft_app/ui/widgets/care_plan_item.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
-import 'package:scalesoft_app/ui/widgets/notification_item.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
 import 'package:scalesoft_app/ui/widgets/sliver_name_value_row.dart';
 import 'package:scalesoft_app/ui/widgets/sync_process_item.dart';
-import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
+import 'package:scalesoft_app/ui/widgets/user_warning_item.dart';
 
 class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
   const UserDetailScreen({
@@ -35,10 +32,17 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
 
   @override
   Widget build(BuildContext context) {
+    final relevantProblems = [
+      UserProblemType.sessionExpired,
+      UserProblemType.lastSyncFailed,
+      UserProblemType.syncResultsFailed
+    ];
+
     return BlocBuilder<SyncBloc, SyncState>(
       bloc: getIt<SyncBloc>(),
       builder: (context, state) {
-        final warningInner = state.whenOrNull(
+        //1. Show awalys sync in progress when possible
+        final anyProgressWidget = state.whenOrNull(
           inProgress: () => SyncProcessItem(
             syncProcessType: SyncProcessType.inProgress,
             label: context.locale.sync_widget_sync_in_progress,
@@ -47,67 +51,32 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
             syncProcessType: SyncProcessType.done,
             label: context.locale.sync_widget_synced,
           ),
-          userSessionExpired: (userAccount) => WarningItem(
-            title: context.locale.session_expired_title,
-            description: context.locale.session_expired_description(
-              userAccount.user.fullName,
-            ),
-            buttonLabel: context.locale.common_log_in,
-            icon: SvgPicture.asset(
-              'assets/icons/icon_triangle_exclamation_medium.svg',
-              color: Theme.of(context).colorScheme.error,
-            ),
-            onTap: () {
-              getIt<AuthBloc>().add(
-                Authenticate(
-                  hospital: userAccount.hospital!,
-                ),
-              );
-            },
-          ),
-          syncUserDataFailed: (lastSync) => WarningItem(
-            title: context.locale.sync_widget_sync_failed_title,
-            description: lastSync != null
-                ? context.locale.sync_widget_sync_failed_desc(
-                    lastSync.toDateOrDay(context),
-                    lastSync.toTimeOfDay().toString(),
-                  )
-                : '',
-            buttonLabel: context.locale.common_do_sync,
-            icon: SvgPicture.asset(
-              'assets/icons/icon_triangle_exclamation_medium.svg',
-              color: Theme.of(context).colorScheme.error,
-            ),
-            onTap: () {
-              getIt<SyncBloc>().add(
-                const SyncEvent.syncAll(),
-              );
-            },
-          ),
-          userResultsFailed: (measurements, lasySync) => WarningItem(
-            title: context.locale.sync_widget_sync_results_failed_title,
-            description: context.locale.sync_widget_sync_results_failed_desc,
-            buttonLabel: context.locale.common_do_sync,
-            icon: SvgPicture.asset(
-              'assets/icons/icon_triangle_exclamation_medium.svg',
-              color: Theme.of(context).colorScheme.error,
-            ),
-            onTap: () {
-              getIt<SyncBloc>().add(
-                const SyncEvent.syncAll(),
-              );
-            },
-          ),
         );
 
-        final userWarning = warningInner != null
+        //2. Otherwise check for high pioritised problem
+        final userProblemType =
+            getIt<Session>().getProblemIfExists(userAccount);
+
+        Widget? userWarningWidget;
+        if (anyProgressWidget != null) {
+          userWarningWidget = anyProgressWidget;
+        } else if (userProblemType != null &&
+            relevantProblems.contains(userProblemType)) {
+          userWarningWidget = UserWarningItem(
+            userProblemType: userProblemType,
+            userAccount: userAccount,
+          );
+        }
+
+        //3. If has no user warning
+        final anyInfoWidget = userWarningWidget != null
             ? SliverPadding(
                 padding: const EdgeInsets.only(
                   left: Dimensions.padding16,
                   right: Dimensions.padding16,
                   bottom: Dimensions.padding24,
                 ),
-                sliver: warningInner,
+                sliver: userWarningWidget,
               )
             : const SliverToBoxAdapter(
                 child: SizedBox.shrink(),
@@ -123,7 +92,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                         Constants.appBarHeight,
                   ),
                   const SliverGap(Dimensions.padding16),
-                  userWarning,
+                  anyInfoWidget,
                   if (userAccount.carePlans?.isNotEmpty == true) ...[
                     SliverPadding(
                       padding: Paddings.left16,
@@ -234,13 +203,10 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                 top: 0,
                 left: 0,
                 right: 0,
-                child: ClipRRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                    child: ScaleAppBar(
-                      title: userAccount.user.fullName,
-                      onBackTap: () {},
-                    ),
+                child: BluredAppBar(
+                  child: ScaleAppBar(
+                    title: userAccount.user.fullName,
+                    onBackTap: () {},
                   ),
                 ),
               ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc_event.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc_state.dart';
@@ -24,8 +23,6 @@ import 'package:scalesoft_app/ui/widgets/results_list.dart';
 import 'package:scalesoft_app/ui/widgets/sync_widget.dart';
 import 'package:scalesoft_app/ui/widgets/users_profiles_evaluation_header.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
-import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
-import 'package:scalesoft_app/utils/helpers/results_helper.dart';
 
 class ResultsPage extends StatelessWidget with BottomSheetMixin {
   const ResultsPage({super.key});
@@ -70,20 +67,10 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                 bloc: resultsBloc,
                 builder: (context, state) {
                   Future<void> openWhenSelector() async {
-                    final List<MeasurementResult> offlineResults =
-                        MeasurementHelper.getOffilneResultsConverted(
-                      allPendingResults,
-                      [state.selectedWhenPeriod!],
-                      null,
-                    );
-
                     final selected = await showResultsWhenSelector(
                       context,
                       state.selectedWhenPeriod,
-                      ResultsHelper.getPeriodFultillments(
-                        state.currentCarePlans!,
-                        offlineResults,
-                      ),
+                      state.plansEvaluationPerPeriod ?? {},
                     );
                     if (selected?.selectedPeriod != null) {
                       resultsBloc.add(
@@ -124,7 +111,6 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                         SyncWidget(
                           syncState: syncState,
                         ),
-                        const SliverGap(Dimensions.padding16),
                         session.isMultiUser == true
                             ? UsersProfilesEvaluationHeader(
                                 userAccounts: session.getSessionAccounts(),
@@ -134,13 +120,12 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                             : CarePlansEvaluationHeader(
                                 carePlans: CarePlanHelper
                                     .getCarePlansContainingMeasurements(
-                                  allCarePlans: state.currentCarePlans!,
+                                  allCarePlans: allCarePlans,
                                   whenPeriod: state.selectedWhenPeriod!,
                                 ),
                                 whenPeriod: state.selectedWhenPeriod!,
                                 openWhenSelector: openWhenSelector,
                               ),
-                        const SliverGap(Dimensions.padding24),
                       ],
                       navigationHeader: Row(
                         children: [

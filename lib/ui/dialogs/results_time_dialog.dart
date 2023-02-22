@@ -15,7 +15,7 @@ class ResultsTimeDialog extends StatelessWidget {
   });
 
   final ResultsWhenPeriod whenPeriod;
-  final Map<ResultsWhenPeriod, int> fulfillmentPlan;
+  final Map<ResultsWhenPeriod, int?> fulfillmentPlan;
 
   @override
   Widget build(BuildContext context) {

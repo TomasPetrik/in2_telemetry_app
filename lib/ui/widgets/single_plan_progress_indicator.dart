@@ -38,7 +38,7 @@ class SinglePlanProgressIndicator extends StatelessWidget {
         : 0;
 
     return SingleProgressIndicator(
-      progress: progress,
+      progress: progress ?? 0,
     );
   }
 }

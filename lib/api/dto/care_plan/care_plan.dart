@@ -6,6 +6,7 @@ import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaulation_aggregated.dart';
 import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
+import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 part 'care_plan.freezed.dart';
 part 'care_plan.g.dart';
@@ -106,6 +107,14 @@ class CarePlan with _$CarePlan {
     final now = DateTime.now();
     final currentWeekDay = now.currentWeekDay();
 
+    final todayMidnight = now.getTomorrowMidnight();
+
+    final veryFirstMeasurement =
+        Calendar.getVeryFirstMeasurement(carePlan: this);
+    if (veryFirstMeasurement.whenStart.isAfter(todayMidnight)) {
+      return false;
+    }
+
     if ((periodUnit == TimeUnit.day && weekDays?.isEmpty == true) ||
         weekDays?.contains(currentWeekDay) == true) {
       return true;
@@ -117,6 +126,14 @@ class CarePlan with _$CarePlan {
   bool hasMeasurementsYesterday() {
     final dtYesterday = DateTime.now().subtract(const Duration(days: 1));
     final currentWeekDay = dtYesterday.currentWeekDay();
+
+    final yesterdayMidnight = dtYesterday.getTomorrowMidnight();
+
+    final veryFirstMeasurement =
+        Calendar.getVeryFirstMeasurement(carePlan: this);
+    if (veryFirstMeasurement.whenStart.isAfter(yesterdayMidnight)) {
+      return false;
+    }
 
     if ((periodUnit == TimeUnit.day && weekDays?.isEmpty == true) ||
         weekDays?.contains(currentWeekDay) == true) {

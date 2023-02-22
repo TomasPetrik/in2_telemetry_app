@@ -5,6 +5,7 @@ import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
+import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/widgets/progress_header.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
@@ -51,12 +52,14 @@ class CarePlansEvaluationHeader extends StatelessWidget {
         whenPeriod: whenPeriod,
       );
 
-      progressItems.add(
-        ProgressItem(
-          context.locale.common_measurement_types(measurementType.name),
-          progress,
-        ),
-      );
+      if (progress != null) {
+        progressItems.add(
+          ProgressItem(
+            context.locale.common_measurement_types(measurementType.name),
+            progress,
+          ),
+        );
+      }
     }
 
     if (supportedMeasurementTypes.length > 1) {
@@ -66,18 +69,31 @@ class CarePlansEvaluationHeader extends StatelessWidget {
         whenPeriod: whenPeriod,
       );
 
-      progressItems.add(
-        ProgressItem(
-          context.locale.common_overall,
-          progress,
-        ),
-      );
+      if (progress != null) {
+        progressItems.add(
+          ProgressItem(
+            context.locale.common_overall,
+            progress,
+          ),
+        );
+      }
     }
 
-    return ProgressHeader(
-      whenPeriod: whenPeriod,
-      openWhenSelector: openWhenSelector,
-      progressItems: progressItems,
-    );
+    return progressItems.isEmpty
+        ? const SliverToBoxAdapter(child: SizedBox.shrink())
+        : SliverToBoxAdapter(
+            child: Column(
+              children: [
+                ProgressHeader(
+                  whenPeriod: whenPeriod,
+                  openWhenSelector: openWhenSelector,
+                  progressItems: progressItems,
+                  label: context.locale
+                      .common_plans_fulfillment_plural(progressItems.length),
+                ),
+                Gaps.gap24,
+              ],
+            ),
+          );
   }
 }

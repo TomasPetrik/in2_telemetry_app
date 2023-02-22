@@ -49,12 +49,13 @@ class MeasurementsList extends StatelessWidget {
 
   int _getPlanEvaluation() {
     return EvaluationPlanHelper.getProgressFromPlans(
-      carePlans: carePlans,
-      whenPeriod: whenPeriod == PlanWhenPeriod.today
-          ? ResultsWhenPeriod.today
-          : ResultsWhenPeriod.yesterday,
-      offlineResults: results,
-    );
+          carePlans: carePlans,
+          whenPeriod: whenPeriod == PlanWhenPeriod.today
+              ? ResultsWhenPeriod.today
+              : ResultsWhenPeriod.yesterday,
+          offlineResults: results,
+        ) ??
+        0;
   }
 
   @override

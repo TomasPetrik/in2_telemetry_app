@@ -138,7 +138,23 @@ class LightMode {
               width: 1,
             ),
           ),
-          errorStyle: ScaleTextStyles.text.apply(color: alertColor),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadii.radius8,
+            borderSide: BorderSide(
+              color: colorContent60,
+              width: 1,
+            ),
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadii.radius8,
+            borderSide: BorderSide(
+              color: colorContent60,
+              width: 1,
+            ),
+          ),
+          errorStyle: ScaleTextStyles.text.apply(
+            color: alertColor,
+          ),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(

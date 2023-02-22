@@ -8,16 +8,16 @@
 import 'package:dio/dio.dart' as _i7;
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
-import 'package:scalesoft_app/api/client/account_api_client.dart' as _i15;
-import 'package:scalesoft_app/api/client/auth_api_client.dart' as _i17;
-import 'package:scalesoft_app/api/client/care_plan_api_client.dart' as _i18;
-import 'package:scalesoft_app/api/interceptors/token_interceptor.dart' as _i23;
-import 'package:scalesoft_app/bloc/auth/auth_bloc.dart' as _i24;
+import 'package:scalesoft_app/api/client/account_api_client.dart' as _i16;
+import 'package:scalesoft_app/api/client/auth_api_client.dart' as _i18;
+import 'package:scalesoft_app/api/client/care_plan_api_client.dart' as _i19;
+import 'package:scalesoft_app/api/interceptors/token_interceptor.dart' as _i24;
+import 'package:scalesoft_app/bloc/auth/auth_bloc.dart' as _i25;
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart' as _i6;
 import 'package:scalesoft_app/bloc/results/results_bloc.dart' as _i11;
-import 'package:scalesoft_app/bloc/settings/settings_bloc.dart' as _i21;
-import 'package:scalesoft_app/bloc/sync/sync_bloc.dart' as _i25;
-import 'package:scalesoft_app/bloc/user_content/content_bloc.dart' as _i20;
+import 'package:scalesoft_app/bloc/settings/settings_bloc.dart' as _i22;
+import 'package:scalesoft_app/bloc/sync/sync_bloc.dart' as _i26;
+import 'package:scalesoft_app/bloc/user_content/content_bloc.dart' as _i21;
 import 'package:scalesoft_app/cubit/auth_web/auth_web_cubit.dart' as _i5;
 import 'package:scalesoft_app/cubit/hospital_search/hospital_search_cubit.dart'
     as _i8;
@@ -25,15 +25,16 @@ import 'package:scalesoft_app/cubit/omron/omron_connection_cubit.dart' as _i9;
 import 'package:scalesoft_app/providers/account_db_provider.dart' as _i3;
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart'
     as _i10;
-import 'package:scalesoft_app/providers/settings_db_provider.dart' as _i13;
-import 'package:scalesoft_app/repositories/account_repository.dart' as _i16;
-import 'package:scalesoft_app/repositories/care_plans_repository.dart' as _i19;
+import 'package:scalesoft_app/providers/session_db_provider.dart' as _i13;
+import 'package:scalesoft_app/providers/settings_db_provider.dart' as _i14;
+import 'package:scalesoft_app/repositories/account_repository.dart' as _i17;
+import 'package:scalesoft_app/repositories/care_plans_repository.dart' as _i20;
 import 'package:scalesoft_app/services/auth_service.dart' as _i4;
-import 'package:scalesoft_app/services/settings_service.dart' as _i14;
-import 'package:scalesoft_app/services/sync_service.dart' as _i22;
+import 'package:scalesoft_app/services/settings_service.dart' as _i15;
+import 'package:scalesoft_app/services/sync_service.dart' as _i23;
 import 'package:scalesoft_app/storage/session.dart' as _i12;
 
-import '../api/dio_module.dart' as _i26;
+import '../api/dio_module.dart' as _i27;
 
 /// ignore_for_file: unnecessary_lambdas
 /// ignore_for_file: lines_longer_than_80_chars
@@ -65,57 +66,59 @@ Future<_i1.GetIt> init(
     gh<_i3.AccountDbProvider>(),
     gh<_i10.PendingResultsDbProvider>(),
   ));
-  gh.singleton<_i13.SettingsDbProvider>(_i13.SettingsDbProvider());
-  await gh.lazySingletonAsync<_i14.SettingsService>(
-    () => _i14.SettingsService.create(),
+  gh.singleton<_i13.SessionDbProvider>(_i13.SessionDbProvider());
+  gh.singleton<_i14.SettingsDbProvider>(_i14.SettingsDbProvider());
+  await gh.lazySingletonAsync<_i15.SettingsService>(
+    () => _i15.SettingsService.create(),
     preResolve: true,
     dispose: (i) => i.dispose(),
   );
-  gh.factory<_i15.AccountApiClient>(
-      () => _i15.AccountApiClient(gh<_i7.Dio>(instanceName: 'privateDio')));
-  gh.singleton<_i16.AccountRepository>(
-      _i16.AccountRepository(gh<_i15.AccountApiClient>()));
-  gh.factory<_i17.AuthApiClient>(
-      () => _i17.AuthApiClient(gh<_i7.Dio>(instanceName: 'privateDio')));
-  gh.factory<_i18.CarePlanApiClient>(
-      () => _i18.CarePlanApiClient(gh<_i7.Dio>(instanceName: 'privateDio')));
-  gh.singleton<_i19.CarePlansRepository>(_i19.CarePlansRepository(
-    gh<_i18.CarePlanApiClient>(),
+  gh.factory<_i16.AccountApiClient>(
+      () => _i16.AccountApiClient(gh<_i7.Dio>(instanceName: 'privateDio')));
+  gh.singleton<_i17.AccountRepository>(
+      _i17.AccountRepository(gh<_i16.AccountApiClient>()));
+  gh.factory<_i18.AuthApiClient>(
+      () => _i18.AuthApiClient(gh<_i7.Dio>(instanceName: 'privateDio')));
+  gh.factory<_i19.CarePlanApiClient>(
+      () => _i19.CarePlanApiClient(gh<_i7.Dio>(instanceName: 'privateDio')));
+  gh.singleton<_i20.CarePlansRepository>(_i20.CarePlansRepository(
+    gh<_i19.CarePlanApiClient>(),
     gh<_i12.Session>(),
   ));
-  gh.singleton<_i20.ContentBloc>(_i20.ContentBloc(
+  gh.singleton<_i21.ContentBloc>(_i21.ContentBloc(
     gh<_i3.AccountDbProvider>(),
+    gh<_i13.SessionDbProvider>(),
     gh<_i12.Session>(),
   ));
-  gh.factory<_i21.SettingsBloc>(() => _i21.SettingsBloc(
-        gh<_i14.SettingsService>(),
-        gh<_i13.SettingsDbProvider>(),
+  gh.factory<_i22.SettingsBloc>(() => _i22.SettingsBloc(
+        gh<_i15.SettingsService>(),
+        gh<_i14.SettingsDbProvider>(),
       ));
-  gh.singleton<_i22.SyncService>(_i22.SyncService(
+  gh.singleton<_i23.SyncService>(_i23.SyncService(
     gh<_i12.Session>(),
     gh<_i3.AccountDbProvider>(),
     gh<_i10.PendingResultsDbProvider>(),
-    gh<_i19.CarePlansRepository>(),
+    gh<_i20.CarePlansRepository>(),
   ));
-  gh.factory<_i23.TokenInterceptor>(() => _i23.TokenInterceptor(
+  gh.factory<_i24.TokenInterceptor>(() => _i24.TokenInterceptor(
         gh<_i12.Session>(),
-        gh<_i15.AccountApiClient>(),
+        gh<_i16.AccountApiClient>(),
       ));
-  gh.singleton<_i24.AuthBloc>(_i24.AuthBloc(
+  gh.singleton<_i25.AuthBloc>(_i25.AuthBloc(
     gh<_i4.AuthService>(),
-    gh<_i16.AccountRepository>(),
+    gh<_i17.AccountRepository>(),
     gh<_i12.Session>(),
     gh<_i3.AccountDbProvider>(),
     gh<_i10.PendingResultsDbProvider>(),
     gh<_i7.Dio>(instanceName: 'privateDio'),
-    gh<_i22.SyncService>(),
+    gh<_i23.SyncService>(),
   ));
-  gh.singleton<_i25.SyncBloc>(_i25.SyncBloc(
+  gh.singleton<_i26.SyncBloc>(_i26.SyncBloc(
     gh<_i3.AccountDbProvider>(),
-    gh<_i22.SyncService>(),
+    gh<_i23.SyncService>(),
     gh<_i12.Session>(),
   ));
   return getIt;
 }
 
-class _$DioModule extends _i26.DioModule {}
+class _$DioModule extends _i27.DioModule {}

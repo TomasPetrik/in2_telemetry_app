@@ -8,7 +8,6 @@ import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
-import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 
 @singleton
 class Session {
@@ -124,16 +123,17 @@ class Session {
     return const SyncState.synced();
   }
 
-  bool userHasProblem(UserAccount userAccount) {
-    if (userAccount.hasProblem()) {
-      return true;
+  UserProblemType? getProblemIfExists(UserAccount userAccount) {
+    final userProblem = userAccount.getProblemIfExists();
+    if (userProblem != null) {
+      return userProblem;
     }
 
     final pendingResults =
         _pendingResultsDbProvider.getPerUser(userAccount.user.muid);
     if (pendingResults?.isNotEmpty == true) {
-      return true;
+      return UserProblemType.syncResultsFailed;
     }
-    return false;
+    return null;
   }
 }
