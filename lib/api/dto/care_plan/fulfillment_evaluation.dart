@@ -31,6 +31,9 @@ class FulfillmentEvaluationItem with _$FulfillmentEvaluationItem {
     @JsonKey(fromJson: toLocalDate) @HiveField(1) DateTime end,
     @HiveField(2) int requiredMeasurementCount,
     @HiveField(3) int actualMeasurementCount,
+    @HiveField(4)
+    @MeasurementTimesConverter()
+        List<DateTime> actualMeasurementTimes,
   ) = _FulfillmentEvaluationItem;
 
   factory FulfillmentEvaluationItem.fromJson(Map<String, dynamic> json) =>
@@ -40,4 +43,27 @@ class FulfillmentEvaluationItem with _$FulfillmentEvaluationItem {
   String toString() => toJson().toString();
 
   bool wasMeasured() => actualMeasurementCount >= requiredMeasurementCount;
+}
+
+class MeasurementTimesConverter
+    implements JsonConverter<List<DateTime>, List<dynamic>> {
+  const MeasurementTimesConverter();
+
+  @override
+  List<DateTime> fromJson(List<dynamic> measurementUtcTimesJson) {
+    final List<DateTime> dateTimes = [];
+
+    final measurementUtcTimes = List<String>.from(measurementUtcTimesJson);
+
+    for (final utcTime in measurementUtcTimes) {
+      dateTimes.add(DateTime.parse(utcTime).toLocal());
+    }
+
+    return dateTimes;
+  }
+
+  @override
+  List<DateTime> toJson(List<DateTime> dateTimes) {
+    return [];
+  }
 }

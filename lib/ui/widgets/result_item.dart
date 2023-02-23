@@ -19,6 +19,17 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
 
   final MeasurementResult mResult;
 
+  String _getMeasurementTime() {
+    final actualMeasurementTimes =
+        mResult.evaluationItem?.actualMeasurementTimes;
+    if (actualMeasurementTimes != null &&
+        actualMeasurementTimes.isNotEmpty == true) {
+      return actualMeasurementTimes.last.toLocal().toTimeOfDay().toString();
+    } else {
+      return mResult.measurementDateTime.toLocal().toTimeOfDay().toString();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isMultiUser = getIt<Session>().isMultiUser == true;
@@ -36,14 +47,7 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                mResult.measurementFinishDateTime
-                        ?.toLocal()
-                        .toTimeOfDay()
-                        .toString() ??
-                    mResult.measurementDateTime
-                        .toLocal()
-                        .toTimeOfDay()
-                        .toString(),
+                _getMeasurementTime(),
                 style: ScaleTextStyles.label.apply(
                   color: Theme.of(context).colorScheme.onPrimary,
                 ),

@@ -105,13 +105,14 @@ class ResultsHelper {
           false,
     )
         .map((measurement) {
+      final evaluationItem = MeasurementHelper.getEvaluation(
+        measurement,
+        offlineResultsConverted,
+      );
       return MeasurementResult(
         measurementDateTime: measurement.whenStart,
         measurementFinishDateTime: measurement.whenEnd,
-        evaluationItem: MeasurementHelper.getEvaluation(
-          measurement,
-          offlineResultsConverted,
-        ),
+        evaluationItem: evaluationItem,
         measurementType: measurement.carePlan.activity.measurementType,
         userId: measurement.userId,
       );
@@ -135,13 +136,14 @@ class ResultsHelper {
           true,
     )
         .map((measurement) {
+      final evaluationItem = MeasurementHelper.getEvaluation(
+        measurement,
+        offlineResultsConverted,
+      );
       return MeasurementResult(
         measurementDateTime: measurement.whenStart,
         measurementFinishDateTime: measurement.whenEnd,
-        evaluationItem: MeasurementHelper.getEvaluation(
-          measurement,
-          offlineResultsConverted,
-        ),
+        evaluationItem: evaluationItem,
         measurementType: measurement.carePlan.activity.measurementType,
         userId: measurement.userId,
       );

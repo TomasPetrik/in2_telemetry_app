@@ -34,8 +34,6 @@ class EvaluationPlanHelper {
     required List<MeasurementResult> offlineResults,
     required ResultsWhenPeriod whenPeriod,
   }) {
-    final List<FulfillmentEvaluationItem> items = [];
-
     int expectedCount = 0;
     int actualCount = 0;
 
@@ -52,25 +50,19 @@ class EvaluationPlanHelper {
 
     //Include fulfillments evaluation items
     for (final carePlan in carePlans) {
-      final List<FulfillmentEvaluationItem> carePlanEvaluationItems =
-          carePlan.lastTwoDaysEvaluation?.items.isNotEmpty == true
-              ? carePlan.lastTwoDaysEvaluation!.items.where((evItem) {
-                  if ((whenPeriod == ResultsWhenPeriod.today &&
-                          evItem.start.isToday()) ||
-                      (whenPeriod == ResultsWhenPeriod.yesterday &&
-                          evItem.start.wasYesterday())) {
-                    actualCount += evItem.actualMeasurementCount >
-                            evItem.requiredMeasurementCount
-                        ? evItem.requiredMeasurementCount
-                        : evItem.actualMeasurementCount;
-
-                    return true;
-                  }
-                  return false;
-                }).toList()
-              : [];
-
-      items.addAll(carePlanEvaluationItems);
+      if (carePlan.lastTwoDaysEvaluation?.items.isNotEmpty == true) {
+        for (final evItem in carePlan.lastTwoDaysEvaluation!.items) {
+          if ((whenPeriod == ResultsWhenPeriod.today &&
+                  evItem.start.isToday()) ||
+              (whenPeriod == ResultsWhenPeriod.yesterday &&
+                  evItem.start.wasYesterday())) {
+            actualCount +=
+                evItem.actualMeasurementCount > evItem.requiredMeasurementCount
+                    ? evItem.requiredMeasurementCount
+                    : evItem.actualMeasurementCount;
+          }
+        }
+      }
     }
 
     //Include offline results if exists into plan fulfillment evaluation:
@@ -101,15 +93,6 @@ class EvaluationPlanHelper {
                 ? plannedMeasurement.reqCount
                 : matchingResultsInPeriod.length;
         actualCount += maxIntervalCount;
-
-        items.add(
-          FulfillmentEvaluationItem(
-            plannedMeasurement.whenStart,
-            plannedMeasurement.whenEnd,
-            plannedMeasurement.reqCount,
-            maxIntervalCount,
-          ),
-        );
       }
     }
 

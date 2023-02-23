@@ -38,10 +38,13 @@ class MeasurementHelper {
     ).map((mResult) => mResult.measurementDateTime);
 
     int matchedResultCount = 0;
+    List<DateTime> actualMeasurementTimes = [];
     for (final measuredTime in measuredTimesSet) {
       if (plannedMeasurement.whenStart.isBefore(measuredTime) &&
           plannedMeasurement.whenEnd.isAfter(measuredTime)) {
         matchedResultCount += 1;
+
+        actualMeasurementTimes.add(measuredTime);
       }
     }
 
@@ -50,6 +53,7 @@ class MeasurementHelper {
       plannedMeasurement.whenEnd,
       plannedMeasurement.reqCount,
       matchedResultCount,
+      actualMeasurementTimes,
     );
   }
 
