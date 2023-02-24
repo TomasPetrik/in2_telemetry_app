@@ -36,6 +36,7 @@ class CarePlan with _$CarePlan {
     @HiveField(14) FulfillmentEvaluation? lastTwoDaysEvaluation,
     @HiveField(15) bool? wasChanged,
     @HiveField(16) String? userId,
+    @HiveField(17) bool? wasExpired,
   ) = _CarePlan;
 
   factory CarePlan.fromJson(Map<String, dynamic> json) =>

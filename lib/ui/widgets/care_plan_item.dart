@@ -29,11 +29,31 @@ class CarePlanItem extends StatelessWidget {
           children: [
             Row(
               children: [
-                SvgPicture.asset(
-                  'assets/icons/icon_wave_pulse.svg',
-                  color: Theme.of(context).colorScheme.tertiary,
+                Stack(
+                  children: [
+                    Padding(
+                      padding: Paddings.right4,
+                      child: SvgPicture.asset(
+                        'assets/icons/icon_wave_pulse.svg',
+                        color: Theme.of(context).colorScheme.tertiary,
+                      ),
+                    ),
+                    if (carePlan.wasChanged == true)
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: Container(
+                          height: 8,
+                          width: 8,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.error,
+                            borderRadius: BorderRadii.radius4,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
-                Gaps.gap16,
+                Gaps.gap12,
                 Text(
                   context.locale.common_measurement_types(
                     carePlan.activity.measurementType.name,

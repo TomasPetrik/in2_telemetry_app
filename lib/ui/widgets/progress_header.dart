@@ -56,20 +56,21 @@ class ProgressHeader extends StatelessWidget {
                     color: Theme.of(context).colorScheme.tertiary,
                   ),
                   Gaps.gap16,
-                  Text(
-                    label,
-                    style: ScaleTextStyles.text.apply(
-                      color: Theme.of(context).colorScheme.onPrimary,
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: ScaleTextStyles.text.apply(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
                     ),
                   ),
-                  const Spacer(),
+                  Gaps.gap16,
                   InkWell(
                     onTap: () {
                       openWhenSelector.call();
                     },
                     child: Text(
-                      context.locale
-                          .common_measurement_times(whenPeriod.name),
+                      context.locale.common_measurement_times(whenPeriod.name),
                       style: ScaleTextStyles.text.apply(
                         color: Theme.of(context).primaryColor,
                       ),

@@ -9,5 +9,7 @@ class SyncEvent with _$SyncEvent {
   const factory SyncEvent.syncAll() = _SyncAll;
   const factory SyncEvent.syncResults() = _SyncResults;
   factory SyncEvent.userSessionExpired(String refreshToken) = _UserExpired;
-  factory SyncEvent.resolveUpdatedPlan(CarePlan carePlan) = _ResolveUpdatedPlan;
+  factory SyncEvent.resolveUpdatedUserPlan(
+    CarePlan carePlan,
+  ) = _ResolveUpdatedPlan;
 }

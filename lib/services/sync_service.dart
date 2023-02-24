@@ -1,6 +1,8 @@
+import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaulation_aggregated.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/model/user_account.dart';
@@ -25,17 +27,42 @@ class SyncService {
     this._carePlansRepository,
   );
 
+  void setUserPlans(
+    final UserAccount userAccount,
+    final List<CarePlan> newCarePlans,
+  ) {
+    for (final carePlan in newCarePlans) {
+      carePlan.userId = userAccount.user.muid;
+    }
+
+    final currentCarePlans = userAccount.carePlans;
+    //check if plans were updated
+    if (currentCarePlans != null) {
+      for (final newCarePlan in newCarePlans) {
+        final currentPlan = currentCarePlans.firstWhereOrNull(
+          (currentCarePlan) => currentCarePlan.id == newCarePlan.id,
+        );
+
+        if (currentPlan != null) {
+          if (newCarePlan.versionId > currentPlan.versionId) {
+            newCarePlan.wasChanged = true;
+          } else {
+            newCarePlan.wasChanged = currentPlan.wasChanged;
+          }
+        }
+      }
+    }
+
+    userAccount.carePlans = newCarePlans;
+  }
+
   Future<void> loadUserData(final UserAccount userAccount) async {
-    //load and assign care plans, fulfillment_evaluation, results
+    //load active care plans, fulfillment_evaluation, results
     final activeCarePlans = await _carePlansRepository.loadActiveCarePlans(
       userAccount: userAccount,
     );
 
-    for (final carePlan in activeCarePlans.items) {
-      carePlan.userId = userAccount.user.muid;
-    }
-
-    userAccount.carePlans = activeCarePlans.items;
+    setUserPlans(userAccount, activeCarePlans.items);
 
     await loadFulFillmentEvaluation(userAccount);
     await loadPartPlanEvaluation(userAccount);
@@ -51,6 +78,8 @@ class SyncService {
           userAccount: representedPerson,
         );
 
+        setUserPlans(representedPerson, activeCarePlans.items);
+
         for (final carePlan in activeCarePlans.items) {
           carePlan.userId = representedPerson.user.muid;
         }
@@ -64,6 +93,60 @@ class SyncService {
         }
       }
     }
+
+    //TODO.. consider check following:
+    //after succed loaded core data continue checking for changes of care plans,
+    //care plans expiration, represented  people, current user data and assigned devices
+    //await checkForDataChanges(userAccount);
+  }
+
+  Future<void> checkForDataChanges(UserAccount userAccount) async {
+    final dataChangesResp = await _carePlansRepository.loadDataChangesFrom(
+      userAccount: userAccount,
+      fromDateTime: (userAccount.lastSyncAt ?? DateTime.now())
+          .add(const Duration(days: 1))
+          .toIso8601String(),
+    );
+
+    //check changes towards root user and represented people
+
+    //1. Check for all updated plans,
+    final newOrUpdatedPlans = dataChangesResp.carePlans.newOrUpdatedPlans ?? [];
+    final activeUserPlans = userAccount.carePlans;
+    for (final newOrUpdatedPlan in newOrUpdatedPlans) {
+      final updatedPlan = activeUserPlans?.firstWhereOrNull(
+        (activePlan) =>
+            activePlan.id == newOrUpdatedPlan.id &&
+            activePlan.versionId != newOrUpdatedPlan.versionId,
+      );
+
+      if (updatedPlan != null) {
+        updatedPlan.wasChanged = true;
+      }
+      //1.1 Consider flag if is a new plan
+    }
+
+    //2. Check if some plans were expired
+    final expiredPlanIds = dataChangesResp.carePlans.expiredPlanIds ?? [];
+    for (final expiredPlanId in expiredPlanIds) {
+      final expiredPlan = activeUserPlans?.firstWhereOrNull(
+        (activePlan) => activePlan.id == expiredPlanId,
+      );
+      if (expiredPlan != null) {
+        expiredPlan.wasExpired = true;
+      }
+    }
+
+    //3. Update assigned devices
+    userAccount.assignedDevices = dataChangesResp.assignedDevices;
+
+    //4. Update user data
+    if (dataChangesResp.user != null) {
+      userAccount.user = dataChangesResp.user!;
+    }
+
+    //5. Update represented people - possibly call it before load active care plans
+    //as this users might be not exist anymore
   }
 
   Future<void> loadFulFillmentEvaluation(final UserAccount userAccount) async {
@@ -102,6 +185,8 @@ class SyncService {
     var tomorrowMidnight = DateTime.now().getTomorrowMidnight();
 
     for (final carePlan in carePlans) {
+      if (carePlan.scheduledStart.isAfter(yesterdayMidnight)) continue;
+
       if (carePlan.scheduledEnd?.isBefore(tomorrowMidnight) == true) {
         if (carePlan.scheduledEnd?.isBefore(yesterdayMidnight) == true) {
           debugPrint(

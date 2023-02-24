@@ -6,6 +6,7 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/widgets/no_results_in_plans_header.dart';
 import 'package:scalesoft_app/ui/widgets/progress_header.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
@@ -79,21 +80,25 @@ class CarePlansEvaluationHeader extends StatelessWidget {
       }
     }
 
-    return progressItems.isEmpty
-        ? const SliverToBoxAdapter(child: SizedBox.shrink())
-        : SliverToBoxAdapter(
-            child: Column(
-              children: [
-                ProgressHeader(
+    return SliverToBoxAdapter(
+      child: Column(
+        children: [
+          progressItems.isEmpty
+              ? NoResultsInPlansHeader(
+                  whenPeriod: whenPeriod,
+                  openWhenSelector: openWhenSelector,
+                )
+              : ProgressHeader(
                   whenPeriod: whenPeriod,
                   openWhenSelector: openWhenSelector,
                   progressItems: progressItems,
-                  label: context.locale
-                      .common_plans_fulfillment_plural(progressItems.length),
+                  label: context.locale.common_plans_fulfillment_plural(
+                    progressItems.length,
+                  ),
                 ),
-                Gaps.gap24,
-              ],
-            ),
-          );
+          Gaps.gap24,
+        ],
+      ),
+    );
   }
 }

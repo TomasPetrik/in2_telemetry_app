@@ -66,7 +66,24 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
 
           emit(_session.detectSyncState());
         },
-        resolveUpdatedPlan: (CarePlan carePlan) {},
+        resolveUpdatedUserPlan: (CarePlan carePlanToUpdate) {
+          final userAccount = _accountDbProvider.get(carePlanToUpdate.userId!);
+          if (userAccount == null) return;
+
+          final carePlan = userAccount.carePlans
+              ?.firstWhere((userPlan) => userPlan.id == carePlanToUpdate.id);
+          carePlan?.wasChanged = false;
+
+          _accountDbProvider.save(userAccount);
+
+          final syncState = _session.detectSyncState();
+
+          if (syncState != const SyncState.synced()) {
+            emit(syncState);
+          } else {
+            emit(const SyncState.none());
+          }
+        },
       );
     });
   }

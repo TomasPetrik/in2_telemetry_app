@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scalesoft_app/api/dto/auth_token.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
+import 'package:scalesoft_app/api/dto/measurement/device.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/api/dto/user.dart';
 
@@ -28,6 +29,7 @@ class UserAccount with _$UserAccount {
     @HiveField(10) List<MeasurementResult>? measurementResults,
     @HiveField(11) DateTime? lastSyncAt,
     @HiveField(12) bool? lastSyncFailed,
+    @HiveField(13) List<Device>? assignedDevices,
   }) = _UserAccount;
 
   factory UserAccount.fromJson(Map<String, dynamic> json) =>

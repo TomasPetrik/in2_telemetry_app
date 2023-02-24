@@ -221,6 +221,8 @@ class Paddings {
   static const EdgeInsetsGeometry left48 =
       EdgeInsets.only(left: Dimensions.padding48);
 
+  static const EdgeInsetsGeometry right4 =
+      EdgeInsets.only(right: Dimensions.padding4);
   static const EdgeInsetsGeometry right5 =
       EdgeInsets.only(right: Dimensions.padding5);
   static const EdgeInsetsGeometry right8 =

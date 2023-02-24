@@ -30,6 +30,7 @@
   "common_do_sync": "Synchronizovat",
   "common_all_accounts": "Všechny účty",
   "common_plan_fulfillment": "Plnění plánu",
+  "common_understand": "Rozumím",
   "common_plans_fulfillment_plural": "{count, plural, zero{Plnění plánu} one{Plnění plánu} other{Plnění plánů}}",
   "@common_plan_fulfillment_plural": {
     "description": "Count of plans fulfillment",
@@ -320,9 +321,6 @@
       }
     }
   },
-  "notification_widget_info_title": "Informace o změnách",
-  "notification_widget_info_desc": "Sledujte červenou tečku v navigaci a dozvíte se více.",
-  "notification_widget_info_understand": "Rozumím",
   "device_selector_unsupported_devices": "Pro tento typ měření není podporováno žádné zařízení. Hodnoty odečtěte z manuálního měření.",
   "results_screen_results_title": "Výsledky",
   "results_screen_no_results": "Je nám líto, ale výsledky pro účet {name} nejsou dostupné.",
@@ -337,6 +335,14 @@
   "@results_screen_no_results_at": {
     "placeholders": {
       "whenName": {
+        "type": "String"
+      }
+    }
+  },
+  "results_screen_no_results_in_plans": "{label} nebylo plánované žádné měření",
+  "@results_screen_no_results_in_plans": {
+    "placeholders": {
+      "label": {
         "type": "String"
       }
     }

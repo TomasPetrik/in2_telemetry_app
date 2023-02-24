@@ -4,6 +4,7 @@ import 'package:scalesoft_app/api/dto/active_care_plans_response.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaulation_aggregated.dart';
+import 'package:scalesoft_app/api/dto/changes_from_date_response.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/model/user_account.dart';
@@ -32,6 +33,17 @@ class CarePlansRepository {
       carePlan.userId = userAccount.user.muid;
     }
 
+    return resp;
+  }
+
+  Future<ChangesFromDateResponse> loadDataChangesFrom({
+    required UserAccount userAccount,
+    required String fromDateTime,
+  }) async {
+    final resp = await carePlanApiClient.loadDataChangesFrom(
+      userAccount.hospital!.authData.baseUrl,
+      fromDateTime,
+    );
     return resp;
   }
 

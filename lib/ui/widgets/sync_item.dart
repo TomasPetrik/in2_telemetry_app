@@ -7,8 +7,8 @@ import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/ui/widgets/warning_item.dart';
 import 'package:scalesoft_app/ui/widgets/sync_process_item.dart';
+import 'package:scalesoft_app/ui/widgets/warning_item.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 class SyncItem extends StatelessWidget {
@@ -90,13 +90,13 @@ class SyncItem extends StatelessWidget {
             carePlan.activity.measurementType.name,
           ),
         ),
-        buttonLabel: context.locale.common_do_sync,
+        buttonLabel: context.locale.common_understand,
         icon: SvgPicture.asset(
           'assets/icons/icon_circle_exclamation.svg',
           color: Theme.of(context).colorScheme.tertiary,
         ),
         onTap: () {
-          getIt<SyncBloc>().add(SyncEvent.resolveUpdatedPlan(carePlan));
+          getIt<SyncBloc>().add(SyncEvent.resolveUpdatedUserPlan(carePlan));
         },
       ),
       someUsersCarePlanChanged: (userAccount, carePlan) => WarningItem(
@@ -108,13 +108,13 @@ class SyncItem extends StatelessWidget {
             carePlan.activity.measurementType.name,
           ),
         ),
-        buttonLabel: context.locale.common_do_sync,
+        buttonLabel: context.locale.common_understand,
         icon: SvgPicture.asset(
           'assets/icons/icon_circle_exclamation.svg',
           color: Theme.of(context).colorScheme.tertiary,
         ),
         onTap: () {
-          getIt<SyncBloc>().add(SyncEvent.resolveUpdatedPlan(carePlan));
+          getIt<SyncBloc>().add(SyncEvent.resolveUpdatedUserPlan(carePlan));
         },
       ),
     );
