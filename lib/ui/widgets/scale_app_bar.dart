@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 
 class ScaleAppBar extends StatelessWidget {
   const ScaleAppBar({
     super.key,
     required this.title,
+    this.subTitle,
     this.showClose = false,
     this.onBackTap,
   });
 
   final String title;
+  final String? subTitle;
   final bool showClose;
   final VoidCallback? onBackTap;
 
@@ -20,7 +23,9 @@ class ScaleAppBar extends StatelessWidget {
         top: MediaQuery.of(context).viewPadding.top,
       ),
       child: SizedBox(
-        height: Constants.appBarHeight,
+        height: subTitle == null
+            ? Constants.appBarHeight
+            : Constants.twoLinedBarHeight,
         child: Stack(
           children: [
             Padding(
@@ -62,6 +67,22 @@ class ScaleAppBar extends StatelessWidget {
                       ],
                     ),
                   ),
+                  if (subTitle != null) ...[
+                    Gaps.gap4,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            subTitle!,
+                            style: ScaleTextStyles.label.apply(
+                              color: Theme.of(context).colorScheme.onSecondary,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ]
                 ],
               ),
             ),

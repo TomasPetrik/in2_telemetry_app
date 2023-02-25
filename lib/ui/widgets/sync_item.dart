@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/ui/routers/routes/offline_results_route.dart';
 import 'package:scalesoft_app/ui/widgets/sync_process_item.dart';
 import 'package:scalesoft_app/ui/widgets/warning_item.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
@@ -51,7 +53,7 @@ class SyncItem extends StatelessWidget {
           );
         },
       ),
-      syncUserDataFailed: (lastSync) => SyncProcessItem(
+      syncUserDataFailed: (offlineResults, lastSync) => SyncProcessItem(
         syncProcessType: SyncProcessType.error,
         label: context.locale.sync_widget_sync_failed_title,
         desc: lastSync != null
@@ -61,13 +63,27 @@ class SyncItem extends StatelessWidget {
               )
             : null,
         onRefresh: onRefresh,
+        onTap: offlineResults == null
+            ? null
+            : () {
+                GoRouter.of(context).pushNamed(
+                  OfflineResultsRoute.name,
+                );
+              },
       ),
-      syncSomeUsersDataFailed: () => SyncProcessItem(
+      syncSomeUsersDataFailed: (offlineResults) => SyncProcessItem(
         syncProcessType: SyncProcessType.error,
         label: context.locale.sync_widget_sync_failed_title,
         onRefresh: onRefresh,
+        onTap: offlineResults == null
+            ? null
+            : () {
+                GoRouter.of(context).pushNamed(
+                  OfflineResultsRoute.name,
+                );
+              },
       ),
-      userResultsFailed: (measurements, lastSync) => SyncProcessItem(
+      userResultsFailed: (offlineResults, lastSync) => SyncProcessItem(
         syncProcessType: SyncProcessType.error,
         label: context.locale.sync_widget_sync_failed_title,
         desc: lastSync != null
@@ -77,11 +93,25 @@ class SyncItem extends StatelessWidget {
               )
             : null,
         onRefresh: onRefresh,
+        onTap: offlineResults == null
+            ? null
+            : () {
+                GoRouter.of(context).pushNamed(
+                  OfflineResultsRoute.name,
+                );
+              },
       ),
-      someUsersResultsFailed: (measurements) => SyncProcessItem(
+      someUsersResultsFailed: (offlineResults) => SyncProcessItem(
         syncProcessType: SyncProcessType.error,
         label: context.locale.sync_widget_sync_failed_title,
         onRefresh: onRefresh,
+        onTap: offlineResults == null
+            ? null
+            : () {
+                GoRouter.of(context).pushNamed(
+                  OfflineResultsRoute.name,
+                );
+              },
       ),
       userCarePlanChanged: (carePlan) => WarningItem(
         title: context.locale.notification_widget_plan_changed_title,

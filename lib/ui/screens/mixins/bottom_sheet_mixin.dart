@@ -47,6 +47,25 @@ mixin BottomSheetMixin {
     );
   }
 
+  Future<bool?> showResultRemovalConfirmation({
+    required final BuildContext context,
+    required final MeasurementType measurementType,
+  }) async {
+    final result = await showModalBottomSheet<bool?>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return BottomDialog.resultConfirmationRemoval(
+          context: context,
+          measurementType: measurementType,
+        );
+      },
+    );
+    return result;
+  }
+
   Future<bool?> showAccounRemovalConfirmation({
     required final BuildContext context,
     required final String accountName,

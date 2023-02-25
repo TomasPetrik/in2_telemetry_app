@@ -87,7 +87,7 @@ class MeasurementHelper {
 
   static List<MeasurementResult> getOffilneResultsConverted(
     List<Measurement> pendingResults,
-    List<ResultsWhenPeriod> whenPeriods,
+    List<ResultsWhenPeriod>? whenPeriods,
     MeasurementType? measurementType,
   ) {
     //offline (not synced results)
@@ -95,7 +95,7 @@ class MeasurementHelper {
         .where((pResult) {
           return ((measurementType == null ||
                   (measurementType == pResult.measurementType)) &&
-              ((whenPeriods.contains(ResultsWhenPeriod.today) &&
+              (whenPeriods == null || (whenPeriods.contains(ResultsWhenPeriod.today) &&
                       pResult.measurementDateTime?.isToday() == true) ||
                   (whenPeriods.contains(ResultsWhenPeriod.yesterday) &&
                       pResult.measurementDateTime?.wasYesterday() == true)));

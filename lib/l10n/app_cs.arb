@@ -356,5 +356,28 @@
         "type": "int"
       }
     }
-  }
+  },
+  "sync_failed_screen_title": "Synchronizace",
+  "sync_failed_screen_sub_title": "Poslední synchronizace {date} {time}",
+  "@sync_failed_screen_sub_title": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "result_removal_confirmation_title": "Odstranit výsledek",
+  "result_removal_confirmation_desc": "Výsledek měření {name} bude nevratně odstraněn.",
+  "@result_removal_confirmation_desc": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "result_removal_confirmation_title_button_confirm": "Odstranit výsledek",
+  "sync_failed_screen_waiting_on_sync": "Čeká na synchronizaci"
 }

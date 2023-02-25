@@ -108,16 +108,15 @@ extension DateParse on DateTime {
 
   String toDateOrDay(BuildContext context) {
     final currentDt = DateTime.now();
-    final difference = daysBetween(currentDt, this).abs();
+    final difference = daysBetween(currentDt, this);
 
+    if (difference == -1) {
+      return context.locale.common_measurement_times(WhenPeriod.yesterday.name);
+    }
     if (difference == 0) {
-      return context.locale
-          .common_measurement_times(PlanWhenPeriod.today.name)
-          .toLowerCase();
+      return context.locale.common_measurement_times(WhenPeriod.today.name);
     } else if (difference == 1) {
-      return context.locale
-          .common_measurement_times(PlanWhenPeriod.tomorrow.name)
-          .toLowerCase();
+      return context.locale.common_measurement_times(WhenPeriod.tomorrow.name);
     } else {
       return toRegularDate();
     }

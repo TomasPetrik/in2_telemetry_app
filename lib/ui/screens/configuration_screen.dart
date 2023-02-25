@@ -234,7 +234,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                 top: 0,
                 left: 0,
                 right: 0,
-                child: BluredUserAppBar(
+                child: BluredScaleAppBar(
                   title: context.locale.common_telemedicine,
                 ),
               ),

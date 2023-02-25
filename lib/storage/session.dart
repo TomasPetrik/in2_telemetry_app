@@ -4,10 +4,12 @@ import 'package:scalesoft_app/api/dto/auth_token.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
+import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
+import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 @singleton
 class Session {
@@ -24,6 +26,21 @@ class Session {
 
   bool supportMultiUser() {
     return _accountDbProvider.getAll().length > 1;
+  }
+
+  DateTime? getLastSyncAt() {
+    List<DateTime> lastSyncAtItems = [];
+    for (final userAccount in getSessionAccounts()) {
+      if (userAccount.lastSyncAt != null) {
+        lastSyncAtItems.add(userAccount.lastSyncAt!);
+      }
+    }
+
+    lastSyncAtItems.sort(
+      (a, b) => a.millisecondsSinceEpoch.compareTo(b.millisecondsSinceEpoch),
+    );
+
+    return lastSyncAtItems.isEmpty ? null : lastSyncAtItems.last;
   }
 
   List<UserAccount> getSessionAccounts() {
@@ -60,6 +77,26 @@ class Session {
     return pendingResults;
   }
 
+  List<MeasurementResult>? getOfflineResults() {
+    final offlineResults = getPendingResults();
+
+    if (offlineResults.isEmpty) return null;
+
+    final List<MeasurementResult> offlineResultsConverted =
+        MeasurementHelper.getOffilneResultsConverted(
+      offlineResults,
+      null,
+      null,
+    );
+
+    offlineResultsConverted.sort(
+      (a, b) => b.measurementDateTime.millisecondsSinceEpoch
+          .compareTo(a.measurementDateTime.millisecondsSinceEpoch),
+    );
+
+    return offlineResultsConverted;
+  }
+
   SyncState detectSyncState() {
     List<UserAccount> userAccounts = getSessionAccounts();
 
@@ -71,34 +108,36 @@ class Session {
       return SyncState.userSessionExpired(expiredAccount);
     }
 
+    List<MeasurementResult>? offlineResults = getOfflineResults();
+
     //2. check if user data sync failed
     final someUserSessionExpired =
         userAccounts.any((userAccount) => userAccount.lastSyncFailed == true);
     if (userAccounts.length == 1) {
       if (someUserSessionExpired) {
-        return SyncState.syncUserDataFailed(userAccounts[0].lastSyncAt);
-      }
-    } else if (someUserSessionExpired) {
-      return const SyncState.syncSomeUsersDataFailed();
-    }
-
-    //3. check if user results sync failed
-    List<Measurement> pendingResults = _pendingResultsDbProvider.getAll();
-    if (userAccounts.length == 1) {
-      final userPendingResults = pendingResults
-          .where(
-            (pendingResult) =>
-                pendingResult.patientMuid == userAccounts[0].user.muid,
-          )
-          .toList();
-      if (userPendingResults.isNotEmpty) {
-        return SyncState.userResultsFailed(
-          userPendingResults,
+        return SyncState.syncUserDataFailed(
+          offlineResults,
           userAccounts[0].lastSyncAt,
         );
       }
-    } else if (pendingResults.isNotEmpty == true) {
-      return SyncState.someUsersResultsFailed(pendingResults);
+    } else if (someUserSessionExpired) {
+      return SyncState.syncSomeUsersDataFailed(
+        offlineResults,
+      );
+    }
+
+    //3. check if user results sync failed
+    if (userAccounts.length == 1) {
+      if (offlineResults?.isNotEmpty == true) {
+        return SyncState.userResultsFailed(
+          offlineResults,
+          userAccounts[0].lastSyncAt,
+        );
+      }
+    } else if (offlineResults?.isNotEmpty == true) {
+      return SyncState.someUsersResultsFailed(
+        offlineResults,
+      );
     }
 
     //4. check if user plan was updated

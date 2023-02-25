@@ -413,3 +413,9 @@ enum PlanWhenPeriod {
   tomorrow,
   next10,
 }
+
+enum WhenPeriod {
+  yesterday,
+  today,
+  tomorrow,
+}

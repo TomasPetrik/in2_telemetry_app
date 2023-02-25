@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -20,6 +21,30 @@ class BottomDialog extends StatelessWidget {
   final String iconPath;
   final ButtonStyle? positiveButtonStyle;
   final ButtonStyle? negativeButtonStyle;
+
+  factory BottomDialog.resultConfirmationRemoval({
+    Key? key,
+    required BuildContext context,
+    required MeasurementType measurementType,
+  }) {
+    return _BottomDialog(
+      title: context.locale.result_removal_confirmation_title,
+      description: context.locale.result_removal_confirmation_desc(
+        context.locale
+            .common_measurement_types_genitive(measurementType.name)
+            .toLowerCase(),
+      ),
+      iconPath: 'assets/icons/icon_trash_blank_big.svg',
+      positiveButtonStyle: ButtonStyle(
+        buttonType: ButtonType.alert,
+        label: context.locale.result_removal_confirmation_title_button_confirm,
+      ),
+      negativeButtonStyle: ButtonStyle(
+        buttonType: ButtonType.secondary,
+        label: context.locale.common_close,
+      ),
+    );
+  }
 
   factory BottomDialog.accountConfirmationRemoval({
     Key? key,

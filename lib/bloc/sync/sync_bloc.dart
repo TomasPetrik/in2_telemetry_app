@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
+import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
@@ -76,6 +77,16 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
 
           _accountDbProvider.save(userAccount);
 
+          final syncState = _session.detectSyncState();
+
+          if (syncState != const SyncState.synced()) {
+            emit(syncState);
+          } else {
+            emit(const SyncState.none());
+          }
+        },
+        removeOfflineResult: (MeasurementResult measurementResult) async {
+          await _syncService.removeOfflineResult(measurementResult);
           final syncState = _session.detectSyncState();
 
           if (syncState != const SyncState.synced()) {

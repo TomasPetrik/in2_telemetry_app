@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
+import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 
 part 'sync_event.freezed.dart';
 
@@ -12,4 +13,6 @@ class SyncEvent with _$SyncEvent {
   factory SyncEvent.resolveUpdatedUserPlan(
     CarePlan carePlan,
   ) = _ResolveUpdatedPlan;
+  factory SyncEvent.removeOfflineResult(MeasurementResult measurementResult) =
+      _RemoveOfflineResult;
 }

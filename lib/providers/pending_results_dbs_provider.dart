@@ -56,6 +56,12 @@ class PendingResultsDbProvider extends BoxProvider<Measurement> {
     return manualMeasurement;
   }
 
+  Future<void> removeByDateTime(
+    final DateTime measurementDateTime,
+  ) async {
+    await box.delete('${measurementDateTime.millisecondsSinceEpoch}');
+  }
+
   Future<void> removeUserResults(
     final String userId,
   ) async {

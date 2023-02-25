@@ -100,6 +100,11 @@ class SyncService {
     //await checkForDataChanges(userAccount);
   }
 
+  Future<void> removeOfflineResult(MeasurementResult measurementResult) async {
+    await _pendingResultsDbProvider
+        .removeByDateTime(measurementResult.measurementDateTime);
+  }
+
   Future<void> checkForDataChanges(UserAccount userAccount) async {
     final dataChangesResp = await _carePlansRepository.loadDataChangesFrom(
       userAccount: userAccount,

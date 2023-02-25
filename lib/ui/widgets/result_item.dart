@@ -15,9 +15,11 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
   const ResultItem({
     super.key,
     required this.mResult,
+    this.onRemove,
   });
 
   final MeasurementResult mResult;
+  final VoidCallback? onRemove;
 
   String _getMeasurementTime() {
     final actualMeasurementTimes =
@@ -135,6 +137,16 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
               ],
             ),
           ),
+          if (onRemove != null) ...[
+            Gaps.gap16,
+            InkWell(
+              onTap: onRemove,
+              child: SvgPicture.asset(
+                'assets/icons/icon_trash.svg',
+                color: Theme.of(context).colorScheme.error,
+              ),
+            ),
+          ],
         ],
       ),
     );

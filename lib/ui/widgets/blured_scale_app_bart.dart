@@ -4,15 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
 
-class BluredUserAppBar extends StatelessWidget {
-  const BluredUserAppBar({
+class BluredScaleAppBar extends StatelessWidget {
+  const BluredScaleAppBar({
     super.key,
     required this.title,
+    this.subTitle,
     this.showClose = false,
     this.onBackTap,
   });
 
   final String title;
+  final String? subTitle;
   final bool showClose;
   final VoidCallback? onBackTap;
 
@@ -35,6 +37,7 @@ class BluredUserAppBar extends StatelessWidget {
         ),
         ScaleAppBar(
           title: title,
+          subTitle: subTitle,
           showClose: showClose,
           onBackTap: onBackTap,
         )
