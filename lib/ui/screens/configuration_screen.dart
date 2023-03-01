@@ -119,17 +119,22 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                                   if (hospital.value.length == 1) {
                                     GoRouter.of(context).pushNamed(
                                       UserDetailRoute.name,
-                                      extra: hospital.value[0],
+                                      extra: hospital.value[0].user.muid,
                                     );
                                   } else {
                                     GoRouter.of(context).pushNamed(
                                       HospitalDetailRoute.name,
                                       extra: List.of([
-                                        hospital.key,
+                                        hospital.key.title,
                                         accountDbProvider
                                             .getRootUsersFromHospital(
-                                          hospital.key,
-                                        ),
+                                              hospital.key,
+                                            )
+                                            .map(
+                                              (userAcccount) =>
+                                                  userAcccount.user.muid,
+                                            )
+                                            .toList(),
                                       ]),
                                     );
                                   }

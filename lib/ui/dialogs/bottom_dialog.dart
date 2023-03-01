@@ -58,8 +58,26 @@ class BottomDialog extends StatelessWidget {
       iconPath: 'assets/icons/icon_trash_blank_big.svg',
       positiveButtonStyle: ButtonStyle(
         buttonType: ButtonType.alert,
-        label: context
-            .locale.dialog_account_removal_confirmation_button_positive_label,
+        label: context.locale.dialog_account_removal_confirmation_title,
+      ),
+      negativeButtonStyle: ButtonStyle(
+        buttonType: ButtonType.secondary,
+        label: context.locale.common_close,
+      ),
+    );
+  }
+
+  factory BottomDialog.resetWhenTimeValues({
+    Key? key,
+    required BuildContext context,
+  }) {
+    return _BottomDialog(
+      title: context.locale.daily_when_time_reset_confirmation_title,
+      description: context.locale.daily_when_time_reset_confirmation_info,
+      iconPath: 'assets/icons/icon_clock_big.svg',
+      positiveButtonStyle: ButtonStyle(
+        buttonType: ButtonType.primary,
+        label: context.locale.daily_when_time_reset_confirmation_confirm,
       ),
       negativeButtonStyle: ButtonStyle(
         buttonType: ButtonType.secondary,

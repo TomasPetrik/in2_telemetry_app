@@ -17,6 +17,17 @@ class HighlightedElevatedButton extends StatelessWidget {
     this.icon,
   });
 
+  Color _getColorByType(BuildContext context) {
+    switch (buttonType) {
+      case ButtonType.primary:
+        return Theme.of(context).colorScheme.onSurface;
+      case ButtonType.secondary:
+        return Theme.of(context).colorScheme.onPrimary;
+      case ButtonType.alert:
+        return Theme.of(context).colorScheme.onSurface;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Color backgroundColor = buttonType == ButtonType.primary
@@ -53,9 +64,9 @@ class HighlightedElevatedButton extends StatelessWidget {
                 label,
                 style: buttonType == ButtonType.primary
                     ? ScaleTextStyles.textAccent
-                        .apply(color: Theme.of(context).colorScheme.onSurface)
+                        .apply(color: _getColorByType(context))
                     : ScaleTextStyles.textAccent
-                        .apply(color: Theme.of(context).colorScheme.onPrimary),
+                        .apply(color: _getColorByType(context)),
               ),
             ],
           ),

@@ -7,7 +7,6 @@ import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
-import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
@@ -33,9 +32,10 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
       buildWhen: (previous, current) => previous != current,
       bloc: syncBloc..add(const SyncEvent.init()),
       builder: (context, syncState) {
-        final UserAccount userAccount = getIt<Session>().userAccount!;
-        final allCarePlans = getIt<Session>().getActiveCarePlans();
-        final allPendingResults = getIt<Session>().getPendingResults();
+        final session = getIt<Session>();
+        final sessionAccounts = session.getSessionAccounts();
+        final allCarePlans = session.getActiveCarePlans();
+        final allPendingResults = session.getPendingResults();
 
         final supportedMeasurementTypes =
             CarePlanHelper.getMeasurementTypes(allCarePlans);
@@ -52,9 +52,10 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
           children: [
             if (allCarePlans.isEmpty)
               NoPlansPlaceholder(
-                userAccount: userAccount,
-                enterMeasurementWithoutPlan:
-                    userAccount.enterMeasurementWithoutPlan,
+                userAccount:
+                    session.isMultiUser != true ? sessionAccounts[0] : null,
+                enterMeasurementWithoutPlan: session.isMultiUser != true &&
+                    sessionAccounts[0].enterMeasurementWithoutPlan,
                 supportedMeasurementTypes: supportedMeasurementTypes,
               )
             else
@@ -142,17 +143,16 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                               ),
                             ],
                             bottomSlivers: [
-                              if (userAccount.userPermissions?.contains(
-                                    UserPermission.enterMeasurementWithoutPlan,
-                                  ) ==
-                                  true) ...{
+                              if (session.isMultiUser != true &&
+                                  sessionAccounts[0]
+                                      .enterMeasurementWithoutPlan) ...{
                                 PersonalMeasurementFooter(
                                   showInfo:
                                       state.measurements?.isNotEmpty == true,
                                   onPressed: () async {
                                     doMeasurement(
                                       context: context,
-                                      userId: userAccount.user.muid,
+                                      userId: sessionAccounts[0].user.muid,
                                       allMeasurementTypes:
                                           supportedMeasurementTypes,
                                     );
@@ -179,11 +179,9 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                                   ),
                                 ],
                                 bottomSlivers: [
-                                  if (userAccount.userPermissions?.contains(
-                                        UserPermission
-                                            .enterMeasurementWithoutPlan,
-                                      ) ==
-                                      true) ...{
+                                  if (session.isMultiUser != true &&
+                                      sessionAccounts[0]
+                                          .enterMeasurementWithoutPlan) ...{
                                     PersonalMeasurementFooter(
                                       showInfo:
                                           state.measurements?.isNotEmpty ==
@@ -191,7 +189,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                                       onPressed: () async {
                                         doMeasurement(
                                           context: context,
-                                          userId: userAccount.user.muid,
+                                          userId: sessionAccounts[0].user.muid,
                                           selectedMeasurementType: state
                                               .currentCarePlans![0]
                                               .activity

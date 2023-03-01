@@ -15,26 +15,29 @@ class PlannedMeasurementHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(
-          context.locale.common_measurement,
-          style: ScaleTextStyles.textAccent
-              .apply(color: Theme.of(context).colorScheme.onSecondary),
-        ),
-        const Spacer(),
-        InkWell(
-          onTap: () {
-            openTimeSelector.call();
-          },
-          child: Text(
-            context.locale.common_measurement_times(whenPeriod.name),
-            style: ScaleTextStyles.text.apply(
-              color: Theme.of(context).primaryColor,
+    return SizedBox(
+      height: 24,
+      child: Row(
+        children: [
+          Text(
+            context.locale.common_measurement,
+            style: ScaleTextStyles.textAccent
+                .apply(color: Theme.of(context).colorScheme.onSecondary),
+          ),
+          const Spacer(),
+          InkWell(
+            onTap: () {
+              openTimeSelector.call();
+            },
+            child: Text(
+              context.locale.common_measurement_times(whenPeriod.name),
+              style: ScaleTextStyles.text.apply(
+                color: Theme.of(context).primaryColor,
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

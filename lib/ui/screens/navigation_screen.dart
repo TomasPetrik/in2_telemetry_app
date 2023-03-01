@@ -79,6 +79,21 @@ class _NavigationScreenState extends State<NavigationScreen> {
     }
   }
 
+  double getFixedHeaderHeight() {
+    double height = 0;
+    if (widget.navigationHeader != null) {
+      height += Dimensions.padding16 + Dimensions.padding24;
+    }
+
+    if (widget.tabs.isNotEmpty) {
+      height += Dimensions.padding26 + Constants.navigationTabBarHeight;
+    }
+
+    height += Dimensions.padding24;
+
+    return height;
+  }
+
   @override
   Widget build(BuildContext context) {
     final topGap = MediaQuery.of(context).viewPadding.top;
@@ -163,13 +178,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                           ),
                         ],
                       ),
-                      fixedHeight: Dimensions.padding16 +
-                          (widget.tabs.isNotEmpty
-                              ? Dimensions.padding26 +
-                                  Constants.navigationTabBarHeight
-                              : 0) +
-                          Dimensions.padding24 +
-                          Dimensions.padding20,
+                      fixedHeight: getFixedHeaderHeight(),
                     ),
                   ),
                   ...widget.tabs[currentTab].slivers,

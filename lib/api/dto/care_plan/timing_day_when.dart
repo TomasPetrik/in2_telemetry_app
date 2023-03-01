@@ -4,16 +4,16 @@ import 'package:hive_flutter/hive_flutter.dart';
 part 'timing_day_when.freezed.dart';
 part 'timing_day_when.g.dart';
 
-@freezed
+@unfreezed
 class TimingDayWhen with _$TimingDayWhen {
   TimingDayWhen._();
 
   @HiveType(typeId: 17, adapterName: 'TimingDayWhenAdapter')
   factory TimingDayWhen(
     @HiveField(0) TimingDayWhenType type,
-    @HiveField(1) @TimeOfDayConverter() TimeOfDay start,
-    @HiveField(2) @TimeOfDayConverter() TimeOfDay end,
-    @HiveField(3) @TimeOfDayConverter() TimeOfDay? timeOfDay,
+    @HiveField(1) @TimeOfDayConverter() DailyTime start,
+    @HiveField(2) @TimeOfDayConverter() DailyTime end,
+    @HiveField(3) @TimeOfDayConverter() DailyTime? timeOfDay,
     @HiveField(4) WhenCode? whenCode,
   ) = _TimingWhenDay;
 
@@ -23,7 +23,7 @@ class TimingDayWhen with _$TimingDayWhen {
   @override
   String toString() => toJson().toString();
 
-  bool isInInterval(TimeOfDay exactTime) {
+  bool isInInterval(DailyTime exactTime) {
     if (exactTime.isBefore(end) && exactTime.isAfter(start)) {
       return true;
     } else {
@@ -33,7 +33,7 @@ class TimingDayWhen with _$TimingDayWhen {
 }
 
 @HiveType(typeId: 18)
-class TimeOfDay extends HiveObject {
+class DailyTime extends HiveObject {
   @HiveField(0)
   int hour;
   @HiveField(1)
@@ -41,9 +41,9 @@ class TimeOfDay extends HiveObject {
   @HiveField(2)
   int second;
 
-  TimeOfDay(this.hour, this.minute, this.second);
+  DailyTime(this.hour, this.minute, this.second);
 
-  TimeOfDay.fromDateTime(DateTime dateTime)
+  DailyTime.fromDateTime(DateTime dateTime)
       : hour = dateTime.hour,
         minute = dateTime.minute,
         second = dateTime.second;
@@ -53,13 +53,13 @@ class TimeOfDay extends HiveObject {
     return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
   }
 
-  bool isBefore(TimeOfDay exactTime) {
+  bool isBefore(DailyTime exactTime) {
     final todayDayTime = todayDateTime();
     final cmpTime = exactTime.todayDateTime();
     return todayDayTime.isBefore(cmpTime);
   }
 
-  bool isAfter(TimeOfDay exactTime) {
+  bool isAfter(DailyTime exactTime) {
     final todayDayTime = todayDateTime();
     final cmpTime = exactTime.todayDateTime();
     return todayDayTime.isAfter(cmpTime);
@@ -108,15 +108,16 @@ class TimeOfDay extends HiveObject {
   }
 }
 
-class TimeOfDayConverter implements JsonConverter<TimeOfDay, String> {
+class TimeOfDayConverter implements JsonConverter<DailyTime, String> {
   const TimeOfDayConverter();
 
   @override
-  TimeOfDay fromJson(String timeOfDayString) =>
-      TimeOfDay.fromDateTime(DateTime.parse('2018-10-20 ${timeOfDayString}Z'));
+  DailyTime fromJson(String timeOfDayString) =>
+      DailyTime.fromDateTime(DateTime.parse('2018-10-20 ${timeOfDayString}Z'));
 
   @override
-  String toJson(TimeOfDay tod) => '${tod.hour}:${tod.minute}:${tod.second}';
+  String toJson(DailyTime tod) =>
+      '${tod.hour.toString().padLeft(2, '0')}:${tod.minute.toString().padLeft(2, '0')}:${tod.second.toString().padLeft(2, '0')}';
 }
 
 @HiveType(typeId: 19)

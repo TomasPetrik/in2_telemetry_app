@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/providers/account_db_provider.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
 import 'package:scalesoft_app/ui/screens/user_details_screen.dart';
@@ -23,7 +24,8 @@ class UserDetailRoute extends ApplicationRoute with PageBuilderMixin {
       pageBuilder: pageBuilder(
         withTransition: true,
         builder: (state) {
-          final userAccount = state.extra! as UserAccount;
+          final userId = state.extra! as String;
+          final userAccount = getIt<AccountDbProvider>().get(userId)!;
           return UserDetailScreen(
             userAccount: userAccount,
           );

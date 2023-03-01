@@ -29,125 +29,130 @@ class UserHospitalSelectionDialog extends StatelessWidget {
           topRight: Radius.circular(RadiusSize.radius16),
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Gaps.gap34,
-          Padding(
-            padding: Paddings.horizontal16,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  context.locale.hospital_selection_dialog_measurement_for,
-                  style: ScaleTextStyles.textAccent
-                      .apply(color: Theme.of(context).colorScheme.onSecondary),
-                ),
-                const Spacer(),
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop(
-                      UserSelection(
-                        action: SwitchUserAction.addUserAccount,
-                      ),
-                    );
-                  },
-                  child: Icon(
-                    Icons.add,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                )
-              ],
-            ),
-          ),
-          if (supportMultiUser == true) ...[
-            Gaps.gap24,
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Gaps.gap34,
             Padding(
               padding: Paddings.horizontal16,
-              child: SettingsItem(
-                label: context.locale.common_all_accounts,
-                subLabel: '${hospitalUserEntries.first.value[0].user.fullName}'
-                    ' ${hospitalUserEntries.first.value.length > 1 ? context.locale.common_plus_n_others(hospitalUserEntries.first.value.length - 1) : ''}',
-                iconWidget: Padding(
-                  padding: Paddings.all8,
-                  child: SvgPicture.asset(
-                    'assets/icons/icon_hospitals.svg',
-                    color: Theme.of(context).hintColor,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.of(context).pop(
-                    UserSelection(
-                      action: SwitchUserAction.selectedMultiUser,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    context.locale.hospital_selection_dialog_measurement_for,
+                    style: ScaleTextStyles.textAccent.apply(
+                      color: Theme.of(context).colorScheme.onSecondary,
                     ),
-                  );
-                },
-                hasNavigationIcon: false,
+                  ),
+                  const Spacer(),
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop(
+                        UserSelection(
+                          action: SwitchUserAction.addUserAccount,
+                        ),
+                      );
+                    },
+                    child: Icon(
+                      Icons.add,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  )
+                ],
               ),
             ),
-          ],
-          Gaps.gap24,
-          ListView.separated(
-            padding: EdgeInsets.zero,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              final hospital = hospitalUserEntries.toList()[index];
-              return Padding(
+            if (supportMultiUser == true) ...[
+              Gaps.gap24,
+              Padding(
                 padding: Paddings.horizontal16,
                 child: SettingsItem(
-                  label: hospital.key.title,
-                  subLabel: '${hospital.value[0].user.fullName}'
-                      ' ${hospital.value.length > 1 ? context.locale.common_plus_n_others(hospital.value.length - 1) : ''}',
+                  label: context.locale.common_all_accounts,
+                  subLabel:
+                      '${hospitalUserEntries.first.value[0].user.fullName}'
+                      ' ${hospitalUserEntries.first.value.length > 1 ? context.locale.common_plus_n_others(hospitalUserEntries.first.value.length - 1) : ''}',
                   iconWidget: Padding(
                     padding: Paddings.all8,
                     child: SvgPicture.asset(
-                      hospital.key.iconPath,
+                      'assets/icons/icon_hospitals.svg',
                       color: Theme.of(context).hintColor,
                     ),
                   ),
                   onTap: () {
-                    if (hospital.value.length == 1) {
-                      Navigator.of(context).pop(
-                        UserSelection(
-                          action: SwitchUserAction.selectedUser,
-                          selectedUser: hospital.value[0],
-                        ),
-                      );
-                    } else {
-                      final hospitalUsers = accountDbProvider
-                          .getRootUsersFromHospital(hospital.key);
-                      Navigator.of(context).pop(
-                        UserSelection(
-                          action: SwitchUserAction.selectedHospital,
-                          selectedHospital: hospital.key,
-                          hospitalUsers: hospitalUsers,
-                        ),
-                      );
-                    }
+                    Navigator.of(context).pop(
+                      UserSelection(
+                        action: SwitchUserAction.selectedMultiUser,
+                      ),
+                    );
                   },
-                  hasNavigationIcon: hospital.value.length > 1,
+                  hasNavigationIcon: false,
                 ),
-              );
-            },
-            separatorBuilder: (_, __) {
-              return Gaps.gap24;
-            },
-            itemCount: hospitalUserEntries.length,
-          ),
-          Gaps.gap24,
-          Padding(
-            padding: Paddings.horizontal16,
-            child: HighlightedElevatedButton(
-              label: context.locale.common_close,
-              buttonType: ButtonType.secondary,
-              onPressed: () {
-                Navigator.of(context).pop();
+              ),
+            ],
+            Gaps.gap24,
+            ListView.separated(
+              padding: EdgeInsets.zero,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                final hospital = hospitalUserEntries.toList()[index];
+                return Padding(
+                  padding: Paddings.horizontal16,
+                  child: SettingsItem(
+                    label: hospital.key.title,
+                    subLabel: '${hospital.value[0].user.fullName}'
+                        ' ${hospital.value.length > 1 ? context.locale.common_plus_n_others(hospital.value.length - 1) : ''}',
+                    iconWidget: Padding(
+                      padding: Paddings.all8,
+                      child: SvgPicture.asset(
+                        hospital.key.iconPath,
+                        color: Theme.of(context).hintColor,
+                      ),
+                    ),
+                    onTap: () {
+                      if (hospital.value.length == 1) {
+                        Navigator.of(context).pop(
+                          UserSelection(
+                            action: SwitchUserAction.selectedUser,
+                            selectedUser: hospital.value[0],
+                          ),
+                        );
+                      } else {
+                        final hospitalUsers = accountDbProvider
+                            .getRootUsersFromHospital(hospital.key);
+                        Navigator.of(context).pop(
+                          UserSelection(
+                            action: SwitchUserAction.selectedHospital,
+                            selectedHospital: hospital.key,
+                            hospitalUsers: hospitalUsers,
+                          ),
+                        );
+                      }
+                    },
+                    hasNavigationIcon: hospital.value.length > 1,
+                  ),
+                );
               },
+              separatorBuilder: (_, __) {
+                return Gaps.gap24;
+              },
+              itemCount: hospitalUserEntries.length,
             ),
-          ),
-          Gaps.gap48,
-        ],
+            Gaps.gap24,
+            Padding(
+              padding: Paddings.horizontal16,
+              child: HighlightedElevatedButton(
+                label: context.locale.common_close,
+                buttonType: ButtonType.secondary,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+            Gaps.gap48,
+          ],
+        ),
       ),
     );
   }

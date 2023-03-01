@@ -115,7 +115,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                                 onTap: () {
                                   GoRouter.of(context).pushNamed(
                                     CarePlanDetailRoute.name,
-                                    extra: carePlan,
+                                    extra: carePlan.id,
                                   );
                                 },
                                 child: Padding(

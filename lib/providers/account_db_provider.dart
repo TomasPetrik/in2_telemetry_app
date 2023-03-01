@@ -9,10 +9,13 @@ import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaulation_aggregated.dart';
 import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart';
+import 'package:scalesoft_app/api/dto/care_plan/when_time_value.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/api/dto/measurement/composed_double_value.dart';
 import 'package:scalesoft_app/api/dto/measurement/device.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/dto/settings/time_setting.dart';
+import 'package:scalesoft_app/api/dto/template_time_set.dart';
 import 'package:scalesoft_app/api/dto/user.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/box_provider.dart';
@@ -39,7 +42,7 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
     Hive.registerAdapter(WeekDayAdapter());
     Hive.registerAdapter(TimingDayWhenAdapter());
     Hive.registerAdapter(TimingDayWhenTypeAdapter());
-    Hive.registerAdapter(TimeOfDayAdapter());
+    Hive.registerAdapter(DailyTimeAdapter());
     Hive.registerAdapter(WhenCodeAdapter());
     Hive.registerAdapter(FulfillmentEvaluationAdapter());
     Hive.registerAdapter(FulfillmentEvaluationItemAdapter());
@@ -47,6 +50,9 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
     Hive.registerAdapter(MeasurementResultAdapter());
     Hive.registerAdapter(ComposedDoubleValueAdapter());
     Hive.registerAdapter(DeviceAdapter());
+    Hive.registerAdapter(TemplateTimeSetAdapter());
+    Hive.registerAdapter(WhenTimeValueAdapter());
+    Hive.registerAdapter(TimeSettingAdapter());
   }
 
   @override
@@ -176,6 +182,28 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
     }
 
     return expiredAccount;
+  }
+
+  CarePlan? getCarePlan(int carePlanId) {
+    final rootAccounts = box.values.toList();
+
+    for (final rootAccount in rootAccounts) {
+      final carePlan = rootAccount.carePlans
+          ?.firstWhere((carePlan) => carePlan.id == carePlanId);
+      if (carePlan != null) {
+        return carePlan;
+      }
+
+      for (final representedPerson in rootAccount.representedPeople!) {
+        final carePlan = representedPerson.carePlans
+            ?.firstWhere((carePlan) => carePlan.id == carePlanId);
+        if (carePlan != null) {
+          return carePlan;
+        }
+      }
+    }
+
+    return null;
   }
 
   bool isAnyAccountExpired() {

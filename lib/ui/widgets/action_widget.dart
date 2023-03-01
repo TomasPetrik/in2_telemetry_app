@@ -51,7 +51,7 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
               nextMeasurement!.carePlan.activity.measurementType.name,
             ).toLowerCase()} ${nextMeasurement!.timingDayWhen.whenCode != null ? context.locale.common_when_code(
               nextMeasurement!.timingDayWhen.whenCode!.name,
-            ).toLowerCase() : ''} ve ${nextMeasurement!.timingDayWhen.start.toString()}';
+            ).toLowerCase() : ''} v ${nextMeasurement!.timingDayWhen.start.toString()}';
 
       case MeasurementWhenType.finished:
         return context.locale.dashboard_screen_no_more_measurements;

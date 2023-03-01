@@ -8,16 +8,18 @@ import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/fullplan_evaluation_widget.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
-import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
 import 'package:scalesoft_app/ui/widgets/sliver_name_value_row.dart';
+import 'package:scalesoft_app/ui/widgets/times_settings_form.dart';
 import 'package:scalesoft_app/ui/widgets/warning_item.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
-class CarePlanDetailScreen extends StatelessWidget {
+class CarePlanDetailScreen extends StatefulWidget with BottomSheetMixin {
   const CarePlanDetailScreen({
     super.key,
     required this.carePlan,
@@ -26,9 +28,40 @@ class CarePlanDetailScreen extends StatelessWidget {
   final CarePlan carePlan;
 
   @override
+  State<CarePlanDetailScreen> createState() => _CarePlanDetailScreenState();
+}
+
+class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
+  late SyncBloc syncBloc = getIt<SyncBloc>();
+  TimesSettingsForm? timeSettingsForm;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    syncDataIfNeed();
+    super.dispose();
+  }
+
+  void syncDataIfNeed() {
+    if (timeSettingsForm?.settingsChanged() == true) {
+      syncBloc.add(const SyncEvent.syncAll());
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (widget.carePlan.timingDayWhen.isNotEmpty == true) {
+      timeSettingsForm = TimesSettingsForm(
+        carePlan: widget.carePlan,
+      );
+    }
+
     return BlocBuilder<SyncBloc, SyncState>(
-      bloc: getIt<SyncBloc>(),
+      bloc: syncBloc,
       builder: (context, state) {
         return Material(
           child: Stack(
@@ -40,7 +73,7 @@ class CarePlanDetailScreen extends StatelessWidget {
                         Constants.appBarHeight,
                   ),
                   const SliverGap(Dimensions.padding24),
-                  if (carePlan.wasChanged == true) ...[
+                  if (widget.carePlan.wasChanged == true) ...[
                     SliverPadding(
                       padding: Paddings.horizontal16,
                       sliver: WarningItem(
@@ -49,25 +82,27 @@ class CarePlanDetailScreen extends StatelessWidget {
                         description: context.locale
                             .notification_widget_plan_changed_desc(
                           context.locale.common_measurement_types_genitive(
-                            carePlan.activity.measurementType.name,
+                            widget.carePlan.activity.measurementType.name,
                           ),
                         ),
                         buttonLabel: context.locale.common_understand,
+                        buttonType: SmallButtonType.none,
                         icon: SvgPicture.asset(
                           'assets/icons/icon_circle_exclamation.svg',
                           color: Theme.of(context).colorScheme.tertiary,
                         ),
                         onTap: () {
-                          getIt<SyncBloc>()
-                              .add(SyncEvent.resolveUpdatedUserPlan(carePlan));
+                          syncBloc.add(
+                            SyncEvent.resolveUpdatedUserPlan(widget.carePlan),
+                          );
                         },
                       ),
                     ),
                     const SliverGap(Dimensions.padding24),
                   ],
-                  if (carePlan.fullPlanEvaluation != null)
+                  if (widget.carePlan.fullPlanEvaluation != null)
                     FullPlanEvaluationWidget(
-                      carePlan: carePlan,
+                      carePlan: widget.carePlan,
                     ),
                   const SliverGap(Dimensions.padding42),
                   SliverPadding(
@@ -84,27 +119,27 @@ class CarePlanDetailScreen extends StatelessWidget {
                   const SliverGap(Dimensions.padding26),
                   SliverNameValueRow(
                     name: context.locale.care_plan_detail_screen_managed_by,
-                    value: carePlan.author.fullName,
+                    value: widget.carePlan.author.fullName,
                   ),
                   const SliverGap(Dimensions.padding8),
                   SliverNameValueRow(
                     name:
                         context.locale.care_plan_detail_screen_active_from_date,
-                    value: carePlan.scheduledStart.toRegularDate(),
+                    value: widget.carePlan.scheduledStart.toRegularDate(),
                   ),
-                  if (carePlan.scheduledEnd != null) ...[
+                  if (widget.carePlan.scheduledEnd != null) ...[
                     const SliverGap(Dimensions.padding8),
                     SliverNameValueRow(
                       name:
                           context.locale.care_plan_detail_screen_active_to_date,
-                      value: carePlan.scheduledEnd!.toRegularDate(),
+                      value: widget.carePlan.scheduledEnd!.toRegularDate(),
                     ),
                   ],
                   const SliverGap(Dimensions.padding8),
                   SliverNameValueRow(
                     name: context.locale.care_plan_detail_screen_measurement,
                     value: context.locale.common_measurement_types(
-                      carePlan.activity.measurementType.name,
+                      widget.carePlan.activity.measurementType.name,
                     ),
                   ),
                   const SliverGap(Dimensions.padding26),
@@ -119,39 +154,21 @@ class CarePlanDetailScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SliverGap(Dimensions.padding42),
-                  SliverPadding(
-                    padding: Paddings.horizontal16,
-                    sliver: SliverToBoxAdapter(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            context.locale.care_plan_detail_daily_times,
-                            style: ScaleTextStyles.textAccent.apply(
-                              color: Theme.of(context).colorScheme.onSecondary,
-                            ),
-                          ),
-                          SvgPicture.asset(
-                            'assets/icons/icon_dots_horizontal.svg',
-                            color: Theme.of(context).colorScheme.primary,
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SliverGap(Dimensions.padding26),
+                  if (timeSettingsForm != null) ...[
+                    const SliverGap(Dimensions.padding42),
+                    timeSettingsForm!,
+                  ],
                 ],
               ),
               Positioned(
                 top: 0,
                 left: 0,
                 right: 0,
-                child: ScaleAppBar(
+                child: BluredScaleAppBar(
                   title: context.locale.common_measurement_types(
-                    carePlan.activity.measurementType.name,
+                    widget.carePlan.activity.measurementType.name,
                   ),
-                  onBackTap: () {},
+                  onBackTap: syncDataIfNeed,
                 ),
               ),
             ],

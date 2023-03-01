@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/ui/dialogs/bottom_dialog.dart';
@@ -16,19 +17,25 @@ import 'package:scalesoft_app/ui/widgets/scale_time_picker.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 mixin BottomSheetMixin {
-  Future<DateTime?> showRestrictedTimePicker({
+  Future<DailyTime?> showRestrictedTimePicker({
     required final BuildContext context,
-    required final DateTime currentDateTime,
+    DailyTime? defaultTime,
+    DailyTime? minTime,
+    DailyTime? maxTime,
   }) async {
-    final result = await showModalBottomSheet<DateTime?>(
+    final result = await showModalBottomSheet<DailyTime?>(
       context: context,
-      useRootNavigator: true,
+      useRootNavigator: false,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
-        return const FractionallySizedBox(
+        return FractionallySizedBox(
           heightFactor: 0.4,
-          child: ScaleTimePicker(),
+          child: ScaleTimePicker(
+            defaultTime: defaultTime,
+            minTime: minTime,
+            maxTime: maxTime,
+          ),
         );
       },
     );
@@ -79,6 +86,23 @@ mixin BottomSheetMixin {
         return BottomDialog.accountConfirmationRemoval(
           context: context,
           accountName: accountName,
+        );
+      },
+    );
+    return result;
+  }
+
+  Future<bool?> showResetWhenTimeValuesConfirmation({
+    required final BuildContext context,
+  }) async {
+    final result = await showModalBottomSheet<bool?>(
+      context: context,
+      useRootNavigator: false,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return BottomDialog.resetWhenTimeValues(
+          context: context,
         );
       },
     );

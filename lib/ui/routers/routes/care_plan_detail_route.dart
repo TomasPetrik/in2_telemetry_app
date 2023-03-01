@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
+import 'package:scalesoft_app/providers/account_db_provider.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
 import 'package:scalesoft_app/ui/screens/care_plan_detail_screen.dart';
 import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
@@ -23,7 +24,8 @@ class CarePlanDetailRoute extends ApplicationRoute with PageBuilderMixin {
       pageBuilder: pageBuilder(
         withTransition: true,
         builder: (state) {
-          final carePlan = state.extra! as CarePlan;
+          final carePlanId = state.extra! as int;
+          final carePlan = getIt<AccountDbProvider>().getCarePlan(carePlanId)!;
           return CarePlanDetailScreen(
             carePlan: carePlan,
           );

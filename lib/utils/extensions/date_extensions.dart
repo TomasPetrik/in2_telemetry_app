@@ -81,7 +81,7 @@ extension DateParse on DateTime {
     return returnDt;
   }
 
-  DateTime fromTimeOfDay(tdw.TimeOfDay timeOfDay) {
+  DateTime fromTimeOfDay(tdw.DailyTime timeOfDay) {
     return DateTime(
       year,
       month,
@@ -92,8 +92,8 @@ extension DateParse on DateTime {
     );
   }
 
-  tdw.TimeOfDay toTimeOfDay() {
-    return tdw.TimeOfDay(hour, minute, second);
+  tdw.DailyTime toTimeOfDay() {
+    return tdw.DailyTime(hour, minute, second);
   }
 
   bool isSameDate(DateTime other) {

@@ -31,6 +31,8 @@
   "common_all_accounts": "Všechny účty",
   "common_plan_fulfillment": "Plnění plánu",
   "common_understand": "Rozumím",
+  "common_from": "Od",
+  "common_to": "Do",
   "common_plans_fulfillment_plural": "{count, plural, zero{Plnění plánu} one{Plnění plánu} other{Plnění plánů}}",
   "@common_plan_fulfillment_plural": {
     "description": "Count of plans fulfillment",
@@ -70,7 +72,7 @@
       "measurementType": {}
     }
   },
-  "common_when_code": "{whenCode, select, morning{Ráno} earlyMorning{Brzy ráno} lateMorning{Pozdní ráno} lateMorning{Neskoré ráno} noon{Poledne} afternoon{Odpoledne} earlyAfternoon{Brzké odpoledne} lateAfternoon{Pozdní odpoledne} evening{Večer} earlyEvening{Podvečer} lateEvening{Pozdní večer} night{Noc} afterSleep{Po spánku} beforeSleep{Před spaním} afterWaking{Po probuzení} atBreakfast{Na snídani} atLunch{Na obědě} atDinner{Na večeři} beforeBreakfast{Před snídaní} beforeLunch{Před obědem} beforeDinner{Před večeří} afterBreakfast{Po snídani} afterLunch{Po obědě} afterDinner{Po večeři} other{Nedefinovano}}",
+  "common_when_code": "{whenCode, select, morning{Ráno} earlyMorning{Brzké ráno} lateMorning{Pozdní ráno} noon{Poledne} afternoon{Odpoledne} earlyAfternoon{Brzké odpoledne} lateAfternoon{Pozdní odpoledne} evening{Večer} earlyEvening{Brzký večer} lateEvening{Pozdní večer} night{Noc} afterSleep{Po spánku} beforeSleep{Před spánkem} afterWaking{Po probuzení} atBreakfast{Se snídaní} atLunch{S obědem} atDinner{S večeří} beforeBreakfast{Před snídaní} beforeLunch{Před obědem} beforeDinner{Před večeří} afterBreakfast{Po snídani} afterLunch{Po obědě} afterDinner{Po večeři} other{Nedefinovano}}",
   "@common_when_code": {
     "description": "When codes",
     "placeholders": {
@@ -193,7 +195,7 @@
     }
   },
   "care_plan_detail_screen_fulfillment_evaluation": "Dosavadní plnění plánu",
-  "care_plan_detail_screen_fulfillment_evaluation_valid_from": "Plánované měření začíná {fromTime} o {atTime}",
+  "care_plan_detail_screen_fulfillment_evaluation_valid_from": "Plánované měření začíná {fromTime} v {atTime}",
   "@care_plan_detail_screen_fulfillment_evaluation_valid_from": {
     "placeholders": {
       "fromTime": {
@@ -379,5 +381,8 @@
     }
   },
   "result_removal_confirmation_title_button_confirm": "Odstranit výsledek",
-  "sync_failed_screen_waiting_on_sync": "Čeká na synchronizaci"
+  "sync_failed_screen_waiting_on_sync": "Čeká na synchronizaci",
+  "daily_when_time_reset_confirmation_title": "Denní doby",
+  "daily_when_time_reset_confirmation_info": "Upravovat denní doby můžete jenom ty, kterým tuto možnost přiřadil Váš lékař.",
+  "daily_when_time_reset_confirmation_confirm": "Resetovat na výchozí"
 }

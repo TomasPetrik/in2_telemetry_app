@@ -9,6 +9,7 @@ import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/repositories/care_plans_repository.dart';
+import 'package:scalesoft_app/repositories/time_settings_repository.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
@@ -19,12 +20,14 @@ class SyncService {
   final AccountDbProvider _accountDbProvider;
   final PendingResultsDbProvider _pendingResultsDbProvider;
   final CarePlansRepository _carePlansRepository;
+  final TimeSettingsRepository _timeSettingsRepository;
 
   SyncService(
     this._session,
     this._accountDbProvider,
     this._pendingResultsDbProvider,
     this._carePlansRepository,
+    this._timeSettingsRepository,
   );
 
   void setUserPlans(
@@ -54,6 +57,27 @@ class SyncService {
     }
 
     userAccount.carePlans = newCarePlans;
+  }
+
+  Future<void> loadWhenValues(final UserAccount userAccount) async {
+    final whenTimeValuesResponse = await _timeSettingsRepository
+        .loadPlanTemplate(userAccount: userAccount);
+    userAccount.templateTimeSet = whenTimeValuesResponse;
+    for (final UserAccount representedPerson
+        in userAccount.representedPeople!) {
+      representedPerson.templateTimeSet = whenTimeValuesResponse;
+    }
+  }
+
+  Future<void> loadTimeSettings(final UserAccount userAccount) async {
+    final timeSettingItems = await _timeSettingsRepository.loadTimeSettings(
+      userAccount: userAccount,
+    );
+    userAccount.timeSettingItems = timeSettingItems;
+    for (final UserAccount representedPerson
+        in userAccount.representedPeople!) {
+      representedPerson.timeSettingItems = timeSettingItems;
+    }
   }
 
   Future<void> loadUserData(final UserAccount userAccount) async {

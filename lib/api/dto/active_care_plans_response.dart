@@ -8,8 +8,10 @@ part 'active_care_plans_response.g.dart';
 class ActiveCarePlansResponse with _$ActiveCarePlansResponse {
   const ActiveCarePlansResponse._();
 
-  factory ActiveCarePlansResponse(int count, List<CarePlan> items) =
-      _ActiveCarePlans;
+  factory ActiveCarePlansResponse(
+    final int count,
+    final List<CarePlan> items,
+  ) = _ActiveCarePlans;
 
   factory ActiveCarePlansResponse.fromJson(Map<String, dynamic> json) =>
       _$ActiveCarePlansResponseFromJson(json);

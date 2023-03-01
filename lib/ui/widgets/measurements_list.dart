@@ -83,7 +83,9 @@ class MeasurementsList extends StatelessWidget {
                   ),
                   label:
                       context.locale.dashboard_screen_upcoming_measurement_info(
-                    nextMeasurement.whenStart.toDateOrDay(context),
+                    nextMeasurement.whenStart
+                        .toDateOrDay(context)
+                        .toLowerCase(),
                     nextMeasurement.timingDayWhen.start.toString(),
                   ),
                 ),

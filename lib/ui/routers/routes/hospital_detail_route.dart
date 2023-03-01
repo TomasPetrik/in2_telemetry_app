@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/providers/account_db_provider.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
 import 'package:scalesoft_app/ui/screens/hospital_details_screen.dart';
 import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
@@ -25,10 +26,17 @@ class HospitalDetailRoute extends ApplicationRoute with PageBuilderMixin {
         withTransition: true,
         builder: (state) {
           final extras = state.extra! as List;
-          final hospital = extras[0] as Hospital;
-          final userAccounts = extras[1] as List<UserAccount>;
+          final hospitalTitle = extras[0] as String;
+          final usersIds = extras[1] as List<String>;
+
+          final List<UserAccount> userAccounts = [];
+          for (final userId in usersIds) {
+            final userAccount = getIt<AccountDbProvider>().get(userId)!;
+            userAccounts.add(userAccount);
+          }
+
           return HospitalDetailScreen(
-            hospital: hospital,
+            hospitalTitle: hospitalTitle,
             userAccounts: userAccounts,
           );
         },

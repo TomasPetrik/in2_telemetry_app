@@ -5,6 +5,8 @@ import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/api/dto/measurement/device.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/dto/settings/time_setting.dart';
+import 'package:scalesoft_app/api/dto/template_time_set.dart';
 import 'package:scalesoft_app/api/dto/user.dart';
 
 part 'user_account.freezed.dart';
@@ -30,6 +32,8 @@ class UserAccount with _$UserAccount {
     @HiveField(11) DateTime? lastSyncAt,
     @HiveField(12) bool? lastSyncFailed,
     @HiveField(13) List<Device>? assignedDevices,
+    @HiveField(14) TemplateTimeSet? templateTimeSet,
+    @HiveField(15) List<TimeSetting>? timeSettingItems,
   }) = _UserAccount;
 
   factory UserAccount.fromJson(Map<String, dynamic> json) =>

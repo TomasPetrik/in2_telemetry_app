@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
@@ -38,17 +39,17 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
   late MeasurementType dropdownValue;
 
   late TextEditingController timeEditingController;
-  late DateTime measurementDateTime;
+  late DailyTime measurementTime;
 
   @override
   void initState() {
     dropdownValue = widget.measurementType ?? MeasurementType.values.first;
 
-    final currentDateTime = DateTime.now();
+    final currentTime = DateTime.now().toTimeOfDay();
     timeEditingController = TextEditingController(
-      text: currentDateTime.toTimeOfDay().toString(),
+      text: currentTime.toString(),
     );
-    measurementDateTime = currentDateTime;
+    measurementTime = currentTime;
     super.initState();
   }
 
@@ -130,13 +131,11 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                       onTap: () async {
                         final newDateTime = await showRestrictedTimePicker(
                           context: context,
-                          currentDateTime: DateTime.now(),
                         );
 
                         if (newDateTime != null) {
-                          measurementDateTime = newDateTime;
-                          timeEditingController.text =
-                              newDateTime.toTimeOfDay().toString();
+                          measurementTime = newDateTime;
+                          timeEditingController.text = newDateTime.toString();
                         }
                       },
                       child: Stack(
@@ -168,7 +167,8 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                         final measurement = measurementForm.getMeasurement();
                         if (measurement != null) {
                           final measurementWithTime = measurement.copyWith(
-                            measurementDateTime: measurementDateTime.toUtc(),
+                            measurementDateTime:
+                                measurementTime.todayDateTime().toUtc(),
                           );
                           await getIt<PendingResultsDbProvider>()
                               .save(measurementWithTime);

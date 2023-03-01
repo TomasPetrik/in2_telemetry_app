@@ -125,6 +125,7 @@ class SyncItem extends StatelessWidget {
           'assets/icons/icon_circle_exclamation.svg',
           color: Theme.of(context).colorScheme.tertiary,
         ),
+        buttonType: SmallButtonType.none,
         onTap: () {
           getIt<SyncBloc>().add(SyncEvent.resolveUpdatedUserPlan(carePlan));
         },
@@ -143,6 +144,7 @@ class SyncItem extends StatelessWidget {
           'assets/icons/icon_circle_exclamation.svg',
           color: Theme.of(context).colorScheme.tertiary,
         ),
+        buttonType: SmallButtonType.none,
         onTap: () {
           getIt<SyncBloc>().add(SyncEvent.resolveUpdatedUserPlan(carePlan));
         },

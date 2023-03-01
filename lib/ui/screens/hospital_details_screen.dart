@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
@@ -18,11 +17,11 @@ import 'package:scalesoft_app/ui/widgets/user_item_compound.dart';
 class HospitalDetailScreen extends StatelessWidget {
   const HospitalDetailScreen({
     super.key,
-    required this.hospital,
+    required this.hospitalTitle,
     required this.userAccounts,
   });
 
-  final Hospital hospital;
+  final String hospitalTitle;
   final List<UserAccount> userAccounts;
 
   @override
@@ -73,7 +72,7 @@ class HospitalDetailScreen extends StatelessWidget {
                                   onUserSelected: (userAccount) {
                                     GoRouter.of(context).pushNamed(
                                       UserDetailRoute.name,
-                                      extra: userAccount,
+                                      extra: userAccount.user.muid,
                                     );
                                   },
                                   showWarning: showWarning,
@@ -93,7 +92,7 @@ class HospitalDetailScreen extends StatelessWidget {
                     left: 0,
                     right: 0,
                     child: BluredScaleAppBar(
-                      title: hospital.title,
+                      title: hospitalTitle,
                       onBackTap: () {},
                     ),
                   ),

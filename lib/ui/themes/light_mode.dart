@@ -152,7 +152,7 @@ class LightMode {
               width: 1,
             ),
           ),
-          errorStyle: ScaleTextStyles.text.apply(
+          errorStyle: ScaleTextStyles.label.apply(
             color: alertColor,
           ),
         ),

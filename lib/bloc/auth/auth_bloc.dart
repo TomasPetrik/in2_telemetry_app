@@ -141,6 +141,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             .toList(),
       );
 
+      await _syncService.loadWhenValues(userAccount);
+      await _syncService.loadTimeSettings(userAccount);
       await _syncService.loadUserData(userAccount);
       //syncResults() in case if user has some offline results not synced due session expiration
       await _syncService.syncResults();
