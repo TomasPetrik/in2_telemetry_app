@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="cz.scalesoft.scalesoft_app">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -27,7 +28,8 @@
    <application
         android:label="Telemedicina"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        tools:replace="android:label">
         <activity
             android:name=".MainActivity"
             android:exported="true"
