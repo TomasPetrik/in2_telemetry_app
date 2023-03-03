@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class SettingsBlocEvent {}
+part 'settings_bloc_event.freezed.dart';
 
-class OnSettingsChangedEvent extends SettingsBlocEvent {}
+@freezed
+class SettingsBlocEvent with _$SettingsBlocEvent {
+  const factory SettingsBlocEvent.initSettings() = _InitSettings;
+  const factory SettingsBlocEvent.localeChanged(Locale newLocale) =
+      _LocaleChanged;
+  const factory SettingsBlocEvent.themeChanged(ThemeMode newThemeMode) =
+      _ThemeChanged;
+  const factory SettingsBlocEvent.enableNotifications(bool enabled) =
+      _EnableNotifications;
 
-class SettingsChangeLocaleEvent extends SettingsBlocEvent {
-  SettingsChangeLocaleEvent({
-    required this.newLocale,
-  });
-  final Locale newLocale;
-}
-
-class SettingsChangeThemeEvent extends SettingsBlocEvent {
-  SettingsChangeThemeEvent({
-    required this.newThemeMode,
-  });
-  final ThemeMode newThemeMode;
+  const factory SettingsBlocEvent.notifyAtStartOfMeasurement(bool enabled) =
+      _NotifyAtStartOfMeasurement;
+  const factory SettingsBlocEvent.notify10MinBeforeMeasurement(bool enabled) =
+      _Notify10MinBeforeMeasurement;
 }

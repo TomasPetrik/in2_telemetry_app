@@ -8,6 +8,7 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/onboarding_item_desc.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
@@ -93,7 +94,7 @@ class OnboardingScreen extends StatelessWidget with BottomSheetMixin {
             top: 0,
             left: 0,
             right: 0,
-            child: ScaleAppBar(
+            child: BluredScaleAppBar(
               title: context
                   .locale.onboarding_add_account_screen_add_account_title,
             ),

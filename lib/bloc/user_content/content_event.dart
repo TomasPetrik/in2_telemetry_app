@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 
 abstract class ContentEvent extends Equatable {
@@ -39,10 +40,12 @@ class OnUserAddedContentEvent extends ContentEvent {
 }
 
 class OnAppearanceChangedContentEvent extends ContentEvent {
-  const OnAppearanceChangedContentEvent();
+  const OnAppearanceChangedContentEvent(this.themeMode);
+
+  final ThemeMode themeMode;
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [themeMode.index];
 }
 
 class SwitchAllUsersContentEvent extends ContentEvent {

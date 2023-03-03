@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/navigation_tab_chip.dart';
+import 'package:scalesoft_app/ui/widgets/scale_card.dart';
 
 class WarningItem extends StatelessWidget {
   const WarningItem({
@@ -54,7 +55,7 @@ class _WarningItem extends WarningItem {
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
-      child: Card(
+      child: ScaleCard(
         child: Container(
           padding: Paddings.all16,
           decoration: BoxDecoration(

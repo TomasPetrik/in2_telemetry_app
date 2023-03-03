@@ -7,79 +7,118 @@ import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/globals.dart';
 import 'package:scalesoft_app/model/app_settings.dart';
+import 'package:scalesoft_app/model/theme_mode_local.dart';
 import 'package:scalesoft_app/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/services/settings_service.dart';
+import 'package:scalesoft_app/utils/extensions/locale_extensions.dart';
 
-@injectable
+@singleton
 class SettingsBloc extends Bloc<SettingsBlocEvent, AppSettings> {
-  final SettingsDbProvider settingsDbProvider;
-  final SettingsService settingsService;
+  final SettingsDbProvider _settingsDbProvider;
 
   SettingsBloc(
-    this.settingsService,
-    this.settingsDbProvider,
-  )   : _localeService = settingsService,
-        super(
-          settingsDbProvider.read() ??
+    this._settingsDbProvider,
+  ) : super(
+          _settingsDbProvider.read() ??
               AppSettings(
-                themeMode: buildConfig.themeMode,
-                locale: buildConfig.locale,
+                themeModeLocal: buildConfig.themeMode.toLocal(),
+                localLocale: buildConfig.locale.toLocal(),
               ),
         ) {
-    _localeService.localeChangedStream.listen(onLocaleChanged);
-    _localeService.themeChangedStream.listen(onThemeChanged);
-    on<SettingsChangeLocaleEvent>((event, emit) {
-      _localeService.changeLocale(event.newLocale);
-      emit(_getState());
-    });
-    on<SettingsChangeThemeEvent>((event, emit) {
-      _localeService.changeThemeMode(event.newThemeMode);
+    on<SettingsBlocEvent>(
+      (event, emit) async {
+        await event.when(
+          initSettings: () {
+            emit(_getAppSettings());
+          },
+          localeChanged: (Locale newLocale) {
+            final appSettings = _settingsDbProvider.read() ??
+                AppSettings(
+                  themeModeLocal: buildConfig.themeMode.toLocal(),
+                  localLocale: buildConfig.locale.toLocal(),
+                );
 
-      final appSettings = settingsDbProvider.read() ??
-          AppSettings(
-            themeMode: buildConfig.themeMode,
-            locale: buildConfig.locale,
-          );
+            _settingsDbProvider.write(
+              appSettings.copyWith(localLocale: newLocale.toLocal()),
+            );
 
-      settingsDbProvider.write(
-        appSettings.copyWith(themeMode: event.newThemeMode),
-      );
+            emit(_getAppSettings());
+          },
+          themeChanged: (ThemeMode newThemeMode) async {
+            final appSettings = _settingsDbProvider.read() ??
+                AppSettings(
+                  themeModeLocal: buildConfig.themeMode.toLocal(),
+                  localLocale: buildConfig.locale.toLocal(),
+                );
 
-      setSystemUIOverlayStyle(event.newThemeMode);
+            await _settingsDbProvider.write(
+              appSettings.copyWith(themeModeLocal: newThemeMode.toLocal()),
+            );
 
-      emit(_getState());
-      getIt<ContentBloc>().add(const OnAppearanceChangedContentEvent());
-    });
-    on<OnSettingsChangedEvent>((event, emit) {
-      emit(_getState());
-    });
+            setSystemUIOverlayStyle(newThemeMode);
+
+            emit(_getAppSettings());
+            getIt<ContentBloc>()
+                .add(OnAppearanceChangedContentEvent(newThemeMode));
+          },
+          enableNotifications: (enabled) async {
+            final appSettings = _settingsDbProvider.read();
+
+            if (appSettings == null) return;
+
+            await _settingsDbProvider.write(
+              appSettings.copyWith(enabledNotifications: enabled),
+            );
+            emit(_getAppSettings());
+          },
+          notifyAtStartOfMeasurement: (bool enabled) async {
+            final appSettings = _settingsDbProvider.read();
+
+            if (appSettings == null) return;
+
+            await _settingsDbProvider.write(
+              appSettings.copyWith(notifyAtStartOfMeasurement: enabled),
+            );
+            emit(_getAppSettings());
+          },
+          notify10MinBeforeMeasurement: (bool enabled) async {
+            final appSettings = _settingsDbProvider.read();
+
+            if (appSettings == null) return;
+
+            await _settingsDbProvider.write(
+              appSettings.copyWith(notify10minBeforeMeasurement: enabled),
+            );
+            emit(_getAppSettings());
+          },
+        );
+      },
+    );
   }
 
-  final SettingsService _localeService;
-
   void onLocaleChanged(Locale newLocale) {
-    add(OnSettingsChangedEvent());
+    add(SettingsBlocEvent.localeChanged(newLocale));
   }
 
   void onThemeChanged(ThemeMode newTheme) {
-    add(OnSettingsChangedEvent());
+    add(SettingsBlocEvent.themeChanged(newTheme));
   }
 
   void setSystemUIOverlayStyle(ThemeMode? mode) {
     SystemChrome.setSystemUIOverlayStyle(
-      mode == ThemeMode.dark
+      mode == ThemeMode.light
           ? SystemUiOverlayStyle.light
           : SystemUiOverlayStyle.dark,
     );
   }
 
-  AppSettings _getState() {
-    final currentTheme = _localeService.currentThemeMode ?? state.themeMode;
-    final currentLocale = _localeService.currentLocale ?? state.locale;
-    return AppSettings(
-      themeMode: currentTheme,
-      locale: currentLocale,
-    );
+  AppSettings _getAppSettings() {
+    final appSettings = _settingsDbProvider.read() ??
+        AppSettings(
+          themeModeLocal: buildConfig.themeMode.toLocal(),
+          localLocale: buildConfig.locale.toLocal(),
+        );
+
+    return appSettings;
   }
 }

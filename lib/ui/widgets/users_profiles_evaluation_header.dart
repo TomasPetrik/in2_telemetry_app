@@ -52,6 +52,7 @@ class UsersProfilesEvaluationHeader extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Column(
         children: [
+          Gaps.gap16,
           ProgressHeader(
             whenPeriod: whenPeriod,
             openWhenSelector: openWhenSelector,

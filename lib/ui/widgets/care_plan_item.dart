@@ -4,6 +4,7 @@ import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/widgets/scale_card.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 class CarePlanItem extends StatelessWidget {
@@ -16,7 +17,7 @@ class CarePlanItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return ScaleCard(
       child: Container(
         width: double.maxFinite,
         padding: Paddings.all16,

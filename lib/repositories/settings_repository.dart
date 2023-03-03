@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/model/app_settings.dart';
+import 'package:scalesoft_app/model/theme_mode_local.dart';
+import 'package:scalesoft_app/utils/extensions/locale_extensions.dart';
 
 class SettingsRepository {
   final SettingsDb _settingsDb;
@@ -24,7 +26,7 @@ class SettingsRepository {
   }) {
     return save(
       acc.copyWith(
-        locale: Locale(languageCode),
+        localLocale: Locale(languageCode).toLocal(),
       ),
     );
   }
@@ -35,7 +37,7 @@ class SettingsRepository {
   }) {
     return save(
       acc.copyWith(
-        themeMode: themeMode,
+        themeModeLocal: themeMode.toLocal(),
       ),
     );
   }

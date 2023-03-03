@@ -9,6 +9,7 @@ import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
+import 'package:scalesoft_app/ui/widgets/scale_card.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 class ActionWidget extends StatelessWidget with BottomSheetMixin {
@@ -70,7 +71,7 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
 
     return Padding(
       padding: Paddings.horizontal16,
-      child: Card(
+      child: ScaleCard(
         child: Container(
           padding: Paddings.all16,
           decoration: BoxDecoration(

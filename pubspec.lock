@@ -57,6 +57,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
+  background_fetch:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "5e6c095b887fb397b695b9b91e357bc9be2da95b"
+      url: "https://github.com/transistorsoft/flutter_background_fetch"
+    source: git
+    version: "1.1.4"
   bloc:
     dependency: transitive
     description:
@@ -1094,10 +1103,10 @@ packages:
     dependency: transitive
     description:
       name: xdg_directories
-      sha256: ee1505df1426458f7f60aac270645098d318a8b4766d85fde75f76f2e21807d1
+      sha256: bd512f03919aac5f1313eb8249f223bacf4927031bf60b02601f81f687689e86
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "0.2.0+3"
   xml:
     dependency: transitive
     description:

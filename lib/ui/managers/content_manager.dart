@@ -41,10 +41,9 @@ class ContentManager extends StatelessWidget {
             ),
           ),
           unauthenticated: () => onInit(context, state),
-          onAppearanceChanged: () => onInit(context, state),
-          onUserAdded: (userAccount) => onInit(context, state),
-          activeSingleUser: (userAccount) => onInit(context, state),
-          activeAllUsers: () => onInit(context, state),
+          onAppearanceChanged: (_) => onInit(context, state),
+          onUserAdded: (_) => onInit(context, state),
+          activeMode: () => onInit(context, state),
         );
 
         return initialWidget;

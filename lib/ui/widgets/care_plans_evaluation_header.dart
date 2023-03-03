@@ -83,6 +83,7 @@ class CarePlansEvaluationHeader extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Column(
         children: [
+          Gaps.gap16,
           progressItems.isEmpty
               ? NoResultsInPlansHeader(
                   whenPeriod: whenPeriod,

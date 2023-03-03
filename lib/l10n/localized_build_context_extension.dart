@@ -6,7 +6,9 @@ extension LocalizedBuildContext on BuildContext {
 
   List<Locale> get supportedLocales => AppLocalizations.supportedLocales;
 
-  List<LocalizationsDelegate<dynamic>> get localizationDelegates => AppLocalizations.localizationsDelegates;
+  List<LocalizationsDelegate<dynamic>> get localizationDelegates =>
+      AppLocalizations.localizationsDelegates;
 
-  List<String> get supportedLanguageCodes => supportedLocales.map((e) => e.languageCode).toList();
+  List<String> get supportedLanguageCodes =>
+      supportedLocales.map((e) => e.languageCode).toList();
 }

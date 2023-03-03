@@ -72,7 +72,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                       onTabSelected: (tabIndex) {
                         if (tabIndex == 0) {
                           carePlanBloc.add(
-                            CurrentPlansChangeEvent(null),
+                            const CurrentPlansChangeEvent(null),
                           );
                         } else {
                           carePlanBloc.add(

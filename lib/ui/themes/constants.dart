@@ -27,6 +27,8 @@ class Constants {
   static const double navigationTabBarHeight = 32;
   static const double buttonHeight = 48;
   static const double searchBarHeight = 48;
+  static const double singleLineRowHeight = 54;
+  static const double doubleLineRowHeight = 92;
 
   static const double actionActiveWidgetHeight =
       16 + 20 + 16 + buttonHeight + 16;

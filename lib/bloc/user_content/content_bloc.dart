@@ -1,10 +1,16 @@
+import 'package:background_fetch/background_fetch.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
+import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_state.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/session_db_provider.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/services/sync_service.dart';
 import 'package:scalesoft_app/storage/session.dart';
 
 @singleton
@@ -27,22 +33,32 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     CheckLastLoggedUserContentEvent event,
     Emitter<ContentState> emit,
   ) async {
-    //TODO.. _session.isMultiUser should be kept in memory
-    //and any switch content should re-write this _session.isMultiUser value
+    initBackgroundFetch();
 
     final userAccount = _accountDbProvider.getLast();
     final isMultiUser = _sessionDbProvider.isMultiUser();
     if (userAccount == null) {
       emit(const ContentState.unauthenticated());
+
+      BackgroundFetch.stop().then((int status) {
+        debugPrint('[BackgroundFetch] stop success: $status');
+      });
     } else {
       _session.userAccount = userAccount;
       _session.token = userAccount.authToken;
       _session.isMultiUser = isMultiUser;
 
-      //todo.. try to load care plans,
-      //if is in offline mode, then just switch user
+      //Do all sync always when start app
+      getIt<SyncBloc>().add(const SyncEvent.syncAll());
 
-      emit(ContentState.activeSingleUser(userAccount));
+      //If is logged-in atleast one user , then try periodically fetching data for update
+      BackgroundFetch.start().then((int status) {
+        debugPrint('[BackgroundFetch] start success: $status');
+      }).catchError((e) {
+        debugPrint('[BackgroundFetch] start FAILURE: $e');
+      });
+
+      emit(const ContentState.activeMode());
     }
   }
 
@@ -53,7 +69,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     _session.isMultiUser = false;
     _sessionDbProvider.setIsMultiUser(false);
 
-    late UserAccount parentAccount;
+    final UserAccount parentAccount;
 
     if (event.userAccount.parentId?.isNotEmpty == true) {
       parentAccount = _accountDbProvider.get(event.userAccount.parentId!)!;
@@ -72,17 +88,19 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
 
     _accountDbProvider.save(parentAccount);
 
-    //todo.. try to re-load care plans automatically,
-    //if is in offline mode, then just switch user
-    /*
-    final activePlans = await _carePlansRepository.loadActiveCarePlans(
-      patientMuid: event.userAccount.user.muid,
-    );
-    _accountDbProvider.save(event.userAccount.copyWith(carePlans: activePlans.items));
-    //todo.. save this plans for user
-    */
+    //Try to re-load care plans when switch user
+    getIt<SyncBloc>().add(const SyncEvent.syncAll());
 
-    emit(ContentState.activeSingleUser(event.userAccount));
+    emit(const ContentState.activeMode());
+  }
+
+  Future<void> _switchMultiUserContentEvent(
+    SwitchMultiUserContentEvent event,
+    Emitter<ContentState> emit,
+  ) async {
+    _session.isMultiUser = true;
+    _sessionDbProvider.setIsMultiUser(true);
+    emit(const ContentState.activeMode());
   }
 
   Future<void> _onUserAddedContentEvent(
@@ -95,22 +113,26 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     _session.token = event.userAccount.authToken;
     _session.isMultiUser = false;
     _sessionDbProvider.setIsMultiUser(false);
-    emit(ContentState.onUserAdded(event.userAccount));
-  }
 
-  Future<void> _switchMultiUserContentEvent(
-    SwitchMultiUserContentEvent event,
-    Emitter<ContentState> emit,
-  ) async {
-    _session.isMultiUser = true;
-    _sessionDbProvider.setIsMultiUser(true);
-    emit(const ContentState.activeAllUsers());
+    //Same as during check last logged-in user
+    //Make sure that if any user is active, we should start periodic background fetch
+    BackgroundFetch.start().then((int status) {
+      debugPrint('[BackgroundFetch] start success: $status');
+    }).catchError((e) {
+      debugPrint('[BackgroundFetch] start FAILURE: $e');
+    });
+
+    emit(ContentState.onUserAdded(event.userAccount));
   }
 
   Future<void> _switchNoUserContentEvent(
     SwitchNoUserContentEvent event,
     Emitter<ContentState> emit,
   ) async {
+    BackgroundFetch.stop().then((int status) {
+      debugPrint('[BackgroundFetch] stop success: $status');
+    });
+
     _session.isMultiUser = false;
     _sessionDbProvider.setIsMultiUser(false);
     emit(const ContentState.unauthenticated());
@@ -120,6 +142,31 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     OnAppearanceChangedContentEvent event,
     Emitter<ContentState> emit,
   ) async {
-    emit(const ContentState.onAppearanceChanged());
+    emit(ContentState.onAppearanceChanged(event.themeMode));
   }
+}
+
+Future<void> initBackgroundFetch() async {
+  int status = await BackgroundFetch.configure(
+      BackgroundFetchConfig(
+        minimumFetchInterval: 15,
+        stopOnTerminate: false,
+        enableHeadless: true,
+        requiresBatteryNotLow: false,
+        requiresCharging: false,
+        requiresStorageNotLow: false,
+        requiresDeviceIdle: false,
+        requiredNetworkType: NetworkType.NONE,
+      ), (String taskId) async {
+    debugPrint("[BackgroundFetch] Event received $taskId");
+    await getIt<SyncService>().syncAllData();
+
+    //Here must be signal completion of this task or the OS can punish app for taking too long in the background.
+    BackgroundFetch.finish(taskId);
+  }, (String taskId) async {
+    //If this task has exceeded its allowed running-time. It must be stopped immediately finish(taskId)
+    debugPrint("[BackgroundFetch] TASK TIMEOUT taskId: $taskId");
+    BackgroundFetch.finish(taskId);
+  });
+  debugPrint('[BackgroundFetch] configure success: $status');
 }

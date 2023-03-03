@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/rotating_icon.dart';
+import 'package:scalesoft_app/ui/widgets/scale_card.dart';
 
 class SyncProcessItem extends StatelessWidget {
   const SyncProcessItem({
@@ -58,7 +59,7 @@ class SyncProcessItem extends StatelessWidget {
     return SliverToBoxAdapter(
       child: InkWell(
         onTap: () => onTap?.call(),
-        child: Card(
+        child: ScaleCard(
           child: Container(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.onBackground,

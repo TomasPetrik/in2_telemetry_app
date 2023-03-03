@@ -11,8 +11,8 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
-import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
 
 class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
   const UserAddedScreen({
@@ -32,7 +32,10 @@ class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
             right: 16,
             child: Column(
               children: [
-                Gap(MediaQuery.of(context).viewPadding.top + Constants.appBarHeight),
+                Gap(
+                  MediaQuery.of(context).viewPadding.top +
+                      Constants.appBarHeight,
+                ),
                 Gaps.gap48,
                 Container(
                   width: 96,
@@ -54,7 +57,9 @@ class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
                     right: Dimensions.padding48,
                   ),
                   child: Text(
-                    context.locale.onboarding_account_added_screen_user_added(userAccount.user.fullName),
+                    context.locale.onboarding_account_added_screen_user_added(
+                      userAccount.user.fullName,
+                    ),
                     style: ScaleTextStyles.text.apply(
                       color: Theme.of(context).colorScheme.onSecondary,
                     ),
@@ -63,19 +68,27 @@ class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
                 ),
                 Gaps.gap24,
                 HighlightedElevatedButton(
-                  label: context.locale.onboarding_account_added_screen_continue_to_app,
+                  label: context
+                      .locale.onboarding_account_added_screen_continue_to_app,
                   onPressed: () async {
-                    getIt<ContentBloc>().add(SwitchUserContentEvent(userAccount: userAccount));
+                    getIt<ContentBloc>()
+                        .add(SwitchUserContentEvent(userAccount: userAccount));
                   },
                 ),
                 Gaps.gap24,
                 HighlightedElevatedButton(
-                  label: context.locale.onboarding_account_added_screen_add_other_account,
+                  label: context
+                      .locale.onboarding_account_added_screen_add_other_account,
                   buttonType: ButtonType.secondary,
                   onPressed: () async {
-                    final hospitalSelection = await selectHospital(context: context);
+                    final hospitalSelection =
+                        await selectHospital(context: context);
                     if (hospitalSelection?.selectedHospital != null) {
-                      getIt<AuthBloc>().add(Authenticate(hospital: hospitalSelection!.selectedHospital!));
+                      getIt<AuthBloc>().add(
+                        Authenticate(
+                          hospital: hospitalSelection!.selectedHospital!,
+                        ),
+                      );
                     }
                   },
                 ),
@@ -86,8 +99,9 @@ class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
             top: 0,
             left: 0,
             right: 0,
-            child: ScaleAppBar(
-              title: context.locale.onboarding_account_added_screen_add_account_title,
+            child: BluredScaleAppBar(
+              title: context
+                  .locale.onboarding_account_added_screen_add_account_title,
             ),
           ),
         ],

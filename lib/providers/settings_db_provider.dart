@@ -1,41 +1,37 @@
-import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/model/app_settings.dart';
+import 'package:scalesoft_app/model/local_locale.dart';
+import 'package:scalesoft_app/model/theme_mode_local.dart';
 import 'package:scalesoft_app/providers/box_provider.dart';
-import 'package:scalesoft_app/providers/storage_provider.dart';
 
 @singleton
-class SettingsDbProvider extends BoxProvider<SettingsLocal> implements StorageProvider<AppSettings> {
+class SettingsDbProvider extends BoxProvider<AppSettings> {
   @override
   final String boxName = 'settingsBox';
 
   @override
   void registerAdapters() {
-    Hive.registerAdapter(SettingsLocalAdapter());
+    Hive.registerAdapter(AppSettingsAdapter());
+    Hive.registerAdapter(ThemeModeLocalAdapter());
+    Hive.registerAdapter(LocalLocaleAdapter());
   }
 
-  @override
   AppSettings? read() {
-    if (box.isNotEmpty) {
-      final local = box.values.first;
+    try {
+      if (box.isNotEmpty) {
+        final local = box.values.first;
 
-      return AppSettings(
-        themeMode: ThemeMode.values[local.themeMode],
-        locale: Locale(local.languageCode),
-      );
+        return local;
+      }
+    } catch (e) {
+      return null;
     }
     return null;
   }
 
-  @override
   Future<void> write(AppSettings appSettings) async {
     await box.clear();
-    box.add(
-      SettingsLocal(
-        themeMode: appSettings.themeMode.index,
-        languageCode: appSettings.locale.languageCode,
-      ),
-    );
+    box.add(appSettings);
   }
 }

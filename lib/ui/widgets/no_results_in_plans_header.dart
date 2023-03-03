@@ -4,6 +4,7 @@ import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/widgets/scale_card.dart';
 
 class NoResultsInPlansHeader extends StatelessWidget {
   const NoResultsInPlansHeader({
@@ -19,7 +20,7 @@ class NoResultsInPlansHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: Paddings.horizontal16,
-      child: Card(
+      child: ScaleCard(
         child: Container(
           width: double.maxFinite,
           padding: Paddings.all16,

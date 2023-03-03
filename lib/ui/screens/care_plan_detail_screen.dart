@@ -81,9 +81,11 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
                             .locale.notification_widget_plan_changed_title,
                         description: context.locale
                             .notification_widget_plan_changed_desc(
-                          context.locale.common_measurement_types_genitive(
-                            widget.carePlan.activity.measurementType.name,
-                          ),
+                          context.locale
+                              .common_measurement_types_genitive(
+                                widget.carePlan.activity.measurementType.name,
+                              )
+                              .toLowerCase(),
                         ),
                         buttonLabel: context.locale.common_understand,
                         buttonType: SmallButtonType.none,

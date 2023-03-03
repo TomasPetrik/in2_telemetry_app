@@ -116,9 +116,11 @@ class SyncItem extends StatelessWidget {
       userCarePlanChanged: (carePlan) => WarningItem(
         title: context.locale.notification_widget_plan_changed_title,
         description: context.locale.notification_widget_plan_changed_desc(
-          context.locale.common_measurement_types_genitive(
-            carePlan.activity.measurementType.name,
-          ),
+          context.locale
+              .common_measurement_types_genitive(
+                carePlan.activity.measurementType.name,
+              )
+              .toLowerCase(),
         ),
         buttonLabel: context.locale.common_understand,
         icon: SvgPicture.asset(

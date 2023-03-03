@@ -40,13 +40,11 @@ class AppRouter {
 
         final path = userContentState.whenOrNull(
           unauthenticated: () => '/${NoUserRoute.name}',
-          onAppearanceChanged: () =>
+          onAppearanceChanged: (_) =>
               '/${ConfigurationRoute.name}/${AppearanceRoute.name}',
           onUserAdded: (UserAccount userAccount) =>
               '/${UserAddedRoute.name}/${userAccount.user.muid}',
-          activeSingleUser: (UserAccount userAccount) =>
-              '/${DashboardRoute.name}',
-          activeAllUsers: () => '/${DashboardRoute.name}',
+          activeMode: () => '/${DashboardRoute.name}',
         );
 
         return path;

@@ -27,10 +27,10 @@ class TimePeriodChangeEvent extends CarePlanBlocEvent {
 }
 
 class CurrentPlansChangeEvent extends CarePlanBlocEvent {
-  CurrentPlansChangeEvent(
+  const CurrentPlansChangeEvent(
     this.measurementType,
   );
-  MeasurementType? measurementType;
+  final MeasurementType? measurementType;
 }
 
 class ReloadCarePlansEvent extends CarePlanBlocEvent {
