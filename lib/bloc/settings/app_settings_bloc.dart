@@ -2,34 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/bloc/settings/settings_bloc_event.dart';
+import 'package:scalesoft_app/bloc/settings/app_settings_bloc_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/globals.dart';
 import 'package:scalesoft_app/model/app_settings.dart';
-import 'package:scalesoft_app/model/theme_mode_local.dart';
 import 'package:scalesoft_app/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/utils/extensions/locale_extensions.dart';
+import 'package:scalesoft_app/utils/extensions/theme_mode_extensions.dart';
 
 @singleton
-class SettingsBloc extends Bloc<SettingsBlocEvent, AppSettings> {
-  final SettingsDbProvider _settingsDbProvider;
+class AppSettingsBloc extends Bloc<AppSettingsBlocEvent, AppSettings> {
+  final AppSettingsDbProvider _settingsDbProvider;
 
-  SettingsBloc(
+  AppSettingsBloc(
     this._settingsDbProvider,
   ) : super(
           _settingsDbProvider.read() ??
               AppSettings(
                 themeModeLocal: buildConfig.themeMode.toLocal(),
                 localLocale: buildConfig.locale.toLocal(),
+                enabledNotifications: true,
+                notifyAtStartOfMeasurement: true,
               ),
         ) {
-    on<SettingsBlocEvent>(
+    on<AppSettingsBlocEvent>(
       (event, emit) async {
         await event.when(
           initSettings: () {
-            emit(_getAppSettings());
+            final appSettings = _getAppSettings();
+
+            _settingsDbProvider.write(appSettings);
+            emit(appSettings);
           },
           localeChanged: (Locale newLocale) {
             final appSettings = _settingsDbProvider.read() ??
@@ -61,47 +66,17 @@ class SettingsBloc extends Bloc<SettingsBlocEvent, AppSettings> {
             getIt<ContentBloc>()
                 .add(OnAppearanceChangedContentEvent(newThemeMode));
           },
-          enableNotifications: (enabled) async {
-            final appSettings = _settingsDbProvider.read();
-
-            if (appSettings == null) return;
-
-            await _settingsDbProvider.write(
-              appSettings.copyWith(enabledNotifications: enabled),
-            );
-            emit(_getAppSettings());
-          },
-          notifyAtStartOfMeasurement: (bool enabled) async {
-            final appSettings = _settingsDbProvider.read();
-
-            if (appSettings == null) return;
-
-            await _settingsDbProvider.write(
-              appSettings.copyWith(notifyAtStartOfMeasurement: enabled),
-            );
-            emit(_getAppSettings());
-          },
-          notify10MinBeforeMeasurement: (bool enabled) async {
-            final appSettings = _settingsDbProvider.read();
-
-            if (appSettings == null) return;
-
-            await _settingsDbProvider.write(
-              appSettings.copyWith(notify10minBeforeMeasurement: enabled),
-            );
-            emit(_getAppSettings());
-          },
         );
       },
     );
   }
 
   void onLocaleChanged(Locale newLocale) {
-    add(SettingsBlocEvent.localeChanged(newLocale));
+    add(AppSettingsBlocEvent.localeChanged(newLocale));
   }
 
   void onThemeChanged(ThemeMode newTheme) {
-    add(SettingsBlocEvent.themeChanged(newTheme));
+    add(AppSettingsBlocEvent.themeChanged(newTheme));
   }
 
   void setSystemUIOverlayStyle(ThemeMode? mode) {
@@ -117,6 +92,8 @@ class SettingsBloc extends Bloc<SettingsBlocEvent, AppSettings> {
         AppSettings(
           themeModeLocal: buildConfig.themeMode.toLocal(),
           localLocale: buildConfig.locale.toLocal(),
+          enabledNotifications: true,
+          notifyAtStartOfMeasurement: true,
         );
 
     return appSettings;

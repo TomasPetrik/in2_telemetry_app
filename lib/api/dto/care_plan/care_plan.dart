@@ -86,18 +86,20 @@ class CarePlan with _$CarePlan {
     }
   }
 
-  List<TimingDayWhen> getTodayRemainingMeasurements() {
+  List<TimingDayWhen> getTodayRemainingMeasurements({bool? ignoreOngoing}) {
     final now = DateTime.now();
     final currentWeekDay = now.currentWeekDay();
 
     if ((periodUnit == TimeUnit.day && weekDays?.isEmpty == true) ||
         weekDays?.contains(currentWeekDay) == true) {
       return timingDayWhen.where((currentTiming) {
-        final todayStart = currentTiming.start.todayDateTime();
-        final todayEnd = currentTiming.end.todayDateTime();
+        final measurementTodayStart = currentTiming.start.todayDateTime();
+        final measurementTodayEnd = currentTiming.end.todayDateTime();
 
-        return ((now.isBefore(todayEnd) && now.isAfter(todayStart)) ||
-            now.isBefore(todayStart));
+        return ((now.isBefore(measurementTodayEnd) &&
+                now.isAfter(measurementTodayStart) &&
+                ignoreOngoing != true) ||
+            now.isBefore(measurementTodayStart));
       }).toList();
     } else {
       return [];

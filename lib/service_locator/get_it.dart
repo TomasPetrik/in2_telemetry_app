@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
+import 'package:scalesoft_app/localization/generated/l10n.dart';
 import 'package:scalesoft_app/service_locator/get_it.config.dart';
 
 final getIt = GetIt.instance;
@@ -9,4 +11,7 @@ final getIt = GetIt.instance;
   preferRelativeImports: true, // default
   asExtension: false, // default
 )
-GetIt configureDependencies() => init(getIt);
+GetIt configureDependencies(BuildContext context) {
+  getIt.registerLazySingleton(I10n.new);
+  return init(getIt);
+}

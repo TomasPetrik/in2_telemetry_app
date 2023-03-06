@@ -21,8 +21,19 @@ import 'package:scalesoft_app/ui/widgets/personal_measurement_footer.dart';
 import 'package:scalesoft_app/ui/widgets/sync_widget.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
-class DashboardPage extends StatelessWidget with BottomSheetMixin {
+class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
+
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> with BottomSheetMixin {
+  @override
+  void dispose() {
+    getIt<CarePlanBloc>().add(const StopWatchDog());
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

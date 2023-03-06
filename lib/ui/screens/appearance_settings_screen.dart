@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:scalesoft_app/bloc/settings/settings_bloc.dart';
-import 'package:scalesoft_app/bloc/settings/settings_bloc_event.dart';
+import 'package:scalesoft_app/bloc/settings/app_settings_bloc.dart';
+import 'package:scalesoft_app/bloc/settings/app_settings_bloc_event.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
@@ -14,7 +14,7 @@ class AppearanceSettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settingsBloc = getIt<SettingsBloc>();
+    final settingsBloc = getIt<AppSettingsBloc>();
     return Material(
       child: Stack(
         children: [
@@ -49,7 +49,7 @@ class AppearanceSettingsScreen extends StatelessWidget {
                                     ThemeMode.light,
                             onSelected: () {
                               settingsBloc.add(
-                                const SettingsBlocEvent.themeChanged(
+                                const AppSettingsBlocEvent.themeChanged(
                                   ThemeMode.light,
                                 ),
                               );
@@ -63,7 +63,7 @@ class AppearanceSettingsScreen extends StatelessWidget {
                                     ThemeMode.dark,
                             onSelected: () {
                               settingsBloc.add(
-                                const SettingsBlocEvent.themeChanged(
+                                const AppSettingsBlocEvent.themeChanged(
                                   ThemeMode.dark,
                                 ),
                               );

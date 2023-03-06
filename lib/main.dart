@@ -1,11 +1,19 @@
+import 'dart:async';
+
 import 'package:background_fetch/background_fetch.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scalesoft_app/api/interceptors/token_interceptor.dart';
-import 'package:scalesoft_app/bloc/settings/settings_bloc.dart';
-import 'package:scalesoft_app/bloc/settings/settings_bloc_event.dart';
+import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
+import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
+import 'package:scalesoft_app/bloc/notifications/notifications_bloc.dart';
+import 'package:scalesoft_app/bloc/notifications/notifications_event.dart';
+import 'package:scalesoft_app/bloc/settings/app_settings_bloc.dart';
+import 'package:scalesoft_app/bloc/settings/app_settings_bloc_event.dart';
 import 'package:scalesoft_app/globals_initialization.dart';
 import 'package:scalesoft_app/locales.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
@@ -16,9 +24,11 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
 import 'package:scalesoft_app/ui/managers/content_manager.dart';
 import 'package:scalesoft_app/ui/routers/app_router.dart';
+import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/scale_app.dart';
 import 'package:scalesoft_app/ui/screens/splash_screen.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
 
 // [Android-only] This "Headless Task" is run when the Android app is terminated with `enableHeadless: true`
 // Be sure to annotate your callback function to avoid issues in release mode on Flutter >= 3.3.0
@@ -34,7 +44,13 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
     return;
   }
   debugPrint('[BackgroundFetch] Headless event received.');
-  // Do your work here...
+
+  FlutterLocalNotificationsPlugin().show(
+    3001,
+    'Headless',
+    'Headless body',
+    const NotificationDetails(),
+  );
   await getIt<SyncService>().syncAllData();
   BackgroundFetch.finish(taskId);
 }
@@ -50,6 +66,7 @@ Future<void> _main({
 }) async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  tz.initializeTimeZones();
   initializeGlobals(themeMode: themeMode, locale: locale, isDev: isDev);
   WebView.debugLoggingSettings.enabled = false;
 
@@ -68,6 +85,7 @@ class ScalesoftApp extends StatefulWidget {
 }
 
 class _ScalesoftAppState extends State<ScalesoftApp> {
+  GoRouter? _goRouter;
   bool _isInitializing = true;
 
   @override
@@ -83,16 +101,15 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
 
     return ContentManager(
       onInit: (context, state) {
-        return ScaleApp(
-          goRouter: AppRouter().router,
-        );
+        _goRouter = AppRouter().router;
+        return ScaleApp(goRouter: _goRouter!);
       },
       themeMode: ThemeMode.dark,
     );
   }
 
   Future<void> init() async {
-    configureDependencies();
+    configureDependencies(context);
 
     getIt<Dio>(instanceName: Constants.privateDioName)
         .interceptors
@@ -100,7 +117,7 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
 
     await Hive.initFlutter();
 
-    final settingsDbProvider = getIt<SettingsDbProvider>();
+    final settingsDbProvider = getIt<AppSettingsDbProvider>();
     await settingsDbProvider.init();
 
     final accountDbProvider = getIt<AccountDbProvider>();
@@ -112,8 +129,14 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
     final sessionDbProvider = getIt<SessionDbProvider>();
     await sessionDbProvider.init();
 
-    getIt<SettingsBloc>().add(const SettingsBlocEvent.initSettings());
+    getIt<AppSettingsBloc>().add(const AppSettingsBlocEvent.initSettings());
+    final notifcationsBloc = getIt<NotificationsBloc>();
+    notifcationsBloc.add(const NotificationsEvent.initPlugin());
+    notifcationsBloc.notificationsStreamController.stream.listen(
+      (_) {
+        _goRouter?.goNamed(DashboardRoute.name);
+        getIt<CarePlanBloc>().add(const RefreshStateEvent());
+      },
+    );
   }
 }
-
-class GlobalMaterialLocalizations {}

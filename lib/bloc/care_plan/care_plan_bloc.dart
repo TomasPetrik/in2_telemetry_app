@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
@@ -16,6 +19,7 @@ import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
   final List<Measurement> _pendingResults = [];
   final List<CarePlan> _allCarePlans = [];
+  Timer? _watchDogTimer;
 
   CarePlanBloc() : super(CarePlanBlocState()) {
     on<CarePlanInitializeEvent>((event, emit) async {
@@ -24,7 +28,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
       _pendingResults.clear();
       _pendingResults.addAll(event.pendingResults ?? []);
 
-      final List<MeasurementResult> todayResults =
+      final List<MeasurementResult> todayOfflineResults =
           MeasurementHelper.getOffilneResultsConverted(
         _pendingResults,
         [ResultsWhenPeriod.today],
@@ -34,7 +38,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
       final Map<PlanWhenPeriod, int> allMeasurementCountsPerPeriod =
           CarePlanHelper.getPossibleWhenPeriods(
         _allCarePlans,
-        todayResults,
+        todayOfflineResults,
       );
 
       final nextMeasurement = event.carePlans.isEmpty
@@ -42,7 +46,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
           : Calendar.getNUpcomingMeasurements(
               carePlans: event.carePlans,
               reqCount: 1,
-              measurementResults: todayResults,
+              offlineResults: todayOfflineResults,
             );
 
       final measurements = event.carePlans.isEmpty
@@ -50,7 +54,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
           : CarePlanHelper.getMeasurements(
               event.carePlans,
               event.whenPeriod,
-              todayResults,
+              todayOfflineResults,
             );
 
       emit(
@@ -59,15 +63,17 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
           selectedWhenPeriod: event.whenPeriod,
           nextMeasurement: nextMeasurement?.first,
           measurements: measurements,
-          results: todayResults,
+          results: todayOfflineResults,
           measurementType: null,
           allMeasurementCountsPerPeriod: allMeasurementCountsPerPeriod,
         ),
       );
+
+      _startWatchDog();
     });
 
     on<TimePeriodChangeEvent>((event, emit) {
-      final List<MeasurementResult> todayResults =
+      final List<MeasurementResult> todayOfflineResults =
           MeasurementHelper.getOffilneResultsConverted(
         _pendingResults,
         [ResultsWhenPeriod.today],
@@ -77,13 +83,13 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
       final nextMeasurement = Calendar.getNUpcomingMeasurements(
         carePlans: state.currentCarePlans!,
         reqCount: 1,
-        measurementResults: todayResults,
+        offlineResults: todayOfflineResults,
       );
 
       final measurements = CarePlanHelper.getMeasurements(
         state.currentCarePlans!,
         event.whenPeriod,
-        todayResults,
+        todayOfflineResults,
       );
 
       emit(
@@ -91,13 +97,13 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
           selectedWhenPeriod: event.whenPeriod,
           nextMeasurement: nextMeasurement.first,
           measurements: measurements,
-          results: todayResults,
+          results: todayOfflineResults,
         ),
       );
     });
 
     on<CurrentPlansChangeEvent>((event, emit) {
-      final List<MeasurementResult> todayResults =
+      final List<MeasurementResult> todayOfflineResults =
           MeasurementHelper.getOffilneResultsConverted(
         _pendingResults,
         [ResultsWhenPeriod.today],
@@ -116,13 +122,13 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
       final nextMeasurement = Calendar.getNUpcomingMeasurements(
         carePlans: carePlans,
         reqCount: 1,
-        measurementResults: todayResults,
+        offlineResults: todayOfflineResults,
       );
 
       final measurements = CarePlanHelper.getMeasurements(
         carePlans,
         state.selectedWhenPeriod!,
-        todayResults,
+        todayOfflineResults,
       );
 
       emit(
@@ -131,7 +137,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
           nextMeasurement: nextMeasurement.first,
           measurements: measurements,
           measurementType: event.measurementType,
-          results: todayResults,
+          results: todayOfflineResults,
         ),
       );
     });
@@ -143,5 +149,62 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
         );
       },
     );
+
+    on<RefreshStateEvent>(
+      (event, emit) async {
+        final List<MeasurementResult> todayOfflineResults =
+            MeasurementHelper.getOffilneResultsConverted(
+          _pendingResults,
+          [ResultsWhenPeriod.today],
+          state.measurementType,
+        );
+
+        final carePlans = state.currentCarePlans;
+
+        if (carePlans != null) {
+          final nextMeasurement = Calendar.getNUpcomingMeasurements(
+            carePlans: carePlans,
+            reqCount: 1,
+            offlineResults: todayOfflineResults,
+          );
+
+          final measurements = CarePlanHelper.getMeasurements(
+            carePlans,
+            state.selectedWhenPeriod!,
+            todayOfflineResults,
+          );
+
+          emit(
+            state.copyWith(
+              currentCarePlans: carePlans,
+              nextMeasurement: nextMeasurement.first,
+              measurements: measurements,
+              results: todayOfflineResults,
+            ),
+          );
+        }
+      },
+    );
+
+    on<StopWatchDog>(
+      (event, emit) async {
+        _watchDogTimer?.cancel();
+      },
+    );
+  }
+
+  Future<void> _startWatchDog() async {
+    //start of exact minute
+    final offsetSec = 60 - DateTime.now().second + 1;
+    //debugPrint('watchdog will start after $offsetSec seconds');
+    await Future.delayed(Duration(seconds: offsetSec));
+    add(const RefreshStateEvent());
+    //debugPrint('watchdog started on ${DateTime.now().toIso8601String()}}');
+    _watchDogTimer?.cancel();
+    _watchDogTimer =
+        Timer.periodic(const Duration(seconds: 60), (Timer timer) async {
+      //debugPrint('refreshing dashboard');
+      add(const RefreshStateEvent());
+    });
   }
 }

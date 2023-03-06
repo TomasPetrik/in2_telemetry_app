@@ -1,0 +1,158 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:injectable/injectable.dart';
+import 'package:scalesoft_app/bloc/notifications/notifications_event.dart';
+import 'package:scalesoft_app/bloc/notifications/notifications_state.dart';
+import 'package:scalesoft_app/globals.dart';
+import 'package:scalesoft_app/model/app_settings.dart';
+import 'package:scalesoft_app/providers/settings_db_provider.dart';
+import 'package:scalesoft_app/storage/session.dart';
+import 'package:scalesoft_app/utils/extensions/locale_extensions.dart';
+import 'package:scalesoft_app/utils/extensions/theme_mode_extensions.dart';
+import 'package:scalesoft_app/utils/helpers/notifications_helper.dart';
+
+@singleton
+class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
+  final Session _session;
+  final AppSettingsDbProvider _appSettingsDbProvider;
+
+  final FlutterLocalNotificationsPlugin _notificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  final StreamController<bool> notificationsStreamController =
+      StreamController<bool>.broadcast();
+
+  NotificationsBloc(
+    this._session,
+    this._appSettingsDbProvider,
+  ) : super(const NotificationsState.init()) {
+    on<NotificationsEvent>(
+      (event, emit) async {
+        await event.when(
+          initPlugin: () async {
+            const AndroidInitializationSettings initializationSettingsAndroid =
+                AndroidInitializationSettings('ic_launcher_foreground');
+            final DarwinInitializationSettings initializationSettingsDarwin =
+                DarwinInitializationSettings(
+              onDidReceiveLocalNotification: onDidReceiveLocalNotification,
+            );
+            final InitializationSettings initializationSettings =
+                InitializationSettings(
+              android: initializationSettingsAndroid,
+              iOS: initializationSettingsDarwin,
+            );
+            await _notificationsPlugin.initialize(
+              initializationSettings,
+              onDidReceiveNotificationResponse:
+                  onDidReceiveNotificationResponse,
+              onDidReceiveBackgroundNotificationResponse:
+                  notificationTapBackground,
+            );
+
+            final appSettings = _getAppSettings();
+
+            NotificationsHelper.setNotifications(
+              appSettings: appSettings,
+              notificationsPlugin: _notificationsPlugin,
+              userAccounts: _session.getSessionAccounts(),
+            );
+          },
+          initSettings: () {
+            emit(NotificationsState.loaded(appSettings: _getAppSettings()));
+          },
+          setNotifications: () {
+            final appSettings = _appSettingsDbProvider.read();
+
+            NotificationsHelper.setNotifications(
+              appSettings: appSettings,
+              notificationsPlugin: _notificationsPlugin,
+              userAccounts: _session.getSessionAccounts(),
+            );
+          },
+          enableNotifications: (enabled) async {
+            final appSettings = _appSettingsDbProvider.read();
+
+            if (appSettings == null) return;
+
+            final newAppSettings =
+                appSettings.copyWith(enabledNotifications: enabled);
+            await _appSettingsDbProvider.write(newAppSettings);
+
+            NotificationsHelper.setNotifications(
+              appSettings: newAppSettings,
+              notificationsPlugin: _notificationsPlugin,
+              userAccounts: _session.getSessionAccounts(),
+            );
+          },
+          notifyAtStartOfMeasurement: (bool enabled) async {
+            final appSettings = _appSettingsDbProvider.read();
+
+            if (appSettings == null) return;
+
+            final newAppSettings =
+                appSettings.copyWith(notifyAtStartOfMeasurement: enabled);
+            await _appSettingsDbProvider.write(newAppSettings);
+
+            NotificationsHelper.setNotifications(
+              appSettings: newAppSettings,
+              notificationsPlugin: _notificationsPlugin,
+              userAccounts: _session.getSessionAccounts(),
+            );
+          },
+          notify10MinBeforeMeasurement: (bool enabled) async {
+            final appSettings = _appSettingsDbProvider.read();
+
+            if (appSettings == null) return;
+
+            final newAppSettings =
+                appSettings.copyWith(notify10minBeforeMeasurement: enabled);
+            await _appSettingsDbProvider.write(newAppSettings);
+            NotificationsHelper.setNotifications(
+              appSettings: newAppSettings,
+              notificationsPlugin: _notificationsPlugin,
+              userAccounts: _session.getSessionAccounts(),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void onDidReceiveNotificationResponse(
+    NotificationResponse notificationResponse,
+  ) async {
+    final String? payload = notificationResponse.payload;
+    debugPrint('notification payload: $payload');
+
+    notificationsStreamController.sink.add(true);
+  }
+
+  void onDidReceiveLocalNotification(
+    int id,
+    String? title,
+    String? body,
+    String? payload,
+  ) async {
+    // display a dialog with the notification details, tap ok to go to another page
+    debugPrint('notification payload: $payload');
+    notificationsStreamController.sink.add(true);
+  }
+
+  AppSettings _getAppSettings() {
+    final appSettings = _appSettingsDbProvider.read() ??
+        AppSettings(
+          themeModeLocal: buildConfig.themeMode.toLocal(),
+          localLocale: buildConfig.locale.toLocal(),
+        );
+
+    return appSettings;
+  }
+}
+
+@pragma('vm:entry-point')
+void notificationTapBackground(NotificationResponse notificationResponse) {
+  debugPrint('notificationTapBackground');
+}

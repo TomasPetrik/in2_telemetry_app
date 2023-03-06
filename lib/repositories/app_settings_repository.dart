@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/model/app_settings.dart';
-import 'package:scalesoft_app/model/theme_mode_local.dart';
 import 'package:scalesoft_app/utils/extensions/locale_extensions.dart';
+import 'package:scalesoft_app/utils/extensions/theme_mode_extensions.dart';
 
-class SettingsRepository {
-  final SettingsDb _settingsDb;
+class AppSettingsRepository {
+  final AppSettingsDb _settingsDb;
 
-  const SettingsRepository._(this._settingsDb);
+  const AppSettingsRepository._(this._settingsDb);
 
-  const SettingsRepository.builder({
-    required SettingsDb settingsDb,
+  const AppSettingsRepository.builder({
+    required AppSettingsDb settingsDb,
   }) : this._(settingsDb);
 
   Future<AppSettings> save(AppSettings account) async {
@@ -43,7 +43,7 @@ class SettingsRepository {
   }
 }
 
-abstract class SettingsDb {
+abstract class AppSettingsDb {
   Future<AppSettings> save(AppSettings account);
   AppSettings? getLast();
 }

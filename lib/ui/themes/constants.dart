@@ -20,6 +20,7 @@ class Constants {
     'mobile_api.Default',
   ];
   static const String redirectUrl = 'cz.scalesoft.tlm://auth-callback';
+  static const int autoSyncIntervalMinutes = 15;
 
   static const double appBarHeight = 56;
   static const double twoLinedBarHeight = 76;

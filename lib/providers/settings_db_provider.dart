@@ -6,9 +6,9 @@ import 'package:scalesoft_app/model/theme_mode_local.dart';
 import 'package:scalesoft_app/providers/box_provider.dart';
 
 @singleton
-class SettingsDbProvider extends BoxProvider<AppSettings> {
+class AppSettingsDbProvider extends BoxProvider<AppSettings> {
   @override
-  final String boxName = 'settingsBox';
+  final String boxName = 'appSettingsBox';
 
   @override
   void registerAdapters() {

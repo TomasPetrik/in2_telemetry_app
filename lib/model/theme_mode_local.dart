@@ -16,9 +16,3 @@ class ThemeModeLocal with _$ThemeModeLocal {
 
   ThemeMode get themeMode => index == 0 ? ThemeMode.light : ThemeMode.dark;
 }
-
-extension ThemeModeExtension on ThemeMode {
-  ThemeModeLocal toLocal() {
-    return ThemeModeLocal(index: this == ThemeMode.light ? 0 : 1);
-  }
-}

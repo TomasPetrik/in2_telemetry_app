@@ -31,8 +31,10 @@ class HospitalDetailRoute extends ApplicationRoute with PageBuilderMixin {
 
           final List<UserAccount> userAccounts = [];
           for (final userId in usersIds) {
-            final userAccount = getIt<AccountDbProvider>().get(userId)!;
-            userAccounts.add(userAccount);
+            final userAccount = getIt<AccountDbProvider>().get(userId);
+            if (userAccount != null) {
+              userAccounts.add(userAccount);
+            }
           }
 
           return HospitalDetailScreen(

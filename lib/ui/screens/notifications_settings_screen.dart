@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:scalesoft_app/bloc/settings/settings_bloc.dart';
-import 'package:scalesoft_app/bloc/settings/settings_bloc_event.dart';
+import 'package:scalesoft_app/bloc/notifications/notifications_bloc.dart';
+import 'package:scalesoft_app/bloc/notifications/notifications_event.dart';
+import 'package:scalesoft_app/bloc/notifications/notifications_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
-import 'package:scalesoft_app/model/app_settings.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -16,7 +16,8 @@ class NotificationsSettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settingsBloc = getIt<SettingsBloc>();
+    final notificationsBloc = getIt<NotificationsBloc>()
+      ..add(const NotificationsEvent.initSettings());
     return Material(
       child: Stack(
         children: [
@@ -24,9 +25,17 @@ class NotificationsSettingsScreen extends StatelessWidget {
             child: SingleChildScrollView(
               child: Padding(
                 padding: Paddings.horizontal16,
-                child: BlocBuilder<SettingsBloc, AppSettings>(
-                  bloc: settingsBloc,
+                child: BlocBuilder<NotificationsBloc, NotificationsState>(
+                  bloc: notificationsBloc,
                   builder: (context, state) {
+                    final appSettings = state.whenOrNull(
+                      loaded: (appSettings) => appSettings,
+                    );
+
+                    if (appSettings == null) {
+                      return const SizedBox.shrink();
+                    }
+
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -38,17 +47,17 @@ class NotificationsSettingsScreen extends StatelessWidget {
                         SwitchRow.title(
                           title: context
                               .locale.notifications_screen_allow_notifications,
-                          defaultValue: state.enabledNotifications,
+                          defaultValue: appSettings.enabledNotifications,
                           onChanged: (turnedOn) {
-                            settingsBloc.add(
-                              SettingsBlocEvent.enableNotifications(
+                            notificationsBloc.add(
+                              NotificationsEvent.enableNotifications(
                                 turnedOn,
                               ),
                             );
                           },
                         ),
                         Gaps.gap24,
-                        if (state.enabledNotifications == true) ...[
+                        if (appSettings.enabledNotifications == true) ...[
                           SizedBox(
                             height: 40,
                             child: Text(
@@ -63,10 +72,11 @@ class NotificationsSettingsScreen extends StatelessWidget {
                           SwitchRow.text(
                             title: context.locale
                                 .notifications_screen_at_start_of_measurement,
-                            defaultValue: state.notifyAtStartOfMeasurement,
+                            defaultValue:
+                                appSettings.notifyAtStartOfMeasurement,
                             onChanged: (turnedOn) {
-                              settingsBloc.add(
-                                SettingsBlocEvent.notifyAtStartOfMeasurement(
+                              notificationsBloc.add(
+                                NotificationsEvent.notifyAtStartOfMeasurement(
                                   turnedOn,
                                 ),
                               );
@@ -75,10 +85,11 @@ class NotificationsSettingsScreen extends StatelessWidget {
                           SwitchRow.text(
                             title: context.locale
                                 .notifications_screen_10_min_before_measurement,
-                            defaultValue: state.notify10minBeforeMeasurement,
+                            defaultValue:
+                                appSettings.notify10minBeforeMeasurement,
                             onChanged: (turnedOn) {
-                              settingsBloc.add(
-                                SettingsBlocEvent.notify10MinBeforeMeasurement(
+                              notificationsBloc.add(
+                                NotificationsEvent.notify10MinBeforeMeasurement(
                                   turnedOn,
                                 ),
                               );
