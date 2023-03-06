@@ -53,7 +53,6 @@ class TokenInterceptor extends Interceptor {
         );
         throw InvalidRequestException();
       case 401:
-      case 403:
         final originReqOpt = err.requestOptions;
 
         final newAuthToken = await refreshToken();
