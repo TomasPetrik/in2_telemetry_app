@@ -8,6 +8,7 @@ import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/manual_measurement_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
@@ -153,45 +154,59 @@ class _DeviceSelectorDialogState extends State<DeviceSelectorDialog> {
           ] else
             ...supportedDevices
                 .map(
-                  (supportedDevice) => Container(
-                    padding: Paddings.top24,
-                    child: Row(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadii.radius8,
-                          child: Container(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            height: 128,
-                            width: 128,
-                            child: Image.asset(supportedDevice.imagePath!),
+                  (supportedDevice) => InkWell(
+                    onTap: () {
+                      Navigator.of(context, rootNavigator: true).pop();
+                      GoRouter.of(context).pushNamed(
+                        OmronFlowRoute.name,
+                        extra: [
+                          widget.userId,
+                          supportedDevice.localId,
+                          selectedMeasurementType!.index
+                        ],
+                      );
+                    },
+                    child: Container(
+                      padding: Paddings.top24,
+                      child: Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadii.radius8,
+                            child: Container(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              height: 128,
+                              width: 128,
+                              child: Image.asset(supportedDevice.imagePath!),
+                            ),
                           ),
-                        ),
-                        Gaps.gap16,
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                supportedDevice.modelName ?? '',
-                                style: ScaleTextStyles.text.apply(
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
+                          Gaps.gap16,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  supportedDevice.modelName ?? '',
+                                  style: ScaleTextStyles.text.apply(
+                                    color:
+                                        Theme.of(context).colorScheme.onPrimary,
+                                  ),
                                 ),
-                              ),
-                              Gaps.gap6,
-                              Text(
-                                context.locale.measurement_dialog_device_desc(
-                                  supportedDevice.deviceModel!.name,
+                                Gaps.gap6,
+                                Text(
+                                  context.locale.measurement_dialog_device_desc(
+                                    supportedDevice.deviceModel!.name,
+                                  ),
+                                  style: ScaleTextStyles.label.apply(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSecondary,
+                                  ),
                                 ),
-                                style: ScaleTextStyles.label.apply(
-                                  color:
-                                      Theme.of(context).colorScheme.onSecondary,
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 )

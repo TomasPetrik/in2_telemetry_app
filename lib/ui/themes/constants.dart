@@ -149,6 +149,7 @@ class Constants {
 
   static const List<Device> supportedDevices = [
     Device(
+      localId: 0,
       modelName: 'Beurer BM 77',
       deviceModel: DeviceModel.beurerBm77,
       imagePath: 'assets/images/beurer_bm_77.png',
@@ -156,8 +157,10 @@ class Constants {
         MeasurementType.bloodPressure,
         MeasurementType.heartRate,
       ],
+      reqPairing: false,
     ),
     Device(
+      localId: 1,
       modelName: 'Omron M7',
       deviceModel: DeviceModel.omronM7,
       imagePath: 'assets/images/omron_m7.png',
@@ -165,6 +168,7 @@ class Constants {
         MeasurementType.bloodPressure,
         MeasurementType.heartRate,
       ],
+      reqPairing: true,
     ),
   ];
 }
@@ -397,6 +401,7 @@ class Dimensions {
   static const double padding34 = 34;
   static const double padding35 = 35;
   static const double padding36 = 36;
+  static const double padding40 = 40;
   static const double padding42 = 42;
   static const double padding48 = 48;
   static const double padding60 = 60;

@@ -14,6 +14,7 @@ import 'package:scalesoft_app/ui/routers/routes/manual_measurement_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/no_user_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/notification_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/offline_results_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_added_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_detail_route.dart';
@@ -86,6 +87,7 @@ class AppRouter {
             UserAddedRoute(navigator: navAuthManager).route,
             NoUserRoute(navigator: navAuthManager).route,
             ManualMeasurementRoute(navigator: navAuthManager).route,
+            OmronFlowRoute(navigator: navAuthManager).route,
             OfflineResultsRoute(navigator: navAuthManager).route,
           ],
         ),

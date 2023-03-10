@@ -189,14 +189,14 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
 
     for (final rootAccount in rootAccounts) {
       final carePlan = rootAccount.carePlans
-          ?.firstWhere((carePlan) => carePlan.id == carePlanId);
+          ?.firstWhereOrNull((carePlan) => carePlan.id == carePlanId);
       if (carePlan != null) {
         return carePlan;
       }
 
       for (final representedPerson in rootAccount.representedPeople!) {
         final carePlan = representedPerson.carePlans
-            ?.firstWhere((carePlan) => carePlan.id == carePlanId);
+            ?.firstWhereOrNull((carePlan) => carePlan.id == carePlanId);
         if (carePlan != null) {
           return carePlan;
         }

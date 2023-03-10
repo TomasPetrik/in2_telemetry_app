@@ -1,4 +1,3 @@
-
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scalesoft_app/model/device_info.dart';
@@ -9,13 +8,18 @@ part 'omron_connection_state.freezed.dart';
 @freezed
 class OmronConnectionState with _$OmronConnectionState {
   const factory OmronConnectionState.init() = _Init;
+  const factory OmronConnectionState.disabledBt() = _DisabledBt;
+  const factory OmronConnectionState.enabledBt() = _EnabledBt;
+  const factory OmronConnectionState.noBtPermissions() = _NoBtPermissions;
   const factory OmronConnectionState.searching() = _Searching;
   const factory OmronConnectionState.found({
     required BluetoothDevice device,
   }) = _Found;
   const factory OmronConnectionState.notFound() = _NotFound;
   const factory OmronConnectionState.pairing() = _Pairing;
-  const factory OmronConnectionState.paired() = _Paired;
+  const factory OmronConnectionState.paired({
+    required HwMeasurementResult measurementResult,
+  }) = _Paired;
   const factory OmronConnectionState.connecting() = _Connecting;
   const factory OmronConnectionState.connected() = _Connected;
   const factory OmronConnectionState.verified({

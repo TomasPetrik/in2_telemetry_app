@@ -5,47 +5,51 @@ import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/rotating_icon.dart';
 import 'package:scalesoft_app/ui/widgets/scale_card.dart';
 
-class SyncProcessItem extends StatelessWidget {
-  const SyncProcessItem({
+class ProcessItem extends StatelessWidget {
+  const ProcessItem({
     super.key,
-    required this.syncProcessType,
+    required this.processType,
     required this.label,
     this.desc,
     this.onRefresh,
     this.onTap,
   });
 
-  final SyncProcessType syncProcessType;
+  final ProcessType processType;
   final String label;
   final String? desc;
   final VoidCallback? onRefresh;
   final VoidCallback? onTap;
 
   Color _getLeadinIconColor(BuildContext context) {
-    switch (syncProcessType) {
-      case SyncProcessType.done:
+    switch (processType) {
+      case ProcessType.done:
         return Theme.of(context).colorScheme.onTertiary;
-      case SyncProcessType.inProgress:
+      case ProcessType.inProgress:
         return Theme.of(context).colorScheme.onError;
-      case SyncProcessType.error:
+      case ProcessType.connected:
+        return Theme.of(context).colorScheme.onTertiary;
+      case ProcessType.error:
         return Theme.of(context).colorScheme.error;
     }
   }
 
   String _getLeadinIconPath(BuildContext context) {
-    switch (syncProcessType) {
-      case SyncProcessType.done:
+    switch (processType) {
+      case ProcessType.done:
         return 'assets/icons/icon_check.svg';
-      case SyncProcessType.inProgress:
+      case ProcessType.inProgress:
         return 'assets/icons/icon_loader.svg';
-      case SyncProcessType.error:
+      case ProcessType.connected:
+        return 'assets/icons/icon_bluetooth_on.svg';
+      case ProcessType.error:
         return 'assets/icons/icon_triangle_exclamation.svg';
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final failedRefreshIconPath = syncProcessType == SyncProcessType.error
+    final failedRefreshIconPath = processType == ProcessType.error
         ? 'assets/icons/icon_rotate.svg'
         : null;
 
@@ -69,7 +73,7 @@ class SyncProcessItem extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                if (syncProcessType == SyncProcessType.inProgress)
+                if (processType == ProcessType.inProgress)
                   RotatingIcon(child: iconWidget)
                 else
                   iconWidget,
@@ -113,8 +117,9 @@ class SyncProcessItem extends StatelessWidget {
   }
 }
 
-enum SyncProcessType {
+enum ProcessType {
   done,
   inProgress,
+  connected,
   error,
 }

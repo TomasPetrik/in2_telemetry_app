@@ -67,6 +67,12 @@ abstract class CarePlanApiClient {
     @Path('from') String fromDate,
   );
 
+  @POST('{apiUrl}/patient/measurement-batch')
+  Future<void> sendMeasurementFromDevice(
+    @Path('apiUrl') String apiUrl,
+    @Body() List<Measurement> measurements,
+  );
+
   @POST('{apiUrl}/patient/manual-measurement')
   Future<void> sendManualMeasurement(
     @Path('apiUrl') String apiUrl,

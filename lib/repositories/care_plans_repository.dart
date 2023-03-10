@@ -94,6 +94,15 @@ class CarePlansRepository {
     return FulfillmentEvaluation(items);
   }
 
+  Future<void> sendMeasurementFromDevice({
+    required UserAccount userAccount,
+    required Measurement measurement,
+  }) =>
+      carePlanApiClient.sendMeasurementFromDevice(
+        userAccount.hospital!.authData.baseUrl,
+        [measurement],
+      );
+
   Future<void> sendManualMeasurement({
     required UserAccount userAccount,
     required Measurement manualMeasurement,

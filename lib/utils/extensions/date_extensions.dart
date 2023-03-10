@@ -15,7 +15,7 @@ extension DateParse on DateTime {
   }
 
   String toTimeShort() {
-    return DateFormat('hh:mm').format(toLocal());
+    return DateFormat('HH:mm').format(toLocal());
   }
 
   String toRegularDate() {

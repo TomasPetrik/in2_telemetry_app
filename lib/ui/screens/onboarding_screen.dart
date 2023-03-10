@@ -11,7 +11,6 @@ import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/onboarding_item_desc.dart';
-import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
 
 class OnboardingScreen extends StatelessWidget with BottomSheetMixin {
   const OnboardingScreen({super.key});

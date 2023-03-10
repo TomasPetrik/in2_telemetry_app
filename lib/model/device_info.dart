@@ -10,6 +10,7 @@ const Map<DeviceChar, String> deviceCharAddress = {
   DeviceChar.hardwareRevision: '2A27',
   DeviceChar.softwareRevision: '2A28',
   DeviceChar.manufacturerName: '2A29',
+  DeviceChar.batteryLevel: '2A19',
 };
 
 enum DeviceChar {
@@ -19,6 +20,7 @@ enum DeviceChar {
   hardwareRevision,
   softwareRevision,
   manufacturerName,
+  batteryLevel,
 }
 
 @freezed
@@ -30,7 +32,18 @@ class DeviceInfo with _$DeviceInfo {
     required String hardwareRevision, //0x2A27
     required String softwareRevision, //0x2A28
     required String manufacturerName, //0x2A29
-  }) = _BloodPressureInfo;
+  }) = _DeviceInfo;
 
-  factory DeviceInfo.fromJson(Map<String, Object?> json) => _$DeviceInfoFromJson(json);
+  factory DeviceInfo.fromJson(Map<String, Object?> json) =>
+      _$DeviceInfoFromJson(json);
+}
+
+@freezed
+class BatteryInfo with _$BatteryInfo {
+  const factory BatteryInfo({
+    required int batteryLevel, //0x2A19
+  }) = _BatteryInfo;
+
+  factory BatteryInfo.fromJson(Map<String, Object?> json) =>
+      _$BatteryInfoFromJson(json);
 }

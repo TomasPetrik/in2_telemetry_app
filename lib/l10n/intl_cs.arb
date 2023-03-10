@@ -34,6 +34,7 @@
     "common_from": "Od",
     "common_to": "Do",
     "common_at_time": "v {atTime}",
+    "common_procedure": "Postup",
     "@common_at_time": {
         "placeholders": {
             "atTime": {
@@ -396,5 +397,51 @@
     "notifications_screen_allow_notifications": "Povolit notifikace",
     "notifications_screen_measurements": "Měření",
     "notifications_screen_at_start_of_measurement": "V čase začátku měření",
-    "notifications_screen_10_min_before_measurement": "10 minut před každým měřením"
+    "notifications_screen_10_min_before_measurement": "10 minut před každým měřením",
+    "find_device_screen_searching_device": "Hledání zařízení...",
+    "find_device_screen_device_connected": "Zařízení připojeno",
+    "find_device_screen_sync_results": "Probíhá synchronizace výsledků...",
+    "find_device_screen_pairing_device": "Probíhá párování zažízení...",
+    "find_device_screen_step1": "Zapněte {deviceName}",
+    "@find_device_screen_step1": {
+        "placeholders": {
+            "deviceName": {
+                "type": "String"
+            }
+        }
+    },
+    "find_device_screen_step1_p": "Zapněte {deviceName} v režimu párování",
+    "@find_device_screen_step1_p": {
+        "placeholders": {
+            "deviceName": {
+                "type": "String"
+            }
+        }
+    },
+    "find_device_screen_step2": "Připojení zařízení pomocí Bluetooth s aplikací",
+    "find_device_screen_step2_p": "Počkejte, až vás zařízení vyzve ke párování",
+    "find_device_screen_step3": "Spusťte na zařízení měření a počkejte na konec měření",
+    "find_device_screen_step3_p": "Párování zařízení",
+    "find_device_screen_step4": "Počkejte na synchronizaci výsledků",
+    "find_device_screen_device_reference": "Stránky nemocnice o zařízení",
+    "find_device_screen_disabled_bt_title": "Bluetooth je vypnutý",
+    "find_device_screen_disabled_bt_desc": "Pro spojení s přístrojem je potřeba mít Bluetooth zapnutý.",
+    "find_device_screen_disabled_bt_btn_settings": "Nastavení",
+    "find_device_screen_not_granted_bt_title": "Bluetooth zakázan ",
+    "find_device_screen_not_granted_bt_desc": "Aplikace si vyzaduje povolenie pouzivat Bluetooth pre komunikaciu so zariadeniami.",
+    "find_device_screen_not_granted_bt_btn_settings": "Povolit",
+    "measurement_summary_screen_success_title": "Měření bylo úspěšně dokončeno",
+    "measurement_summary_screen_success_subtitle": "Výsledky budou automaticky odeslány",
+    "measurement_summary_screen_result_success_desc": "Máte hotovo! Výsledek se připsal k ostatním.",
+    "measurement_summary_screen_sync_error_title": "Měření se nepovedlo",
+    "measurement_summary_screen_sync_error_subtitle": "Chyba pri komunikaci se zařízením",
+    "measurement_summary_screen_sync_error_desc": "Nastala chyba pri synchronizacii so zariadenim. Opakujte akciu neskor.",
+    "measurement_summary_screen_no_data_title": "Měření nebylo úspěšně dokončeno",
+    "measurement_summary_screen_no_data_subtitle": "Zařízení nedodalo žádné výsledky",
+    "measurement_summary_screen_no_data_desc": "Zařízení nedodalo žádné výsledky měření.",
+    "measurement_summary_screen_no_data_repeat_measurement": "Opakovat měření",
+    "measurement_summary_screen_dev_paired_title": "Párování zažízení bylo úspěšně dokončeno",
+    "measurement_summary_screen_dev_paired_subtitle": "Niní sa můžete odmeřit.",
+    "measurement_summary_screen_dev_paired_desc": "Spusťte na zařízení měření a počkejte na konec měření",
+    "measurement_summary_screen_dev_paired_start_measurement": "Začít měření"
 }

@@ -17,8 +17,8 @@ import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/care_plan_item.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
+import 'package:scalesoft_app/ui/widgets/process_item.dart';
 import 'package:scalesoft_app/ui/widgets/sliver_name_value_row.dart';
-import 'package:scalesoft_app/ui/widgets/sync_process_item.dart';
 import 'package:scalesoft_app/ui/widgets/user_warning_item.dart';
 
 class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
@@ -42,12 +42,12 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
       builder: (context, state) {
         //1. Show awalys sync in progress when possible
         final anyProgressWidget = state.whenOrNull(
-          inProgress: () => SyncProcessItem(
-            syncProcessType: SyncProcessType.inProgress,
+          inProgress: () => ProcessItem(
+            processType: ProcessType.inProgress,
             label: context.locale.sync_widget_sync_in_progress,
           ),
-          synced: () => SyncProcessItem(
-            syncProcessType: SyncProcessType.done,
+          synced: () => ProcessItem(
+            processType: ProcessType.done,
             label: context.locale.sync_widget_synced,
           ),
         );

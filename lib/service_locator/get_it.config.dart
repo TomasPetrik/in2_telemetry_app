@@ -19,6 +19,7 @@ import 'package:scalesoft_app/bloc/daily_times_settings/times_settings_bloc.dart
     as _i18;
 import 'package:scalesoft_app/bloc/notifications/notifications_bloc.dart'
     as _i26;
+import 'package:scalesoft_app/bloc/omron/omron_connection_bloc.dart' as _i31;
 import 'package:scalesoft_app/bloc/results/results_bloc.dart' as _i13;
 import 'package:scalesoft_app/bloc/settings/app_settings_bloc.dart' as _i21;
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart' as _i30;
@@ -26,8 +27,9 @@ import 'package:scalesoft_app/bloc/user_content/content_bloc.dart' as _i25;
 import 'package:scalesoft_app/cubit/auth_web/auth_web_cubit.dart' as _i6;
 import 'package:scalesoft_app/cubit/hospital_search/hospital_search_cubit.dart'
     as _i9;
-import 'package:scalesoft_app/cubit/omron/omron_connection_cubit.dart' as _i11;
 import 'package:scalesoft_app/providers/account_db_provider.dart' as _i3;
+import 'package:scalesoft_app/providers/paired_devices_db_provider.dart'
+    as _i11;
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart'
     as _i12;
 import 'package:scalesoft_app/providers/session_db_provider.dart' as _i15;
@@ -41,7 +43,7 @@ import 'package:scalesoft_app/services/internet_service.dart' as _i10;
 import 'package:scalesoft_app/services/sync_service.dart' as _i27;
 import 'package:scalesoft_app/storage/session.dart' as _i14;
 
-import '../api/dio_module.dart' as _i31;
+import '../api/dio_module.dart' as _i32;
 
 /// ignore_for_file: unnecessary_lambdas
 /// ignore_for_file: lines_longer_than_80_chars
@@ -68,7 +70,7 @@ _i1.GetIt init(
   );
   gh.factory<_i9.HospitalSearchCubit>(() => _i9.HospitalSearchCubit());
   gh.singleton<_i10.InternetService>(_i10.InternetService());
-  gh.singleton<_i11.OmronConnectionCubit>(_i11.OmronConnectionCubit());
+  gh.singleton<_i11.PairedDevicesDbProvider>(_i11.PairedDevicesDbProvider());
   gh.singleton<_i12.PendingResultsDbProvider>(_i12.PendingResultsDbProvider());
   gh.singleton<_i13.ResultsBloc>(_i13.ResultsBloc());
   gh.singleton<_i14.Session>(_i14.Session(
@@ -136,7 +138,12 @@ _i1.GetIt init(
     gh<_i27.SyncService>(),
     gh<_i14.Session>(),
   ));
+  gh.factory<_i31.OmronConnectionBloc>(() => _i31.OmronConnectionBloc(
+        gh<_i12.PendingResultsDbProvider>(),
+        gh<_i11.PairedDevicesDbProvider>(),
+        gh<_i30.SyncBloc>(),
+      ));
   return getIt;
 }
 
-class _$DioModule extends _i31.DioModule {}
+class _$DioModule extends _i32.DioModule {}

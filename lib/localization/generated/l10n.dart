@@ -300,6 +300,16 @@ class I10n {
     );
   }
 
+  /// `Postup`
+  String get common_procedure {
+    return Intl.message(
+      'Postup',
+      name: 'common_procedure',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `{count, plural, zero{Plnění plánu} one{Plnění plánu} other{Plnění plánů}}`
   String common_plans_fulfillment_plural(num count) {
     return Intl.plural(
@@ -1569,6 +1579,326 @@ class I10n {
     return Intl.message(
       '10 minut před každým měřením',
       name: 'notifications_screen_10_min_before_measurement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hledání zařízení...`
+  String get find_device_screen_searching_device {
+    return Intl.message(
+      'Hledání zařízení...',
+      name: 'find_device_screen_searching_device',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zařízení připojeno`
+  String get find_device_screen_device_connected {
+    return Intl.message(
+      'Zařízení připojeno',
+      name: 'find_device_screen_device_connected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Probíhá synchronizace výsledků...`
+  String get find_device_screen_sync_results {
+    return Intl.message(
+      'Probíhá synchronizace výsledků...',
+      name: 'find_device_screen_sync_results',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Probíhá párování zažízení...`
+  String get find_device_screen_pairing_device {
+    return Intl.message(
+      'Probíhá párování zažízení...',
+      name: 'find_device_screen_pairing_device',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zapněte {deviceName}`
+  String find_device_screen_step1(String deviceName) {
+    return Intl.message(
+      'Zapněte $deviceName',
+      name: 'find_device_screen_step1',
+      desc: '',
+      args: [deviceName],
+    );
+  }
+
+  /// `Zapněte {deviceName} v režimu párování`
+  String find_device_screen_step1_p(String deviceName) {
+    return Intl.message(
+      'Zapněte $deviceName v režimu párování',
+      name: 'find_device_screen_step1_p',
+      desc: '',
+      args: [deviceName],
+    );
+  }
+
+  /// `Připojení zařízení pomocí Bluetooth s aplikací`
+  String get find_device_screen_step2 {
+    return Intl.message(
+      'Připojení zařízení pomocí Bluetooth s aplikací',
+      name: 'find_device_screen_step2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Počkejte, až vás zařízení vyzve ke párování`
+  String get find_device_screen_step2_p {
+    return Intl.message(
+      'Počkejte, až vás zařízení vyzve ke párování',
+      name: 'find_device_screen_step2_p',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Spusťte na zařízení měření a počkejte na konec měření`
+  String get find_device_screen_step3 {
+    return Intl.message(
+      'Spusťte na zařízení měření a počkejte na konec měření',
+      name: 'find_device_screen_step3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Párování zařízení`
+  String get find_device_screen_step3_p {
+    return Intl.message(
+      'Párování zařízení',
+      name: 'find_device_screen_step3_p',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Počkejte na synchronizaci výsledků`
+  String get find_device_screen_step4 {
+    return Intl.message(
+      'Počkejte na synchronizaci výsledků',
+      name: 'find_device_screen_step4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stránky nemocnice o zařízení`
+  String get find_device_screen_device_reference {
+    return Intl.message(
+      'Stránky nemocnice o zařízení',
+      name: 'find_device_screen_device_reference',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bluetooth je vypnutý`
+  String get find_device_screen_disabled_bt_title {
+    return Intl.message(
+      'Bluetooth je vypnutý',
+      name: 'find_device_screen_disabled_bt_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pro spojení s přístrojem je potřeba mít Bluetooth zapnutý.`
+  String get find_device_screen_disabled_bt_desc {
+    return Intl.message(
+      'Pro spojení s přístrojem je potřeba mít Bluetooth zapnutý.',
+      name: 'find_device_screen_disabled_bt_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nastavení`
+  String get find_device_screen_disabled_bt_btn_settings {
+    return Intl.message(
+      'Nastavení',
+      name: 'find_device_screen_disabled_bt_btn_settings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bluetooth zakázan `
+  String get find_device_screen_not_granted_bt_title {
+    return Intl.message(
+      'Bluetooth zakázan ',
+      name: 'find_device_screen_not_granted_bt_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aplikace si vyzaduje povolenie pouzivat Bluetooth pre komunikaciu so zariadeniami.`
+  String get find_device_screen_not_granted_bt_desc {
+    return Intl.message(
+      'Aplikace si vyzaduje povolenie pouzivat Bluetooth pre komunikaciu so zariadeniami.',
+      name: 'find_device_screen_not_granted_bt_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Povolit`
+  String get find_device_screen_not_granted_bt_btn_settings {
+    return Intl.message(
+      'Povolit',
+      name: 'find_device_screen_not_granted_bt_btn_settings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Měření bylo úspěšně dokončeno`
+  String get measurement_summary_screen_success_title {
+    return Intl.message(
+      'Měření bylo úspěšně dokončeno',
+      name: 'measurement_summary_screen_success_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Výsledky budou automaticky odeslány`
+  String get measurement_summary_screen_success_subtitle {
+    return Intl.message(
+      'Výsledky budou automaticky odeslány',
+      name: 'measurement_summary_screen_success_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Máte hotovo! Výsledek se připsal k ostatním.`
+  String get measurement_summary_screen_result_success_desc {
+    return Intl.message(
+      'Máte hotovo! Výsledek se připsal k ostatním.',
+      name: 'measurement_summary_screen_result_success_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Měření se nepovedlo`
+  String get measurement_summary_screen_sync_error_title {
+    return Intl.message(
+      'Měření se nepovedlo',
+      name: 'measurement_summary_screen_sync_error_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chyba pri komunikaci se zařízením`
+  String get measurement_summary_screen_sync_error_subtitle {
+    return Intl.message(
+      'Chyba pri komunikaci se zařízením',
+      name: 'measurement_summary_screen_sync_error_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nastala chyba pri synchronizacii so zariadenim. Opakujte akciu neskor.`
+  String get measurement_summary_screen_sync_error_desc {
+    return Intl.message(
+      'Nastala chyba pri synchronizacii so zariadenim. Opakujte akciu neskor.',
+      name: 'measurement_summary_screen_sync_error_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Měření nebylo úspěšně dokončeno`
+  String get measurement_summary_screen_no_data_title {
+    return Intl.message(
+      'Měření nebylo úspěšně dokončeno',
+      name: 'measurement_summary_screen_no_data_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zařízení nedodalo žádné výsledky`
+  String get measurement_summary_screen_no_data_subtitle {
+    return Intl.message(
+      'Zařízení nedodalo žádné výsledky',
+      name: 'measurement_summary_screen_no_data_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zařízení nedodalo žádné výsledky měření.`
+  String get measurement_summary_screen_no_data_desc {
+    return Intl.message(
+      'Zařízení nedodalo žádné výsledky měření.',
+      name: 'measurement_summary_screen_no_data_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Opakovat měření`
+  String get measurement_summary_screen_no_data_repeat_measurement {
+    return Intl.message(
+      'Opakovat měření',
+      name: 'measurement_summary_screen_no_data_repeat_measurement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Párování zažízení bylo úspěšně dokončeno`
+  String get measurement_summary_screen_dev_paired_title {
+    return Intl.message(
+      'Párování zažízení bylo úspěšně dokončeno',
+      name: 'measurement_summary_screen_dev_paired_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Niní sa můžete odmeřit.`
+  String get measurement_summary_screen_dev_paired_subtitle {
+    return Intl.message(
+      'Niní sa můžete odmeřit.',
+      name: 'measurement_summary_screen_dev_paired_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Spusťte na zařízení měření a počkejte na konec měření`
+  String get measurement_summary_screen_dev_paired_desc {
+    return Intl.message(
+      'Spusťte na zařízení měření a počkejte na konec měření',
+      name: 'measurement_summary_screen_dev_paired_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Začít měření`
+  String get measurement_summary_screen_dev_paired_start_measurement {
+    return Intl.message(
+      'Začít měření',
+      name: 'measurement_summary_screen_dev_paired_start_measurement',
       desc: '',
       args: [],
     );

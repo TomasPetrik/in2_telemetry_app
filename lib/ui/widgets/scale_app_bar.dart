@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 
@@ -9,12 +10,14 @@ class ScaleAppBar extends StatelessWidget {
     this.subTitle,
     this.showClose = false,
     this.onBackTap,
+    this.onCloseTap,
   });
 
   final String title;
   final String? subTitle;
   final bool showClose;
   final VoidCallback? onBackTap;
+  final VoidCallback? onCloseTap;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +58,8 @@ class ScaleAppBar extends StatelessWidget {
                               ? IconButton(
                                   padding: EdgeInsets.zero,
                                   onPressed: () {
-                                    Navigator.of(context).pop();
+                                    onCloseTap?.call();
+                                    GoRouter.of(context).pop();
                                   },
                                   icon: Icon(
                                     Icons.close,

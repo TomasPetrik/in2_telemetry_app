@@ -188,35 +188,36 @@ mixin BottomSheetMixin {
           supportMultiUser: supportMultiUser,
         );
       },
-    );
-
-    if (userHospitalSelectionResult?.action ==
-        SwitchUserAction.selectedMultiUser) {
-      return SwitchUserResult(activeMultiUser: true);
-    } else if (userHospitalSelectionResult?.action ==
-        SwitchUserAction.addUserAccount) {
-      return SwitchUserResult(addNewUser: true);
-    } else if (userHospitalSelectionResult?.action ==
-        SwitchUserAction.selectedUser) {
-      return SwitchUserResult(
-        selectedUser: userHospitalSelectionResult!.selectedUser,
-      );
-    } else if (userHospitalSelectionResult?.action ==
-        SwitchUserAction.selectedHospital) {
-      final userSelection = await _selectUserFromHospital(
-        context: context,
-        hospital: userHospitalSelectionResult!.selectedHospital!,
-        userAccounts: userHospitalSelectionResult.hospitalUsers!,
-      );
-
-      if (userSelection?.action == SwitchUserAction.addUserAccount) {
+    ).then((userHospitalSelectionResult) {
+      if (userHospitalSelectionResult?.action ==
+          SwitchUserAction.selectedMultiUser) {
+        return SwitchUserResult(activeMultiUser: true);
+      } else if (userHospitalSelectionResult?.action ==
+          SwitchUserAction.addUserAccount) {
         return SwitchUserResult(addNewUser: true);
+      } else if (userHospitalSelectionResult?.action ==
+          SwitchUserAction.selectedUser) {
+        return SwitchUserResult(
+          selectedUser: userHospitalSelectionResult!.selectedUser,
+        );
+      } else if (userHospitalSelectionResult?.action ==
+          SwitchUserAction.selectedHospital) {
+        _selectUserFromHospital(
+          context: context,
+          hospital: userHospitalSelectionResult!.selectedHospital!,
+          userAccounts: userHospitalSelectionResult.hospitalUsers!,
+        ).then((userSelection) {
+          if (userSelection?.action == SwitchUserAction.addUserAccount) {
+            return SwitchUserResult(addNewUser: true);
+          } else {
+            return SwitchUserResult(selectedUser: userSelection?.selectedUser);
+          }
+        });
       } else {
-        return SwitchUserResult(selectedUser: userSelection?.selectedUser);
+        return SwitchUserResult();
       }
-    } else {
-      return SwitchUserResult();
-    }
+    });
+    return userHospitalSelectionResult;
   }
 
   Future<UserSelection?> _selectUserFromHospital({

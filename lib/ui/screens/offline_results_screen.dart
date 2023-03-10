@@ -13,8 +13,8 @@ import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/fixed_item_height_delegate.dart';
+import 'package:scalesoft_app/ui/widgets/process_item.dart';
 import 'package:scalesoft_app/ui/widgets/result_item.dart';
-import 'package:scalesoft_app/ui/widgets/sync_process_item.dart';
 import 'package:scalesoft_app/ui/widgets/warning_item.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
@@ -41,12 +41,12 @@ class OfflineResultsScreen extends StatelessWidget with BottomSheetMixin {
         final offlineResults = session.getOfflineResults() ?? [];
 
         final warningWidget = syncState.whenOrNull(
-          inProgress: () => SyncProcessItem(
-            syncProcessType: SyncProcessType.inProgress,
+          inProgress: () => ProcessItem(
+            processType: ProcessType.inProgress,
             label: context.locale.sync_widget_sync_in_progress,
           ),
-          synced: () => SyncProcessItem(
-            syncProcessType: SyncProcessType.done,
+          synced: () => ProcessItem(
+            processType: ProcessType.done,
             label: context.locale.sync_widget_synced,
           ),
           syncUserDataFailed: (_, __) => WarningItem(

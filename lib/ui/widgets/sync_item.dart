@@ -9,7 +9,7 @@ import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/offline_results_route.dart';
-import 'package:scalesoft_app/ui/widgets/sync_process_item.dart';
+import 'package:scalesoft_app/ui/widgets/process_item.dart';
 import 'package:scalesoft_app/ui/widgets/warning_item.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
@@ -27,12 +27,12 @@ class SyncItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return syncState.when(
       none: () => const SliverToBoxAdapter(child: SizedBox.shrink()),
-      inProgress: () => SyncProcessItem(
-        syncProcessType: SyncProcessType.inProgress,
+      inProgress: () => ProcessItem(
+        processType: ProcessType.inProgress,
         label: context.locale.sync_widget_sync_in_progress,
       ),
-      synced: () => SyncProcessItem(
-        syncProcessType: SyncProcessType.done,
+      synced: () => ProcessItem(
+        processType: ProcessType.done,
         label: context.locale.sync_widget_synced,
       ),
       userSessionExpired: (userAccount) => WarningItem(
@@ -53,8 +53,8 @@ class SyncItem extends StatelessWidget {
           );
         },
       ),
-      syncUserDataFailed: (offlineResults, lastSync) => SyncProcessItem(
-        syncProcessType: SyncProcessType.error,
+      syncUserDataFailed: (offlineResults, lastSync) => ProcessItem(
+        processType: ProcessType.error,
         label: context.locale.sync_widget_sync_failed_title,
         desc: lastSync != null
             ? context.locale.sync_widget_sync_failed_desc(
@@ -71,8 +71,8 @@ class SyncItem extends StatelessWidget {
                 );
               },
       ),
-      syncSomeUsersDataFailed: (offlineResults) => SyncProcessItem(
-        syncProcessType: SyncProcessType.error,
+      syncSomeUsersDataFailed: (offlineResults) => ProcessItem(
+        processType: ProcessType.error,
         label: context.locale.sync_widget_sync_failed_title,
         onRefresh: onRefresh,
         onTap: offlineResults == null
@@ -83,8 +83,8 @@ class SyncItem extends StatelessWidget {
                 );
               },
       ),
-      userResultsFailed: (offlineResults, lastSync) => SyncProcessItem(
-        syncProcessType: SyncProcessType.error,
+      userResultsFailed: (offlineResults, lastSync) => ProcessItem(
+        processType: ProcessType.error,
         label: context.locale.sync_widget_sync_failed_title,
         desc: lastSync != null
             ? context.locale.sync_widget_sync_failed_desc(
@@ -101,8 +101,8 @@ class SyncItem extends StatelessWidget {
                 );
               },
       ),
-      someUsersResultsFailed: (offlineResults) => SyncProcessItem(
-        syncProcessType: SyncProcessType.error,
+      someUsersResultsFailed: (offlineResults) => ProcessItem(
+        processType: ProcessType.error,
         label: context.locale.sync_widget_sync_failed_title,
         onRefresh: onRefresh,
         onTap: offlineResults == null

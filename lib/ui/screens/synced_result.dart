@@ -1,0 +1,248 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/model/hw_measurement_result.dart';
+import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
+import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
+import 'package:scalesoft_app/ui/widgets/scale_card.dart';
+import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
+
+class SyncedResult extends StatelessWidget {
+  const SyncedResult({
+    super.key,
+    required this.userId,
+    required this.localDeviceId,
+    required this.hwMeasurementResult,
+    required this.measurementType,
+  });
+
+  final String userId;
+  final int localDeviceId;
+  final HwMeasurementResult hwMeasurementResult;
+  final MeasurementType measurementType;
+
+  String _getTitle(BuildContext context) {
+    switch (hwMeasurementResult.resultState) {
+      case ResultState.success:
+        return context.locale.measurement_summary_screen_success_title;
+
+      case ResultState.paired:
+        return context.locale.measurement_summary_screen_dev_paired_title;
+      case ResultState.noData:
+        return context.locale.measurement_summary_screen_no_data_title;
+      case ResultState.connectionError:
+        return context.locale.measurement_summary_screen_sync_error_title;
+    }
+  }
+
+  String _getSubTitle(BuildContext context) {
+    switch (hwMeasurementResult.resultState) {
+      case ResultState.success:
+        return context.locale.measurement_summary_screen_success_subtitle;
+
+      case ResultState.paired:
+        return context.locale.measurement_summary_screen_dev_paired_subtitle;
+      case ResultState.noData:
+        return context.locale.measurement_summary_screen_no_data_subtitle;
+      case ResultState.connectionError:
+        return context.locale.measurement_summary_screen_sync_error_subtitle;
+    }
+  }
+
+  String _getDesc(BuildContext context) {
+    switch (hwMeasurementResult.resultState) {
+      case ResultState.success:
+        return context.locale.measurement_summary_screen_result_success_desc;
+      case ResultState.paired:
+        return context.locale.measurement_summary_screen_dev_paired_desc;
+      case ResultState.noData:
+        return context.locale.measurement_summary_screen_no_data_desc;
+      case ResultState.connectionError:
+        return context.locale.measurement_summary_screen_sync_error_desc;
+    }
+  }
+
+  Color _getIconColor(BuildContext context) {
+    switch (hwMeasurementResult.resultState) {
+      case ResultState.success:
+        return Theme.of(context).colorScheme.onTertiary;
+      case ResultState.paired:
+        return Theme.of(context).colorScheme.onTertiary;
+      case ResultState.noData:
+        return Theme.of(context).colorScheme.tertiary;
+      case ResultState.connectionError:
+        return Theme.of(context).colorScheme.tertiary;
+    }
+  }
+
+  String _getIconPath() {
+    switch (hwMeasurementResult.resultState) {
+      case ResultState.success:
+        return 'assets/icons/icon_circle_check_huge.svg';
+      case ResultState.paired:
+        return 'assets/icons/icon_circle_check_huge.svg';
+      case ResultState.noData:
+        return 'assets/icons/icon_triangle_exclamation_huge.svg';
+      case ResultState.connectionError:
+        return 'assets/icons/icon_triangle_exclamation_huge.svg';
+    }
+  }
+
+  String? _getMeasurementValueFormatted() {
+    if (hwMeasurementResult.resultState == ResultState.success) {
+      switch (measurementType) {
+        case MeasurementType.bloodPressure:
+          final systolic =
+              hwMeasurementResult.measurementInfo?.systolic ?? 'N/A';
+          final diastolic =
+              hwMeasurementResult.measurementInfo?.diastolic ?? 'N/A';
+          return '$systolic / $diastolic mmHg';
+        case MeasurementType.heartRate:
+          final hearthRate =
+              hwMeasurementResult.measurementInfo?.pulseRate ?? 'N/A';
+          return '$hearthRate TG';
+
+        default:
+          return null;
+      }
+    }
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final topGap = MediaQuery.of(context).viewPadding.top;
+    final fixedHeight = topGap + Constants.twoLinedBarHeight;
+    return CustomScrollView(
+      shrinkWrap: true,
+      slivers: [
+        SliverGap(fixedHeight),
+        const SliverGap(Dimensions.padding16),
+        SliverToBoxAdapter(
+          child: ScaleCard(
+            child: Padding(
+              padding: Paddings.all16,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _getTitle(context),
+                    style: ScaleTextStyles.text.apply(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                  Gaps.gap6,
+                  Text(
+                    _getSubTitle(context),
+                    style: ScaleTextStyles.label.apply(
+                      color: Theme.of(context).colorScheme.onSecondary,
+                    ),
+                  ),
+                  if (hwMeasurementResult.resultState !=
+                      ResultState.paired) ...[
+                    Gaps.gap16,
+                    Container(
+                      height: 0.5,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    Gaps.gap16,
+                    Row(
+                      children: [
+                        Text(
+                          hwMeasurementResult.measurementDt.toTimeShort(),
+                          style: ScaleTextStyles.label.apply(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                        ),
+                        Gaps.gap16,
+                        SvgPicture.asset(
+                          'assets/icons/icon_wave_pulse.svg',
+                          color: Theme.of(context).colorScheme.onTertiary,
+                        ),
+                        Gaps.gap16,
+                        Expanded(
+                          child: Text(
+                            context.locale.common_measurement_types(
+                              measurementType.name,
+                            ),
+                            style: ScaleTextStyles.textAccent.apply(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                          ),
+                        ),
+                        Gaps.gap16,
+                        Text(
+                          _getMeasurementValueFormatted() ?? '?',
+                          style: ScaleTextStyles.text.apply(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SliverGap(Dimensions.padding40),
+        SliverToBoxAdapter(
+          child: SvgPicture.asset(
+            _getIconPath(),
+            color: _getIconColor(context),
+          ),
+        ),
+        const SliverGap(Dimensions.padding48),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: Paddings.horizontal48,
+            child: Text(
+              _getDesc(context),
+              style: ScaleTextStyles.text.apply(
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+        if (hwMeasurementResult.resultState == ResultState.paired ||
+            hwMeasurementResult.resultState == ResultState.noData) ...[
+          const SliverGap(Dimensions.padding24),
+          SliverToBoxAdapter(
+            child: HighlightedElevatedButton(
+              label: hwMeasurementResult.resultState == ResultState.paired
+                  ? context.locale
+                      .measurement_summary_screen_dev_paired_start_measurement
+                  : context.locale
+                      .measurement_summary_screen_no_data_repeat_measurement,
+              onPressed: () {
+                GoRouter.of(context).pushReplacementNamed(
+                  OmronFlowRoute.name,
+                  extra: [userId, localDeviceId, measurementType.index],
+                );
+              },
+              buttonType: ButtonType.primary,
+            ),
+          ),
+        ],
+        const SliverGap(Dimensions.padding24),
+        SliverToBoxAdapter(
+          child: HighlightedElevatedButton(
+            label: context.locale.common_close,
+            onPressed: () {
+              GoRouter.of(context).goNamed(DashboardRoute.name);
+            },
+            buttonType: ButtonType.secondary,
+          ),
+        ),
+        const SliverGap(Dimensions.padding16),
+      ],
+    );
+  }
+}

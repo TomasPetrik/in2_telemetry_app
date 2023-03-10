@@ -31,7 +31,8 @@ class SyncService {
     this._accountDbProvider,
     this._pendingResultsDbProvider,
     this._carePlansRepository,
-    this._timeSettingsRepository, this._appSettingsDbProvider,
+    this._timeSettingsRepository,
+    this._appSettingsDbProvider,
   );
 
   void setUserPlans(
@@ -312,11 +313,17 @@ class SyncService {
         }
 
         for (final userMeasurement in userMeasurements) {
-          //TODO.. distinguish if it was manual or regular measurement by sourceDevice presence
-          await _carePlansRepository.sendManualMeasurement(
-            userAccount: userAccount,
-            manualMeasurement: userMeasurement,
-          );
+          if (userMeasurement.sourceDeviceWithMetadata != null) {
+            await _carePlansRepository.sendMeasurementFromDevice(
+              userAccount: userAccount,
+              measurement: userMeasurement,
+            );
+          } else {
+            await _carePlansRepository.sendManualMeasurement(
+              userAccount: userAccount,
+              manualMeasurement: userMeasurement,
+            );
+          }
           await _pendingResultsDbProvider.remove(userMeasurement);
         }
         //reload user results
