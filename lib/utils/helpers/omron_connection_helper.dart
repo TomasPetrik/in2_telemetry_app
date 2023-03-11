@@ -80,11 +80,12 @@ class OmronConnectionHelper {
   }
 
   static Future<HwMeasurementResult> getHwMeasurementResult(
-    BluetoothService bpService,
-  ) async {
+    BluetoothService bpService, {
+    bool? isSecondAttempt,
+  }) async {
     final dtNow = DateTime.now().toUtc();
 
-    var bpData = await getBPDataFromService(bpService);
+    var bpData = await getBPDataFromService(bpService, isSecondAttempt);
 
     if (bpData == null) {
       return HwMeasurementResult(
@@ -120,7 +121,8 @@ class OmronConnectionHelper {
       if (isMeasurement) {
         await Future.delayed(const Duration(seconds: 2));
         //repeat action in case to get fresh data
-        final hwMeasurementResult2 = await getHwMeasurementResult(bpService);
+        final hwMeasurementResult2 =
+            await getHwMeasurementResult(bpService, isSecondAttempt: true);
         if (hwMeasurementResult2.resultState == ResultState.success) {
           debugPrint('fetched more updated result');
           return hwMeasurementResult2;
@@ -138,6 +140,7 @@ class OmronConnectionHelper {
 
   static Future<List<int>?> getBPDataFromService(
     BluetoothService service,
+    bool? isSecondAttempt,
   ) async {
     final characteristics = service.characteristics;
     final bpCharacteristic = getBloodPressureChar(characteristics);
@@ -146,7 +149,7 @@ class OmronConnectionHelper {
       return null;
     }
 
-    if (!bpCharacteristic.isNotifying == false) {
+    if (isSecondAttempt == true && !bpCharacteristic.isNotifying == false) {
       return null;
     }
 
