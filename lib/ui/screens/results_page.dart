@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc_event.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc_state.dart';
@@ -11,6 +12,7 @@ import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
+import 'package:scalesoft_app/ui/routers/routes/calendar_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/screens/navigation_screen.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -65,20 +67,27 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                 bloc: resultsBloc,
                 builder: (context, state) {
                   Future<void> openWhenSelector() async {
-                    final selected = await showResultsWhenSelector(
+                    showResultsWhenSelector(
                       context,
                       state.selectedWhenPeriod,
                       state.plansEvaluationPerPeriod ?? {},
-                    );
-                    if (selected?.selectedPeriod != null) {
-                      resultsBloc.add(
-                        ResultsBlocEvent.whenPeriodChange(
-                          selected!.selectedPeriod!,
-                        ),
-                      );
-                    } else if (selected?.showCalendar == true) {
-                      //TODO.. show calendar
-                    }
+                    ).then((selected) {
+                      if (selected?.selectedPeriod != null) {
+                        resultsBloc.add(
+                          ResultsBlocEvent.whenPeriodChange(
+                            selected!.selectedPeriod!,
+                          ),
+                        );
+                      } else if (selected?.showCalendar == true) {
+                        GoRouter.of(context).pushNamed(
+                          CalendarRoute.name,
+                          extra: [
+                            DateTime(2022, 3, 24),
+                            DateTime.now(),
+                          ],
+                        );
+                      }
+                    });
                   }
 
                   if (state.selectedWhenPeriod == null ||

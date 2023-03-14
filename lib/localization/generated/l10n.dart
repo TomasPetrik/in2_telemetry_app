@@ -310,6 +310,16 @@ class I10n {
     );
   }
 
+  /// `Dnes`
+  String get common_today {
+    return Intl.message(
+      'Dnes',
+      name: 'common_today',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `{count, plural, zero{Plnění plánu} one{Plnění plánu} other{Plnění plánů}}`
   String common_plans_fulfillment_plural(num count) {
     return Intl.plural(
@@ -362,6 +372,37 @@ class I10n {
       name: 'common_measurement_times',
       desc: 'Measurement times',
       args: [measurementTime],
+    );
+  }
+
+  /// `{day, select, monday{Po} tuesday{Út} wednesday{St} thursday{Čt} friday{Pá} saturday{So} sunday{Ne} other{Jiný}}`
+  String common_days_in_week_short(Object day) {
+    return Intl.select(
+      day,
+      {
+        'monday': 'Po',
+        'tuesday': 'Út',
+        'wednesday': 'St',
+        'thursday': 'Čt',
+        'friday': 'Pá',
+        'saturday': 'So',
+        'sunday': 'Ne',
+        'other': 'Jiný',
+      },
+      name: 'common_days_in_week_short',
+      desc: 'Days in week',
+      args: [day],
+    );
+  }
+
+  /// `{month, select, 1{Leden} 2{Únor} 3{Březen} 4{Duben} 5{Květen} 6{Červen} 7{Červenec} 8{Srpen} 9{Září} 10{Říjen} 11{Listopad} 12{Prosinec} other{Jiný}}`
+  String common_months(Object month, Object Leden, Object Duben, Object Srpen,
+      Object Listopad, Object Prosinec) {
+    return Intl.message(
+      '{month, select, 1$Leden 2{Únor} 3{Březen} 4$Duben 5{Květen} 6{Červen} 7{Červenec} 8$Srpen 9{Září} 10{Říjen} 11$Listopad 12$Prosinec other{Jiný}}',
+      name: 'common_months',
+      desc: 'Months in year',
+      args: [month, Leden, Duben, Srpen, Listopad, Prosinec],
     );
   }
 

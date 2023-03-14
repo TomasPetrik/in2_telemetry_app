@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/ui/routers/routes/calendar_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -152,7 +154,15 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
                         label: context
                             .locale.care_plan_detail_screen_show_calendar,
                         buttonType: ButtonType.primary,
-                        onPressed: () async {},
+                        onPressed: () async {
+                          GoRouter.of(context).pushNamed(
+                            CalendarRoute.name,
+                            extra: [
+                              DateTime(2022, 3, 24),
+                              DateTime.now(),
+                            ],
+                          );
+                        },
                       ),
                     ),
                   ),

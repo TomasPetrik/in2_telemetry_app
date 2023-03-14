@@ -1,0 +1,45 @@
+import 'package:flutter/material.dart';
+import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+
+class DaysInWeekHeader extends StatelessWidget {
+  const DaysInWeekHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 32,
+      child: Padding(
+        padding: Paddings.bottom16,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: DayInWeek.values
+              .map(
+                (dayInWeek) => Expanded(
+                  child: Center(
+                    child: Text(
+                      context.locale.common_days_in_week_short(dayInWeek.name),
+                      style: ScaleTextStyles.label.apply(
+                        color: Theme.of(context).colorScheme.onSecondary,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
+        ),
+      ),
+    );
+  }
+}
+
+enum DayInWeek {
+  monday,
+  tuesday,
+  wednesday,
+  thursday,
+  friday,
+  saturday,
+  sunday
+}

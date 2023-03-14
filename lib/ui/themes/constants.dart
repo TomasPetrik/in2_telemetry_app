@@ -268,6 +268,8 @@ class Paddings {
       EdgeInsets.only(bottom: Dimensions.padding8);
   static const EdgeInsetsGeometry bottom10 =
       EdgeInsets.only(bottom: Dimensions.padding10);
+  static const EdgeInsetsGeometry bottom16 =
+      EdgeInsets.only(bottom: Dimensions.padding16);
   static const EdgeInsetsGeometry bottom20 =
       EdgeInsets.only(bottom: Dimensions.padding20);
   static const EdgeInsetsGeometry bottom32 =

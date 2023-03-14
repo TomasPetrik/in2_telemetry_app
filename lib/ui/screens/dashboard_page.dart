@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_state.dart';
@@ -9,6 +10,7 @@ import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
+import 'package:scalesoft_app/ui/routers/routes/calendar_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/screens/navigation_screen.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
@@ -114,31 +116,37 @@ class _DashboardPageState extends State<DashboardPage> with BottomSheetMixin {
                           ),
                         }
                       ],
-                      navigationHeader:
-                          state.allMeasurementCountsPerPeriod?.isNotEmpty ==
-                                  true
-                              ? PlannedMeasurementHeader(
-                                  whenPeriod: state.selectedWhenPeriod ??
-                                      PlanWhenPeriod.today,
-                                  openTimeSelector: () async {
-                                    final selected =
-                                        await showPlannedMeasurementsSelector(
-                                      context,
-                                      state.selectedWhenPeriod,
-                                      state.allMeasurementCountsPerPeriod!,
+                      navigationHeader: state
+                                  .allMeasurementCountsPerPeriod?.isNotEmpty ==
+                              true
+                          ? PlannedMeasurementHeader(
+                              whenPeriod: state.selectedWhenPeriod ??
+                                  PlanWhenPeriod.today,
+                              openTimeSelector: () async {
+                                await showPlannedMeasurementsSelector(
+                                  context,
+                                  state.selectedWhenPeriod,
+                                  state.allMeasurementCountsPerPeriod!,
+                                ).then((selected) {
+                                  if (selected?.selectedPeriod != null) {
+                                    carePlanBloc.add(
+                                      TimePeriodChangeEvent(
+                                        selected!.selectedPeriod!,
+                                      ),
                                     );
-                                    if (selected?.selectedPeriod != null) {
-                                      carePlanBloc.add(
-                                        TimePeriodChangeEvent(
-                                          selected!.selectedPeriod!,
-                                        ),
-                                      );
-                                    } else if (selected?.showCalendar == true) {
-                                      //TODO.. show calendar
-                                    }
-                                  },
-                                )
-                              : null,
+                                  } else if (selected?.showCalendar == true) {
+                                    GoRouter.of(context).pushNamed(
+                                      CalendarRoute.name,
+                                      extra: [
+                                        DateTime(2022, 3, 24),
+                                        DateTime.now(),
+                                      ],
+                                    );
+                                  }
+                                });
+                              },
+                            )
+                          : null,
                       tabs: [
                         if (supportedMeasurementTypes.length > 1) ...{
                           NavigationTabBarItem(

@@ -35,6 +35,7 @@
     "common_to": "Do",
     "common_at_time": "v {atTime}",
     "common_procedure": "Postup",
+    "common_today": "Dnes",
     "@common_at_time": {
         "placeholders": {
             "atTime": {
@@ -62,6 +63,20 @@
         "description": "Measurement times",
         "placeholders": {
             "measurementTime": {}
+        }
+    },
+    "common_days_in_week_short": "{day, select, monday{Po} tuesday{Út} wednesday{St} thursday{Čt} friday{Pá} saturday{So} sunday{Ne} other{Jiný}}",
+    "@common_days_in_week_short": {
+        "description": "Days in week",
+        "placeholders": {
+            "day": {}
+        }
+    },
+    "common_months": "{month, select, 1{Leden} 2{Únor} 3{Březen} 4{Duben} 5{Květen} 6{Červen} 7{Červenec} 8{Srpen} 9{Září} 10{Říjen} 11{Listopad} 12{Prosinec} other{Jiný}}",
+    "@common_months": {
+        "description": "Months in year",
+        "placeholders": {
+            "month": {}
         }
     },
     "server_error_title": "Ooops!",

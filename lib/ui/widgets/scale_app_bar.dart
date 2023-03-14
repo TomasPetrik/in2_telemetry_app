@@ -11,13 +11,17 @@ class ScaleAppBar extends StatelessWidget {
     this.showClose = false,
     this.onBackTap,
     this.onCloseTap,
+    this.onActionTap,
+    this.actionLabel,
   });
 
   final String title;
   final String? subTitle;
+  final String? actionLabel;
   final bool showClose;
   final VoidCallback? onBackTap;
   final VoidCallback? onCloseTap;
+  final VoidCallback? onActionTap;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +52,9 @@ class ScaleAppBar extends StatelessWidget {
                         Expanded(
                           child: Text(
                             title,
-                            style: Theme.of(context).textTheme.titleMedium,
+                            style: ScaleTextStyles.textAccent.apply(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -106,7 +112,24 @@ class ScaleAppBar extends StatelessWidget {
                     color: Theme.of(context).primaryColor,
                   ),
                 ),
-              ),
+              )
+            else if (onActionTap != null && actionLabel != null)
+              Positioned(
+                top: 0,
+                left: 0,
+                bottom: 0,
+                child: TextButton(
+                  onPressed: () {
+                    onActionTap?.call();
+                  },
+                  child: Text(
+                    actionLabel!,
+                    style: ScaleTextStyles.text.apply(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ),
+              )
           ],
         ),
       ),

@@ -6,6 +6,7 @@ import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/managers/auth_manager.dart';
 import 'package:scalesoft_app/ui/routers/routes/appearance_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/calendar_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/care_plan_detail_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/configuration_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
@@ -54,6 +55,13 @@ class AppRouter {
         ShellRoute(
           navigatorKey: navAuthManager,
           builder: (context, __, child) {
+            /*
+            return CalendarScreen(
+              fromDate: DateTime(2022, 3, 24),
+              toDate: DateTime.now(),
+            );
+            */
+
             return AuthManager(
               child: child,
             );
@@ -88,6 +96,7 @@ class AppRouter {
             NoUserRoute(navigator: navAuthManager).route,
             ManualMeasurementRoute(navigator: navAuthManager).route,
             OmronFlowRoute(navigator: navAuthManager).route,
+            CalendarRoute(navigator: navAuthManager).route,
             OfflineResultsRoute(navigator: navAuthManager).route,
           ],
         ),
