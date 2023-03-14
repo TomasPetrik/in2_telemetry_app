@@ -36,9 +36,13 @@ class OmronConnectionBloc
     this._syncBloc,
   ) : super(const OmronConnectionState.init()) {
     on<OmronConnectionBlocEvent>((event, emit) async {
-      Future<void> verifyDevice(BluetoothDevice device) async {
+      Future<void> verifyDevice(
+        BluetoothDevice device,
+        AdvertisementData? advertisementData,
+      ) async {
         final deviceInfo =
             await OmronConnectionHelper.requestDeviceInfo(device);
+        deviceInfo?.advData = advertisementData;
         if (deviceInfo != null) {
           emit(
             OmronConnectionState.verified(
@@ -53,6 +57,8 @@ class OmronConnectionBloc
 
         final batteryInfo =
             await OmronConnectionHelper.requestBatteryInfo(device);
+
+        deviceInfo.batteryInfo = batteryInfo;
 
         if (reqModelPairing != null) {
           emit(const OmronConnectionState.pairing());
@@ -117,18 +123,20 @@ class OmronConnectionBloc
                         ? ResultState.paired
                         : measurementResult.resultState,
               ),
+              deviceInfo: deviceInfo,
             ),
           );
         } else {
           emit(
             OmronConnectionState.synced(
               measurementResult: measurementResult,
+              deviceInfo: deviceInfo,
             ),
           );
         }
       }
 
-      Future<void> connectToDevice(BluetoothDevice device) async {
+      Future<void> connectToDevice(device, advertisementData) async {
         emit(const OmronConnectionState.connecting());
         await device.connect(autoConnect: false);
 
@@ -140,7 +148,7 @@ class OmronConnectionBloc
           return;
         }
 
-        add(OmronConnectionBlocEvent.verifyDevice(device));
+        add(OmronConnectionBlocEvent.verifyDevice(device, advertisementData));
       }
 
       await event.when(
@@ -183,9 +191,9 @@ class OmronConnectionBloc
             final device = devices[0];
             final BluetoothDeviceState deviceState = await device.state.first;
             if (deviceState == BluetoothDeviceState.connected) {
-              add(OmronConnectionBlocEvent.verifyDevice(device));
+              add(OmronConnectionBlocEvent.verifyDevice(device, null));
             } else {
-              add(OmronConnectionBlocEvent.connectToDevice(device));
+              add(OmronConnectionBlocEvent.connectToDevice(device, null));
             }
           } else {
             add(const OmronConnectionBlocEvent.searchDevice());
@@ -197,20 +205,30 @@ class OmronConnectionBloc
             serviceUuid: bloodPressureServiceUuid,
           );
           if (foundDevice != null) {
-            add(OmronConnectionBlocEvent.foundDevice(foundDevice));
-            add(OmronConnectionBlocEvent.connectToDevice(foundDevice));
+            add(
+              OmronConnectionBlocEvent.foundDevice(
+                foundDevice.device,
+                foundDevice.advertisementData,
+              ),
+            );
+            add(
+              OmronConnectionBlocEvent.connectToDevice(
+                foundDevice.device,
+                foundDevice.advertisementData,
+              ),
+            );
           }
         },
         stopSearch: () async {
           flutterBlue.stopScan();
         },
-        connectToDevice: (device) async {
-          await connectToDevice(device);
+        connectToDevice: (device, advertisementData) async {
+          await connectToDevice(device, advertisementData);
         },
-        verifyDevice: (device) async {
-          await verifyDevice(device);
+        verifyDevice: (device, advertisementData) async {
+          await verifyDevice(device, advertisementData);
         },
-        foundDevice: (BluetoothDevice device) async {
+        foundDevice: (device, advertisementData) async {
           emit(OmronConnectionState.found(device: device));
         },
       );

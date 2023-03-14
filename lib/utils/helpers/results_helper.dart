@@ -47,7 +47,7 @@ class ResultsHelper {
       case ResultsWhenPeriod.today:
         measurements = Calendar.getMeasurements(
           carePlans: carePlans,
-          weekDay: DateTime.now().currentWeekDay(),
+          weekDay: DateTime.now().toWeekDay(),
           resultsWhenPeriod: ResultsWhenPeriod.today,
         );
         break;

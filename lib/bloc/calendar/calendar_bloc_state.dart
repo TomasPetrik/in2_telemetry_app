@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 part 'calendar_bloc_state.freezed.dart';
 
-@freezed
+@Freezed(makeCollectionsUnmodifiable: false)
 class CalendarBlocState with _$CalendarBlocState {
   const factory CalendarBlocState({
     List<CalendarMonth>? months,
@@ -20,15 +21,16 @@ class CalendarMonth with _$CalendarMonth {
   const factory CalendarMonth({
     required int year,
     required int month,
+    required DateTime monthStartDate,
     required Map<int, List<CalendarDay>> weekDays,
   }) = _CalendarMonth;
 }
 
 //TODO.. also save it to local db to fast preview or look last loaded data in offline mode
 //when switch to different month, then save all days in dbs for offline usage
-@freezed
+@unfreezed
 class CalendarDay with _$CalendarDay {
-  const factory CalendarDay({
+  factory CalendarDay({
     required DateTime dt,
     required int dayIndex,
     required bool isDayOfCurrentMonth,
@@ -38,7 +40,7 @@ class CalendarDay with _$CalendarDay {
     //bool isToday,
     required CalendarDayPeriod dayPeriod,
     int? carePlansEvaluation,
-    int? plannedMeasurements,
+    List<PlannedMeasurement>? plannedMeasurements,
   }) = _CalendarDay;
 }
 

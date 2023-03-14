@@ -10,21 +10,23 @@ import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 import 'package:scalesoft_app/api/client/account_api_client.dart' as _i20;
 import 'package:scalesoft_app/api/client/auth_api_client.dart' as _i23;
-import 'package:scalesoft_app/api/client/care_plan_api_client.dart' as _i24;
+import 'package:scalesoft_app/api/client/care_plan_api_client.dart' as _i25;
 import 'package:scalesoft_app/api/client/time_settings_api_client.dart' as _i17;
-import 'package:scalesoft_app/api/interceptors/token_interceptor.dart' as _i29;
-import 'package:scalesoft_app/bloc/auth/auth_bloc.dart' as _i30;
+import 'package:scalesoft_app/api/interceptors/token_interceptor.dart' as _i30;
+import 'package:scalesoft_app/bloc/auth/auth_bloc.dart' as _i31;
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc.dart' as _i7;
+import 'package:scalesoft_app/bloc/calendar_service/calendar_service_bloc.dart'
+    as _i24;
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart' as _i8;
 import 'package:scalesoft_app/bloc/daily_times_settings/times_settings_bloc.dart'
     as _i19;
 import 'package:scalesoft_app/bloc/notifications/notifications_bloc.dart'
-    as _i27;
-import 'package:scalesoft_app/bloc/omron/omron_connection_bloc.dart' as _i32;
+    as _i28;
+import 'package:scalesoft_app/bloc/omron/omron_connection_bloc.dart' as _i33;
 import 'package:scalesoft_app/bloc/results/results_bloc.dart' as _i14;
 import 'package:scalesoft_app/bloc/settings/app_settings_bloc.dart' as _i22;
-import 'package:scalesoft_app/bloc/sync/sync_bloc.dart' as _i31;
-import 'package:scalesoft_app/bloc/user_content/content_bloc.dart' as _i26;
+import 'package:scalesoft_app/bloc/sync/sync_bloc.dart' as _i32;
+import 'package:scalesoft_app/bloc/user_content/content_bloc.dart' as _i27;
 import 'package:scalesoft_app/cubit/auth_web/auth_web_cubit.dart' as _i6;
 import 'package:scalesoft_app/cubit/hospital_search/hospital_search_cubit.dart'
     as _i10;
@@ -36,15 +38,15 @@ import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart'
 import 'package:scalesoft_app/providers/session_db_provider.dart' as _i16;
 import 'package:scalesoft_app/providers/settings_db_provider.dart' as _i4;
 import 'package:scalesoft_app/repositories/account_repository.dart' as _i21;
-import 'package:scalesoft_app/repositories/care_plans_repository.dart' as _i25;
+import 'package:scalesoft_app/repositories/care_plans_repository.dart' as _i26;
 import 'package:scalesoft_app/repositories/time_settings_repository.dart'
     as _i18;
 import 'package:scalesoft_app/services/auth_service.dart' as _i5;
 import 'package:scalesoft_app/services/internet_service.dart' as _i11;
-import 'package:scalesoft_app/services/sync_service.dart' as _i28;
+import 'package:scalesoft_app/services/sync_service.dart' as _i29;
 import 'package:scalesoft_app/storage/session.dart' as _i15;
 
-import '../api/dio_module.dart' as _i33;
+import '../api/dio_module.dart' as _i34;
 
 /// ignore_for_file: unnecessary_lambdas
 /// ignore_for_file: lines_longer_than_80_chars
@@ -99,53 +101,55 @@ _i1.GetIt init(
       _i22.AppSettingsBloc(gh<_i4.AppSettingsDbProvider>()));
   gh.factory<_i23.AuthApiClient>(
       () => _i23.AuthApiClient(gh<_i9.Dio>(instanceName: 'privateDio')));
-  gh.factory<_i24.CarePlanApiClient>(
-      () => _i24.CarePlanApiClient(gh<_i9.Dio>(instanceName: 'privateDio')));
-  gh.singleton<_i25.CarePlansRepository>(_i25.CarePlansRepository(
-    gh<_i24.CarePlanApiClient>(),
+  gh.factory<_i24.CalendarServiceBloc>(
+      () => _i24.CalendarServiceBloc(gh<_i15.Session>()));
+  gh.factory<_i25.CarePlanApiClient>(
+      () => _i25.CarePlanApiClient(gh<_i9.Dio>(instanceName: 'privateDio')));
+  gh.singleton<_i26.CarePlansRepository>(_i26.CarePlansRepository(
+    gh<_i25.CarePlanApiClient>(),
     gh<_i15.Session>(),
   ));
-  gh.singleton<_i26.ContentBloc>(_i26.ContentBloc(
+  gh.singleton<_i27.ContentBloc>(_i27.ContentBloc(
     gh<_i3.AccountDbProvider>(),
     gh<_i16.SessionDbProvider>(),
     gh<_i15.Session>(),
   ));
-  gh.singleton<_i27.NotificationsBloc>(_i27.NotificationsBloc(
+  gh.singleton<_i28.NotificationsBloc>(_i28.NotificationsBloc(
     gh<_i15.Session>(),
     gh<_i4.AppSettingsDbProvider>(),
   ));
-  gh.singleton<_i28.SyncService>(_i28.SyncService(
+  gh.singleton<_i29.SyncService>(_i29.SyncService(
     gh<_i15.Session>(),
     gh<_i3.AccountDbProvider>(),
     gh<_i13.PendingResultsDbProvider>(),
-    gh<_i25.CarePlansRepository>(),
+    gh<_i26.CarePlansRepository>(),
     gh<_i18.TimeSettingsRepository>(),
     gh<_i4.AppSettingsDbProvider>(),
   ));
-  gh.factory<_i29.TokenInterceptor>(() => _i29.TokenInterceptor(
+  gh.factory<_i30.TokenInterceptor>(() => _i30.TokenInterceptor(
         gh<_i15.Session>(),
         gh<_i20.AccountApiClient>(),
       ));
-  gh.singleton<_i30.AuthBloc>(_i30.AuthBloc(
+  gh.singleton<_i31.AuthBloc>(_i31.AuthBloc(
     gh<_i5.AuthService>(),
     gh<_i21.AccountRepository>(),
     gh<_i15.Session>(),
     gh<_i3.AccountDbProvider>(),
     gh<_i13.PendingResultsDbProvider>(),
     gh<_i9.Dio>(instanceName: 'privateDio'),
-    gh<_i28.SyncService>(),
+    gh<_i29.SyncService>(),
   ));
-  gh.singleton<_i31.SyncBloc>(_i31.SyncBloc(
+  gh.singleton<_i32.SyncBloc>(_i32.SyncBloc(
     gh<_i3.AccountDbProvider>(),
-    gh<_i28.SyncService>(),
+    gh<_i29.SyncService>(),
     gh<_i15.Session>(),
   ));
-  gh.factory<_i32.OmronConnectionBloc>(() => _i32.OmronConnectionBloc(
+  gh.factory<_i33.OmronConnectionBloc>(() => _i33.OmronConnectionBloc(
         gh<_i13.PendingResultsDbProvider>(),
         gh<_i12.PairedDevicesDbProvider>(),
-        gh<_i31.SyncBloc>(),
+        gh<_i32.SyncBloc>(),
       ));
   return getIt;
 }
 
-class _$DioModule extends _i33.DioModule {}
+class _$DioModule extends _i34.DioModule {}

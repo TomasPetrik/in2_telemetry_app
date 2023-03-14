@@ -15,8 +15,15 @@ const String deviceInfo = '0000180a-0000-1000-8000-00805f9b34fb';
 const String bloodPressure = '00001810-0000-1000-8000-00805f9b34fb';
 const String batteryService = '0000180f-0000-1000-8000-00805f9b34fb';
 
+class DeviceSearchResult {
+  BluetoothDevice device;
+  AdvertisementData advertisementData;
+
+  DeviceSearchResult(this.device, this.advertisementData);
+}
+
 class OmronConnectionHelper {
-  static Future<BluetoothDevice?> searchDevice({
+  static Future<DeviceSearchResult?> searchDevice({
     required String serviceUuid,
   }) async {
     final flutterBlue = FlutterBluePlus.instance;
@@ -43,7 +50,7 @@ class OmronConnectionHelper {
           debugPrint('found device at ${result.timeStamp}');
 
           await flutterBlue.stopScan();
-          return result.device;
+          return DeviceSearchResult(result.device, result.advertisementData);
         }
       }
 
@@ -60,6 +67,7 @@ class OmronConnectionHelper {
     );
     if (deviceInfoService != null) {
       final deviceInfo = await getDeviceInfoFromService(deviceInfoService);
+      deviceInfo.device = device;
       return deviceInfo;
     } else {
       return null;

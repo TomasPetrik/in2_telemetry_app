@@ -19,6 +19,7 @@ class OmronConnectionState with _$OmronConnectionState {
   const factory OmronConnectionState.pairing() = _Pairing;
   const factory OmronConnectionState.paired({
     required HwMeasurementResult measurementResult,
+    required DeviceInfo deviceInfo,
   }) = _Paired;
   const factory OmronConnectionState.connecting() = _Connecting;
   const factory OmronConnectionState.connected() = _Connected;
@@ -31,6 +32,7 @@ class OmronConnectionState with _$OmronConnectionState {
   const factory OmronConnectionState.syncing() = _Syncing;
   const factory OmronConnectionState.synced({
     required HwMeasurementResult measurementResult,
+    required DeviceInfo deviceInfo,
   }) = _Synced;
   const factory OmronConnectionState.error(Exception exception) = _Error;
 }

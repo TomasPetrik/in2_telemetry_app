@@ -15,6 +15,13 @@ class CalendarHelper {
     }
   }
 
+  static DateTime getDateByMonthsOffset(DateTime dateTime, int offset) {
+    final startMonthDate = DateUtils.addMonthsToMonthDate(dateTime, 0);
+    final twoMonthsAhead =
+        DateUtils.addMonthsToMonthDate(startMonthDate, offset);
+    return twoMonthsAhead;
+  }
+
   static List<CalendarMonth>? getCalendarMonths(
     BuildContext context,
     DateTime fromDate,
@@ -33,6 +40,7 @@ class CalendarHelper {
       );
       calendarMonths.add(
         CalendarMonth(
+          monthStartDate: offsetDate,
           year: offsetDate.year,
           month: offsetDate.month,
           weekDays: weekDays,
@@ -41,6 +49,24 @@ class CalendarHelper {
     }
 
     return calendarMonths;
+  }
+
+  static CalendarMonth getCalendarMonth(
+    BuildContext context,
+    DateTime monthStartDate,
+  ) {
+    final weekDays = getWeekDaysInMonth(
+      context: context,
+      currentYear: monthStartDate.year,
+      currentMonth: monthStartDate.month,
+    );
+
+    return CalendarMonth(
+      monthStartDate: monthStartDate,
+      year: monthStartDate.year,
+      month: monthStartDate.month,
+      weekDays: weekDays,
+    );
   }
 
   static Map<int, List<CalendarDay>> getWeekDaysInMonth({
@@ -123,7 +149,6 @@ class CalendarHelper {
               isDayOfCurrentMonth:
                   weekDaysOffset + 1 - firstDayOffset + i <= days,
               dayPeriod: getDayPeriod(dayStartDate),
-              plannedMeasurements: 4,
             ),
           );
         }

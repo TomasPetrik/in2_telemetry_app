@@ -8,6 +8,7 @@ import 'package:scalesoft_app/utils/helpers/calendar_helper.dart';
 @injectable
 class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
   late final PageController controller;
+  late final BuildContext context;
 
   CalendarBloc()
       : super(
@@ -17,13 +18,18 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
         ) {
     on<CalendarBlocEvent>((event, emit) async {
       await event.when(
-        init: (context, fromDate, toDate) async {
-          final months =
-              CalendarHelper.getCalendarMonths(context, fromDate, toDate);
+        init: (context, fromDate) async {
+          this.context = context;
 
           final dt = DateTime.now();
           final currentYear = dt.year;
           final currentMonth = dt.month;
+
+          //toDate should be always 2 months ahead
+          final toDate = CalendarHelper.getDateByMonthsOffset(dt, 2);
+
+          final months =
+              CalendarHelper.getCalendarMonths(context, fromDate, toDate);
 
           final currentMonthIndex = months?.indexWhere(
             (month) => month.year == currentYear && month.month == currentMonth,
@@ -79,6 +85,20 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
               isCurrentMonth: isCurrentMonth,
             ),
           );
+
+          if (newPageIndex == state.months!.length - 2) {
+            add(const CalendarBlocEvent.addExtraMonth());
+          }
+        },
+        addExtraMonth: () {
+          final lastMonth = state.months!.last;
+          final newLastMonthDate =
+              CalendarHelper.getDateByMonthsOffset(lastMonth.monthStartDate, 1);
+          final newLastMonth = CalendarHelper.getCalendarMonth(
+            context,
+            newLastMonthDate,
+          );
+          state.months!.add(newLastMonth);
         },
       );
     });

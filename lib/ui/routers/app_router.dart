@@ -58,7 +58,6 @@ class AppRouter {
             /*
             return CalendarScreen(
               fromDate: DateTime(2022, 3, 24),
-              toDate: DateTime.now(),
             );
             */
 

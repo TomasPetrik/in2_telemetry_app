@@ -38,7 +38,7 @@ extension DateParse on DateTime {
     return wasYesterday;
   }
 
-  WeekDay currentWeekDay() {
+  WeekDay toWeekDay() {
     final today = DateTime(year, month, day);
 
     return WeekDay.values[today.weekday - 1];

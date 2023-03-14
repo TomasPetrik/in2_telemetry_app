@@ -85,7 +85,7 @@ class CarePlanHelper {
         );
         break;
       case PlanWhenPeriod.tomorrow:
-        measurements = Calendar.getTomorrowMeasurements(
+        measurements = Calendar.getMeasurementOfDay(
           carePlans: carePlans,
           weekDay: DateTime.now().tomorrowWeekDay(),
         );
@@ -116,7 +116,7 @@ class Calendar {
   }) {
     List<PlannedMeasurement> measurements = [];
     final dtNow = DateTime.now();
-    final currentWeekDay = dtNow.currentWeekDay();
+    final currentWeekDay = dtNow.toWeekDay();
     final todayCarePlans = carePlans.where(
       (final CarePlan carePlan) => (carePlan.scheduledStart.isBefore(dtNow) &&
           ((carePlan.periodUnit == TimeUnit.day &&
@@ -191,7 +191,7 @@ class Calendar {
     return measurements;
   }
 
-  static List<PlannedMeasurement> getTomorrowMeasurements({
+  static List<PlannedMeasurement> getMeasurementOfDay({
     required List<CarePlan> carePlans,
     required WeekDay weekDay,
   }) {

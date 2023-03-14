@@ -92,8 +92,8 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                         connected: () => true,
                         syncing: () => true,
                         pairing: () => true,
-                        synced: (measurementResult) => true,
-                        paired: (measurementResult) => true,
+                        synced: (measurementResult, deviceInfo) => true,
+                        paired: (measurementResult, deviceInfo) => true,
                       ) ??
                       false;
 
@@ -206,20 +206,22 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                         reqModelPairing: reqModelPairing,
                       );
                     },
-                    synced: (hwMeasurementResult) {
+                    synced: (hwMeasurementResult, deviceInfo) {
                       return SyncedResult(
                         userId: widget.userId,
                         localDeviceId: widget.localDeviceId,
                         hwMeasurementResult: hwMeasurementResult,
                         measurementType: measurementType,
+                        deviceInfo: deviceInfo,
                       );
                     },
-                    paired: (hwMeasurementResult) {
+                    paired: (hwMeasurementResult, deviceInfo) {
                       return SyncedResult(
                         userId: widget.userId,
                         localDeviceId: widget.localDeviceId,
                         hwMeasurementResult: hwMeasurementResult,
                         measurementType: measurementType,
+                        deviceInfo: deviceInfo,
                       );
                     },
                   );

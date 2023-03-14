@@ -157,10 +157,7 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
                         onPressed: () async {
                           GoRouter.of(context).pushNamed(
                             CalendarRoute.name,
-                            extra: [
-                              DateTime(2022, 3, 24),
-                              DateTime.now(),
-                            ],
+                            extra: DateTime(2022, 3, 24),
                           );
                         },
                       ),

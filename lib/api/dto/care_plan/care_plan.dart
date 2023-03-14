@@ -48,7 +48,7 @@ class CarePlan with _$CarePlan {
   bool get fihisned => scheduledEnd?.isBefore(DateTime.now()) == true;
 
   bool hasMeasurementAt(DateTime dateTime) {
-    final currentWeekDay = dateTime.currentWeekDay();
+    final currentWeekDay = dateTime.toWeekDay();
     if ((periodUnit == TimeUnit.day && weekDays?.isEmpty == true) ||
         weekDays?.contains(currentWeekDay) == true) {
       if (timingDayWhen
@@ -64,7 +64,7 @@ class CarePlan with _$CarePlan {
 
   List<TimingDayWhen> getYesterdayMeasurements() {
     final dtYesterday = DateTime.now().subtract(const Duration(days: 1));
-    final currentWeekDay = dtYesterday.currentWeekDay();
+    final currentWeekDay = dtYesterday.toWeekDay();
 
     if ((periodUnit == TimeUnit.day && weekDays?.isEmpty == true) ||
         weekDays?.contains(currentWeekDay) == true) {
@@ -76,7 +76,7 @@ class CarePlan with _$CarePlan {
 
   List<TimingDayWhen> getTodayMeasurements() {
     final now = DateTime.now();
-    final currentWeekDay = now.currentWeekDay();
+    final currentWeekDay = now.toWeekDay();
 
     if ((periodUnit == TimeUnit.day && weekDays?.isEmpty == true) ||
         weekDays?.contains(currentWeekDay) == true) {
@@ -88,7 +88,7 @@ class CarePlan with _$CarePlan {
 
   List<TimingDayWhen> getTodayRemainingMeasurements({bool? ignoreOngoing}) {
     final now = DateTime.now();
-    final currentWeekDay = now.currentWeekDay();
+    final currentWeekDay = now.toWeekDay();
 
     if ((periodUnit == TimeUnit.day && weekDays?.isEmpty == true) ||
         weekDays?.contains(currentWeekDay) == true) {
@@ -108,7 +108,7 @@ class CarePlan with _$CarePlan {
 
   bool hasMeasurementsToday() {
     final now = DateTime.now();
-    final currentWeekDay = now.currentWeekDay();
+    final currentWeekDay = now.toWeekDay();
 
     final todayMidnight = now.getTomorrowMidnight();
 
@@ -128,7 +128,7 @@ class CarePlan with _$CarePlan {
 
   bool hasMeasurementsYesterday() {
     final dtYesterday = DateTime.now().subtract(const Duration(days: 1));
-    final currentWeekDay = dtYesterday.currentWeekDay();
+    final currentWeekDay = dtYesterday.toWeekDay();
 
     final yesterdayMidnight = dtYesterday.getTomorrowMidnight();
 

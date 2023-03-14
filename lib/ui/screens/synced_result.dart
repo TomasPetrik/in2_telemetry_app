@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/model/device_info.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
@@ -20,12 +21,18 @@ class SyncedResult extends StatelessWidget {
     required this.localDeviceId,
     required this.hwMeasurementResult,
     required this.measurementType,
+    required this.deviceInfo,
   });
 
   final String userId;
   final int localDeviceId;
   final HwMeasurementResult hwMeasurementResult;
   final MeasurementType measurementType;
+  final DeviceInfo deviceInfo;
+
+  String _getDeviceInfo() {
+    return deviceInfo.toString();
+  }
 
   String _getTitle(BuildContext context) {
     switch (hwMeasurementResult.resultState) {
@@ -189,6 +196,16 @@ class SyncedResult extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+        ),
+        const SliverGap(Dimensions.padding16),
+        SliverToBoxAdapter(
+          child: Text(
+            _getDeviceInfo(),
+            style: ScaleTextStyles.label.apply(
+              color: Theme.of(context).colorScheme.onSecondary,
+            ),
+            textAlign: TextAlign.start,
           ),
         ),
         const SliverGap(Dimensions.padding40),

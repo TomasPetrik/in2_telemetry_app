@@ -15,11 +15,9 @@ class CalendarScreen extends StatelessWidget {
   const CalendarScreen({
     super.key,
     required this.fromDate,
-    required this.toDate,
   });
 
   final DateTime fromDate;
-  final DateTime toDate;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +29,6 @@ class CalendarScreen extends StatelessWidget {
             CalendarBlocEvent.init(
               context,
               fromDate,
-              toDate,
             ),
           ),
         builder: (context, state) {

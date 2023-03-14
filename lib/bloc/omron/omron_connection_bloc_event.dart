@@ -22,13 +22,16 @@ class OmronConnectionBlocEvent with _$OmronConnectionBlocEvent {
 
   const factory OmronConnectionBlocEvent.connectToDevice(
     BluetoothDevice device,
+    AdvertisementData? advertisementData,
   ) = _ConnectToDevice;
 
   const factory OmronConnectionBlocEvent.verifyDevice(
     BluetoothDevice device,
+    AdvertisementData? advertisementData,
   ) = _VerifyDevice;
 
-  const factory OmronConnectionBlocEvent.foundDevice(
+  factory OmronConnectionBlocEvent.foundDevice(
     BluetoothDevice device,
+    AdvertisementData? advertisementData,
   ) = _FoundDevice;
 }
