@@ -59,7 +59,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
         debugPrint('[BackgroundFetch] start FAILURE: $e');
       });
 
-      emit(const ContentState.activeMode());
+      emit(ContentState.activeMode(UniqueKey()));
     }
   }
 
@@ -92,7 +92,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     //Try to re-load care plans when switch user
     getIt<SyncBloc>().add(const SyncEvent.syncAll());
 
-    emit(const ContentState.activeMode());
+    emit(ContentState.activeMode(UniqueKey()));
   }
 
   Future<void> _switchMultiUserContentEvent(
@@ -101,7 +101,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
   ) async {
     _session.isMultiUser = true;
     _sessionDbProvider.setIsMultiUser(true);
-    emit(const ContentState.activeMode());
+    emit(ContentState.activeMode(UniqueKey()));
   }
 
   Future<void> _onUserAddedContentEvent(

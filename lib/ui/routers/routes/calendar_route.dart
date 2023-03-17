@@ -22,10 +22,7 @@ class CalendarRoute extends ApplicationRoute with PageBuilderMixin {
       pageBuilder: pageBuilder(
         withTransition: false,
         builder: (state) {
-          final fromDate = state.extra! as DateTime;
-          return CalendarScreen(
-            fromDate: fromDate,
-          );
+          return const CalendarScreen();
         },
       ),
     );

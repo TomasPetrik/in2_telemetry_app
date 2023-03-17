@@ -3,41 +3,50 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_event.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
+import 'package:scalesoft_app/cubit/calendar_footer/calendar_footer_cubit.dart';
+import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/utils/helpers/calendar_helper.dart';
 
 @injectable
 class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
+  final Session _session;
+  final CalendarFooterCubit _calendarFooterCubit;
   late final PageController controller;
   late final BuildContext context;
 
-  CalendarBloc()
-      : super(
+  CalendarBloc(
+    this._session,
+    this._calendarFooterCubit,
+  ) : super(
           const CalendarBlocState(
             padEnds: true,
           ),
         ) {
     on<CalendarBlocEvent>((event, emit) async {
       await event.when(
-        init: (context, fromDate) async {
+        init: (context) async {
           this.context = context;
 
-          final dt = DateTime.now();
-          final currentYear = dt.year;
-          final currentMonth = dt.month;
+          final todayDt = DateTime.now();
+          final currentYear = todayDt.year;
+          final currentMonth = todayDt.month;
 
+          //TODO.. here should be date of most latest care plan start date
+          //final fromDate =
           //toDate should be always 2 months ahead
-          final toDate = CalendarHelper.getDateByMonthsOffset(dt, 2);
+          final fromDate = _session.getLatestDtOfCarePlans();
+          final toDate = CalendarHelper.getDateByMonthsOffset(todayDt, 2);
 
           final months =
-              CalendarHelper.getCalendarMonths(context, fromDate, toDate);
+              CalendarHelper.getCalendarMonths(context, fromDate, toDate)!;
 
-          final currentMonthIndex = months?.indexWhere(
+          final currentMonthIndex = months.indexWhere(
             (month) => month.year == currentYear && month.month == currentMonth,
           );
 
           controller = PageController(
             viewportFraction: 1.0 / 1.31,
-            initialPage: currentMonthIndex!,
+            initialPage: currentMonthIndex,
           );
 
           emit(
@@ -46,8 +55,9 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
               currentYear: currentYear,
               currentMonth: currentMonth,
               controller: controller,
-              padEnds: currentMonthIndex == months!.length - 1,
+              padEnds: currentMonthIndex == months.length - 1,
               isCurrentMonth: true,
+              selectedDayDt: todayDt,
             ),
           );
         },
@@ -60,12 +70,19 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
             (month) => month.year == currentYear && month.month == currentMonth,
           );
 
-          //it will emit onPageChanged
-          controller.animateToPage(
-            todayIndex,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.linear,
+          final month = state.months!.firstWhere(
+            (month) => month.year == currentYear && month.month == currentMonth,
           );
+
+          _calendarFooterCubit.selectDay(null);
+
+          final today = CalendarHelper.getDayByDateTime(month, dt);
+          if (today != null) {
+            _calendarFooterCubit.selectDay(today);
+          }
+
+          //it will emit onPageChanged
+          controller.jumpToPage(todayIndex);
         },
         onPageChanged: (int newPageIndex) async {
           final CalendarMonth selectedMonth = state.months![newPageIndex];

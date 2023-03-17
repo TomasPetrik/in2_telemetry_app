@@ -32,17 +32,19 @@ class CalendarHelper {
     final int monthsDelta = DateUtils.monthDelta(fromDate, toDate) + 1;
 
     for (int i = 0; i < monthsDelta; i++) {
-      final offsetDate = DateUtils.addMonthsToMonthDate(fromDate, i);
+      final offsetStartDate = DateUtils.addMonthsToMonthDate(fromDate, i);
+      final offsetEndDate = DateUtils.addMonthsToMonthDate(fromDate, i + 1);
       final weekDays = getWeekDaysInMonth(
         context: context,
-        currentYear: offsetDate.year,
-        currentMonth: offsetDate.month,
+        currentYear: offsetStartDate.year,
+        currentMonth: offsetStartDate.month,
       );
       calendarMonths.add(
         CalendarMonth(
-          monthStartDate: offsetDate,
-          year: offsetDate.year,
-          month: offsetDate.month,
+          monthStartDate: offsetStartDate,
+          monthEndDate: offsetEndDate,
+          year: offsetStartDate.year,
+          month: offsetStartDate.month,
           weekDays: weekDays,
         ),
       );
@@ -63,6 +65,7 @@ class CalendarHelper {
 
     return CalendarMonth(
       monthStartDate: monthStartDate,
+      monthEndDate: DateUtils.addMonthsToMonthDate(monthStartDate, 1),
       year: monthStartDate.year,
       month: monthStartDate.month,
       weekDays: weekDays,
@@ -110,7 +113,7 @@ class CalendarHelper {
 
     final weekDaysOffset = week * 7;
 
-    if (weekDaysOffset + 1 > days) {
+    if (weekDaysOffset > days) {
       return null;
     } else {
       if (week == 0) {
@@ -121,11 +124,11 @@ class CalendarHelper {
           final dayStartDate = startDate.add(Duration(days: i));
           weekDays.add(
             CalendarDay(
-              dt: dayStartDate,
-              dayIndex: i,
+              startDt: dayStartDate,
+              endDt: dayStartDate.add(const Duration(hours: 24)),
+              dayIndex: weekDaysOffset + i,
               isDayOfCurrentMonth: i >= firstDayOffset,
               dayPeriod: getDayPeriod(dayStartDate),
-              carePlansEvaluation: 50,
             ),
           );
         }
@@ -144,8 +147,9 @@ class CalendarHelper {
           final dayStartDate = startDate.add(Duration(days: i));
           weekDays.add(
             CalendarDay(
-              dt: dayStartDate,
-              dayIndex: i,
+              startDt: dayStartDate,
+              endDt: dayStartDate.add(const Duration(hours: 24)),
+              dayIndex: weekDaysOffset + i,
               isDayOfCurrentMonth:
                   weekDaysOffset + 1 - firstDayOffset + i <= days,
               dayPeriod: getDayPeriod(dayStartDate),
@@ -155,5 +159,23 @@ class CalendarHelper {
         return weekDays;
       }
     }
+  }
+
+  static CalendarDay? getDayByDateTime(
+    CalendarMonth calendarMonth,
+    DateTime dateTime,
+  ) {
+    final weeks = calendarMonth.weekDays.entries;
+    for (final week in weeks) {
+      final days = week.value;
+
+      for (final day in days) {
+        if (day.startDt.isSameDate(dateTime)) {
+          return day;
+        }
+      }
+    }
+
+    return null;
   }
 }

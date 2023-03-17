@@ -11,5 +11,5 @@ class ContentState with _$ContentState {
   const factory ContentState.onAppearanceChanged(ThemeMode newThemeMode) =
       _AppearanceChanged;
   const factory ContentState.onUserAdded(UserAccount userAccount) = _UserAdded;
-  const factory ContentState.activeMode() = _ActiveMode;
+  const factory ContentState.activeMode(Key key) = _ActiveMode;
 }

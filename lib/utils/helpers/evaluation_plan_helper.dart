@@ -1,7 +1,13 @@
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaulation_aggregated.dart';
+import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
+import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
+import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/providers/calendar_db_provider.dart';
+import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
@@ -26,7 +32,7 @@ class EvaluationPlanHelper {
   static int getProgressFromEvaluation(
     FulfillmentEvaluation fulfillmentEvaluation,
   ) {
-    return _calculateProgress(fulfillmentEvaluation.items);
+    return getProgressFromEvaluationItems(fulfillmentEvaluation.items);
   }
 
   static int? getProgressFromPlans({
@@ -101,7 +107,9 @@ class EvaluationPlanHelper {
         : (actualCount / expectedCount * 100).round();
   }
 
-  static int _calculateProgress(List<FulfillmentEvaluationItem> items) {
+  static int getProgressFromEvaluationItems(
+    List<FulfillmentEvaluationItem> items,
+  ) {
     if (items.isEmpty) return 0;
 
     int allActualMeasurementCount = items.fold(
@@ -117,5 +125,81 @@ class EvaluationPlanHelper {
 
     return (allActualMeasurementCount / allRequiredMeasurementCount * 100)
         .round();
+  }
+
+  static List<UserEvaluationDay> getUserEvaluationDays(
+    int year,
+    int month,
+    CalendarDay day,
+    List<UserAccount> userAccounts,
+  ) {
+    CalendarDbProvider calendarDbProvider = getIt<CalendarDbProvider>();
+    PendingResultsDbProvider pendingResultsDbProvider =
+        getIt<PendingResultsDbProvider>();
+    List<UserEvaluationDay> userEvDays = [];
+
+    for (final userAccount in userAccounts) {
+      final List<Measurement>? offlineResults =
+          pendingResultsDbProvider.getPerUser(userAccount.user.muid);
+
+      final List<CarePlanSingleDayEvaluation> carePlanFulfillments = [];
+
+      for (final carePlan in userAccount.carePlans!) {
+        final List<PlannedMeasurement> plannedMeasurements =
+            Calendar.getMeasurementOfDay(
+          carePlans: [carePlan],
+          dayDt: day.startDt,
+        );
+
+        final evItems = calendarDbProvider
+                .get(
+                  carePlan.id,
+                  year,
+                  month,
+                )
+                ?.items
+                .where(
+                  (evItem) =>
+                      evItem.start.isSameDate(day.startDt) ||
+                      (evItem.start.isAfter(day.startDt) &&
+                          evItem.start.isBefore(day.endDt)),
+                )
+                .toList() ??
+            [];
+
+        /*
+        debugPrint(
+          'user ${userAccount.user.fullName}, plan ${carePlan.id}, ev items ${evItems.length} in day: ${day.startDt.toRegularDate()}',
+        );
+        */
+
+        final carePlanSingleEvaluation = CarePlanSingleDayEvaluation(
+          carePlan,
+          evItems,
+          plannedMeasurements,
+          offlineResults,
+        );
+
+/*
+        debugPrint(
+          '${day.startDt.toRegularDate()} ${carePlan.activity.measurementType.name} measurements : ${carePlanSingleEvaluation.getActualCount()} / ${carePlanSingleEvaluation.getReqCount()}',
+        );
+        */
+
+        carePlanFulfillments.add(carePlanSingleEvaluation);
+      }
+
+      if (carePlanFulfillments.isNotEmpty) {
+        userEvDays.add(
+          UserEvaluationDay(
+            carePlanFulfillments,
+            day.startDt,
+            userAccount.user.fullName,
+          ),
+        );
+      }
+    }
+
+    return userEvDays;
   }
 }

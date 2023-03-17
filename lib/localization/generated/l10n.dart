@@ -1944,6 +1944,16 @@ class I10n {
       args: [],
     );
   }
+
+  /// `Plán měření dne`
+  String get results_history_screen_plan_of_day {
+    return Intl.message(
+      'Plán měření dne',
+      name: 'results_history_screen_plan_of_day',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I10n> {

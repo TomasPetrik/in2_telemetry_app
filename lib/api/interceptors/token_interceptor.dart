@@ -48,26 +48,31 @@ class TokenInterceptor extends Interceptor {
     switch (err.response?.statusCode) {
       case 400:
         final refreshToken = err.requestOptions.data["refresh_token"];
-        getIt<SyncBloc>().add(
-          SyncEvent.userSessionExpired(refreshToken),
-        );
+        if (refreshToken != null) {
+          getIt<SyncBloc>().add(
+            SyncEvent.userSessionExpired(refreshToken),
+          );
+        }
+        handler.next(err);
         throw InvalidRequestException();
       case 401:
-        final originReqOpt = err.requestOptions;
+        try {
+          final originReqOpt = err.requestOptions;
 
-        final newAuthToken = await refreshToken();
-        if (newAuthToken != null) {
-          originReqOpt.headers[HttpHeaders.authorizationHeader] =
-              'Bearer ${session.token!.accessToken}';
-          final dio = getIt<Dio>(instanceName: Constants.privateDioName);
-          final response = await dio.fetch(originReqOpt);
-          handler.resolve(response);
-        } else {
+          final newAuthToken = await refreshToken();
+          if (newAuthToken != null) {
+            originReqOpt.headers[HttpHeaders.authorizationHeader] =
+                'Bearer ${session.token!.accessToken}';
+            final dio = getIt<Dio>(instanceName: Constants.privateDioName);
+            final response = await dio.fetch(originReqOpt);
+            handler.resolve(response);
+          }
+        } catch (_) {
+          handler.next(err);
           throw InvalidRequestException();
         }
 
         return;
-
       /*
       case 403:
         throw ForbiddenException();

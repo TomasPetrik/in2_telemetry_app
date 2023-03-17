@@ -460,6 +460,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Odstranit výsledek"),
         "result_removal_confirmation_title_button_confirm":
             MessageLookupByLibrary.simpleMessage("Odstranit výsledek"),
+        "results_history_screen_plan_of_day":
+            MessageLookupByLibrary.simpleMessage("Plán měření dne"),
         "results_measurements_when_selector_title":
             MessageLookupByLibrary.simpleMessage("Plnění plánu"),
         "results_plan_fulfilled_on": m28,

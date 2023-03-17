@@ -87,7 +87,7 @@ class CarePlanHelper {
       case PlanWhenPeriod.tomorrow:
         measurements = Calendar.getMeasurementOfDay(
           carePlans: carePlans,
-          weekDay: DateTime.now().tomorrowWeekDay(),
+          dayDt: DateTime.now().getTomorrowMidnight(),
         );
         break;
       case PlanWhenPeriod.next10:
@@ -193,8 +193,10 @@ class Calendar {
 
   static List<PlannedMeasurement> getMeasurementOfDay({
     required List<CarePlan> carePlans,
-    required WeekDay weekDay,
+    required DateTime dayDt,
   }) {
+    final weekDay = dayDt.toWeekDay();
+
     List<PlannedMeasurement> measurements = [];
     final dailyCarePlans = carePlans.where(
       (final CarePlan carePlan) =>
@@ -204,13 +206,13 @@ class Calendar {
     );
     for (final carePlan in dailyCarePlans) {
       for (final timingDayWhen in carePlan.timingDayWhen) {
-        final whenStart = timingDayWhen.start.tomorrowDateTime();
+        final whenStart = timingDayWhen.start.ofExactDate(dayDt);
         if (carePlan.scheduledStart.isAfter(whenStart)) continue;
         measurements.add(
           PlannedMeasurement(
             userId: carePlan.userId!,
-            whenStart: timingDayWhen.start.tomorrowDateTime(),
-            whenEnd: timingDayWhen.end.tomorrowDateTime(),
+            whenStart: timingDayWhen.start.ofExactDate(dayDt),
+            whenEnd: timingDayWhen.end.ofExactDate(dayDt),
             timingDayWhen: timingDayWhen,
             carePlan: carePlan,
             reqCount: carePlan.frequency,
@@ -464,6 +466,36 @@ class PlannedMeasurement {
   final CarePlan carePlan;
   final int reqCount;
   WhenCode? whenCode;
+
+  bool hasMeasurementAt(DateTime dateTime) {
+    if (dateTime.isBefore(whenEnd) && dateTime.isAfter(whenStart)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+class HistoricMeasurement {
+  HistoricMeasurement({
+    required this.userId,
+    required this.whenStart,
+    required this.whenEnd,
+    required this.measuredAt,
+    required this.carePlan,
+    required this.reqCount,
+    required this.actualCount,
+    required this.wasMeasured,
+  });
+
+  final String userId;
+  final DateTime whenStart;
+  final DateTime whenEnd;
+  DateTime? measuredAt;
+  final CarePlan carePlan;
+  final int reqCount;
+  final int actualCount;
+  final bool wasMeasured;
 
   bool hasMeasurementAt(DateTime dateTime) {
     if (dateTime.isBefore(whenEnd) && dateTime.isAfter(whenStart)) {

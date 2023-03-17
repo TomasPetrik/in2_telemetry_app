@@ -17,6 +17,7 @@ import 'package:scalesoft_app/bloc/settings/app_settings_bloc_event.dart';
 import 'package:scalesoft_app/globals_initialization.dart';
 import 'package:scalesoft_app/locales.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
+import 'package:scalesoft_app/providers/calendar_db_provider.dart';
 import 'package:scalesoft_app/providers/paired_devices_db_provider.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/providers/session_db_provider.dart';
@@ -132,6 +133,9 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
 
     final pairedDevicesDbProvider = getIt<PairedDevicesDbProvider>();
     await pairedDevicesDbProvider.init();
+
+    final calendarDbProvider = getIt<CalendarDbProvider>();
+    await calendarDbProvider.init();
 
     getIt<AppSettingsBloc>().add(const AppSettingsBlocEvent.initSettings());
     final notifcationsBloc = getIt<NotificationsBloc>();

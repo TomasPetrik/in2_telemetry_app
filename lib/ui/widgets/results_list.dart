@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
-import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/widgets/info_placeholder.dart';
@@ -12,12 +11,10 @@ class ResultsList extends StatelessWidget {
   const ResultsList({
     super.key,
     required this.mResults,
-    required this.userAccount,
     required this.whenPeriod,
   });
 
   final List<MeasurementResult> mResults;
-  final UserAccount userAccount;
   final ResultsWhenPeriod whenPeriod;
 
   @override

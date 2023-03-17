@@ -155,10 +155,7 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
                             .locale.care_plan_detail_screen_show_calendar,
                         buttonType: ButtonType.primary,
                         onPressed: () async {
-                          GoRouter.of(context).pushNamed(
-                            CalendarRoute.name,
-                            extra: DateTime(2022, 3, 24),
-                          );
+                          GoRouter.of(context).pushNamed(CalendarRoute.name);
                         },
                       ),
                     ),

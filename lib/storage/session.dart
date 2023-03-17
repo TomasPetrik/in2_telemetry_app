@@ -64,6 +64,16 @@ class Session {
     return carePlans;
   }
 
+  DateTime getLatestDtOfCarePlans() {
+    final carePlans = getActiveCarePlans();
+    final veryLastDt = carePlans
+        .map((carePlan) => carePlan.scheduledStart)
+        .sorted((a, b) => b.compareTo(a))
+        .last;
+
+    return veryLastDt;
+  }
+
   List<Measurement> getPendingResults() {
     List<Measurement> pendingResults = [];
     for (final userAccount in getSessionAccounts()) {

@@ -95,7 +95,8 @@ class MeasurementHelper {
         .where((pResult) {
           return ((measurementType == null ||
                   (measurementType == pResult.measurementType)) &&
-              (whenPeriods == null || (whenPeriods.contains(ResultsWhenPeriod.today) &&
+              (whenPeriods == null ||
+                  (whenPeriods.contains(ResultsWhenPeriod.today) &&
                       pResult.measurementDateTime?.isToday() == true) ||
                   (whenPeriods.contains(ResultsWhenPeriod.yesterday) &&
                       pResult.measurementDateTime?.wasYesterday() == true)));

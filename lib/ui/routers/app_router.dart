@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_state.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/managers/auth_manager.dart';
 import 'package:scalesoft_app/ui/routers/routes/appearance_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/calendar_route.dart';
@@ -16,11 +18,15 @@ import 'package:scalesoft_app/ui/routers/routes/no_user_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/notification_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/offline_results_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/results_history_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_added_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_detail_route.dart';
 import 'package:scalesoft_app/ui/screens/home_screen.dart';
 import 'package:scalesoft_app/ui/screens/not_found_screen.dart';
+import 'package:scalesoft_app/ui/screens/results_history_screen.dart';
+import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
+import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
 
 class AppRouter {
   final navRoot = GlobalKey<NavigatorState>();
@@ -46,7 +52,7 @@ class AppRouter {
               '/${ConfigurationRoute.name}/${AppearanceRoute.name}',
           onUserAdded: (UserAccount userAccount) =>
               '/${UserAddedRoute.name}/${userAccount.user.muid}',
-          activeMode: () => '/${DashboardRoute.name}',
+          activeMode: (key) => '/${DashboardRoute.name}',
         );
 
         return path;
@@ -61,9 +67,37 @@ class AppRouter {
             );
             */
 
-            return AuthManager(
+             return AuthManager(
               child: child,
             );
+
+            getIt<Session>().isMultiUser = true;
+
+            
+
+            final usersEvaluationsDay =
+                EvaluationPlanHelper.getUserEvaluationDays(
+              2023,
+              3,
+              CalendarDay(
+                startDt: DateTime.now()
+                    .subtract(const Duration(days: 1))
+                    .getTodayMidnight(),
+                endDt: DateTime.now()
+                    .subtract(const Duration(days: 1))
+                    .getTomorrowMidnight(),
+                dayIndex: 16,
+                isDayOfCurrentMonth: false,
+                dayPeriod: CalendarDayPeriod.past,
+              ),
+              getIt<Session>().getSessionAccounts(),
+            );
+
+            return ResultsHistoryScreen(
+              usersEvaluationsDay: usersEvaluationsDay,
+            );
+
+           
           },
           routes: [
             ShellRoute(
@@ -97,6 +131,7 @@ class AppRouter {
             OmronFlowRoute(navigator: navAuthManager).route,
             CalendarRoute(navigator: navAuthManager).route,
             OfflineResultsRoute(navigator: navAuthManager).route,
+            ResultsHistoryRoute(navigator: navAuthManager).route,
           ],
         ),
       ],

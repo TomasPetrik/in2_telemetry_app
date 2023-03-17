@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -46,8 +47,36 @@ class ScaleAppBar extends StatelessWidget {
                     height: 24,
                     child: Row(
                       children: [
-                        const SizedBox(
+                        SizedBox(
                           width: 56,
+                          child: onBackTap != null
+                              ? IconButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () {
+                                    onBackTap?.call();
+                                    Navigator.of(context).pop();
+                                  },
+                                  icon: SvgPicture.asset(
+                                    'assets/icons/icon_back.svg',
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                )
+                              : onActionTap != null && actionLabel != null
+                                  ? TextButton(
+                                      onPressed: () {
+                                        onActionTap?.call();
+                                      },
+                                      child: Text(
+                                        actionLabel!,
+                                        style: ScaleTextStyles.text.apply(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                        ),
+                                      ),
+                                    )
+                                  : const SizedBox.shrink(),
                         ),
                         Expanded(
                           child: Text(
@@ -67,9 +96,10 @@ class ScaleAppBar extends StatelessWidget {
                                     onCloseTap?.call();
                                     GoRouter.of(context).pop();
                                   },
-                                  icon: Icon(
-                                    Icons.close,
-                                    color: Theme.of(context).primaryColor,
+                                  icon: SvgPicture.asset(
+                                    'assets/icons/icon_close.svg',
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                   ),
                                 )
                               : const SizedBox.shrink(),
@@ -96,40 +126,6 @@ class ScaleAppBar extends StatelessWidget {
                 ],
               ),
             ),
-            if (onBackTap != null)
-              Positioned(
-                top: 0,
-                left: 0,
-                bottom: 0,
-                child: IconButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: () {
-                    onBackTap?.call();
-                    Navigator.of(context).pop();
-                  },
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-              )
-            else if (onActionTap != null && actionLabel != null)
-              Positioned(
-                top: 0,
-                left: 0,
-                bottom: 0,
-                child: TextButton(
-                  onPressed: () {
-                    onActionTap?.call();
-                  },
-                  child: Text(
-                    actionLabel!,
-                    style: ScaleTextStyles.text.apply(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                ),
-              )
           ],
         ),
       ),

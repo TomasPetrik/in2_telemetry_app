@@ -5,8 +5,10 @@ part 'calendar_service_bloc_state.freezed.dart';
 
 @freezed
 class CalendarServiceBlocState with _$CalendarServiceBlocState {
-  const factory CalendarServiceBlocState.init() = _Init;
-  const factory CalendarServiceBlocState.popoulated(
-    CalendarMonth month,
-  ) = _Populated;
+  const factory CalendarServiceBlocState({
+    CalendarMonth? month,
+    DateTime? selectedDayDt,
+    bool? loading,
+    bool? wasResolved,
+  }) = _CalendarServiceBlocState;
 }

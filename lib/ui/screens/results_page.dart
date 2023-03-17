@@ -79,10 +79,7 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                           ),
                         );
                       } else if (selected?.showCalendar == true) {
-                        GoRouter.of(context).pushNamed(
-                          CalendarRoute.name,
-                          extra: DateTime(2022, 3, 24),
-                        );
+                        GoRouter.of(context).pushNamed(CalendarRoute.name);
                       }
                     });
                   }
@@ -148,7 +145,6 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                             slivers: [
                               ResultsList(
                                 mResults: state.results!,
-                                userAccount: userAccount,
                                 whenPeriod: state.selectedWhenPeriod!,
                               ),
                             ],
@@ -164,7 +160,6 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                                 slivers: [
                                   ResultsList(
                                     mResults: state.results!,
-                                    userAccount: userAccount,
                                     whenPeriod: state.selectedWhenPeriod!,
                                   ),
                                 ],

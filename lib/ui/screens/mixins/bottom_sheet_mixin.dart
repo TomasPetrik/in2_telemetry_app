@@ -188,36 +188,39 @@ mixin BottomSheetMixin {
           supportMultiUser: supportMultiUser,
         );
       },
-    ).then((userHospitalSelectionResult) {
-      if (userHospitalSelectionResult?.action ==
-          SwitchUserAction.selectedMultiUser) {
-        return SwitchUserResult(activeMultiUser: true);
-      } else if (userHospitalSelectionResult?.action ==
-          SwitchUserAction.addUserAccount) {
-        return SwitchUserResult(addNewUser: true);
-      } else if (userHospitalSelectionResult?.action ==
-          SwitchUserAction.selectedUser) {
-        return SwitchUserResult(
-          selectedUser: userHospitalSelectionResult!.selectedUser,
-        );
-      } else if (userHospitalSelectionResult?.action ==
-          SwitchUserAction.selectedHospital) {
-        _selectUserFromHospital(
-          context: context,
-          hospital: userHospitalSelectionResult!.selectedHospital!,
-          userAccounts: userHospitalSelectionResult.hospitalUsers!,
-        ).then((userSelection) {
-          if (userSelection?.action == SwitchUserAction.addUserAccount) {
-            return SwitchUserResult(addNewUser: true);
-          } else {
-            return SwitchUserResult(selectedUser: userSelection?.selectedUser);
-          }
-        });
+    );
+
+    SwitchUserResult? switchUserResult;
+
+    if (userHospitalSelectionResult?.action ==
+        SwitchUserAction.selectedMultiUser) {
+      switchUserResult = SwitchUserResult(activeMultiUser: true);
+    } else if (userHospitalSelectionResult?.action ==
+        SwitchUserAction.addUserAccount) {
+      switchUserResult = SwitchUserResult(addNewUser: true);
+    } else if (userHospitalSelectionResult?.action ==
+        SwitchUserAction.selectedUser) {
+      switchUserResult = SwitchUserResult(
+        selectedUser: userHospitalSelectionResult!.selectedUser,
+      );
+    } else if (userHospitalSelectionResult?.action ==
+        SwitchUserAction.selectedHospital) {
+      final userSelection = await _selectUserFromHospital(
+        context: context,
+        hospital: userHospitalSelectionResult!.selectedHospital!,
+        userAccounts: userHospitalSelectionResult.hospitalUsers!,
+      );
+      if (userSelection?.action == SwitchUserAction.addUserAccount) {
+        switchUserResult = SwitchUserResult(addNewUser: true);
       } else {
-        return SwitchUserResult();
+        switchUserResult =
+            SwitchUserResult(selectedUser: userSelection!.selectedUser);
       }
-    });
-    return userHospitalSelectionResult;
+    } else {
+      switchUserResult = SwitchUserResult();
+    }
+
+    return switchUserResult;
   }
 
   Future<UserSelection?> _selectUserFromHospital({

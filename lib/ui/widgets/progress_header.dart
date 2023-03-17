@@ -11,14 +11,14 @@ import 'package:scalesoft_app/ui/widgets/single_progress_indicator.dart';
 class ProgressHeader extends StatelessWidget {
   const ProgressHeader({
     super.key,
-    required this.whenPeriod,
-    required this.openWhenSelector,
+    this.whenPeriod,
+    this.openWhenSelector,
     required this.progressItems,
     required this.label,
   });
 
-  final ResultsWhenPeriod whenPeriod;
-  final Function openWhenSelector;
+  final ResultsWhenPeriod? whenPeriod;
+  final Function? openWhenSelector;
   final List<ProgressItem> progressItems;
   final String label;
   @override
@@ -65,18 +65,21 @@ class ProgressHeader extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Gaps.gap16,
-                  InkWell(
-                    onTap: () {
-                      openWhenSelector.call();
-                    },
-                    child: Text(
-                      context.locale.common_measurement_times(whenPeriod.name),
-                      style: ScaleTextStyles.text.apply(
-                        color: Theme.of(context).primaryColor,
+                  if (whenPeriod != null && openWhenSelector != null) ...[
+                    Gaps.gap16,
+                    InkWell(
+                      onTap: () {
+                        openWhenSelector?.call();
+                      },
+                      child: Text(
+                        context.locale
+                            .common_measurement_times(whenPeriod!.name),
+                        style: ScaleTextStyles.text.apply(
+                          color: Theme.of(context).primaryColor,
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ],
               ),
               Gaps.gap16,
