@@ -115,6 +115,7 @@ class ResultsHelper {
         evaluationItem: evaluationItem,
         measurementType: measurement.carePlan.activity.measurementType,
         userId: measurement.userId,
+        whenCode: measurement.whenCode,
       );
     });
 
@@ -146,6 +147,7 @@ class ResultsHelper {
         evaluationItem: evaluationItem,
         measurementType: measurement.carePlan.activity.measurementType,
         userId: measurement.userId,
+        whenCode: measurement.whenCode,
       );
     });
 

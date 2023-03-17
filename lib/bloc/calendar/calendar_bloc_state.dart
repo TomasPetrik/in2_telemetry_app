@@ -188,6 +188,7 @@ class CarePlanSingleDayEvaluation with _$CarePlanSingleDayEvaluation {
           reqCount: reqMeasurementCount,
           actualCount: actualMeasurementCount,
           wasMeasured: actualMeasurementCount == reqMeasurementCount,
+          whenCode: plannedMeasurement.whenCode,
         ),
       );
     }

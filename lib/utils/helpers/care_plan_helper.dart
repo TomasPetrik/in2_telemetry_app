@@ -182,6 +182,7 @@ class Calendar {
               timingDayWhen: timingDayWhen,
               carePlan: carePlan,
               reqCount: carePlan.frequency,
+              whenCode: timingDayWhen.whenCode,
             ),
           );
         }
@@ -216,6 +217,7 @@ class Calendar {
             timingDayWhen: timingDayWhen,
             carePlan: carePlan,
             reqCount: carePlan.frequency,
+            whenCode: timingDayWhen.whenCode,
           ),
         );
       }
@@ -486,6 +488,7 @@ class HistoricMeasurement {
     required this.reqCount,
     required this.actualCount,
     required this.wasMeasured,
+    required this.whenCode,
   });
 
   final String userId;
@@ -496,6 +499,7 @@ class HistoricMeasurement {
   final int reqCount;
   final int actualCount;
   final bool wasMeasured;
+  WhenCode? whenCode;
 
   bool hasMeasurementAt(DateTime dateTime) {
     if (dateTime.isBefore(whenEnd) && dateTime.isAfter(whenStart)) {

@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
+import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/api/dto/measurement/composed_double_value.dart';
 import 'package:scalesoft_app/api/dto/measurement/device.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
@@ -23,9 +24,12 @@ class MeasurementResult with _$MeasurementResult {
     @HiveField(3) Device? sourceDevice,
     @HiveField(4) bool? isVerified,
     @JsonKey(name: 'type') @HiveField(5) MeasurementType? measurementType,
-    @JsonKey(ignore: true) @HiveField(6) FulfillmentEvaluationItem? evaluationItem,
-    @JsonKey(ignore: true) @HiveField(7) DateTime? measurementFinishDateTime,
-    @JsonKey(ignore: true) @HiveField(8) String? userId,
+    @JsonKey(ignore: true) @HiveField(6) WhenCode? whenCode,
+    @JsonKey(ignore: true)
+    @HiveField(7)
+        FulfillmentEvaluationItem? evaluationItem,
+    @JsonKey(ignore: true) @HiveField(8) DateTime? measurementFinishDateTime,
+    @JsonKey(ignore: true) @HiveField(9) String? userId,
   }) = _MeasurementResult;
 
   factory MeasurementResult.fromJson(Map<String, dynamic> json) =>

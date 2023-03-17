@@ -118,9 +118,18 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                                   .toString(),
                             ),
                             style: ScaleTextStyles.label.apply(
-                              color: Theme.of(context).colorScheme.onPrimary,
+                              color: Theme.of(context).colorScheme.onSecondary,
                             ),
                           ),
+                          if (mResult.whenCode != null)
+                            Text(
+                              context.locale
+                                  .common_when_code(mResult.whenCode!.name),
+                              style: ScaleTextStyles.label.apply(
+                                color:
+                                    Theme.of(context).colorScheme.onSecondary,
+                              ),
+                            ),
                         ],
                       ],
                     ),
