@@ -195,6 +195,7 @@ class EvaluationPlanHelper {
             carePlanFulfillments,
             day.startDt,
             userAccount.user.fullName,
+            day.dayPeriod,
           ),
         );
       }

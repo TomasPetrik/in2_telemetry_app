@@ -139,5 +139,3 @@ class HistoryResultItem extends StatelessWidget with BottomSheetMixin {
     );
   }
 }
-
-enum MeasurementNeed { now, upcoming }

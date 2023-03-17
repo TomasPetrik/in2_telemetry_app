@@ -87,7 +87,18 @@ class UserEvaluationDay with _$UserEvaluationDay {
     List<CarePlanSingleDayEvaluation> carePlanFulfillments,
     DateTime dt,
     String userName,
+    CalendarDayPeriod calendarDayPeriod,
   ) = _UserEvaluationDay;
+
+  List<PlannedMeasurement> getFutureMeasurements() {
+    final futureMeasurements =
+        carePlanFulfillments.fold<List<PlannedMeasurement>>(
+      [],
+      (previousValue, carePlanFulfillments) =>
+          [...previousValue, ...carePlanFulfillments.plannedMeasurements],
+    );
+    return futureMeasurements;
+  }
 
   List<HistoricMeasurement> getHistoricMeasurement() {
     final completedMeasurements =

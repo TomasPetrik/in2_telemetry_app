@@ -113,7 +113,7 @@ class ResultsHistoryScreen extends StatelessWidget {
             child: BluredScaleAppBar(
               title: date.toRegularDate(),
               subTitle:
-                  '${userNames.first}${userNames.length > 1 ? userNames.length - 1 : ''}',
+                  '${userNames.first}${userNames.length > 1 ? ' ${context.locale.common_plus_n_others(userNames.length - 1)}' : ''}',
               showClose: true,
               onCloseTap: () {},
               onBackTap: () {},

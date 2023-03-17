@@ -11,7 +11,9 @@ import 'package:scalesoft_app/cubit/calendar_footer/calendar_footer_cubit.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
+import 'package:scalesoft_app/ui/routers/routes/future_measurements_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_history_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/results_route.dart';
 import 'package:scalesoft_app/ui/screens/days_in_week_header.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -149,10 +151,24 @@ class _CalendarFooter extends StatelessWidget {
                 selectedDay,
                 session.getSessionAccounts(),
               );
-              GoRouter.of(context).pushNamed(
-                ResultsHistoryRoute.name,
-                extra: usersEvaluationsDay,
-              );
+
+              switch (selectedDay.dayPeriod) {
+                case CalendarDayPeriod.past:
+                  GoRouter.of(context).pushNamed(
+                    ResultsHistoryRoute.name,
+                    extra: usersEvaluationsDay,
+                  );
+                  break;
+                case CalendarDayPeriod.today:
+                  GoRouter.of(context).goNamed(ResultsRoute.name);
+                  break;
+                case CalendarDayPeriod.future:
+                  GoRouter.of(context).pushNamed(
+                    FutureMeasurementsRoute.name,
+                    extra: usersEvaluationsDay,
+                  );
+                  break;
+              }
             },
             child: Column(
               children: [
