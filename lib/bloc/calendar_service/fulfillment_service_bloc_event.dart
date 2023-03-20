@@ -2,20 +2,20 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 
-part 'calendar_service_bloc_event.freezed.dart';
+part 'fulfillment_service_bloc_event.freezed.dart';
 
 @freezed
-class CalendarServiceBlocEvent with _$CalendarServiceBlocEvent {
-  const factory CalendarServiceBlocEvent.init(
+class FulfillmentServiceBlocEvent with _$FulfillmentServiceBlocEvent {
+  const factory FulfillmentServiceBlocEvent.init(
     CalendarMonth month,
-    DateTime? selectedDayDt,
+    List<CarePlan> carePlans,
   ) = _Init;
 
-  const factory CalendarServiceBlocEvent.onDaySelected(
+  const factory FulfillmentServiceBlocEvent.onDaySelected(
     DateTime selectedDayDt,
   ) = _OnDaySelected;
 
-  const factory CalendarServiceBlocEvent.loadMonthFulfillments(
+  const factory FulfillmentServiceBlocEvent.loadMonthFulfillments(
     CalendarMonth month,
     List<CarePlan> carePlans,
   ) = _LoadFulfillments;

@@ -12,17 +12,15 @@ class ScaleAppBar extends StatelessWidget {
     this.showClose = false,
     this.onBackTap,
     this.onCloseTap,
-    this.onActionTap,
-    this.actionLabel,
+    this.customLeftWidget,
   });
 
   final String title;
   final String? subTitle;
-  final String? actionLabel;
   final bool showClose;
   final VoidCallback? onBackTap;
   final VoidCallback? onCloseTap;
-  final VoidCallback? onActionTap;
+  final Widget? customLeftWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -47,38 +45,30 @@ class ScaleAppBar extends StatelessWidget {
                     height: 24,
                     child: Row(
                       children: [
-                        SizedBox(
-                          width: 56,
+                        Expanded(
+                          flex: 1,
                           child: onBackTap != null
-                              ? IconButton(
-                                  padding: EdgeInsets.zero,
-                                  onPressed: () {
-                                    onBackTap?.call();
-                                    Navigator.of(context).pop();
-                                  },
-                                  icon: SvgPicture.asset(
-                                    'assets/icons/icon_back.svg',
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                  ),
-                                )
-                              : onActionTap != null && actionLabel != null
-                                  ? TextButton(
+                              ? Row(
+                                  children: [
+                                    IconButton(
+                                      padding: EdgeInsets.zero,
                                       onPressed: () {
-                                        onActionTap?.call();
+                                        onBackTap?.call();
+                                        Navigator.of(context).pop();
                                       },
-                                      child: Text(
-                                        actionLabel!,
-                                        style: ScaleTextStyles.text.apply(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary,
-                                        ),
+                                      icon: SvgPicture.asset(
+                                        'assets/icons/icon_back.svg',
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
                                       ),
-                                    )
-                                  : const SizedBox.shrink(),
+                                    ),
+                                  ],
+                                )
+                              : customLeftWidget ?? const SizedBox.shrink(),
                         ),
                         Expanded(
+                          flex: 2,
                           child: Text(
                             title,
                             style: ScaleTextStyles.textAccent.apply(
@@ -87,20 +77,26 @@ class ScaleAppBar extends StatelessWidget {
                             textAlign: TextAlign.center,
                           ),
                         ),
-                        SizedBox(
-                          width: 56,
+                        Expanded(
+                          flex: 1,
                           child: showClose
-                              ? IconButton(
-                                  padding: EdgeInsets.zero,
-                                  onPressed: () {
-                                    onCloseTap?.call();
-                                    GoRouter.of(context).pop();
-                                  },
-                                  icon: SvgPicture.asset(
-                                    'assets/icons/icon_close.svg',
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                  ),
+                              ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    IconButton(
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () {
+                                        onCloseTap?.call();
+                                        GoRouter.of(context).pop();
+                                      },
+                                      icon: SvgPicture.asset(
+                                        'assets/icons/icon_close.svg',
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
+                                    ),
+                                  ],
                                 )
                               : const SizedBox.shrink(),
                         ),

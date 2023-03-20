@@ -3,6 +3,7 @@ import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
+import 'package:scalesoft_app/ui/widgets/interactive_chart/candle_data.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
@@ -221,6 +222,110 @@ class ResultsHelper {
     });
 
     return allResults;
+  }
+
+  static CandleData getCandleByMeasurementResult(
+    MeasurementResult measurement,
+  ) {
+    switch (measurement.measurementType!) {
+      case MeasurementType.temperature:
+        return CandleData(
+          measurementType: measurement.measurementType!,
+          timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
+          high: measurement.value,
+          low: 0,
+        );
+      case MeasurementType.bloodPressure:
+        return CandleData(
+          measurementType: measurement.measurementType!,
+          timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
+          high: measurement.composedValue?.firstValue,
+          low: measurement.composedValue?.secondValue,
+        );
+
+      case MeasurementType.oxygenSaturation:
+        return CandleData(
+          measurementType: measurement.measurementType!,
+          timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
+          high: measurement.value,
+          low: 0,
+        );
+      case MeasurementType.heartRate:
+        return CandleData(
+          measurementType: measurement.measurementType!,
+          timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
+          high: measurement.value,
+          low: 0,
+        );
+      case MeasurementType.respiratoryRate:
+        return CandleData(
+          measurementType: measurement.measurementType!,
+          timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
+          high: measurement.value,
+          low: 0,
+        );
+      case MeasurementType.steps:
+      case MeasurementType.globalPosition:
+      case MeasurementType.ews:
+        return CandleData(
+          measurementType: measurement.measurementType!,
+          timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
+          high: null,
+          low: null,
+        );
+    }
+  }
+
+  static CandleData getCandleByMeasurement(
+    Measurement measurement,
+  ) {
+    switch (measurement.measurementType!) {
+      case MeasurementType.temperature:
+        return CandleData(
+          measurementType: measurement.measurementType!,
+          timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
+          high: measurement.temperature,
+          low: 0,
+        );
+      case MeasurementType.bloodPressure:
+        return CandleData(
+          measurementType: measurement.measurementType!,
+          timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
+          high: measurement.bloodPressure?.systolic?.toDouble(),
+          low: measurement.bloodPressure?.diastolic?.toDouble(),
+        );
+
+      case MeasurementType.oxygenSaturation:
+        return CandleData(
+          measurementType: measurement.measurementType!,
+          timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
+          high: measurement.oxygenSaturation?.toDouble(),
+          low: 0,
+        );
+      case MeasurementType.heartRate:
+        return CandleData(
+          measurementType: measurement.measurementType!,
+          timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
+          high: measurement.heartRate?.toDouble(),
+          low: 0,
+        );
+      case MeasurementType.respiratoryRate:
+        return CandleData(
+          measurementType: measurement.measurementType!,
+          timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
+          high: measurement.respiratoryRate?.toDouble(),
+          low: 0,
+        );
+      case MeasurementType.steps:
+      case MeasurementType.globalPosition:
+      case MeasurementType.ews:
+        return CandleData(
+          measurementType: measurement.measurementType!,
+          timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
+          high: null,
+          low: null,
+        );
+    }
   }
 }
 

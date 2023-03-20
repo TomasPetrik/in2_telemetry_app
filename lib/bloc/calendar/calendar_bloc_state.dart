@@ -36,6 +36,17 @@ class CalendarMonth with _$CalendarMonth {
     bool? wasInit,
     bool? wasResolved,
   }) = _CalendarMonth;
+
+  List<CalendarDay> getCalendarDays() {
+    final calendarDays = weekDays.entries.fold<List<CalendarDay>>(
+      [],
+      (previousValue, week) => [...previousValue, ...week.value],
+    );
+
+    return calendarDays
+        .where((calendarDay) => calendarDay.isDayOfCurrentMonth)
+        .toList();
+  }
 }
 
 @unfreezed

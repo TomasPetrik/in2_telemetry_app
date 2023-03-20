@@ -5,39 +5,31 @@ import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
-import 'package:scalesoft_app/bloc/calendar_service/calendar_service_bloc_event.dart';
-import 'package:scalesoft_app/bloc/calendar_service/calendar_service_bloc_state.dart';
+import 'package:scalesoft_app/bloc/calendar_service/fulfillment_service_bloc_event.dart';
+import 'package:scalesoft_app/bloc/calendar_service/fulfillment_service_bloc_state.dart';
 import 'package:scalesoft_app/cubit/calendar_footer/calendar_footer_cubit.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/calendar_db_provider.dart';
-import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/repositories/care_plans_repository.dart';
-import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/calendar_helper.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
 
 @injectable
-class CalendarServiceBloc
-    extends Bloc<CalendarServiceBlocEvent, CalendarServiceBlocState> {
-  final Session _session;
+class FulfillmentServiceBloc
+    extends Bloc<FulfillmentServiceBlocEvent, FulfillmentServiceBlocState> {
   final AccountDbProvider _accountDbProvider;
   final CalendarFooterCubit _calendarFooterCubit;
   final CarePlansRepository _carePlansRepository;
   final CalendarDbProvider _calendarDbProvider;
-  final PendingResultsDbProvider _pendingResultsDbProvider;
 
-  CalendarServiceBloc(
-    this._session,
+  FulfillmentServiceBloc(
     this._accountDbProvider,
     this._calendarFooterCubit,
     this._carePlansRepository,
     this._calendarDbProvider,
-    this._pendingResultsDbProvider,
-  ) : super(
-          const CalendarServiceBlocState(),
-        ) {
+  ) : super(const FulfillmentServiceBlocState()) {
     Future<void> loadMonthFulfillments(
       CalendarMonth calendarMonth,
       List<CarePlan> carePlans,
@@ -61,7 +53,7 @@ class CalendarServiceBloc
           );
         } on DioError {
           debugPrint(
-            'not loaded month fulfillments for ${userAccount.user.fullName}',
+            'Not loaded month fulfillments for ${userAccount.user.fullName}',
           );
         }
       }
@@ -168,16 +160,15 @@ class CalendarServiceBloc
       }
     }
 
-    on<CalendarServiceBlocEvent>((event, emit) async {
+    on<FulfillmentServiceBlocEvent>((event, emit) async {
       await event.when(
-        init: (calendarMonth, selectedDayDt) async {
+        init: (calendarMonth, carePlans) async {
           await Future.delayed(const Duration(milliseconds: 700));
 
-          final carePlans = _session.getActiveCarePlans();
           await setCalendarMonth(calendarMonth, carePlans);
           if (calendarMonth.monthStartDate.isAfter(DateTime.now())) {
             emit(
-              CalendarServiceBlocState(month: calendarMonth, loading: false),
+              FulfillmentServiceBlocState(month: calendarMonth, loading: false),
             );
             return;
           }
@@ -196,7 +187,7 @@ class CalendarServiceBloc
 
           if (calendarMonth.wasResolved != true) {
             add(
-              CalendarServiceBlocEvent.loadMonthFulfillments(
+              FulfillmentServiceBlocEvent.loadMonthFulfillments(
                 calendarMonth,
                 carePlans,
               ),
@@ -218,12 +209,12 @@ class CalendarServiceBloc
         },
         loadMonthFulfillments: (calendarMonth, carePlans) async {
           emit(
-            CalendarServiceBlocState(month: calendarMonth, loading: true),
+            FulfillmentServiceBlocState(month: calendarMonth, loading: true),
           );
           await loadMonthFulfillments(calendarMonth, carePlans);
           await populateMonth(calendarMonth, carePlans);
           emit(
-            CalendarServiceBlocState(
+            FulfillmentServiceBlocState(
               month: calendarMonth,
               loading: false,
               wasResolved: true,

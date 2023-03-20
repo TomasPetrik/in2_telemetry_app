@@ -36,6 +36,7 @@
     "common_at_time": "v {atTime}",
     "common_procedure": "Postup",
     "common_today": "Dnes",
+    "common_result": "Výsledek",
     "@common_at_time": {
         "placeholders": {
             "atTime": {
@@ -309,6 +310,13 @@
             "measurementUnitName": {}
         }
     },
+    "common_measurement_units_types": "{measurementType, select, temperature{°C} bloodPressure{mmHg} oxygenSaturation{%} heartRate{TF} other{ }}",
+    "@common_measurement_units_types": {
+        "description": "Measurement units",
+        "placeholders": {
+            "measurementType": {}
+        }
+    },
     "sync_widget_sync_in_progress": "Probíhá synchronizace...",
     "sync_widget_synced": "Synchronizováno",
     "sync_widget_sync_failed_title": "Synchronizace se nepovedla",
@@ -459,5 +467,16 @@
     "measurement_summary_screen_dev_paired_subtitle": "Niní sa můžete odmeřit.",
     "measurement_summary_screen_dev_paired_desc": "Spusťte na zařízení měření a počkejte na konec měření",
     "measurement_summary_screen_dev_paired_start_measurement": "Začít měření",
-    "results_history_screen_plan_of_day": "Plán měření dne"
+    "results_history_screen_plan_of_day": "Plán měření dne",
+    "chart_screen_title": "Výsledky měření {measurementType} v {unitType}",
+    "@chart_screen_title": {
+        "placeholders": {
+            "measurementType": {
+                "type": "String"
+            },
+            "unitType": {
+                "type": "String"
+            }
+        }
+    }
 }

@@ -13,7 +13,7 @@ class BluredScaleAppBar extends StatelessWidget {
     this.showClose = false,
     this.onBackTap,
     this.onCloseTap,
-    this.onActionTap,
+    this.customLeftWidget,
   });
 
   final String title;
@@ -22,7 +22,7 @@ class BluredScaleAppBar extends StatelessWidget {
   final bool showClose;
   final VoidCallback? onBackTap;
   final VoidCallback? onCloseTap;
-  final VoidCallback? onActionTap;
+  final Widget? customLeftWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -44,11 +44,10 @@ class BluredScaleAppBar extends StatelessWidget {
         ScaleAppBar(
           title: title,
           subTitle: subTitle,
-          actionLabel: actionLabel,
           showClose: showClose,
           onBackTap: onBackTap,
           onCloseTap: onCloseTap,
-          onActionTap: onActionTap,
+          customLeftWidget: customLeftWidget,
         )
       ],
     );

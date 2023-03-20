@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/providers/account_db_provider.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
+import 'package:scalesoft_app/ui/routers/routes/chart_screen_route.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/widgets/info_placeholder.dart';
 import 'package:scalesoft_app/ui/widgets/result_item.dart';
@@ -38,8 +42,25 @@ class ResultsList extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ResultItem(
-                      mResult: mResults[index],
+                    InkWell(
+                      onTap: () {
+                        final userAccount = getIt<AccountDbProvider>()
+                            .get(mResults[index].userId!);
+
+                        if (userAccount?.viewOwnMeasurementData == true) {
+                          GoRouter.of(context).pushNamed(
+                            ChartRoute.name,
+                            extra: [
+                              mResults[index].measurementDateTime,
+                              mResults[index].userId!,
+                              mResults[index].measurementType!,
+                            ],
+                          );
+                        }
+                      },
+                      child: ResultItem(
+                        mResult: mResults[index],
+                      ),
                     ),
                     if (index != (mResults.length - 1))
                       Container(

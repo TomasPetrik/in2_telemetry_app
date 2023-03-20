@@ -7,7 +7,7 @@ import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 extension DateParse on DateTime {
   String toDateFormatLong() {
-    return DateFormat('MMM d, yyyy, hh:mm a').format(toLocal());
+    return DateFormat('d.M.yyyy, HH:mm').format(toLocal());
   }
 
   String toDateFormatShort() {
@@ -16,6 +16,10 @@ extension DateParse on DateTime {
 
   String toTimeShort() {
     return DateFormat('HH:mm').format(toLocal());
+  }
+
+  String toDateShort() {
+    return DateFormat('dd.MM').format(toLocal());
   }
 
   String toRegularDate() {

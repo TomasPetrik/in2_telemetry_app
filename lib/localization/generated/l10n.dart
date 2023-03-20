@@ -320,6 +320,16 @@ class I10n {
     );
   }
 
+  /// `Výsledek`
+  String get common_result {
+    return Intl.message(
+      'Výsledek',
+      name: 'common_result',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `{count, plural, zero{Plnění plánu} one{Plnění plánu} other{Plnění plánů}}`
   String common_plans_fulfillment_plural(num count) {
     return Intl.plural(
@@ -1304,6 +1314,23 @@ class I10n {
     );
   }
 
+  /// `{measurementType, select, temperature{°C} bloodPressure{mmHg} oxygenSaturation{%} heartRate{TF} other{ }}`
+  String common_measurement_units_types(Object measurementType) {
+    return Intl.select(
+      measurementType,
+      {
+        'temperature': '°C',
+        'bloodPressure': 'mmHg',
+        'oxygenSaturation': '%',
+        'heartRate': 'TF',
+        'other': ' ',
+      },
+      name: 'common_measurement_units_types',
+      desc: 'Measurement units',
+      args: [measurementType],
+    );
+  }
+
   /// `Probíhá synchronizace...`
   String get sync_widget_sync_in_progress {
     return Intl.message(
@@ -1952,6 +1979,16 @@ class I10n {
       name: 'results_history_screen_plan_of_day',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Výsledky měření {measurementType} v {unitType}`
+  String chart_screen_title(String measurementType, String unitType) {
+    return Intl.message(
+      'Výsledky měření $measurementType v $unitType',
+      name: 'chart_screen_title',
+      desc: '',
+      args: [measurementType, unitType],
     );
   }
 }

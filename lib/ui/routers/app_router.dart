@@ -8,6 +8,7 @@ import 'package:scalesoft_app/ui/managers/auth_manager.dart';
 import 'package:scalesoft_app/ui/routers/routes/appearance_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/calendar_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/care_plan_detail_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/chart_screen_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/configuration_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/future_measurements_route.dart';
@@ -95,6 +96,7 @@ class AppRouter {
             OfflineResultsRoute(navigator: navAuthManager).route,
             ResultsHistoryRoute(navigator: navAuthManager).route,
             FutureMeasurementsRoute(navigator: navAuthManager).route,
+            ChartRoute(navigator: navAuthManager).route,
           ],
         ),
       ],

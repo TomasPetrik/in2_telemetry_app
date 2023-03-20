@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
-import 'package:scalesoft_app/bloc/calendar_service/calendar_service_bloc.dart';
-import 'package:scalesoft_app/bloc/calendar_service/calendar_service_bloc_event.dart';
-import 'package:scalesoft_app/bloc/calendar_service/calendar_service_bloc_state.dart';
+import 'package:scalesoft_app/bloc/calendar_service/fulfillment_service_bloc.dart';
+import 'package:scalesoft_app/bloc/calendar_service/fulfillment_service_bloc_event.dart';
+import 'package:scalesoft_app/bloc/calendar_service/fulfillment_service_bloc_state.dart';
 import 'package:scalesoft_app/cubit/calendar_footer/calendar_footer_cubit.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/calendar_day_planned.dart';
@@ -18,20 +19,22 @@ class CalendarMonthWidget extends StatelessWidget {
   const CalendarMonthWidget({
     super.key,
     required this.calendarMonth,
-    required this.selectedDayDt,
   });
 
   final CalendarMonth calendarMonth;
-  final DateTime selectedDayDt;
 
   @override
   Widget build(BuildContext context) {
-    final calendarServiceBloc = getIt<CalendarServiceBloc>();
+    final calendarServiceBloc = getIt<FulfillmentServiceBloc>();
+    final carePlans = getIt<Session>().getActiveCarePlans();
 
-    return BlocBuilder<CalendarServiceBloc, CalendarServiceBlocState>(
+    return BlocBuilder<FulfillmentServiceBloc, FulfillmentServiceBlocState>(
       bloc: calendarServiceBloc
         ..add(
-          CalendarServiceBlocEvent.init(calendarMonth, selectedDayDt),
+          FulfillmentServiceBlocEvent.init(
+            calendarMonth,
+            carePlans,
+          ),
         ),
       builder: (context, state) {
         final CalendarMonth loadedMonth;
@@ -109,7 +112,7 @@ class CalendarMonthWidget extends StatelessWidget {
                                       child: InkWell(
                                         onTap: () {
                                           calendarServiceBloc.add(
-                                            CalendarServiceBlocEvent
+                                            FulfillmentServiceBlocEvent
                                                 .onDaySelected(
                                               day.startDt,
                                             ),

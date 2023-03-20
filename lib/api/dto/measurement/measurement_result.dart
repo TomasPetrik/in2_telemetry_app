@@ -38,3 +38,13 @@ class MeasurementResult with _$MeasurementResult {
   @override
   String toString() => toJson().toString();
 }
+
+@freezed
+class MeasurementResults with _$MeasurementResults {
+  MeasurementResults._();
+
+  @HiveType(typeId: 40, adapterName: 'MeasurementResultsAdapter')
+  factory MeasurementResults({
+    @HiveField(0) required List<MeasurementResult> items,
+  }) = _MeasurementResults;
+}

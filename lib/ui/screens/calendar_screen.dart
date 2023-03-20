@@ -35,8 +35,7 @@ class CalendarScreen extends StatelessWidget {
           if (state.months == null ||
               state.months?.isEmpty == true ||
               state.currentYear == null ||
-              state.currentMonth == null ||
-              state.selectedDayDt == null) {
+              state.currentMonth == null) {
             return const SizedBox.shrink();
           } else {
             return Stack(
@@ -70,7 +69,6 @@ class CalendarScreen extends StatelessWidget {
                               padding: Paddings.horizontal16,
                               child: CalendarMonthWidget(
                                 calendarMonth: month,
-                                selectedDayDt: state.selectedDayDt!,
                               ),
                             );
                           },
@@ -96,13 +94,22 @@ class CalendarScreen extends StatelessWidget {
                           title:
                               '${context.locale.common_months('${state.currentMonth}')} ${state.currentYear}',
                           showClose: true,
-                          actionLabel: state.isCurrentMonth == true
+                          customLeftWidget: state.isCurrentMonth == true
                               ? null
-                              : context.locale.common_today,
-                          onActionTap: () {
-                            calendarBloc
-                                .add(const CalendarBlocEvent.resetToToday());
-                          },
+                              : TextButton(
+                                  onPressed: () {
+                                    calendarBloc.add(
+                                      const CalendarBlocEvent.resetToToday(),
+                                    );
+                                  },
+                                  child: Text(
+                                    context.locale.common_today,
+                                    style: ScaleTextStyles.text.apply(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
+                                  ),
+                                ),
                         ),
                         const Padding(
                           padding: Paddings.top16,
