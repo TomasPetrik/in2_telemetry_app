@@ -464,7 +464,7 @@
     "measurement_summary_screen_no_data_desc": "Zařízení nedodalo žádné výsledky měření.",
     "measurement_summary_screen_no_data_repeat_measurement": "Opakovat měření",
     "measurement_summary_screen_dev_paired_title": "Párování zažízení bylo úspěšně dokončeno",
-    "measurement_summary_screen_dev_paired_subtitle": "Niní sa můžete odmeřit.",
+    "measurement_summary_screen_dev_paired_subtitle": "Nyní sa můžete odmeřit.",
     "measurement_summary_screen_dev_paired_desc": "Spusťte na zařízení měření a počkejte na konec měření",
     "measurement_summary_screen_dev_paired_start_measurement": "Začít měření",
     "results_history_screen_plan_of_day": "Plán měření dne",

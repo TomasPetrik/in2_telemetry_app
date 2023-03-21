@@ -394,7 +394,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "measurement_summary_screen_dev_paired_start_measurement":
             MessageLookupByLibrary.simpleMessage("Začít měření"),
         "measurement_summary_screen_dev_paired_subtitle":
-            MessageLookupByLibrary.simpleMessage("Niní sa můžete odmeřit."),
+            MessageLookupByLibrary.simpleMessage("Nyní sa můžete odmeřit."),
         "measurement_summary_screen_dev_paired_title":
             MessageLookupByLibrary.simpleMessage(
                 "Párování zažízení bylo úspěšně dokončeno"),

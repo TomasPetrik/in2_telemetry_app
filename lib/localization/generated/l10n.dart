@@ -1942,10 +1942,10 @@ class I10n {
     );
   }
 
-  /// `Niní sa můžete odmeřit.`
+  /// `Nyní sa můžete odmeřit.`
   String get measurement_summary_screen_dev_paired_subtitle {
     return Intl.message(
-      'Niní sa můžete odmeřit.',
+      'Nyní sa můžete odmeřit.',
       name: 'measurement_summary_screen_dev_paired_subtitle',
       desc: '',
       args: [],

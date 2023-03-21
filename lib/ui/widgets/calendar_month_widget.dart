@@ -137,9 +137,18 @@ class CalendarMonthWidget extends StatelessWidget {
                                                 '${day.startDt.day}',
                                                 style:
                                                     ScaleTextStyles.text.apply(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .onSurface,
+                                                  color: day.isSelected ==
+                                                              true ||
+                                                          day.dayPeriod !=
+                                                              CalendarDayPeriod
+                                                                  .future
+                                                      ? Theme.of(context)
+                                                          .colorScheme
+                                                          .onSurface
+                                                      : Theme.of(context)
+                                                          .colorScheme
+                                                          .onPrimary
+                                                          .withOpacity(0.48),
                                                 ),
                                               ),
                                             ),
