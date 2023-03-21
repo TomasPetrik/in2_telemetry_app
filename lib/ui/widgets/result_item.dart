@@ -102,8 +102,7 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                             color: Theme.of(context).colorScheme.onPrimary,
                           ),
                         ),
-                        if (mResult.evaluationItem?.wasMeasured() == false &&
-                            mResult.measurementFinishDateTime != null) ...[
+                        if (mResult.measurementFinishDateTime != null) ...[
                           Gaps.gap6,
                           Text(
                             context.locale

@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "Pridenie 'release_notes.json'. Pouziva sa v CodeMagic CI/CD pre automaticke predvyplnenie poslednych zmien v GooglePlay a AppStore pocas vydavani novej verzie aplikacie.\n"
+    "text": "1. Updated README.md - added steps to make new version,\n 2. Fixed triangle_exclamation icon color (SCALESOFT-46)."
   },
   {
     "language": "sk-SK",

@@ -12,6 +12,7 @@ class BottomDialog extends StatelessWidget {
     required this.title,
     required this.description,
     required this.iconPath,
+    required this.iconColor,
     required this.positiveButtonStyle,
     required this.negativeButtonStyle,
   });
@@ -19,6 +20,7 @@ class BottomDialog extends StatelessWidget {
   final String title;
   final String description;
   final String iconPath;
+  final Color iconColor;
   final ButtonStyle? positiveButtonStyle;
   final ButtonStyle? negativeButtonStyle;
 
@@ -35,6 +37,7 @@ class BottomDialog extends StatelessWidget {
             .toLowerCase(),
       ),
       iconPath: 'assets/icons/icon_trash_blank_big.svg',
+      iconColor: Theme.of(context).colorScheme.tertiary,
       positiveButtonStyle: ButtonStyle(
         buttonType: ButtonType.alert,
         label: context.locale.result_removal_confirmation_title_button_confirm,
@@ -56,6 +59,7 @@ class BottomDialog extends StatelessWidget {
       description: context.locale
           .dialog_account_removal_confirmation_description(accountName),
       iconPath: 'assets/icons/icon_trash_blank_big.svg',
+      iconColor: Theme.of(context).colorScheme.tertiary,
       positiveButtonStyle: ButtonStyle(
         buttonType: ButtonType.alert,
         label: context.locale.dialog_account_removal_confirmation_title,
@@ -75,6 +79,7 @@ class BottomDialog extends StatelessWidget {
       title: context.locale.daily_when_time_reset_confirmation_title,
       description: context.locale.daily_when_time_reset_confirmation_info,
       iconPath: 'assets/icons/icon_clock_big.svg',
+      iconColor: Theme.of(context).colorScheme.tertiary,
       positiveButtonStyle: ButtonStyle(
         buttonType: ButtonType.primary,
         label: context.locale.daily_when_time_reset_confirmation_confirm,
@@ -94,6 +99,7 @@ class BottomDialog extends StatelessWidget {
       title: context.locale.server_error_title,
       description: context.locale.server_error_desc,
       iconPath: 'assets/icons/icon_triangle_exclamation_big.svg',
+      iconColor: Theme.of(context).colorScheme.error,
       positiveButtonStyle: ButtonStyle(
         buttonType: ButtonType.secondary,
         label: context.locale.common_close,
@@ -107,6 +113,7 @@ class BottomDialog extends StatelessWidget {
       title: title,
       description: description,
       iconPath: iconPath,
+      iconColor: iconColor,
       positiveButtonStyle: positiveButtonStyle,
       negativeButtonStyle: negativeButtonStyle,
     );
@@ -118,6 +125,7 @@ class _BottomDialog extends BottomDialog {
     required super.title,
     required super.description,
     required super.iconPath,
+    required super.iconColor,
     super.positiveButtonStyle,
     super.negativeButtonStyle,
   });
@@ -149,7 +157,7 @@ class _BottomDialog extends BottomDialog {
           Center(
             child: SvgPicture.asset(
               iconPath,
-              color: Theme.of(context).colorScheme.tertiary,
+              color: iconColor,
             ),
           ),
           Gaps.gap24,

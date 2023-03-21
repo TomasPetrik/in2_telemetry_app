@@ -82,9 +82,9 @@ class SyncedResult extends StatelessWidget {
       case ResultState.paired:
         return Theme.of(context).colorScheme.onTertiary;
       case ResultState.noData:
-        return Theme.of(context).colorScheme.tertiary;
+        return Theme.of(context).colorScheme.error;
       case ResultState.connectionError:
-        return Theme.of(context).colorScheme.tertiary;
+        return Theme.of(context).colorScheme.error;
     }
   }
 

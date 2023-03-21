@@ -1,16 +1,34 @@
-# scalesoft_app
 
-A new Flutter project.
+# In2 Telemetry App
 
-## Getting Started
+Mobilní aplikace pro Telemonitoring pacientů
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+## Všeobecné nastavenia:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Pridávanie nových prostredí (nemocníc):
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Pridávanie nových podporovaných zariadení:
+
+### Pridávanie podporovaných meraní :
+> **Poznámka:** : Vzhľadom nato že nie všetky merania sa budú dávať vykonávať pomocou aktuálne podporovaných zariadení, napr. meranie počtu krokov, GPS, EWS. Tieto merania sa budú ukladať pomocou vlastného zápisu hodnôt.
+
+
+## Verziovanie aplikácie:
+ 1. Nastavenie poznámok, ktoré popisujú posledné zmeny v súbore `release_notes.json`,
+ 2. Zvýšenie verzie v súbore `pubspec.yaml` napr, version: **1.0.99+99**, pričom prvé trojčíslie popisuje číslo verzie, a posledné čislo za **+** je číslo zostavy,
+ 3. Tieto zmeny sa aktualizujú v repozitári **(git commit a git push)**,
+ 4. V nástroji **Codemagic** sa spustí zostavenie novej verzie.
+
+
+
+## SmartyPants
+
+SmartyPants converts ASCII punctuation characters into "smart" typographic punctuation HTML entities. For example:
+
+|                |ASCII                          |HTML                         |
+|----------------|-------------------------------|-----------------------------|
+|Single backticks|`'Isn't this fun?'`            |'Isn't this fun?'            |
+|Quotes          |`"Isn't this fun?"`            |"Isn't this fun?"            |
+|Dashes          |`-- is en-dash, --- is em-dash`|-- is en-dash, --- is em-dash|
+
