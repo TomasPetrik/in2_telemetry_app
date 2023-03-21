@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:scalesoft_app/bloc/calendar/calendar_bloc.dart';
+import 'package:scalesoft_app/bloc/calendar/calendar_bloc_event.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/calendar_service/fulfillment_service_bloc.dart';
 import 'package:scalesoft_app/bloc/calendar_service/fulfillment_service_bloc_event.dart';
@@ -19,9 +21,11 @@ class CalendarMonthWidget extends StatelessWidget {
   const CalendarMonthWidget({
     super.key,
     required this.calendarMonth,
+    required this.calendarBloc,
   });
 
   final CalendarMonth calendarMonth;
+  final CalendarBloc calendarBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +44,6 @@ class CalendarMonthWidget extends StatelessWidget {
         final CalendarMonth loadedMonth;
         if (state.month != null) {
           loadedMonth = state.month!;
-          calendarMonth.wasResolved = state.wasResolved;
         } else {
           loadedMonth = calendarMonth;
         }
@@ -114,6 +117,11 @@ class CalendarMonthWidget extends StatelessWidget {
                                           calendarServiceBloc.add(
                                             FulfillmentServiceBlocEvent
                                                 .onDaySelected(
+                                              day.startDt,
+                                            ),
+                                          );
+                                          calendarBloc.add(
+                                            CalendarBlocEvent.onDaySelected(
                                               day.startDt,
                                             ),
                                           );

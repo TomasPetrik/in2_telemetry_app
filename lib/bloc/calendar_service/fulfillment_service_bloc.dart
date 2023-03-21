@@ -184,6 +184,12 @@ class FulfillmentServiceBloc
           }
 
           await populateMonth(calendarMonth, carePlans);
+          emit(
+            FulfillmentServiceBlocState(
+              month: calendarMonth,
+              loading: false,
+            ),
+          );
 
           if (calendarMonth.wasResolved != true) {
             add(
@@ -205,19 +211,21 @@ class FulfillmentServiceBloc
               }
             }
           }
+          //invalidate side pages
+
           emit(state.copyWith(selectedDayDt: selectedDayDt));
         },
         loadMonthFulfillments: (calendarMonth, carePlans) async {
           emit(
-            FulfillmentServiceBlocState(month: calendarMonth, loading: true),
+            state.copyWith(month: calendarMonth, loading: true),
           );
           await loadMonthFulfillments(calendarMonth, carePlans);
           await populateMonth(calendarMonth, carePlans);
+          calendarMonth.wasResolved = true;
           emit(
-            FulfillmentServiceBlocState(
+            state.copyWith(
               month: calendarMonth,
               loading: false,
-              wasResolved: true,
             ),
           );
         },

@@ -9,6 +9,5 @@ class FulfillmentServiceBlocState with _$FulfillmentServiceBlocState {
     CalendarMonth? month,
     DateTime? selectedDayDt,
     bool? loading,
-    bool? wasResolved,
   }) = _CalendarServiceBlocState;
 }

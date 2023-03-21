@@ -27,33 +27,34 @@ class CalendarScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final calendarBloc = getIt<CalendarBloc>();
+    final calendarBloc = getIt<CalendarBloc>()
+      ..add(CalendarBlocEvent.init(context));
     return Material(
-      child: BlocBuilder<CalendarBloc, CalendarBlocState>(
-        bloc: calendarBloc..add(CalendarBlocEvent.init(context)),
-        builder: (context, state) {
-          if (state.months == null ||
-              state.months?.isEmpty == true ||
-              state.currentYear == null ||
-              state.currentMonth == null) {
-            return const SizedBox.shrink();
-          } else {
-            return Stack(
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Column(
               children: [
-                Positioned.fill(
-                  child: Column(
-                    children: [
-                      Gap(
-                        MediaQuery.of(context).viewPadding.top +
-                            Constants.appBarHeight,
-                      ),
-                      SizedBox(
-                        height: (24 +
-                                16 +
-                                24 +
-                                (5 * (16 + 28 + 8 + 4 + 16 + 0.5))) *
-                            1.31,
-                        child: PageView.builder(
+                Gap(
+                  MediaQuery.of(context).viewPadding.top +
+                      Constants.appBarHeight,
+                ),
+                SizedBox(
+                  height: (24 + 16 + 24 + (5 * (16 + 28 + 8 + 4 + 16 + 0.5))) *
+                      1.31,
+                  child: BlocBuilder<CalendarBloc, CalendarBlocState>(
+                    bloc: calendarBloc,
+                    buildWhen: (previous, current) {
+                      return current.updateSelf;
+                    },
+                    builder: (context, state) {
+                      if (state.months == null ||
+                          state.months?.isEmpty == true ||
+                          state.currentYear == null ||
+                          state.currentMonth == null) {
+                        return const SizedBox.shrink();
+                      } else {
+                        return PageView.builder(
                           scrollDirection: Axis.vertical,
                           padEnds: state.padEnds,
                           controller: state.controller,
@@ -69,35 +70,48 @@ class CalendarScreen extends StatelessWidget {
                               padding: Paddings.horizontal16,
                               child: CalendarMonthWidget(
                                 calendarMonth: month,
+                                calendarBloc: calendarBloc,
                               ),
                             );
                           },
                           itemCount: state.months!.length,
-                        ),
-                      ),
-                      const Padding(
-                        padding: Paddings.horizontal16,
-                        child: _CalendarFooter(),
-                      ),
-                    ],
+                        );
+                      }
+                    },
                   ),
                 ),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    color: Theme.of(context).colorScheme.background,
-                    child: Column(
-                      children: [
-                        ScaleAppBar(
+                const Padding(
+                  padding: Paddings.horizontal16,
+                  child: _CalendarFooter(),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              color: Theme.of(context).colorScheme.background,
+              child: Column(
+                children: [
+                  BlocBuilder<CalendarBloc, CalendarBlocState>(
+                    bloc: calendarBloc,
+                    builder: (context, state) {
+                      if (state.months == null ||
+                          state.months?.isEmpty == true ||
+                          state.currentYear == null ||
+                          state.currentMonth == null) {
+                        return const SizedBox.shrink();
+                      } else {
+                        return ScaleAppBar(
                           title:
                               '${context.locale.common_months('${state.currentMonth}')} ${state.currentYear}',
                           showClose: true,
                           customLeftWidget: state.isCurrentMonth == true
                               ? null
-                              : TextButton(
-                                  onPressed: () {
+                              : InkWell(
+                                  onTap: () {
                                     calendarBloc.add(
                                       const CalendarBlocEvent.resetToToday(),
                                     );
@@ -110,24 +124,24 @@ class CalendarScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                        ),
-                        const Padding(
-                          padding: Paddings.top16,
-                          child: DaysInWeekHeader(),
-                        ),
-                        Container(
-                          margin: Paddings.horizontal16,
-                          height: 0.5,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                      ],
-                    ),
+                        );
+                      }
+                    },
                   ),
-                ),
-              ],
-            );
-          }
-        },
+                  const Padding(
+                    padding: Paddings.top16,
+                    child: DaysInWeekHeader(),
+                  ),
+                  Container(
+                    margin: Paddings.horizontal16,
+                    height: 0.5,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

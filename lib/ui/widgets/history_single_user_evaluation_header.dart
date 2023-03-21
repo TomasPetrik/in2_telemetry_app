@@ -16,6 +16,7 @@ class HistorySingleUserEvaluationHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final measurementTypesCarePlans = userEvaluationDay.carePlanFulfillments
+        .where((carePlanFulfillment) => carePlanFulfillment.getReqCount() > 0)
         .groupListsBy((element) => element.carePlan.activity.measurementType);
 
     final progressItems = measurementTypesCarePlans.entries.map(
@@ -35,7 +36,7 @@ class HistorySingleUserEvaluationHeader extends StatelessWidget {
         );
 
         final measurementTypeEvaluation =
-            ((actualCounts / reqCounts) * 100).toInt();
+            reqCounts == 0 ? 0 : ((actualCounts / reqCounts) * 100).toInt();
 
         return ProgressItem(
           context.locale.common_measurement_types(

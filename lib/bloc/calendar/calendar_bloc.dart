@@ -20,6 +20,7 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
   ) : super(
           const CalendarBlocState(
             padEnds: true,
+            updateSelf: false,
           ),
         ) {
     on<CalendarBlocEvent>((event, emit) async {
@@ -58,6 +59,7 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
               padEnds: currentMonthIndex == months.length - 1,
               isCurrentMonth: true,
               selectedDayDt: todayDt,
+              updateSelf: true,
             ),
           );
         },
@@ -79,6 +81,7 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
           final today = CalendarHelper.getDayByDateTime(month, dt);
           if (today != null) {
             _calendarFooterCubit.selectDay(today);
+            add(CalendarBlocEvent.onDaySelected(today.startDt));
           }
 
           //it will emit onPageChanged
@@ -100,6 +103,7 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
               currentMonth: selectedMonth.month,
               padEnds: newPageIndex == state.months!.length - 1,
               isCurrentMonth: isCurrentMonth,
+              updateSelf: false,
             ),
           );
 
@@ -107,7 +111,7 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
             add(const CalendarBlocEvent.addExtraMonth());
           }
         },
-        addExtraMonth: () {
+        addExtraMonth: () async {
           final lastMonth = state.months!.last;
           final newLastMonthDate =
               CalendarHelper.getDateByMonthsOffset(lastMonth.monthStartDate, 1);
@@ -116,6 +120,44 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
             newLastMonthDate,
           );
           state.months!.add(newLastMonth);
+          await Future.delayed(const Duration(milliseconds: 700));
+          emit(
+            state.copyWith(
+              updateSelf: true,
+            ),
+          );
+        },
+        onDaySelected: (DateTime selectedDayDt) {
+          //clear side months if they had some day selected
+
+          final currentMonthIndex = state.months?.indexWhere(
+            (month) =>
+                DateUtils.isSameMonth(month.monthStartDate, selectedDayDt),
+          );
+
+          if (currentMonthIndex == null) return;
+
+          final prevMonthIndex = currentMonthIndex - 1;
+          final nextMonthIndex = currentMonthIndex + 1;
+
+          if (prevMonthIndex >= 0) {
+            state.months![prevMonthIndex].getCalendarDays().forEach((day) {
+              day.isSelected = false;
+            });
+          }
+
+          if (nextMonthIndex <= state.months!.length - 1) {
+            state.months![nextMonthIndex].getCalendarDays().forEach((day) {
+              day.isSelected = false;
+            });
+          }
+
+          emit(
+            state.copyWith(
+              key: UniqueKey(),
+              updateSelf: true,
+            ),
+          );
         },
       );
     });

@@ -13,12 +13,14 @@ part 'calendar_bloc_state.freezed.dart';
 @Freezed(makeCollectionsUnmodifiable: false)
 class CalendarBlocState with _$CalendarBlocState {
   const factory CalendarBlocState({
+    Key? key,
     List<CalendarMonth>? months,
     int? currentMonth,
     int? currentYear,
     DateTime? selectedDayDt,
     PageController? controller,
     required bool padEnds,
+    required bool updateSelf,
     bool? isCurrentMonth,
   }) = _CalendarBlocState;
 }

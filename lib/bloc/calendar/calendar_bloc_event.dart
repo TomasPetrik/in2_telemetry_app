@@ -9,4 +9,6 @@ class CalendarBlocEvent with _$CalendarBlocEvent {
   const factory CalendarBlocEvent.resetToToday() = _ResetToToday;
   const factory CalendarBlocEvent.onPageChanged(int newPage) = _OnPageChanged;
   const factory CalendarBlocEvent.addExtraMonth() = _AddExtraMonth;
+  const factory CalendarBlocEvent.onDaySelected(DateTime selectedDayDt) =
+      _OnDaySelected;
 }

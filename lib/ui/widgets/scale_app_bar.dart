@@ -65,7 +65,10 @@ class ScaleAppBar extends StatelessWidget {
                                     ),
                                   ],
                                 )
-                              : customLeftWidget ?? const SizedBox.shrink(),
+                              : Padding(
+                                  padding: Paddings.left16,
+                                  child: customLeftWidget ??
+                                      const SizedBox.shrink()),
                         ),
                         Expanded(
                           flex: 2,
