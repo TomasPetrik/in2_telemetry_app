@@ -1,0 +1,10 @@
+[
+  {
+    "language": "cs-CZ",
+    "text": "Pridenie 'release_notes.json'. Pouziva sa v CodeMagic CI/CD pre automaticke predvyplnenie poslednych zmien v GooglePlay a AppStore pocas vydavani novej verzie aplikacie.\n"
+  },
+  {
+    "language": "sk-SK",
+    "text": ""
+  }
+]
