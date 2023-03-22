@@ -32,8 +32,6 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
           final currentYear = todayDt.year;
           final currentMonth = todayDt.month;
 
-          //TODO.. here should be date of most latest care plan start date
-          //final fromDate =
           //toDate should be always 2 months ahead
           final fromDate = _session.getLatestDtOfCarePlans();
           final toDate = CalendarHelper.getDateByMonthsOffset(todayDt, 2);

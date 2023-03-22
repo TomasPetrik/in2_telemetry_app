@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:scalesoft_app/ui/widgets/interactive_chart/candle_data.dart';
 import 'package:scalesoft_app/ui/widgets/interactive_chart/chart_painter.dart';
@@ -50,7 +51,9 @@ class InteractiveChart extends StatefulWidget {
   ///   "Close": candle.close?.toStringAsFixed(2) ?? "-",
   /// };
   /// ```
-  final OverlayInfoGetter? overlayInfo;
+  final OverlayInfoGetter overlayInfo;
+
+  final List<DrawableRoot> svgDrawables;
 
   /// An optional event, fired when the user clicks on a candlestick.
   final ValueChanged<CandleData>? onTap;
@@ -63,11 +66,12 @@ class InteractiveChart extends StatefulWidget {
   const InteractiveChart({
     Key? key,
     required this.candles,
+    required this.svgDrawables,
     this.initialVisibleCandleCount = 1000,
     ChartStyle? style,
     this.timeLabel,
     this.valueLabel,
-    this.overlayInfo,
+    required this.overlayInfo,
     this.onTap,
     this.onCandleResize,
   })  : style = style ?? const ChartStyle(),
@@ -170,6 +174,7 @@ class InteractiveChartState extends State<InteractiveChart> {
           curve: Curves.easeOut,
           builder: (_, PainterParams params, __) {
             _prevParams = params;
+
             return RepaintBoundary(
               child: CustomPaint(
                 size: size,
@@ -177,7 +182,8 @@ class InteractiveChartState extends State<InteractiveChart> {
                   params: params,
                   getTimeLabel: widget.timeLabel ?? defaultTimeLabel,
                   getValueLabel: widget.valueLabel ?? defaultValueLabel,
-                  getOverlayInfo: widget.overlayInfo ?? defaultOverlayInfo,
+                  getOverlayInfo: widget.overlayInfo,
+                  svgDrawables: widget.svgDrawables,
                 ),
               ),
             );
@@ -305,16 +311,6 @@ class InteractiveChartState extends State<InteractiveChart> {
   }
 
   String defaultValueLabel(double value) => value.toStringAsFixed(2);
-
-  Map<String, String> defaultOverlayInfo(CandleData candle) {
-    final date = intl.DateFormat.yMMMd()
-        .format(DateTime.fromMillisecondsSinceEpoch(candle.timestamp));
-    return {
-      "Date": date,
-      "Open": candle.high?.toStringAsFixed(2) ?? "-",
-      "Close": candle.low?.toStringAsFixed(2) ?? "-",
-    };
-  }
 
   void _fireOnTapEvent() {
     if (_prevParams == null || _tapPosition == null) return;

@@ -64,6 +64,14 @@ class Session {
     return carePlans;
   }
 
+  List<CarePlan> getAllCarePlans() {
+    return getSessionAccounts().fold<List<CarePlan>>(
+      [],
+      (prevCarePlans, userAccount) =>
+          [...prevCarePlans, ...userAccount.carePlans ?? []],
+    );
+  }
+
   DateTime getLatestDtOfCarePlans() {
     final carePlans = getActiveCarePlans();
     final veryLastDt = carePlans

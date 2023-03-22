@@ -12,5 +12,12 @@ class ChartLoaderBlocState with _$ChartLoaderBlocState {
     DateTime? selectedDayDt,
     bool? loading,
     bool? wasResolved,
+    ChartResultType? resultType,
   }) = _CalendarServiceBlocState;
+}
+
+enum ChartResultType {
+  hasData,
+  error,
+  noDataInMonth,
 }

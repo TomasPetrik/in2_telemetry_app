@@ -207,8 +207,10 @@ class Calendar {
     );
     for (final carePlan in dailyCarePlans) {
       for (final timingDayWhen in carePlan.timingDayWhen) {
+        final whenEnd = timingDayWhen.end.ofExactDate(dayDt);
         final whenStart = timingDayWhen.start.ofExactDate(dayDt);
-        if (carePlan.scheduledStart.isAfter(whenStart)) continue;
+        if (carePlan.scheduledStart.isAfter(whenEnd)) continue;
+        if (carePlan.scheduledEnd?.isBefore(whenStart) == true) continue;
         measurements.add(
           PlannedMeasurement(
             userId: carePlan.userId!,

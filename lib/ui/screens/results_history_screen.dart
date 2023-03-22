@@ -33,7 +33,7 @@ class ResultsHistoryScreen extends StatelessWidget {
       [],
       (previousValue, userEvaluationsDay) => [
         ...previousValue,
-        ...userEvaluationsDay.getHistoricMeasurement(),
+        ...userEvaluationsDay.getHistoricMeasurements(),
       ],
     )..sort(
             (a, b) => b.whenStart.compareTo(a.whenStart),

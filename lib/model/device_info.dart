@@ -62,7 +62,7 @@ class DeviceInfo with _$DeviceInfo {
     }
     for (final entry in manufacturerData.entries) {
       final charData = entry.value;
-      manData += '${String.fromCharCodes(charData)}\n';
+      manData += '$charData,\n';
     }
     return manData;
   }

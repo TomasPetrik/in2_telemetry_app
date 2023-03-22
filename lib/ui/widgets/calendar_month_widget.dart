@@ -30,7 +30,7 @@ class CalendarMonthWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final calendarServiceBloc = getIt<FulfillmentServiceBloc>();
-    final carePlans = getIt<Session>().getActiveCarePlans();
+    final carePlans = getIt<Session>().getAllCarePlans();
 
     return BlocBuilder<FulfillmentServiceBloc, FulfillmentServiceBlocState>(
       bloc: calendarServiceBloc

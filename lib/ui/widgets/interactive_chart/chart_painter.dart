@@ -2,24 +2,30 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/widgets/interactive_chart/candle_data.dart';
 import 'package:scalesoft_app/ui/widgets/interactive_chart/painter_params.dart';
 
 typedef TimeLabelGetter = String Function(int timestamp, int visibleDataCount);
 typedef ValueLabelGetter = String Function(double value);
-typedef OverlayInfoGetter = Map<String, String> Function(CandleData candle);
+typedef OverlayInfoGetter = Map<DrawableRoot, String> Function(
+  CandleData candle,
+);
 
 class ChartPainter extends CustomPainter {
   final PainterParams params;
   final TimeLabelGetter getTimeLabel;
   final ValueLabelGetter getValueLabel;
   final OverlayInfoGetter getOverlayInfo;
+  final List<DrawableRoot> svgDrawables;
 
   ChartPainter({
     required this.params,
     required this.getTimeLabel,
     required this.getValueLabel,
     required this.getOverlayInfo,
+    required this.svgDrawables,
   });
 
   @override
@@ -178,8 +184,8 @@ class ChartPainter extends CustomPainter {
   }
 
   void _drawTapInfoOverlay(canvas, PainterParams params, CandleData candle) {
-    const xGap = 8.0;
-    const yGap = 4.0;
+    const xGap = 16.0;
+    const yGap = 10.0;
 
     TextPainter makeTP(String text) => TextPainter(
           text: TextSpan(
@@ -192,17 +198,14 @@ class ChartPainter extends CustomPainter {
 
     final info = getOverlayInfo(candle);
     if (info.isEmpty) return;
-    final labels = info.keys.map(makeTP).toList();
+    final icons = info.keys.toList();
     final values = info.values.map(makeTP).toList();
 
-    final labelsMaxWidth = labels.map((tp) => tp.width).reduce(max);
     final valuesMaxWidth = values.map((tp) => tp.width).reduce(max);
-    final panelWidth = labelsMaxWidth + valuesMaxWidth + xGap * 3;
-    final panelHeight = max(
-          labels.map((tp) => tp.height).reduce((a, b) => a + b),
-          values.map((tp) => tp.height).reduce((a, b) => a + b),
-        ) +
-        yGap * (values.length + 1);
+    final panelWidth = 4 * Dimensions.padding16 + valuesMaxWidth;
+    final panelHeight = values.map((tp) => tp.height).reduce((a, b) => a + b) +
+        2 * Dimensions.padding16 +
+        (yGap * (values.length - 1));
 
     // Shift the canvas, so the overlay panel can appear near touch position.
     canvas.save();
@@ -228,31 +231,51 @@ class ChartPainter extends CustomPainter {
     canvas.drawRRect(
       RRect.fromRectAndRadius(
         Offset.zero & Size(panelWidth, panelHeight),
-        const Radius.circular(8),
+        const Radius.circular(16),
       ),
       Paint()..color = params.style.overlayBackgroundColor,
     );
 
     // Draw texts
-    var y = 0.0;
-    for (int i = 0; i < labels.length; i++) {
-      y += yGap;
-      final rowHeight = max(labels[i].height, values[i].height);
-      // Draw labels (left align, vertical center)
-      final labelY = y + (rowHeight - labels[i].height) / 2; // vertical center
-      labels[i].paint(canvas, Offset(xGap, labelY));
+    var y = Dimensions.padding16;
+    for (int i = 0; i < icons.length; i++) {
+      final rowHeight = values[i].height;
 
       // Draw values (right align, vertical center)
-      final leading = valuesMaxWidth - values[i].width; // right align
       final valueY = y + (rowHeight - values[i].height) / 2; // vertical center
       values[i].paint(
         canvas,
-        Offset(labelsMaxWidth + xGap * 2 + leading, valueY),
+        Offset(3 * Dimensions.padding16, valueY),
       );
-      y += rowHeight;
+      y += yGap + rowHeight;
     }
 
     canvas.restore();
+
+    // Draw icons
+    y = Dimensions.padding16;
+    for (int i = 0; i < icons.length; i++) {
+      final rowHeight = values[i].height;
+      // Draw icons (left align, vertical center)
+      final labelY = y + (rowHeight - values[i].height) / 2; // vertical center
+
+      canvas.save();
+
+      canvas.translate(dx + xGap, dy + labelY);
+
+      svgDrawables[i].scaleCanvasToViewBox(
+        canvas,
+        Size(rowHeight, rowHeight),
+      );
+      svgDrawables[i].clipCanvasToViewBox(canvas);
+      svgDrawables[i].draw(
+        canvas,
+        Offset(xGap, labelY) & Size(rowHeight, rowHeight),
+      );
+
+      canvas.restore();
+      y += yGap + rowHeight;
+    }
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 
@@ -13,5 +14,6 @@ class ChartBlocState with _$ChartBlocState {
     PageController? controller,
     bool? isCurrentMonth,
     int? currentMonthIndex,
+    List<DrawableRoot>? svgDrawables,
   }) = _CalendarBlocState;
 }

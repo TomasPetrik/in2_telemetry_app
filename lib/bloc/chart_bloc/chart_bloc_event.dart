@@ -10,6 +10,7 @@ class ChartBlocEvent with _$ChartBlocEvent {
     BuildContext context,
     DateTime initDt,
     List<CarePlan> carePlans,
+    Color iconColor,
   ) = _Init;
   const factory ChartBlocEvent.onPageChanged(int newPage) = _OnPageChanged;
   const factory ChartBlocEvent.goToPreviousMonth() = _GoToPreviousMonth;

@@ -22,11 +22,13 @@ class ChartWidget extends StatelessWidget {
     required this.measurentType,
     required this.userAccount,
     required this.calendarMonth,
+    required this.svgDrawables,
   });
 
   final CalendarMonth calendarMonth;
   final UserAccount userAccount;
   final MeasurementType measurentType;
+  final List<DrawableRoot> svgDrawables;
 
   @override
   Widget build(BuildContext context) {
@@ -49,36 +51,45 @@ class ChartWidget extends StatelessWidget {
 
         return Stack(
           children: [
-            if (candles?.isNotEmpty == true)
-              Positioned.fill(
-                top: Dimensions.padding16,
-                child: InteractiveChart(
-                  candles: candles!,
-                  style: ChartStyle(
-                    barColor: Theme.of(context).colorScheme.onTertiary,
-                    timeLabelStyle: ScaleTextStyles.label.apply(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                    valueLabelStyle: ScaleTextStyles.label.apply(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                  ),
-                  /** Customize axis labels */
-                  //timeLabel: (timestamp, visibleDataCount) => "📅",
-                  valueLabel: (value) => '${value.round()}',
-                  overlayInfo: (candle) => {
-                    '📅': DateTime.fromMillisecondsSinceEpoch(candle.timestamp)
-                        .toRegularDate(),
-                    '🕑': DateTime.fromMillisecondsSinceEpoch(candle.timestamp)
-                        .toTimeShort(),
-                    context.locale.common_measurement_types(
-                      candle.measurementType?.name ?? '',
-                    ): candle.resultFormatted,
-                  },
-                  /** Callbacks */
-                  // onTap: (candle) => print("user tapped on $candle"),
-                ),
-              ),
+            Positioned.fill(
+              top: Dimensions.padding16,
+              child: state.resultType == null
+                  ? const SizedBox.shrink()
+                  : [ChartResultType.noDataInMonth, ChartResultType.error]
+                          .contains(state.resultType)
+                      ? _ChartPlaceHolder(state.resultType!)
+                      : InteractiveChart(
+                          candles: candles!,
+                          style: ChartStyle(
+                            barColor: Theme.of(context).colorScheme.onTertiary,
+                            timeLabelStyle: ScaleTextStyles.label.apply(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                            valueLabelStyle: ScaleTextStyles.label.apply(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                            overlayBackgroundColor:
+                                Theme.of(context).colorScheme.secondary,
+                            //.withOpacity(0.8),
+                            overlayTextStyle: ScaleTextStyles.label.apply(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                          ),
+                          svgDrawables: svgDrawables,
+                          valueLabel: (value) => '${value.round()}',
+                          overlayInfo: (candle) => {
+                            svgDrawables[0]:
+                                DateTime.fromMillisecondsSinceEpoch(
+                              candle.timestamp,
+                            ).toRegularDate(),
+                            svgDrawables[1]:
+                                DateTime.fromMillisecondsSinceEpoch(
+                              candle.timestamp,
+                            ).toTimeShort(),
+                            svgDrawables[2]: candle.resultFormatted,
+                          },
+                        ),
+            ),
             if (state.loading == true)
               Positioned(
                 top: 0,
@@ -97,6 +108,51 @@ class ChartWidget extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+class _ChartPlaceHolder extends StatelessWidget {
+  const _ChartPlaceHolder(this.chartLoadedResult);
+
+  final ChartResultType chartLoadedResult;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const Expanded(
+          child: SizedBox.shrink(),
+        ),
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                chartLoadedResult == ChartResultType.error
+                    ? 'assets/icons/icon_triangle_exclamation_big.svg'
+                    : 'assets/icons/icon_wave_pulse_big.svg',
+                color: chartLoadedResult == ChartResultType.error
+                    ? Theme.of(context).colorScheme.error
+                    : Theme.of(context).colorScheme.tertiary,
+              ),
+              Gaps.gap24,
+              Text(
+                chartLoadedResult == ChartResultType.error
+                    ? context.locale.chart_placeholder_error_loading_data
+                    : context.locale.chart_placeholder_no_data_in_month,
+                style: ScaleTextStyles.text.apply(
+                  color: Theme.of(context).colorScheme.onSecondary,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+        const Expanded(
+          child: SizedBox.shrink(),
+        ),
+      ],
     );
   }
 }

@@ -25,7 +25,7 @@ class ChartLoaderBloc extends Bloc<ChartLoaderBlocEvent, ChartLoaderBlocState> {
     this._measurementsDbProvider,
     this._pendingResultsDbProvider,
   ) : super(const ChartLoaderBlocState()) {
-    List<CandleData> getCandles(
+    List<CandleData>? getCandles(
       MeasurementType measurementType,
       UserAccount userAccount,
       CalendarMonth calendarMonth,
@@ -53,7 +53,7 @@ class ChartLoaderBloc extends Bloc<ChartLoaderBlocEvent, ChartLoaderBlocState> {
           [];
 
       if (measurements == null) {
-        return [];
+        return null;
       } else {
         final candles = measurements.items
             .map(ResultsHelper.getCandleByMeasurementResult)
@@ -178,23 +178,28 @@ class ChartLoaderBloc extends Bloc<ChartLoaderBlocEvent, ChartLoaderBlocState> {
             calendarMonth,
           );
 
+          ChartResultType? resultType;
+          if (candles?.any((candle) => candle.measurementType != null) ==
+              true) {
+            resultType = ChartResultType.hasData;
+          }
+
           emit(
             ChartLoaderBlocState(
               month: calendarMonth,
               loading: false,
               candles: candles,
+              resultType: resultType,
             ),
           );
 
-          if (calendarMonth.wasResolved != true) {
-            add(
-              ChartLoaderBlocEvent.loadMonthMeaurements(
-                measurementType,
-                userAccount,
-                calendarMonth,
-              ),
-            );
-          }
+          add(
+            ChartLoaderBlocEvent.loadMonthMeaurements(
+              measurementType,
+              userAccount,
+              calendarMonth,
+            ),
+          );
         },
         loadMonthMeaurements:
             (measurementType, userAccount, calendarMonth) async {
@@ -212,12 +217,23 @@ class ChartLoaderBloc extends Bloc<ChartLoaderBlocEvent, ChartLoaderBlocState> {
             calendarMonth,
           );
 
+          ChartResultType resultType;
+          if (candles == null) {
+            resultType = ChartResultType.error;
+          } else if (candles.any((candle) => candle.measurementType != null) ==
+              true) {
+            resultType = ChartResultType.hasData;
+          } else {
+            resultType = ChartResultType.noDataInMonth;
+          }
+
           emit(
             state.copyWith(
               month: calendarMonth,
               loading: false,
               wasResolved: true,
               candles: candles,
+              resultType: resultType,
             ),
           );
         },

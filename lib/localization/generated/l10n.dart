@@ -1991,6 +1991,26 @@ class I10n {
       args: [measurementType, unitType],
     );
   }
+
+  /// `Zde je něco v nepořádku. Zkuste akci opakovat později.`
+  String get chart_placeholder_error_loading_data {
+    return Intl.message(
+      'Zde je něco v nepořádku. Zkuste akci opakovat později.',
+      name: 'chart_placeholder_error_loading_data',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Historie měření neobsahuje žádná data.`
+  String get chart_placeholder_no_data_in_month {
+    return Intl.message(
+      'Historie měření neobsahuje žádná data.',
+      name: 'chart_placeholder_no_data_in_month',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I10n> {

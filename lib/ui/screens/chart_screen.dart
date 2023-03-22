@@ -73,7 +73,15 @@ class _ChartScreenState extends State<ChartScreen> {
   Widget build(BuildContext context) {
     return Material(
       child: BlocBuilder<ChartBloc, ChartBlocState>(
-        bloc: chartBloc..add(ChartBlocEvent.init(context, initDt, carePlans)),
+        bloc: chartBloc
+          ..add(
+            ChartBlocEvent.init(
+              context,
+              initDt,
+              carePlans,
+              Theme.of(context).colorScheme.tertiary,
+            ),
+          ),
         builder: (context, state) {
           if (state.months == null ||
               state.months?.isEmpty == true ||
@@ -109,6 +117,7 @@ class _ChartScreenState extends State<ChartScreen> {
                                 measurentType: measurementType,
                                 userAccount: userAccount,
                                 calendarMonth: month,
+                                svgDrawables: state.svgDrawables!,
                               ),
                             );
                           },
@@ -135,9 +144,9 @@ class _ChartScreenState extends State<ChartScreen> {
                       ),
                     ),
                     subTitle:
-                        '${userAccount.user.fullName} (${context.locale.common_months(
+                        '${userAccount.user.fullName} - ${context.locale.common_months(
                       '${state.currentMonth!}',
-                    )})',
+                    )}',
                     customLeftWidget: SizedBox(
                       height: 24,
                       child: Row(
@@ -154,7 +163,10 @@ class _ChartScreenState extends State<ChartScreen> {
                             icon: SvgPicture.asset(
                               'assets/icons/icon_back.svg',
                               color: state.currentMonthIndex == 0
-                                  ? Theme.of(context).colorScheme.tertiary
+                                  ? Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(0.48)
                                   : Theme.of(context).colorScheme.primary,
                             ),
                           ),
@@ -173,7 +185,10 @@ class _ChartScreenState extends State<ChartScreen> {
                               'assets/icons/icon_arrow_sm_right.svg',
                               color: state.currentMonthIndex ==
                                       state.months!.length - 1
-                                  ? Theme.of(context).colorScheme.tertiary
+                                  ? Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(0.48)
                                   : Theme.of(context).colorScheme.primary,
                             ),
                           ),

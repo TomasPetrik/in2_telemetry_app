@@ -147,6 +147,11 @@ class FulfillmentServiceBloc
             dayDt: day.startDt,
           );
           day.plannedMeasurements = plannedMeasurements;
+          /*
+          debugPrint(
+            '${plannedMeasurements.length} measurements for ${day.startDt.toRegularDate()}',
+          );
+          */
 
           final userAccounts = plannedMeasurements
               .map(

@@ -220,6 +220,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Informace o plánu"),
         "care_plan_detail_screen_show_calendar":
             MessageLookupByLibrary.simpleMessage("Zobrazit kalendář"),
+        "chart_placeholder_error_loading_data":
+            MessageLookupByLibrary.simpleMessage(
+                "Zde je něco v nepořádku. Zkuste akci opakovat později."),
+        "chart_placeholder_no_data_in_month":
+            MessageLookupByLibrary.simpleMessage(
+                "Historie měření neobsahuje žádná data."),
         "chart_screen_title": m2,
         "common_all_accounts":
             MessageLookupByLibrary.simpleMessage("Všechny účty"),

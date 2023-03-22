@@ -1,11 +1,11 @@
-import 'package:collection/collection.dart';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
 import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 part 'calendar_bloc_state.freezed.dart';
@@ -113,12 +113,12 @@ class UserEvaluationDay with _$UserEvaluationDay {
     return futureMeasurements;
   }
 
-  List<HistoricMeasurement> getHistoricMeasurement() {
+  List<HistoricMeasurement> getHistoricMeasurements() {
     final completedMeasurements =
         carePlanFulfillments.fold<List<HistoricMeasurement>>(
       [],
       (previousValue, carePlanFulfillments) =>
-          [...previousValue, ...carePlanFulfillments.getHistoricMeasurement()],
+          [...previousValue, ...carePlanFulfillments.getHistoricMeasurements()],
     );
     return completedMeasurements;
   }
@@ -156,26 +156,36 @@ class CarePlanSingleDayEvaluation with _$CarePlanSingleDayEvaluation {
 
   @override
   String toString() {
-    return '${getReqCount()} / ${getActualCount()}';
+    return '${getActualCount()} / ${getReqCount()}';
   }
 
-  List<HistoricMeasurement> getHistoricMeasurement() {
+  List<HistoricMeasurement> getHistoricMeasurements() {
     List<HistoricMeasurement> historicMeasrements = [];
     for (final plannedMeasurement in plannedMeasurements) {
       DateTime? measuredAt;
 
       //1. try check server results
-      final evItem = evItems.firstWhereOrNull(
-        (evItem) =>
-            evItem.start == plannedMeasurement.whenStart &&
-            (evItem.end == plannedMeasurement.whenEnd ||
-                evItem.end.isBefore(plannedMeasurement.whenEnd)),
+      final measurementTimes = evItems.fold<List<DateTime>>(
+        [],
+        (allTimes, evItem) => [...allTimes, ...evItem.actualMeasurementTimes],
       );
-      int reqMeasurementCount = plannedMeasurement.reqCount;
-      int actualMeasurementCount = evItem?.actualMeasurementCount ?? 0;
 
-      if (evItem != null && evItem.actualMeasurementCount > 0) {
-        measuredAt = evItem.actualMeasurementTimes.last;
+      final matchedTimes = measurementTimes
+          .where(
+            (mTime) =>
+                (mTime == plannedMeasurement.whenStart ||
+                    mTime.isAfter(plannedMeasurement.whenStart)) &&
+                (mTime == plannedMeasurement.whenEnd ||
+                    mTime.isBefore(plannedMeasurement.whenEnd)),
+          )
+          .toList();
+
+      int reqMeasurementCount = plannedMeasurement.reqCount;
+      int actualMeasurementCount = matchedTimes.length;
+
+      if (matchedTimes.isNotEmpty) {
+        measuredAt =
+            matchedTimes[min(reqMeasurementCount - 1, matchedTimes.length - 1)];
       }
 
       //2. check if offline results matching datetime when measurement wasn't fulfilled completely
@@ -211,7 +221,7 @@ class CarePlanSingleDayEvaluation with _$CarePlanSingleDayEvaluation {
           carePlan: plannedMeasurement.carePlan,
           reqCount: reqMeasurementCount,
           actualCount: actualMeasurementCount,
-          wasMeasured: actualMeasurementCount == reqMeasurementCount,
+          wasMeasured: actualMeasurementCount >= reqMeasurementCount,
           whenCode: plannedMeasurement.whenCode,
         ),
       );
@@ -229,22 +239,27 @@ class CarePlanSingleDayEvaluation with _$CarePlanSingleDayEvaluation {
   }
 
   int getActualCount() {
-    if (plannedMeasurements.isNotEmpty &&
-        plannedMeasurements[0].whenStart.isToday()) {
-      // debugPrint('check today');
-    }
-
     int allActualMeasurementCount = 0;
     for (final plannedMeasurement in plannedMeasurements) {
       //1. try check server results
-      final evItem = evItems.firstWhereOrNull(
-        (evItem) =>
-            evItem.start == plannedMeasurement.whenStart &&
-            (evItem.end == plannedMeasurement.whenEnd ||
-                evItem.end.isBefore(plannedMeasurement.whenEnd)),
+
+      final measurementTimes = evItems.fold<List<DateTime>>(
+        [],
+        (allTimes, evItem) => [...allTimes, ...evItem.actualMeasurementTimes],
       );
+
+      final matchedTimes = measurementTimes
+          .where(
+            (mTime) =>
+                (mTime == plannedMeasurement.whenStart ||
+                    mTime.isAfter(plannedMeasurement.whenStart)) &&
+                (mTime == plannedMeasurement.whenEnd ||
+                    mTime.isBefore(plannedMeasurement.whenEnd)),
+          )
+          .toList();
+
       int reqMeasurementCount = plannedMeasurement.reqCount;
-      int actualMeasurementCount = evItem?.actualMeasurementCount ?? 0;
+      int actualMeasurementCount = matchedTimes.length;
 
       //2. check if offline results matching datetime when measurement wasn't fulfilled completely
       if (actualMeasurementCount < reqMeasurementCount) {
@@ -262,11 +277,12 @@ class CarePlanSingleDayEvaluation with _$CarePlanSingleDayEvaluation {
         if (carePlanOfflineResults?.isNotEmpty == true) {
           actualMeasurementCount += carePlanOfflineResults!.length;
         }
-
-        if (actualMeasurementCount > reqMeasurementCount) {
-          actualMeasurementCount = reqMeasurementCount;
-        }
       }
+
+      if (actualMeasurementCount > reqMeasurementCount) {
+        actualMeasurementCount = reqMeasurementCount;
+      }
+
       allActualMeasurementCount += actualMeasurementCount;
     }
     return allActualMeasurementCount;

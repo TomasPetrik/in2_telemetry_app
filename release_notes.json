@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Updated README.md - added steps to make new version,\n 2. Fixed triangle_exclamation icon color (SCALESOFT-46)."
+    "text": "1. Refined chart (arrows, icons, bubble info),\n 2. Added chart placeholders when there are no measurements in month and connection error when first loaded data were failed,\n 3. Fixed showing care plans fulfillment past in calendar,\n 4. Showing manufacturer data in Bytes to reveal device's info.\n"
   },
   {
     "language": "sk-SK",
