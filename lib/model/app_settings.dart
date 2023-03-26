@@ -21,5 +21,6 @@ class AppSettings with _$AppSettings {
     @HiveField(2) bool? enabledNotifications,
     @HiveField(3) bool? notifyAtStartOfMeasurement,
     @HiveField(4) bool? notify10minBeforeMeasurement,
+    @HiveField(5) bool? autosetAppearance,
   }) = _AppSettings;
 }

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
@@ -18,7 +16,6 @@ import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
   final List<Measurement> _pendingResults = [];
   final List<CarePlan> _allCarePlans = [];
-  Timer? _watchDogTimer;
 
   CarePlanBloc() : super(CarePlanBlocState()) {
     on<CarePlanInitializeEvent>((event, emit) async {
@@ -67,8 +64,6 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
           allMeasurementCountsPerPeriod: allMeasurementCountsPerPeriod,
         ),
       );
-
-      _startWatchDog();
     });
 
     on<TimePeriodChangeEvent>((event, emit) {
@@ -184,26 +179,5 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
         }
       },
     );
-
-    on<StopWatchDog>(
-      (event, emit) async {
-        _watchDogTimer?.cancel();
-      },
-    );
-  }
-
-  Future<void> _startWatchDog() async {
-    //start of exact minute
-    final offsetSec = 60 - DateTime.now().second + 1;
-    //debugPrint('watchdog will start after $offsetSec seconds');
-    await Future.delayed(Duration(seconds: offsetSec));
-    add(const RefreshStateEvent());
-    //debugPrint('watchdog started on ${DateTime.now().toIso8601String()}}');
-    _watchDogTimer?.cancel();
-    _watchDogTimer =
-        Timer.periodic(const Duration(seconds: 60), (Timer timer) async {
-      //debugPrint('refreshing dashboard');
-      add(const RefreshStateEvent());
-    });
   }
 }

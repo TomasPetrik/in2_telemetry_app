@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:background_fetch/background_fetch.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
+import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
+import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
@@ -9,31 +14,92 @@ import 'package:scalesoft_app/bloc/user_content/content_state.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/session_db_provider.dart';
+import 'package:scalesoft_app/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/services/location_service.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/utils/extensions/theme_mode_extensions.dart';
+import 'package:scalesoft_app/utils/helpers/appearance_helper.dart';
 
 @singleton
 class ContentBloc extends Bloc<ContentEvent, ContentState> {
   final AccountDbProvider _accountDbProvider;
   final SessionDbProvider _sessionDbProvider;
+  final AppSettingsDbProvider _appSettingsDbProvider;
   final Session _session;
+  final CarePlanBloc _carePlanBloc;
+  final LocationService _locationService;
+  Timer? _watchDogTimer;
+  GoRouter? goRouter;
 
-  ContentBloc(this._accountDbProvider, this._sessionDbProvider, this._session)
-      : super(const ContentState.initial()) {
+  ContentBloc(
+    this._accountDbProvider,
+    this._sessionDbProvider,
+    this._appSettingsDbProvider,
+    this._session,
+    this._carePlanBloc,
+    this._locationService,
+  ) : super(const ContentState.initial()) {
     on<CheckLastLoggedUserContentEvent>(_checkLastLoggedUserContentEvent);
     on<OnUserAddedContentEvent>(_onUserAddedContentEvent);
     on<SwitchUserContentEvent>(_switchUserContentEvent);
     on<SwitchMultiUserContentEvent>(_switchMultiUserContentEvent);
     on<SwitchNoUserContentEvent>(_switchNoUserContentEvent);
     on<OnAppearanceChangedContentEvent>(_onAppearanceChangedContentEvent);
+    on<OnDaylightAppearanceChangedContentEvent>(
+      _onDaylightAppearanceChangedContentEvent,
+    );
+    on<StopWatchDog>(_onStopWatchDog);
+  }
+
+  Future<void> _checkAutoAppearanceMode() async {
+    final appSettings = _appSettingsDbProvider.read();
+    if (appSettings == null) return;
+    if (appSettings.autosetAppearance == true) {
+      final newThemeMode = await _locationService.getThemeModeByDayLight();
+      if (appSettings.themeModeLocal != newThemeMode.toLocal()) {
+        await _appSettingsDbProvider.write(
+          appSettings.copyWith(themeModeLocal: newThemeMode.toLocal()),
+        );
+
+        AppearanceHelper.setSystemUIOverlayStyle(ThemeMode.light);
+        final originalLocation = goRouter!.location;
+        add(OnDaylightAppearanceChangedContentEvent(originalLocation));
+      }
+    }
+  }
+
+  void _notifyEssentials() {
+    //1. Notify dashboard to refresh screen
+    _carePlanBloc.add(const RefreshStateEvent());
+
+    //2. Check auto-appearance if is enabled
+    _checkAutoAppearanceMode();
+  }
+
+  Future<void> _startWatchDog() async {
+    //start of exact minute
+    final offsetSec = 60 - DateTime.now().second + 1;
+    //debugPrint('watchdog will start after $offsetSec seconds');
+    await Future.delayed(Duration(seconds: offsetSec));
+    _notifyEssentials();
+
+    //debugPrint('watchdog started on ${DateTime.now().toIso8601String()}}');
+    _watchDogTimer?.cancel();
+    _watchDogTimer =
+        Timer.periodic(const Duration(seconds: 60), (Timer timer) async {
+      debugPrint('notifing essentials');
+      _notifyEssentials();
+    });
   }
 
   Future<void> _checkLastLoggedUserContentEvent(
     CheckLastLoggedUserContentEvent event,
     Emitter<ContentState> emit,
   ) async {
+    goRouter = event.goRouter;
     initBackgroundFetch();
 
     final userAccount = _accountDbProvider.getLast();
@@ -61,6 +127,8 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
 
       emit(ContentState.activeMode(UniqueKey()));
     }
+
+    _startWatchDog();
   }
 
   Future<void> _switchUserContentEvent(
@@ -144,6 +212,20 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     Emitter<ContentState> emit,
   ) async {
     emit(ContentState.onAppearanceChanged(event.themeMode));
+  }
+
+  Future<void> _onDaylightAppearanceChangedContentEvent(
+    OnDaylightAppearanceChangedContentEvent event,
+    Emitter<ContentState> emit,
+  ) async {
+    emit(ContentState.onDaylightAppearanceChanged(event.originalLocation));
+  }
+
+  Future<void> _onStopWatchDog(
+    StopWatchDog event,
+    Emitter<ContentState> emit,
+  ) async {
+    _watchDogTimer?.cancel();
   }
 }
 

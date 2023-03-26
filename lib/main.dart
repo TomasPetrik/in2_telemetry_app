@@ -102,9 +102,10 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
       );
     }
 
+    _goRouter = AppRouter().router;
     return ContentManager(
+      goRouter: _goRouter!,
       onInit: (context, state) {
-        _goRouter = AppRouter().router;
         return ScaleApp(goRouter: _goRouter!);
       },
       themeMode: ThemeMode.dark,

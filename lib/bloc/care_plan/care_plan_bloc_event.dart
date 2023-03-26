@@ -40,7 +40,3 @@ class ReloadCarePlansEvent extends CarePlanBlocEvent {
 class RefreshStateEvent extends CarePlanBlocEvent {
   const RefreshStateEvent();
 }
-
-class StopWatchDog extends CarePlanBlocEvent {
-  const StopWatchDog();
-}

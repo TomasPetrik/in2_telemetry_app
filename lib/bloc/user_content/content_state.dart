@@ -10,6 +10,9 @@ class ContentState with _$ContentState {
   const factory ContentState.unauthenticated() = _NoUser;
   const factory ContentState.onAppearanceChanged(ThemeMode newThemeMode) =
       _AppearanceChanged;
+  const factory ContentState.onDaylightAppearanceChanged(
+    String originalLocation,
+  ) = _OnDaylightAppearanceChanged;
   const factory ContentState.onUserAdded(UserAccount userAccount) = _UserAdded;
   const factory ContentState.activeMode(Key key) = _ActiveMode;
 }

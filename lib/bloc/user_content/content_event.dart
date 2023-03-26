@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 
 abstract class ContentEvent extends Equatable {
@@ -9,7 +10,9 @@ abstract class ContentEvent extends Equatable {
 }
 
 class CheckLastLoggedUserContentEvent extends ContentEvent {
-  const CheckLastLoggedUserContentEvent();
+  final GoRouter goRouter;
+  const CheckLastLoggedUserContentEvent(this.goRouter);
+
   @override
   List<Object?> get props => [];
 }
@@ -48,6 +51,17 @@ class OnAppearanceChangedContentEvent extends ContentEvent {
   List<Object?> get props => [themeMode.index];
 }
 
+class OnDaylightAppearanceChangedContentEvent extends ContentEvent {
+  const OnDaylightAppearanceChangedContentEvent(
+    this.originalLocation,
+  );
+
+  final String originalLocation;
+
+  @override
+  List<Object?> get props => [originalLocation];
+}
+
 class SwitchAllUsersContentEvent extends ContentEvent {
   const SwitchAllUsersContentEvent();
 
@@ -57,6 +71,13 @@ class SwitchAllUsersContentEvent extends ContentEvent {
 
 class SwitchNoUserContentEvent extends ContentEvent {
   const SwitchNoUserContentEvent();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class StopWatchDog extends ContentEvent {
+  const StopWatchDog();
 
   @override
   List<Object?> get props => [];

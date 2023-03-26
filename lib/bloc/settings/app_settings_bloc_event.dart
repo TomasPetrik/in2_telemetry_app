@@ -10,4 +10,10 @@ class AppSettingsBlocEvent with _$AppSettingsBlocEvent {
       _LocaleChanged;
   const factory AppSettingsBlocEvent.themeChanged(ThemeMode newThemeMode) =
       _ThemeChanged;
+
+  const factory AppSettingsBlocEvent.setAutoAppearance(bool enabled) =
+      _SetAutoAppearance;
+
+  const factory AppSettingsBlocEvent.detectDayLightAndSetTheme() =
+      _DetectDayLightAndSetTheme;
 }

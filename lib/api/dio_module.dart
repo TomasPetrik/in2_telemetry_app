@@ -10,8 +10,8 @@ abstract class DioModule {
   Dio get privateDio => Dio(
         BaseOptions(
           contentType: 'application/json',
-          connectTimeout: 30000,
-          receiveTimeout: 30000,
+          connectTimeout: const Duration(seconds: 30),
+          receiveTimeout: const Duration(seconds: 30),
         ),
       )..interceptors.addAll([
           PrettyDioLogger(

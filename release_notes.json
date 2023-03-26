@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Refined chart (arrows, icons, bubble info),\n 2. Added chart placeholders when there are no measurements in month and connection error when first loaded data were failed,\n 3. Fixed showing care plans fulfillment past in calendar,\n 4. Showing manufacturer data in Bytes to reveal device's info.\n"
+    "text": "1. Auto-detect sunrise / sunset according to gps positiong and set appropiate appearance,\n 2. Automatically switch appearance base on sunrise / sunset datetime,\n3. Disappear time day settings when whenCode is null,\n4. Center labels in calendar header,\n5. Updated retrofit, dio."
   },
   {
     "language": "sk-SK",

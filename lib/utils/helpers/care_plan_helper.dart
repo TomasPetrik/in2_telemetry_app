@@ -381,7 +381,9 @@ class Calendar {
           final shiftedDate = currentDt.add(Duration(days: daysShift));
           if (Calendar.getVeryFirstMeasurement(carePlan: carePlan)
               .whenStart
-              .isAfter(shiftedDate)) continue;
+              .isAfter(shiftedDate)) {
+            continue;
+          }
 
           if (carePlan.weekDays?.isNotEmpty == true) {
             //add them only in specific days

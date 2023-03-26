@@ -10,6 +10,10 @@ class Constants {
   //static const String baseUrl = 'https://in2-win.devscale.cz/api-mobile/v1';
   static const String privateDioName = 'privateDio';
 
+  /* Default Location (Prague) to get sunset / sunrise for autoswith appearance */
+  static const double defaultLat = 50.08804;
+  static const double defaultLng = 14.42076;
+
   /* OAuth2 */
   static const String clientSecret = 'cqWFWo9zYQHFh38kS8VC';
   static const String clientId = 'MobileApp';

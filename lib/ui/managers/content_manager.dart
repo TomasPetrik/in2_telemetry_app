@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_state.dart';
@@ -14,11 +15,13 @@ class ContentManager extends StatelessWidget {
     ContentState state,
   ) onInit;
   final ThemeMode themeMode;
+  final GoRouter goRouter;
 
   const ContentManager({
     super.key,
     required this.onInit,
     required this.themeMode,
+    required this.goRouter,
   });
 
   @override
@@ -26,7 +29,12 @@ class ContentManager extends StatelessWidget {
     final ContentBloc userContentBloc = getIt<ContentBloc>();
 
     return BlocBuilder<ContentBloc, ContentState>(
-      bloc: userContentBloc..add(const CheckLastLoggedUserContentEvent()),
+      bloc: userContentBloc
+        ..add(
+          CheckLastLoggedUserContentEvent(
+            goRouter,
+          ),
+        ),
       buildWhen: (previous, current) => previous != current,
       builder: (context, state) {
         final initialWidget = state.when(
@@ -44,6 +52,7 @@ class ContentManager extends StatelessWidget {
           onAppearanceChanged: (_) => onInit(context, state),
           onUserAdded: (_) => onInit(context, state),
           activeMode: (key) => onInit(context, state),
+          onDaylightAppearanceChanged: (_) => onInit(context, state),
         );
 
         return initialWidget;

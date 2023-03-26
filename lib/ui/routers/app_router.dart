@@ -47,6 +47,7 @@ class AppRouter {
           unauthenticated: () => '/${NoUserRoute.name}',
           onAppearanceChanged: (_) =>
               '/${ConfigurationRoute.name}/${AppearanceRoute.name}',
+          onDaylightAppearanceChanged: (originalLocation) => originalLocation,
           onUserAdded: (UserAccount userAccount) =>
               '/${UserAddedRoute.name}/${userAccount.user.muid}',
           activeMode: (key) => '/${DashboardRoute.name}',

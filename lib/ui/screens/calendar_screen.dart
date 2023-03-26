@@ -129,7 +129,11 @@ class CalendarScreen extends StatelessWidget {
                     },
                   ),
                   const Padding(
-                    padding: Paddings.top16,
+                    padding: EdgeInsets.only(
+                      top: Dimensions.padding16,
+                      left: Dimensions.padding16,
+                      right: Dimensions.padding16,
+                    ),
                     child: DaysInWeekHeader(),
                   ),
                   Container(

@@ -56,7 +56,8 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.carePlan.timingDayWhen.isNotEmpty == true) {
+    if (widget.carePlan.timingDayWhen
+        .any((timingDayWhen) => timingDayWhen.whenCode != null)) {
       timeSettingsForm = TimesSettingsForm(
         carePlan: widget.carePlan,
       );

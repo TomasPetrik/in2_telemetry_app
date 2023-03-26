@@ -37,7 +37,7 @@ class SwitchRow extends StatelessWidget {
   factory SwitchRow.text({
     required String title,
     required Function(bool turnedOn) onChanged,
-     bool? defaultValue,
+    bool? defaultValue,
   }) {
     return _TextSwitchRow(
       height: Constants.singleLineRowHeight,
@@ -77,7 +77,7 @@ class SwitchRow extends StatelessWidget {
             ),
           ),
           CupertinoSwitch(
-            onChanged: (bool isDarkMode) async {},
+            onChanged: onChanged,
             value: false,
           ),
         ],
