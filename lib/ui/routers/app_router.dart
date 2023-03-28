@@ -36,25 +36,6 @@ class AppRouter {
       navigatorKey: navRoot,
       initialLocation: '/',
       errorBuilder: (context, state) => const NotFoundScreen(),
-      redirect: (context, state) {
-        if (state.location.isNotEmpty && state.location != '/') {
-          return state.location;
-        }
-
-        final ContentState userContentState = getIt<ContentBloc>().state;
-
-        final path = userContentState.whenOrNull(
-          unauthenticated: () => '/${NoUserRoute.name}',
-          onAppearanceChanged: (_) =>
-              '/${ConfigurationRoute.name}/${AppearanceRoute.name}',
-          onDaylightAppearanceChanged: (originalLocation) => originalLocation,
-          onUserAdded: (UserAccount userAccount) =>
-              '/${UserAddedRoute.name}/${userAccount.user.muid}',
-          activeMode: (key) => '/${DashboardRoute.name}',
-        );
-
-        return path;
-      },
       routes: [
         ShellRoute(
           navigatorKey: navAuthManager,

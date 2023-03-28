@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/ui/routers/routes/chart_screen_route.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/scale_card.dart';
@@ -11,9 +13,21 @@ class CarePlanItem extends StatelessWidget {
   const CarePlanItem({
     super.key,
     required this.carePlan,
+    required this.viewOwnMeasurementData,
   });
 
   final CarePlan carePlan;
+  final bool viewOwnMeasurementData;
+
+  DateTime _getOptimalDateTime() {
+    final dtNow = DateTime.now();
+
+    if (carePlan.scheduledEnd?.isAfter(dtNow) == true) {
+      return carePlan.scheduledEnd!;
+    } else {
+      return dtNow;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,11 +77,27 @@ class CarePlanItem extends StatelessWidget {
                     color: Theme.of(context).colorScheme.onPrimary,
                   ),
                 ),
-                const Spacer(),
-                SvgPicture.asset(
-                  'assets/icons/icon_chart_pie_simple.svg',
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                if (viewOwnMeasurementData) ...[
+                  const Spacer(),
+                  InkWell(
+                    onTap: () {
+                      GoRouter.of(context).pushNamed(
+                        ChartRoute.name,
+                        params: {
+                          'userId': carePlan.userId!,
+                          'dateTime':
+                              _getOptimalDateTime().toIso8601String(),
+                          'measurementType':
+                              carePlan.activity.measurementType.name,
+                        },
+                      );
+                    },
+                    child: SvgPicture.asset(
+                      'assets/icons/icon_chart_pie_simple.svg',
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ]
               ],
             ),
             Gaps.gap16,

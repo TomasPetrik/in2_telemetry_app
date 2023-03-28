@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
 import 'package:scalesoft_app/ui/screens/future_measurements_screen.dart';
 import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
@@ -23,8 +24,8 @@ class FutureMeasurementsRoute extends ApplicationRoute with PageBuilderMixin {
       pageBuilder: pageBuilder(
         withTransition: false,
         builder: (state) {
-          List<UserEvaluationDay> usersEvaluationsDay =
-              state.extra! as List<UserEvaluationDay>;
+          final usersEvaluationsDay =
+              getIt<Session>().usersEvaluationsDayRestoration!;
 
           return FutureMeasurementsScreen(
             usersEvaluationsDay: usersEvaluationsDay,

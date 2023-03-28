@@ -23,129 +23,148 @@ import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
 
 class CalendarScreen extends StatelessWidget {
-  const CalendarScreen({super.key});
+  const CalendarScreen({
+    super.key,
+    this.preSelectedDt,
+  });
+
+  final DateTime? preSelectedDt;
 
   @override
   Widget build(BuildContext context) {
     final calendarBloc = getIt<CalendarBloc>()
-      ..add(CalendarBlocEvent.init(context));
-    return Material(
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: Column(
-              children: [
-                Gap(
-                  MediaQuery.of(context).viewPadding.top +
-                      Constants.appBarHeight,
-                ),
-                SizedBox(
-                  height: (24 + 16 + 24 + (5 * (16 + 28 + 8 + 4 + 16 + 0.5))) *
-                      1.31,
-                  child: BlocBuilder<CalendarBloc, CalendarBlocState>(
-                    bloc: calendarBloc,
-                    buildWhen: (previous, current) {
-                      return current.updateSelf;
-                    },
-                    builder: (context, state) {
-                      if (state.months == null ||
-                          state.months?.isEmpty == true ||
-                          state.currentYear == null ||
-                          state.currentMonth == null) {
-                        return const SizedBox.shrink();
-                      } else {
-                        return PageView.builder(
-                          scrollDirection: Axis.vertical,
-                          padEnds: state.padEnds,
-                          controller: state.controller,
-                          onPageChanged: (newPage) {
-                            calendarBloc.add(
-                              CalendarBlocEvent.onPageChanged(newPage),
-                            );
-                          },
-                          itemBuilder: (context, index) {
-                            final month = state.months![index];
-                            return Padding(
-                              key: ValueKey(index),
-                              padding: Paddings.horizontal16,
-                              child: CalendarMonthWidget(
-                                calendarMonth: month,
-                                calendarBloc: calendarBloc,
-                              ),
-                            );
-                          },
-                          itemCount: state.months!.length,
-                        );
-                      }
-                    },
-                  ),
-                ),
-                const Padding(
-                  padding: Paddings.horizontal16,
-                  child: _CalendarFooter(),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              color: Theme.of(context).colorScheme.background,
+      ..add(CalendarBlocEvent.init(context, preSelectedDt));
+
+    Future<bool> onWillPop() async {
+      calendarBloc.add(const CalendarBlocEvent.nullDefaultDay());
+      return true;
+    }
+
+    return WillPopScope(
+      onWillPop: onWillPop,
+      child: Material(
+        child: Stack(
+          children: [
+            Positioned.fill(
               child: Column(
                 children: [
-                  BlocBuilder<CalendarBloc, CalendarBlocState>(
-                    bloc: calendarBloc,
-                    builder: (context, state) {
-                      if (state.months == null ||
-                          state.months?.isEmpty == true ||
-                          state.currentYear == null ||
-                          state.currentMonth == null) {
-                        return const SizedBox.shrink();
-                      } else {
-                        return ScaleAppBar(
-                          title:
-                              '${context.locale.common_months('${state.currentMonth}')} ${state.currentYear}',
-                          showClose: true,
-                          customLeftWidget: state.isCurrentMonth == true
-                              ? null
-                              : InkWell(
-                                  onTap: () {
-                                    calendarBloc.add(
-                                      const CalendarBlocEvent.resetToToday(),
-                                    );
-                                  },
-                                  child: Text(
-                                    context.locale.common_today,
-                                    style: ScaleTextStyles.text.apply(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                    ),
-                                  ),
+                  Gap(
+                    MediaQuery.of(context).viewPadding.top +
+                        Constants.appBarHeight,
+                  ),
+                  SizedBox(
+                    height:
+                        (24 + 16 + 24 + (5 * (16 + 28 + 8 + 4 + 16 + 0.5))) *
+                            1.31,
+                    child: BlocBuilder<CalendarBloc, CalendarBlocState>(
+                      bloc: calendarBloc,
+                      buildWhen: (previous, current) {
+                        return current.updateSelf;
+                      },
+                      builder: (context, state) {
+                        if (state.months == null ||
+                            state.months?.isEmpty == true ||
+                            state.currentYear == null ||
+                            state.currentMonth == null) {
+                          return const SizedBox.shrink();
+                        } else {
+                          return PageView.builder(
+                            scrollDirection: Axis.vertical,
+                            padEnds: state.padEnds,
+                            controller: state.controller,
+                            onPageChanged: (newPage) {
+                              calendarBloc.add(
+                                CalendarBlocEvent.onPageChanged(newPage),
+                              );
+                            },
+                            itemBuilder: (context, index) {
+                              final month = state.months![index];
+                              return Padding(
+                                key: ValueKey(index),
+                                padding: Paddings.horizontal16,
+                                child: CalendarMonthWidget(
+                                  calendarMonth: month,
+                                  calendarBloc: calendarBloc,
                                 ),
-                        );
-                      }
-                    },
+                              );
+                            },
+                            itemCount: state.months!.length,
+                          );
+                        }
+                      },
+                    ),
                   ),
                   const Padding(
-                    padding: EdgeInsets.only(
-                      top: Dimensions.padding16,
-                      left: Dimensions.padding16,
-                      right: Dimensions.padding16,
-                    ),
-                    child: DaysInWeekHeader(),
-                  ),
-                  Container(
-                    margin: Paddings.horizontal16,
-                    height: 0.5,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    padding: Paddings.horizontal16,
+                    child: _CalendarFooter(),
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                color: Theme.of(context).colorScheme.background,
+                child: Column(
+                  children: [
+                    BlocBuilder<CalendarBloc, CalendarBlocState>(
+                      bloc: calendarBloc,
+                      builder: (context, state) {
+                        if (state.months == null ||
+                            state.months?.isEmpty == true ||
+                            state.currentYear == null ||
+                            state.currentMonth == null) {
+                          return const SizedBox.shrink();
+                        } else {
+                          return ScaleAppBar(
+                            title:
+                                '${context.locale.common_months('${state.currentMonth}')} ${state.currentYear}',
+                            showClose: true,
+                            onCloseTap: onWillPop,
+                            customLeftWidget: state.isCurrentMonth == true
+                                ? null
+                                : InkWell(
+                                    onTap: () {
+                                      calendarBloc.add(
+                                        CalendarBlocEvent.goOnDate(
+                                          DateTime.now(),
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      context.locale.common_today,
+                                      style: ScaleTextStyles.text.apply(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
+                                    ),
+                                  ),
+                          );
+                        }
+                      },
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(
+                        top: Dimensions.padding16,
+                        left: Dimensions.padding16,
+                        right: Dimensions.padding16,
+                      ),
+                      child: DaysInWeekHeader(),
+                    ),
+                    Container(
+                      margin: Paddings.horizontal16,
+                      height: 0.5,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -177,11 +196,12 @@ class _CalendarFooter extends StatelessWidget {
                 session.getSessionAccounts(),
               );
 
+              session.usersEvaluationsDayRestoration = usersEvaluationsDay;
+
               switch (selectedDay.dayPeriod) {
                 case CalendarDayPeriod.past:
                   GoRouter.of(context).pushNamed(
                     ResultsHistoryRoute.name,
-                    extra: usersEvaluationsDay,
                   );
                   break;
                 case CalendarDayPeriod.today:
@@ -190,7 +210,6 @@ class _CalendarFooter extends StatelessWidget {
                 case CalendarDayPeriod.future:
                   GoRouter.of(context).pushNamed(
                     FutureMeasurementsRoute.name,
-                    extra: usersEvaluationsDay,
                   );
                   break;
               }

@@ -5,6 +5,7 @@ import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
+import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
@@ -19,6 +20,12 @@ class Session {
   UserAccount? userAccount;
   bool? isMultiUser;
   final AccountDbProvider _accountDbProvider;
+
+  //For history and future details restoration
+  List<UserEvaluationDay>? usersEvaluationsDayRestoration;
+
+  //For calendar restoration
+  DateTime? preSelecteDtRestoration;
 
   final PendingResultsDbProvider _pendingResultsDbProvider;
 

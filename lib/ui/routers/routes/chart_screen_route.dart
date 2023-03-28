@@ -8,7 +8,7 @@ import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
 
 class ChartRoute extends ApplicationRoute with PageBuilderMixin {
   static const name = 'chart';
-  static const path = '/chart';
+  static const path = '/chart/:dateTime/:userId/:measurementType';
 
   ChartRoute({
     required super.navigator,
@@ -25,12 +25,15 @@ class ChartRoute extends ApplicationRoute with PageBuilderMixin {
       pageBuilder: pageBuilder(
         withTransition: false,
         builder: (state) {
-          final args = state.extra! as List<Object>;
-          final initDt = args[0] as DateTime;
-          final userId = args[1] as String;
-          final measurementType = args[2] as MeasurementType;
-
+          final userId = state.params['userId']!;
           final userAccount = getIt<AccountDbProvider>().get(userId)!;
+          final dateTimeString = state.params['dateTime']!;
+          final initDt = DateTime.parse(dateTimeString);
+          final measurementTypeName = state.params['measurementType']!;
+          final measurementType = MeasurementType.values.firstWhere(
+            (measurementType) => measurementType.name == measurementTypeName,
+          );
+
           return ChartScreen(
             initDt: initDt,
             userAccount: userAccount,

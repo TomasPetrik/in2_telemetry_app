@@ -122,6 +122,8 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                                   padding: Paddings.horizontal16,
                                   child: CarePlanItem(
                                     carePlan: carePlan,
+                                    viewOwnMeasurementData:
+                                        userAccount.viewOwnMeasurementData,
                                   ),
                                 ),
                               ),

@@ -50,11 +50,14 @@ class ResultsList extends StatelessWidget {
                         if (userAccount?.viewOwnMeasurementData == true) {
                           GoRouter.of(context).pushNamed(
                             ChartRoute.name,
-                            extra: [
-                              mResults[index].measurementDateTime,
-                              mResults[index].userId!,
-                              mResults[index].measurementType!,
-                            ],
+                            params: {
+                              'userId': mResults[index].userId!,
+                              'dateTime': mResults[index]
+                                  .measurementDateTime
+                                  .toIso8601String(),
+                              'measurementType':
+                                  mResults[index].measurementType!.name,
+                            },
                           );
                         }
                       },

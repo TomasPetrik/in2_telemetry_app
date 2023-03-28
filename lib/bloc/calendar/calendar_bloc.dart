@@ -25,22 +25,30 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
         ) {
     on<CalendarBlocEvent>((event, emit) async {
       await event.when(
-        init: (context) async {
+        init: (context, preSelectedDt) async {
           this.context = context;
 
-          final todayDt = DateTime.now();
-          final currentYear = todayDt.year;
-          final currentMonth = todayDt.month;
+          DateTime? defaultDt = DateTime.now();
+          int? defaultYear = defaultDt.year;
+          int? defaultMonth = defaultDt.month;
 
           //toDate should be always 2 months ahead
           final fromDate = _session.getLatestDtOfCarePlans();
-          final toDate = CalendarHelper.getDateByMonthsOffset(todayDt, 2);
+          DateTime? toDate = CalendarHelper.getDateByMonthsOffset(defaultDt, 2);
+          if (preSelectedDt != null) {
+            if (preSelectedDt.isAfter(toDate) == true) {
+              toDate = CalendarHelper.getDateByMonthsOffset(preSelectedDt, 2);
+            }
+            defaultYear = preSelectedDt.year;
+            defaultMonth = preSelectedDt.month;
+            defaultDt = preSelectedDt;
+          }
 
           final months =
               CalendarHelper.getCalendarMonths(context, fromDate, toDate)!;
 
           final currentMonthIndex = months.indexWhere(
-            (month) => month.year == currentYear && month.month == currentMonth,
+            (month) => month.year == defaultYear && month.month == defaultMonth,
           );
 
           controller = PageController(
@@ -51,39 +59,42 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
           emit(
             CalendarBlocState(
               months: months,
-              currentYear: currentYear,
-              currentMonth: currentMonth,
+              currentYear: defaultYear,
+              currentMonth: defaultMonth,
               controller: controller,
               padEnds: currentMonthIndex == months.length - 1,
               isCurrentMonth: true,
-              selectedDayDt: todayDt,
+              selectedDayDt: defaultDt,
               updateSelf: true,
             ),
           );
+
+          //we need override this event because fullfillment_service_bloc is
+          //updates view after 700ms
+          await Future.delayed(const Duration(milliseconds: 800));
+          add(CalendarBlocEvent.goOnDate(defaultDt));
         },
-        resetToToday: () async {
-          final dt = DateTime.now();
+        goOnDate: (dt) async {
           final currentYear = dt.year;
           final currentMonth = dt.month;
 
-          final todayIndex = state.months!.indexWhere(
+          final monthIndex = state.months!.indexWhere(
             (month) => month.year == currentYear && month.month == currentMonth,
           );
+
+          //it will emit onPageChanged
+          controller.jumpToPage(monthIndex);
 
           final month = state.months!.firstWhere(
             (month) => month.year == currentYear && month.month == currentMonth,
           );
-
           _calendarFooterCubit.selectDay(null);
 
-          final today = CalendarHelper.getDayByDateTime(month, dt);
-          if (today != null) {
-            _calendarFooterCubit.selectDay(today);
-            add(CalendarBlocEvent.onDaySelected(today.startDt));
+          final selectedDay = CalendarHelper.getDayByDateTime(month, dt);
+          if (selectedDay != null) {
+            _calendarFooterCubit.selectDay(selectedDay);
+            add(CalendarBlocEvent.onDaySelected(selectedDay.startDt));
           }
-
-          //it will emit onPageChanged
-          controller.jumpToPage(todayIndex);
         },
         onPageChanged: (int newPageIndex) async {
           final CalendarMonth selectedMonth = state.months![newPageIndex];
@@ -127,6 +138,7 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
         },
         onDaySelected: (DateTime selectedDayDt) {
           //clear side months if they had some day selected
+          _session.preSelecteDtRestoration = selectedDayDt;
 
           final currentMonthIndex = state.months?.indexWhere(
             (month) =>
@@ -156,6 +168,9 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
               updateSelf: true,
             ),
           );
+        },
+        nullDefaultDay: () {
+          _session.preSelecteDtRestoration = null;
         },
       );
     });

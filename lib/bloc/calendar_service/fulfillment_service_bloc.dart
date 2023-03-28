@@ -12,7 +12,6 @@ import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/calendar_db_provider.dart';
 import 'package:scalesoft_app/repositories/care_plans_repository.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
-import 'package:scalesoft_app/utils/helpers/calendar_helper.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
 
@@ -168,6 +167,9 @@ class FulfillmentServiceBloc
     on<FulfillmentServiceBlocEvent>((event, emit) async {
       await event.when(
         init: (calendarMonth, carePlans) async {
+          //we need wait here because this init is invoked everytime when
+          //viewPager will change pange, so we won't freeze him
+          //in process of changing page during scroll
           await Future.delayed(const Duration(milliseconds: 700));
 
           await setCalendarMonth(calendarMonth, carePlans);
@@ -176,16 +178,6 @@ class FulfillmentServiceBloc
               FulfillmentServiceBlocState(month: calendarMonth, loading: false),
             );
             return;
-          }
-
-          final todayDt = DateTime.now();
-          final today = CalendarHelper.getDayByDateTime(calendarMonth, todayDt);
-          if (todayDt.isAfter(calendarMonth.monthStartDate) &&
-              todayDt.isBefore(calendarMonth.monthEndDate) &&
-              calendarMonth.wasInit != true) {
-            calendarMonth.wasInit = true;
-            today?.isSelected = true;
-            _calendarFooterCubit.selectDay(today);
           }
 
           await populateMonth(calendarMonth, carePlans);
