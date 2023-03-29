@@ -11,6 +11,7 @@ import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/scale_card.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
+import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 class ActionWidget extends StatelessWidget with BottomSheetMixin {
   const ActionWidget({
@@ -142,7 +143,7 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
                   label: context.locale.common_measure_now,
                   buttonType: ButtonType.secondary,
                   onPressed: () {
-                    doMeasurement(
+                    MeasurementHelper.doMeasurement(
                       context: context,
                       userId: nextMeasurement!.userId,
                       selectedMeasurementType:

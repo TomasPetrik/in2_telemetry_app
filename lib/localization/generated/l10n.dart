@@ -290,16 +290,6 @@ class I10n {
     );
   }
 
-  /// `v {atTime}`
-  String common_at_time(String atTime) {
-    return Intl.message(
-      'v $atTime',
-      name: 'common_at_time',
-      desc: '',
-      args: [atTime],
-    );
-  }
-
   /// `Postup`
   String get common_procedure {
     return Intl.message(
@@ -327,6 +317,26 @@ class I10n {
       name: 'common_result',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `v {atTime}`
+  String common_at_time(String atTime) {
+    return Intl.message(
+      'v $atTime',
+      name: 'common_at_time',
+      desc: '',
+      args: [atTime],
+    );
+  }
+
+  /// `Přidáno {atTime}`
+  String common_addded_at_time(String atTime) {
+    return Intl.message(
+      'Přidáno $atTime',
+      name: 'common_addded_at_time',
+      desc: '',
+      args: [atTime],
     );
   }
 
@@ -1231,6 +1241,66 @@ class I10n {
     );
   }
 
+  /// `Přidat zařízení`
+  String get metering_screen_add_device {
+    return Intl.message(
+      'Přidat zařízení',
+      name: 'metering_screen_add_device',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Před prvním měřením je potřeba spárovat aplikaci s odpovídajícím zařízením.`
+  String get metering_screen_no_added_device_yet {
+    return Intl.message(
+      'Před prvním měřením je potřeba spárovat aplikaci s odpovídajícím zařízením.',
+      name: 'metering_screen_no_added_device_yet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Odstranit zařízení`
+  String get metering_screen_device_removal_title {
+    return Intl.message(
+      'Odstranit zařízení',
+      name: 'metering_screen_device_removal_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Odstranit zařízení`
+  String get metering_screen_device_removal_button_confirm {
+    return Intl.message(
+      'Odstranit zařízení',
+      name: 'metering_screen_device_removal_button_confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zařízení bude odstraněno. Pro opětovné používání ho budete muset znovu spárovat s aplikací.`
+  String get metering_screen_device_removal_message {
+    return Intl.message(
+      'Zařízení bude odstraněno. Pro opětovné používání ho budete muset znovu spárovat s aplikací.',
+      name: 'metering_screen_device_removal_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Přidat zařízení`
+  String get add_device_screen_title {
+    return Intl.message(
+      'Přidat zařízení',
+      name: 'add_device_screen_title',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Vlastní zápis hodnot`
   String get manual_measurement_screen_title {
     return Intl.message(
@@ -1812,10 +1882,10 @@ class I10n {
     );
   }
 
-  /// `Aplikace si vyzaduje povolenie pouzivat Bluetooth pre komunikaciu so zariadeniami.`
+  /// `Aplikace vyžaduje povolení pouzívat Bluetooth pro komunikaci se zařízeními.`
   String get find_device_screen_not_granted_bt_desc {
     return Intl.message(
-      'Aplikace si vyzaduje povolenie pouzivat Bluetooth pre komunikaciu so zariadeniami.',
+      'Aplikace vyžaduje povolení pouzívat Bluetooth pro komunikaci se zařízeními.',
       name: 'find_device_screen_not_granted_bt_desc',
       desc: '',
       args: [],

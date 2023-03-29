@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/ui/dialogs/bottom_dialog.dart';
-import 'package:scalesoft_app/ui/dialogs/device_selector_dialog.dart';
 import 'package:scalesoft_app/ui/dialogs/hospital_selection_dialog.dart';
 import 'package:scalesoft_app/ui/dialogs/planned_measurement_time_dialog.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/ui/dialogs/user_hospital_selection_dialog.dart';
 import 'package:scalesoft_app/ui/dialogs/user_selection_dialog.dart';
-import 'package:scalesoft_app/ui/routers/routes/manual_measurement_route.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/widgets/scale_time_picker.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
@@ -68,6 +64,21 @@ mixin BottomSheetMixin {
           context: context,
           measurementType: measurementType,
         );
+      },
+    );
+    return result;
+  }
+
+  Future<bool?> showDeviceRemovalConfirmation({
+    required final BuildContext context,
+  }) async {
+    final result = await showModalBottomSheet<bool?>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return BottomDialog.deviceConfirmationRemoval(context: context);
       },
     );
     return result;
@@ -242,38 +253,6 @@ mixin BottomSheetMixin {
     );
 
     return userSelectionResult;
-  }
-
-  void doMeasurement({
-    required final BuildContext context,
-    required final String userId,
-    final MeasurementType? selectedMeasurementType,
-    final Set<MeasurementType>? allMeasurementTypes,
-  }) async {
-    if (selectedMeasurementType == null ||
-        Constants.supportedDevices.any(
-          (supportedDevice) => supportedDevice.supportedMeasurementTypes!
-              .contains(selectedMeasurementType),
-        )) {
-      showModalBottomSheet(
-        context: context,
-        useRootNavigator: true,
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        builder: (context) {
-          return DeviceSelectorDialog(
-            userId: userId,
-            selectedMeasurementType: selectedMeasurementType,
-            allMeasurementTypes: allMeasurementTypes,
-          );
-        },
-      );
-    } else {
-      GoRouter.of(context).pushNamed(
-        ManualMeasurementRoute.name,
-        extra: [userId, selectedMeasurementType],
-      );
-    }
   }
 }
 

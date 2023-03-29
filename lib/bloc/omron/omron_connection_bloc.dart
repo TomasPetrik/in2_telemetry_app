@@ -26,9 +26,12 @@ class OmronConnectionBloc
   final PairedDevicesDbProvider _pairedDevicesDbProvider;
   final SyncBloc _syncBloc;
   FlutterBluePlus flutterBlue = FlutterBluePlus.instance;
-  DeviceModel? reqModelPairing;
+  Device? device;
   String? userId;
   MeasurementType? measurementType;
+
+  bool get reqModelPairing =>
+      device!.deviceModel == DeviceModel.omronM7 && device!.macAddress == null;
 
   OmronConnectionBloc(
     this._pendingResultsDbProvider,
@@ -37,16 +40,16 @@ class OmronConnectionBloc
   ) : super(const OmronConnectionState.init()) {
     on<OmronConnectionBlocEvent>((event, emit) async {
       Future<void> verifyDevice(
-        BluetoothDevice device,
+        BluetoothDevice blDevice,
         AdvertisementData? advertisementData,
       ) async {
         final deviceInfo =
-            await OmronConnectionHelper.requestDeviceInfo(device);
+            await OmronConnectionHelper.requestDeviceInfo(blDevice);
         deviceInfo?.advData = advertisementData;
         if (deviceInfo != null) {
           emit(
             OmronConnectionState.verified(
-              device: device,
+              device: blDevice,
               deviceInfo: deviceInfo,
             ),
           );
@@ -56,19 +59,19 @@ class OmronConnectionBloc
         }
 
         final batteryInfo =
-            await OmronConnectionHelper.requestBatteryInfo(device);
+            await OmronConnectionHelper.requestBatteryInfo(blDevice);
 
         deviceInfo.batteryInfo = batteryInfo;
 
-        if (reqModelPairing != null) {
+        if (reqModelPairing) {
           emit(const OmronConnectionState.pairing());
         } else {
           emit(const OmronConnectionState.syncing());
         }
 
         final measurementResult = await OmronConnectionHelper.requestBPData(
-          device,
-          reqModelPairing == null,
+          blDevice,
+          !reqModelPairing,
         );
 
         if (measurementResult.resultState == ResultState.success) {
@@ -80,7 +83,7 @@ class OmronConnectionBloc
             measurementDateTime: measurementResult.measurementDt,
             sourceDeviceWithMetadata: SourceDeviceInfo(
               sourceDevice: Device(
-                deviceIdentifier: device.id.id,
+                deviceIdentifier: blDevice.id.id,
                 modelName: deviceInfo.modelNumber,
                 deviceManufacturer: deviceInfo.manufacturerName,
               ),
@@ -104,15 +107,19 @@ class OmronConnectionBloc
           _syncBloc.add(const SyncEvent.syncResults());
         }
 
-        if (reqModelPairing != null) {
+        if (reqModelPairing) {
           //save paired device
           if (measurementResult.resultState != ResultState.connectionError) {
             final supportedDevice = Constants.supportedDevices.firstWhere(
-              (device) => device.deviceModel == reqModelPairing,
+              (suppDevice) => suppDevice.deviceModel == device!.deviceModel,
             );
 
-            await _pairedDevicesDbProvider
-                .add(supportedDevice.copyWith(macAddress: device.id.id));
+            await _pairedDevicesDbProvider.add(
+              supportedDevice.copyWith(
+                macAddress: blDevice.id.id,
+                addedAt: DateTime.now(),
+              ),
+            );
           }
 
           emit(
@@ -152,8 +159,8 @@ class OmronConnectionBloc
       }
 
       await event.when(
-        init: (userId, measurementType, reqModelPairing) async {
-          this.reqModelPairing = reqModelPairing;
+        init: (userId, measurementType, device) async {
+          this.device = device;
           this.userId = userId;
           this.measurementType = measurementType;
           final btState = await FlutterBluePlus.instance.state.first;
@@ -203,6 +210,7 @@ class OmronConnectionBloc
           emit(const OmronConnectionState.searching());
           final foundDevice = await OmronConnectionHelper.searchDevice(
             serviceUuid: bloodPressureServiceUuid,
+            device: device!,
           );
           if (foundDevice != null) {
             add(

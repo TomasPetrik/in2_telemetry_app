@@ -6,7 +6,7 @@ import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
 
 class ManualMeasurementRoute extends ApplicationRoute with PageBuilderMixin {
   static const name = 'manual-measurement';
-  static const path = '/manual-measurement';
+  static const path = '/manual-measurement/:userId/:measurementType';
 
   ManualMeasurementRoute({
     required super.navigator,
@@ -23,9 +23,12 @@ class ManualMeasurementRoute extends ApplicationRoute with PageBuilderMixin {
       pageBuilder: pageBuilder(
         withTransition: false,
         builder: (state) {
-          final extras = state.extra! as List;
-          final userId = extras[0] as String;
-          final measurementType = extras[1] as MeasurementType?;
+          final userId = state.params['userId']!;
+          final measurementTypeName = state.params['measurementType'];
+          final measurementType = MeasurementType.values.firstWhere(
+            (measurementType) => measurementType.name == measurementTypeName,
+          );
+
           return ManualMeasurementScreen(
             userId: userId,
             measurementType: measurementType,

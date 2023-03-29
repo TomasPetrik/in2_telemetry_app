@@ -10,7 +10,7 @@ class OmronConnectionBlocEvent with _$OmronConnectionBlocEvent {
   const factory OmronConnectionBlocEvent.init(
     String userId,
     MeasurementType measurementType,
-    DeviceModel? reqModelPairing,
+    Device? device,
   ) = _Init;
   const factory OmronConnectionBlocEvent.newBtState(BluetoothState newBtState) =
       _NewBtState;

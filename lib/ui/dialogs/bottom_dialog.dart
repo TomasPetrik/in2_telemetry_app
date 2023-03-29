@@ -49,6 +49,26 @@ class BottomDialog extends StatelessWidget {
     );
   }
 
+  factory BottomDialog.deviceConfirmationRemoval({
+    Key? key,
+    required BuildContext context,
+  }) {
+    return _BottomDialog(
+      title: context.locale.metering_screen_device_removal_title,
+      description: context.locale.metering_screen_device_removal_message,
+      iconPath: 'assets/icons/icon_trash_blank_big.svg',
+      iconColor: Theme.of(context).colorScheme.tertiary,
+      positiveButtonStyle: ButtonStyle(
+        buttonType: ButtonType.alert,
+        label: context.locale.metering_screen_device_removal_button_confirm,
+      ),
+      negativeButtonStyle: ButtonStyle(
+        buttonType: ButtonType.secondary,
+        label: context.locale.common_close,
+      ),
+    );
+  }
+
   factory BottomDialog.accountConfirmationRemoval({
     Key? key,
     required BuildContext context,

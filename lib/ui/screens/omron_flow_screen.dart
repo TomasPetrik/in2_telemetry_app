@@ -27,13 +27,13 @@ class OmronFlowScreen extends StatefulWidget {
   const OmronFlowScreen({
     super.key,
     required this.userId,
-    required this.localDeviceId,
-    required this.measurementTypeIndex,
+    required this.device,
+    required this.measurementType,
   });
 
   final String userId;
-  final int localDeviceId;
-  final int measurementTypeIndex;
+  final Device device;
+  final MeasurementType measurementType;
   @override
   State<OmronFlowScreen> createState() => _OmronFlowScreenState();
 }
@@ -48,10 +48,9 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
   @override
   void initState() {
     omronConnectionBloc = getIt<OmronConnectionBloc>();
-    measurementType = MeasurementType.values[widget.measurementTypeIndex];
-    device = Constants.supportedDevices.firstWhere(
-      (device) => device.localId == widget.localDeviceId,
-    );
+
+    device = widget.device;
+    measurementType = widget.measurementType;
 
     if (device.reqPairing == true &&
         getIt<PairedDevicesDbProvider>().box.isEmpty) {
@@ -80,7 +79,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                     OmronConnectionBlocEvent.init(
                       widget.userId,
                       measurementType,
-                      reqModelPairing,
+                      device,
                     ),
                   ),
                 buildWhen: (previous, current) {
@@ -209,7 +208,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                     synced: (hwMeasurementResult, deviceInfo) {
                       return SyncedResult(
                         userId: widget.userId,
-                        localDeviceId: widget.localDeviceId,
+                        deviceId: device.macAddress ?? '${device.localId}',
                         hwMeasurementResult: hwMeasurementResult,
                         measurementType: measurementType,
                         deviceInfo: deviceInfo,
@@ -218,7 +217,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                     paired: (hwMeasurementResult, deviceInfo) {
                       return SyncedResult(
                         userId: widget.userId,
-                        localDeviceId: widget.localDeviceId,
+                        deviceId: device.macAddress ?? '${device.localId}',
                         hwMeasurementResult: hwMeasurementResult,
                         measurementType: measurementType,
                         deviceInfo: deviceInfo,

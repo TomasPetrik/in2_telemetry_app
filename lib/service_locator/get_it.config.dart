@@ -12,11 +12,11 @@ import 'package:scalesoft_app/api/client/account_api_client.dart' as _i24;
 import 'package:scalesoft_app/api/client/auth_api_client.dart' as _i27;
 import 'package:scalesoft_app/api/client/care_plan_api_client.dart' as _i29;
 import 'package:scalesoft_app/api/client/time_settings_api_client.dart' as _i21;
-import 'package:scalesoft_app/api/interceptors/token_interceptor.dart' as _i36;
-import 'package:scalesoft_app/bloc/auth/auth_bloc.dart' as _i37;
+import 'package:scalesoft_app/api/interceptors/token_interceptor.dart' as _i37;
+import 'package:scalesoft_app/bloc/auth/auth_bloc.dart' as _i38;
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc.dart' as _i28;
 import 'package:scalesoft_app/bloc/calendar_service/fulfillment_service_bloc.dart'
-    as _i33;
+    as _i34;
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart' as _i9;
 import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc.dart' as _i10;
 import 'package:scalesoft_app/bloc/chart_loader_bloc/chart_loader_bloc.dart'
@@ -24,15 +24,17 @@ import 'package:scalesoft_app/bloc/chart_loader_bloc/chart_loader_bloc.dart'
 import 'package:scalesoft_app/bloc/daily_times_settings/times_settings_bloc.dart'
     as _i23;
 import 'package:scalesoft_app/bloc/notifications/notifications_bloc.dart'
-    as _i34;
-import 'package:scalesoft_app/bloc/omron/omron_connection_bloc.dart' as _i39;
+    as _i35;
+import 'package:scalesoft_app/bloc/omron/omron_connection_bloc.dart' as _i40;
 import 'package:scalesoft_app/bloc/results/results_bloc.dart' as _i18;
 import 'package:scalesoft_app/bloc/settings/app_settings_bloc.dart' as _i26;
-import 'package:scalesoft_app/bloc/sync/sync_bloc.dart' as _i38;
+import 'package:scalesoft_app/bloc/sync/sync_bloc.dart' as _i39;
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart' as _i32;
 import 'package:scalesoft_app/cubit/auth_web/auth_web_cubit.dart' as _i6;
 import 'package:scalesoft_app/cubit/calendar_footer/calendar_footer_cubit.dart'
     as _i8;
+import 'package:scalesoft_app/cubit/device_management/device_management_cubit.dart'
+    as _i33;
 import 'package:scalesoft_app/cubit/hospital_search/hospital_search_cubit.dart'
     as _i12;
 import 'package:scalesoft_app/providers/account_db_provider.dart' as _i3;
@@ -51,10 +53,10 @@ import 'package:scalesoft_app/repositories/time_settings_repository.dart'
 import 'package:scalesoft_app/services/auth_service.dart' as _i5;
 import 'package:scalesoft_app/services/internet_service.dart' as _i13;
 import 'package:scalesoft_app/services/location_service.dart' as _i14;
-import 'package:scalesoft_app/services/sync_service.dart' as _i35;
+import 'package:scalesoft_app/services/sync_service.dart' as _i36;
 import 'package:scalesoft_app/storage/session.dart' as _i19;
 
-import '../api/dio_module.dart' as _i40;
+import '../api/dio_module.dart' as _i41;
 
 // ignore_for_file: unnecessary_lambdas
 // ignore_for_file: lines_longer_than_80_chars
@@ -138,17 +140,19 @@ _i1.GetIt init(
     gh<_i9.CarePlanBloc>(),
     gh<_i14.LocationService>(),
   ));
-  gh.factory<_i33.FulfillmentServiceBloc>(() => _i33.FulfillmentServiceBloc(
+  gh.factory<_i33.DeviceManagementCubit>(
+      () => _i33.DeviceManagementCubit(gh<_i16.PairedDevicesDbProvider>()));
+  gh.factory<_i34.FulfillmentServiceBloc>(() => _i34.FulfillmentServiceBloc(
         gh<_i3.AccountDbProvider>(),
         gh<_i8.CalendarFooterCubit>(),
         gh<_i30.CarePlansRepository>(),
         gh<_i7.CalendarDbProvider>(),
       ));
-  gh.singleton<_i34.NotificationsBloc>(_i34.NotificationsBloc(
+  gh.singleton<_i35.NotificationsBloc>(_i35.NotificationsBloc(
     gh<_i19.Session>(),
     gh<_i4.AppSettingsDbProvider>(),
   ));
-  gh.singleton<_i35.SyncService>(_i35.SyncService(
+  gh.singleton<_i36.SyncService>(_i36.SyncService(
     gh<_i19.Session>(),
     gh<_i3.AccountDbProvider>(),
     gh<_i17.PendingResultsDbProvider>(),
@@ -156,30 +160,30 @@ _i1.GetIt init(
     gh<_i22.TimeSettingsRepository>(),
     gh<_i4.AppSettingsDbProvider>(),
   ));
-  gh.factory<_i36.TokenInterceptor>(() => _i36.TokenInterceptor(
+  gh.factory<_i37.TokenInterceptor>(() => _i37.TokenInterceptor(
         gh<_i19.Session>(),
         gh<_i24.AccountApiClient>(),
       ));
-  gh.singleton<_i37.AuthBloc>(_i37.AuthBloc(
+  gh.singleton<_i38.AuthBloc>(_i38.AuthBloc(
     gh<_i5.AuthService>(),
     gh<_i25.AccountRepository>(),
     gh<_i19.Session>(),
     gh<_i3.AccountDbProvider>(),
     gh<_i17.PendingResultsDbProvider>(),
     gh<_i11.Dio>(instanceName: 'privateDio'),
-    gh<_i35.SyncService>(),
+    gh<_i36.SyncService>(),
   ));
-  gh.singleton<_i38.SyncBloc>(_i38.SyncBloc(
+  gh.singleton<_i39.SyncBloc>(_i39.SyncBloc(
     gh<_i3.AccountDbProvider>(),
-    gh<_i35.SyncService>(),
+    gh<_i36.SyncService>(),
     gh<_i19.Session>(),
   ));
-  gh.factory<_i39.OmronConnectionBloc>(() => _i39.OmronConnectionBloc(
+  gh.factory<_i40.OmronConnectionBloc>(() => _i40.OmronConnectionBloc(
         gh<_i17.PendingResultsDbProvider>(),
         gh<_i16.PairedDevicesDbProvider>(),
-        gh<_i38.SyncBloc>(),
+        gh<_i39.SyncBloc>(),
       ));
   return getIt;
 }
 
-class _$DioModule extends _i40.DioModule {}
+class _$DioModule extends _i41.DioModule {}

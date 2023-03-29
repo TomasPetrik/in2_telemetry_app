@@ -18,21 +18,17 @@ class SyncedResult extends StatelessWidget {
   const SyncedResult({
     super.key,
     required this.userId,
-    required this.localDeviceId,
+    required this.deviceId,
     required this.hwMeasurementResult,
     required this.measurementType,
     required this.deviceInfo,
   });
 
   final String userId;
-  final int localDeviceId;
+  final String deviceId;
   final HwMeasurementResult hwMeasurementResult;
   final MeasurementType measurementType;
   final DeviceInfo deviceInfo;
-
-  String _getDeviceInfo() {
-    return deviceInfo.toString();
-  }
 
   String _getTitle(BuildContext context) {
     switch (hwMeasurementResult.resultState) {
@@ -198,16 +194,6 @@ class SyncedResult extends StatelessWidget {
             ),
           ),
         ),
-        const SliverGap(Dimensions.padding16),
-        SliverToBoxAdapter(
-          child: Text(
-            _getDeviceInfo(),
-            style: ScaleTextStyles.label.apply(
-              color: Theme.of(context).colorScheme.onSecondary,
-            ),
-            textAlign: TextAlign.start,
-          ),
-        ),
         const SliverGap(Dimensions.padding40),
         SliverToBoxAdapter(
           child: SvgPicture.asset(
@@ -241,7 +227,11 @@ class SyncedResult extends StatelessWidget {
               onPressed: () {
                 GoRouter.of(context).pushReplacementNamed(
                   OmronFlowRoute.name,
-                  extra: [userId, localDeviceId, measurementType.index],
+                  params: {
+                    'userId': userId,
+                    'measurementType': measurementType.name,
+                    'deviceId': deviceId
+                  },
                 );
               },
               buttonType: ButtonType.primary,

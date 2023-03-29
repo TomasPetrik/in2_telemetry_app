@@ -14,14 +14,16 @@ class Device with _$Device {
     @HiveField(0) String? deviceIdentifier,
     @HiveField(1) String? modelName,
     @HiveField(2) String? deviceManufacturer,
-    @JsonKey(ignore: true) @HiveField(3) String? macAddress,
-    @JsonKey(ignore: true) @HiveField(4) int? localId,
-    @JsonKey(ignore: true) @HiveField(5) DeviceModel? deviceModel,
+    @JsonKey(ignore: true) @HiveField(3) String? bluetoothName,
+    @JsonKey(ignore: true) @HiveField(4) String? macAddress,
+    @JsonKey(ignore: true) @HiveField(5) int? localId,
+    @JsonKey(ignore: true) @HiveField(6) DeviceModel? deviceModel,
     @JsonKey(ignore: true)
-    @HiveField(6)
+    @HiveField(7)
         List<MeasurementType>? supportedMeasurementTypes,
-    @JsonKey(ignore: true) @HiveField(7) String? imagePath,
-    @JsonKey(ignore: true) @HiveField(8) bool? reqPairing,
+    @JsonKey(ignore: true) @HiveField(8) String? imagePath,
+    @JsonKey(ignore: true) @HiveField(9) bool? reqPairing,
+    @JsonKey(ignore: true) @HiveField(10) DateTime? addedAt,
   }) = _Device;
 
   factory Device.fromJson(Map<String, dynamic> json) => _$DeviceFromJson(json);

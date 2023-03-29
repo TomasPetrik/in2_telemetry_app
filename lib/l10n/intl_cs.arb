@@ -33,11 +33,19 @@
     "common_understand": "Rozumím",
     "common_from": "Od",
     "common_to": "Do",
-    "common_at_time": "v {atTime}",
     "common_procedure": "Postup",
     "common_today": "Dnes",
     "common_result": "Výsledek",
+    "common_at_time": "v {atTime}",
     "@common_at_time": {
+        "placeholders": {
+            "atTime": {
+                "type": "String"
+            }
+        }
+    },
+    "common_addded_at_time": "Přidáno {atTime}",
+    "@common_addded_at_time": {
         "placeholders": {
             "atTime": {
                 "type": "String"
@@ -297,6 +305,12 @@
             }
         }
     },
+    "metering_screen_add_device": "Přidat zařízení",
+    "metering_screen_no_added_device_yet": "Před prvním měřením je potřeba spárovat aplikaci s odpovídajícím zařízením.",
+    "metering_screen_device_removal_title": "Odstranit zařízení",
+    "metering_screen_device_removal_button_confirm": "Odstranit zařízení",
+    "metering_screen_device_removal_message": "Zařízení bude odstraněno. Pro opětovné používání ho budete muset znovu spárovat s aplikací.",
+    "add_device_screen_title": "Přidat zařízení",
     "manual_measurement_screen_title": "Vlastní zápis hodnot",
     "manual_measurement_screen_type": "Typ",
     "manual_measurement_screen_systolic": "Systolický",
@@ -451,7 +465,7 @@
     "find_device_screen_disabled_bt_desc": "Pro spojení s přístrojem je potřeba mít Bluetooth zapnutý.",
     "find_device_screen_disabled_bt_btn_settings": "Nastavení",
     "find_device_screen_not_granted_bt_title": "Bluetooth zakázan ",
-    "find_device_screen_not_granted_bt_desc": "Aplikace si vyzaduje povolenie pouzivat Bluetooth pre komunikaciu so zariadeniami.",
+    "find_device_screen_not_granted_bt_desc": "Aplikace vyžaduje povolení pouzívat Bluetooth pro komunikaci se zařízeními.",
     "find_device_screen_not_granted_bt_btn_settings": "Povolit",
     "measurement_summary_screen_success_title": "Měření bylo úspěšně dokončeno",
     "measurement_summary_screen_success_subtitle": "Výsledky budou automaticky odeslány",

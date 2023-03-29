@@ -11,6 +11,7 @@ import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/navigation_tab_chip.dart';
+import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 class MeasurementItem extends StatelessWidget with BottomSheetMixin {
   const MeasurementItem({
@@ -135,7 +136,7 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
                         label: context.locale.common_measure,
                         isSelected: true,
                         onTap: () {
-                          doMeasurement(
+                          MeasurementHelper.doMeasurement(
                             context: context,
                             userId: carePlan.userId!,
                             selectedMeasurementType:

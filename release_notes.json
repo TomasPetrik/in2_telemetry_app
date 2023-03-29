@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1.  Fixed (SCALESOFT-49) - unable login when user puts his credentials,\n2. Refactored restoring last calendar state when appearance  is automatically changed by daylight."
+    "text": "1. Refactored start metering process regarding UI,\n2. Implemented device management,\n3. Updated go_router."
   },
   {
     "language": "sk-SK",

@@ -10,6 +10,10 @@ extension DateParse on DateTime {
     return DateFormat('d.M.yyyy, HH:mm').format(toLocal());
   }
 
+  String toDateFormatLong2() {
+    return DateFormat('d.M.yyyy - HH:mm').format(toLocal());
+  }
+
   String toDateFormatShort() {
     return DateFormat('d.M.yyyy').format(toLocal());
   }

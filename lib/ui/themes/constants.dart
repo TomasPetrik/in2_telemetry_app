@@ -155,6 +155,7 @@ class Constants {
     Device(
       localId: 0,
       modelName: 'Beurer BM 77',
+      bluetoothName: 'BM77',
       deviceModel: DeviceModel.beurerBm77,
       imagePath: 'assets/images/beurer_bm_77.png',
       supportedMeasurementTypes: [
@@ -166,6 +167,7 @@ class Constants {
     Device(
       localId: 1,
       modelName: 'Omron M7',
+      bluetoothName: 'BLESmart',
       deviceModel: DeviceModel.omronM7,
       imagePath: 'assets/images/omron_m7.png',
       supportedMeasurementTypes: [

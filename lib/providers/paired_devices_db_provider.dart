@@ -21,4 +21,8 @@ class PairedDevicesDbProvider extends BoxProvider<Device> {
   Future<void> add(Device device) async {
     await box.put(device.macAddress!, device);
   }
+
+  Future<void> remove(Device device) async {
+    await box.delete(device.macAddress);
+  }
 }

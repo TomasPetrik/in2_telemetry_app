@@ -22,6 +22,7 @@ import 'package:scalesoft_app/ui/widgets/no_plans_placeholder.dart';
 import 'package:scalesoft_app/ui/widgets/personal_measurement_footer.dart';
 import 'package:scalesoft_app/ui/widgets/sync_widget.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
+import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 class DashboardPage extends StatelessWidget with BottomSheetMixin {
   const DashboardPage({super.key});
@@ -153,7 +154,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                                   showInfo:
                                       state.measurements?.isNotEmpty == true,
                                   onPressed: () async {
-                                    doMeasurement(
+                                    MeasurementHelper.doMeasurement(
                                       context: context,
                                       userId: sessionAccounts[0].user.muid,
                                       allMeasurementTypes:
@@ -190,7 +191,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                                           state.measurements?.isNotEmpty ==
                                               true,
                                       onPressed: () async {
-                                        doMeasurement(
+                                        MeasurementHelper.doMeasurement(
                                           context: context,
                                           userId: sessionAccounts[0].user.muid,
                                           selectedMeasurementType: state

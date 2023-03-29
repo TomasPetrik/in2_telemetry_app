@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:scalesoft_app/api/dto/measurement/device.dart';
 import 'package:scalesoft_app/extensions/uint8_list_extension.dart';
 import 'package:scalesoft_app/model/device_info.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
@@ -25,6 +26,7 @@ class DeviceSearchResult {
 class OmronConnectionHelper {
   static Future<DeviceSearchResult?> searchDevice({
     required String serviceUuid,
+    required Device device,
   }) async {
     final flutterBlue = FlutterBluePlus.instance;
 
@@ -44,9 +46,10 @@ class OmronConnectionHelper {
             .map((uuid) => uuid.toLowerCase());
         if (serviceUuids.any(
               (devServiceUuid) => devServiceUuid.contains(serviceUuid),
-            ) ||
-            result.device.name.contains('BLESmart') ||
-            result.device.name.contains('BM77')) {
+            ) &&
+            result.device.name.toLowerCase().contains(device.bluetoothName!.toLowerCase()) &&
+            (device.macAddress == null ||
+                device.macAddress == result.device.id.toString())) {
           debugPrint('found device at ${result.timeStamp}');
 
           await flutterBlue.stopScan();

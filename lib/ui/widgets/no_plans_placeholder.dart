@@ -8,6 +8,7 @@ import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/widgets/info_placeholder.dart';
 import 'package:scalesoft_app/ui/widgets/personal_measurement_footer.dart';
+import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 class NoPlansPlaceholder extends StatelessWidget with BottomSheetMixin {
   const NoPlansPlaceholder({
@@ -44,7 +45,7 @@ class NoPlansPlaceholder extends StatelessWidget with BottomSheetMixin {
           PersonalMeasurementFooter(
             showInfo: false,
             onPressed: () async {
-              doMeasurement(
+              MeasurementHelper.doMeasurement(
                 context: context,
                 userId: userAccount!.user.muid,
                 allMeasurementTypes: supportedMeasurementTypes.isNotEmpty
