@@ -2,6 +2,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/measurement/device.dart';
+import 'package:scalesoft_app/model/device_info.dart';
 
 part 'omron_connection_bloc_event.freezed.dart';
 
@@ -29,6 +30,11 @@ class OmronConnectionBlocEvent with _$OmronConnectionBlocEvent {
     BluetoothDevice device,
     AdvertisementData? advertisementData,
   ) = _VerifyDevice;
+
+  const factory OmronConnectionBlocEvent.measureAndSync(
+    BluetoothDevice device,
+    DeviceInfo deviceInfo,
+  ) = _MeasureAndSync;
 
   factory OmronConnectionBlocEvent.foundDevice(
     BluetoothDevice device,

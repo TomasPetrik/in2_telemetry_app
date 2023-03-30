@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Refactored start metering process regarding UI,\n2. Implemented device management,\n3. Updated go_router."
+    "text": "1. Refactored auto-measurement after pairing for Omron devices,\n2. Re-defined measurement states during metering process per speficic device,\n 3. Updated synced result page which is not including paired device state anymore."
   },
   {
     "language": "sk-SK",

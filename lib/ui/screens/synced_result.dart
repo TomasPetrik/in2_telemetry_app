@@ -34,9 +34,6 @@ class SyncedResult extends StatelessWidget {
     switch (hwMeasurementResult.resultState) {
       case ResultState.success:
         return context.locale.measurement_summary_screen_success_title;
-
-      case ResultState.paired:
-        return context.locale.measurement_summary_screen_dev_paired_title;
       case ResultState.noData:
         return context.locale.measurement_summary_screen_no_data_title;
       case ResultState.connectionError:
@@ -48,9 +45,6 @@ class SyncedResult extends StatelessWidget {
     switch (hwMeasurementResult.resultState) {
       case ResultState.success:
         return context.locale.measurement_summary_screen_success_subtitle;
-
-      case ResultState.paired:
-        return context.locale.measurement_summary_screen_dev_paired_subtitle;
       case ResultState.noData:
         return context.locale.measurement_summary_screen_no_data_subtitle;
       case ResultState.connectionError:
@@ -62,8 +56,6 @@ class SyncedResult extends StatelessWidget {
     switch (hwMeasurementResult.resultState) {
       case ResultState.success:
         return context.locale.measurement_summary_screen_result_success_desc;
-      case ResultState.paired:
-        return context.locale.measurement_summary_screen_dev_paired_desc;
       case ResultState.noData:
         return context.locale.measurement_summary_screen_no_data_desc;
       case ResultState.connectionError:
@@ -75,8 +67,6 @@ class SyncedResult extends StatelessWidget {
     switch (hwMeasurementResult.resultState) {
       case ResultState.success:
         return Theme.of(context).colorScheme.onTertiary;
-      case ResultState.paired:
-        return Theme.of(context).colorScheme.onTertiary;
       case ResultState.noData:
         return Theme.of(context).colorScheme.error;
       case ResultState.connectionError:
@@ -87,8 +77,6 @@ class SyncedResult extends StatelessWidget {
   String _getIconPath() {
     switch (hwMeasurementResult.resultState) {
       case ResultState.success:
-        return 'assets/icons/icon_circle_check_huge.svg';
-      case ResultState.paired:
         return 'assets/icons/icon_circle_check_huge.svg';
       case ResultState.noData:
         return 'assets/icons/icon_triangle_exclamation_huge.svg';
@@ -147,48 +135,45 @@ class SyncedResult extends StatelessWidget {
                       color: Theme.of(context).colorScheme.onSecondary,
                     ),
                   ),
-                  if (hwMeasurementResult.resultState !=
-                      ResultState.paired) ...[
-                    Gaps.gap16,
-                    Container(
-                      height: 0.5,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                    Gaps.gap16,
-                    Row(
-                      children: [
-                        Text(
-                          hwMeasurementResult.measurementDt.toTimeShort(),
-                          style: ScaleTextStyles.label.apply(
+                  Gaps.gap16,
+                  Container(
+                    height: 0.5,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  Gaps.gap16,
+                  Row(
+                    children: [
+                      Text(
+                        hwMeasurementResult.measurementDt.toTimeShort(),
+                        style: ScaleTextStyles.label.apply(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                      ),
+                      Gaps.gap16,
+                      SvgPicture.asset(
+                        'assets/icons/icon_wave_pulse.svg',
+                        color: Theme.of(context).colorScheme.onTertiary,
+                      ),
+                      Gaps.gap16,
+                      Expanded(
+                        child: Text(
+                          context.locale.common_measurement_types(
+                            measurementType.name,
+                          ),
+                          style: ScaleTextStyles.textAccent.apply(
                             color: Theme.of(context).colorScheme.onPrimary,
                           ),
                         ),
-                        Gaps.gap16,
-                        SvgPicture.asset(
-                          'assets/icons/icon_wave_pulse.svg',
-                          color: Theme.of(context).colorScheme.onTertiary,
+                      ),
+                      Gaps.gap16,
+                      Text(
+                        _getMeasurementValueFormatted() ?? '?',
+                        style: ScaleTextStyles.text.apply(
+                          color: Theme.of(context).colorScheme.onPrimary,
                         ),
-                        Gaps.gap16,
-                        Expanded(
-                          child: Text(
-                            context.locale.common_measurement_types(
-                              measurementType.name,
-                            ),
-                            style: ScaleTextStyles.textAccent.apply(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                            ),
-                          ),
-                        ),
-                        Gaps.gap16,
-                        Text(
-                          _getMeasurementValueFormatted() ?? '?',
-                          style: ScaleTextStyles.text.apply(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -214,16 +199,12 @@ class SyncedResult extends StatelessWidget {
             ),
           ),
         ),
-        if (hwMeasurementResult.resultState == ResultState.paired ||
-            hwMeasurementResult.resultState == ResultState.noData) ...[
+        if (hwMeasurementResult.resultState == ResultState.noData) ...[
           const SliverGap(Dimensions.padding24),
           SliverToBoxAdapter(
             child: HighlightedElevatedButton(
-              label: hwMeasurementResult.resultState == ResultState.paired
-                  ? context.locale
-                      .measurement_summary_screen_dev_paired_start_measurement
-                  : context.locale
-                      .measurement_summary_screen_no_data_repeat_measurement,
+              label: context
+                  .locale.measurement_summary_screen_no_data_repeat_measurement,
               onPressed: () {
                 GoRouter.of(context).pushReplacementNamed(
                   OmronFlowRoute.name,

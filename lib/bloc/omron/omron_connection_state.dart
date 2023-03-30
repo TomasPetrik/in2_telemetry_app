@@ -18,7 +18,6 @@ class OmronConnectionState with _$OmronConnectionState {
   const factory OmronConnectionState.notFound() = _NotFound;
   const factory OmronConnectionState.pairing() = _Pairing;
   const factory OmronConnectionState.paired({
-    required HwMeasurementResult measurementResult,
     required DeviceInfo deviceInfo,
   }) = _Paired;
   const factory OmronConnectionState.connecting() = _Connecting;

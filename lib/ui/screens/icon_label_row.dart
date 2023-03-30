@@ -17,26 +17,24 @@ class ConnectionLevel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            iconPath,
-            color: isActive
-                ? Theme.of(context).colorScheme.onTertiary
-                : Theme.of(context).colorScheme.tertiary,
-          ),
-          Gaps.gap16,
-          Expanded(
-            child: Text(
-              label,
-              style: ScaleTextStyles.textAccent.apply(
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
+    return Row(
+      children: [
+        SvgPicture.asset(
+          iconPath,
+          color: isActive
+              ? Theme.of(context).colorScheme.onTertiary
+              : Theme.of(context).colorScheme.tertiary,
+        ),
+        Gaps.gap16,
+        Expanded(
+          child: Text(
+            label,
+            style: ScaleTextStyles.textAccent.apply(
+              color: Theme.of(context).colorScheme.onPrimary,
             ),
-          )
-        ],
-      ),
+          ),
+        )
+      ],
     );
   }
 }

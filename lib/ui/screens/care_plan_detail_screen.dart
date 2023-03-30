@@ -93,7 +93,7 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
                         buttonLabel: context.locale.common_understand,
                         buttonType: SmallButtonType.none,
                         icon: SvgPicture.asset(
-                          'assets/icons/icon_circle_exclamation.svg',
+                          'assets/icons/icon_circle_exclamation_medium.svg',
                           color: Theme.of(context).colorScheme.tertiary,
                         ),
                         onTap: () {

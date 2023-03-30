@@ -12,6 +12,7 @@ import 'package:scalesoft_app/bloc/omron/omron_connection_bloc_event.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_state.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
+import 'package:scalesoft_app/model/device_info.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/providers/paired_devices_db_provider.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
@@ -39,13 +40,19 @@ class OmronConnectionBloc
     this._syncBloc,
   ) : super(const OmronConnectionState.init()) {
     on<OmronConnectionBlocEvent>((event, emit) async {
-      Future<void> verifyDevice(
+      Future<DeviceInfo?> verifyDevice(
         BluetoothDevice blDevice,
         AdvertisementData? advertisementData,
       ) async {
         final deviceInfo =
             await OmronConnectionHelper.requestDeviceInfo(blDevice);
         deviceInfo?.advData = advertisementData;
+
+        final batteryInfo =
+            await OmronConnectionHelper.requestBatteryInfo(blDevice);
+
+        deviceInfo?.batteryInfo = batteryInfo;
+
         if (deviceInfo != null) {
           emit(
             OmronConnectionState.verified(
@@ -53,16 +60,17 @@ class OmronConnectionBloc
               deviceInfo: deviceInfo,
             ),
           );
+          return deviceInfo;
         } else {
           emit(const OmronConnectionState.notVerified());
-          return;
+          return null;
         }
+      }
 
-        final batteryInfo =
-            await OmronConnectionHelper.requestBatteryInfo(blDevice);
-
-        deviceInfo.batteryInfo = batteryInfo;
-
+      Future<Device?> measureAndSync(
+        BluetoothDevice blDevice,
+        DeviceInfo deviceInfo,
+      ) async {
         if (reqModelPairing) {
           emit(const OmronConnectionState.pairing());
         } else {
@@ -87,7 +95,7 @@ class OmronConnectionBloc
                 modelName: deviceInfo.modelNumber,
                 deviceManufacturer: deviceInfo.manufacturerName,
               ),
-              batteryPercentage: batteryInfo?.batteryLevel,
+              batteryPercentage: deviceInfo.batteryInfo?.batteryLevel,
             ),
           );
 
@@ -108,31 +116,27 @@ class OmronConnectionBloc
         }
 
         if (reqModelPairing) {
-          //save paired device
-          if (measurementResult.resultState != ResultState.connectionError) {
-            final supportedDevice = Constants.supportedDevices.firstWhere(
-              (suppDevice) => suppDevice.deviceModel == device!.deviceModel,
-            );
-
-            await _pairedDevicesDbProvider.add(
-              supportedDevice.copyWith(
-                macAddress: blDevice.id.id,
-                addedAt: DateTime.now(),
-              ),
-            );
-          }
-
           emit(
             OmronConnectionState.paired(
-              measurementResult: measurementResult.copyWith(
-                resultState:
-                    measurementResult.resultState != ResultState.connectionError
-                        ? ResultState.paired
-                        : measurementResult.resultState,
-              ),
               deviceInfo: deviceInfo,
             ),
           );
+
+          //save paired device
+          if (measurementResult.resultState != ResultState.connectionError) {
+            final Device supportedDevice =
+                Constants.supportedDevices.firstWhere(
+              (suppDevice) => suppDevice.deviceModel == device!.deviceModel,
+            );
+
+            final pairedDevice = supportedDevice.copyWith(
+              macAddress: blDevice.id.id,
+              addedAt: DateTime.now(),
+            );
+
+            await _pairedDevicesDbProvider.add(pairedDevice);
+            return pairedDevice;
+          }
         } else {
           emit(
             OmronConnectionState.synced(
@@ -141,6 +145,7 @@ class OmronConnectionBloc
             ),
           );
         }
+        return null;
       }
 
       Future<void> connectToDevice(device, advertisementData) async {
@@ -234,7 +239,30 @@ class OmronConnectionBloc
           await connectToDevice(device, advertisementData);
         },
         verifyDevice: (device, advertisementData) async {
-          await verifyDevice(device, advertisementData);
+          final deviceInfo = await verifyDevice(device, advertisementData);
+
+          if (deviceInfo != null) {
+            add(OmronConnectionBlocEvent.measureAndSync(device, deviceInfo));
+          }
+        },
+        measureAndSync: (blDevice, deviceInfo) async {
+          final pairedDevice = await measureAndSync(blDevice, deviceInfo);
+
+          //if device was about pairing before, then now we are expecting measurement data results,
+          if (pairedDevice != null) {
+            //updating device containing mac address to do syncing in future (no pairing anymore)
+            device = pairedDevice;
+            //straight after pairing process, device should turn off bluetooth,
+            //so we can start search for device again after metering
+            final foundDevice = await OmronConnectionHelper.searchDevice(
+              serviceUuid: bloodPressureServiceUuid,
+              device: device!,
+            );
+            if (foundDevice != null) {
+              await foundDevice.device.connect(autoConnect: false);
+              await measureAndSync(foundDevice.device, deviceInfo);
+            }
+          }
         },
         foundDevice: (device, advertisementData) async {
           emit(OmronConnectionState.found(device: device));

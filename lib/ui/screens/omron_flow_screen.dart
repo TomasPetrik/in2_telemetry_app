@@ -8,7 +8,6 @@ import 'package:scalesoft_app/bloc/omron/omron_connection_bloc.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_bloc_event.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
-import 'package:scalesoft_app/providers/paired_devices_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/popup_dialog_mixin.dart';
 import 'package:scalesoft_app/ui/screens/synced_result.dart';
@@ -43,7 +42,9 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
   late final OmronConnectionBloc omronConnectionBloc;
   late final MeasurementType measurementType;
   late final Device device;
-  DeviceModel? reqModelPairing;
+
+  bool get reqModelPairing =>
+      device.deviceModel == DeviceModel.omronM7 && device.macAddress == null;
 
   @override
   void initState() {
@@ -51,11 +52,6 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
 
     device = widget.device;
     measurementType = widget.measurementType;
-
-    if (device.reqPairing == true &&
-        getIt<PairedDevicesDbProvider>().box.isEmpty) {
-      reqModelPairing = device.deviceModel;
-    }
 
     super.initState();
   }
@@ -92,7 +88,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                         syncing: () => true,
                         pairing: () => true,
                         synced: (measurementResult, deviceInfo) => true,
-                        paired: (measurementResult, deviceInfo) => true,
+                        paired: (deviceInfo) => true,
                       ) ??
                       false;
 
@@ -100,18 +96,6 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                 },
                 builder: ((context, state) {
                   final deviceStatusWidget = state.whenOrNull(
-                    init: () {
-                      return DeviceProgress(
-                        header: ProcessItem(
-                          label: context
-                              .locale.find_device_screen_searching_device,
-                          processType: ProcessType.inProgress,
-                        ),
-                        device: device,
-                        activeIndex: 0,
-                        reqModelPairing: reqModelPairing,
-                      );
-                    },
                     disabledBt: () {
                       return DeviceProgress(
                         header: WarningItem(
@@ -131,7 +115,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                         ),
                         device: device,
                         activeIndex: 0,
-                        reqModelPairing: reqModelPairing,
+                        reqPairing: reqModelPairing,
                       );
                     },
                     noBtPermissions: () {
@@ -155,7 +139,19 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                         ),
                         device: device,
                         activeIndex: 0,
-                        reqModelPairing: reqModelPairing,
+                        reqPairing: reqModelPairing,
+                      );
+                    },
+                    init: () {
+                      return DeviceProgress(
+                        header: ProcessItem(
+                          label: context
+                              .locale.find_device_screen_searching_device,
+                          processType: ProcessType.inProgress,
+                        ),
+                        device: device,
+                        activeIndex: 0,
+                        reqPairing: reqModelPairing,
                       );
                     },
                     searching: () {
@@ -167,7 +163,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                         ),
                         device: device,
                         activeIndex: 0,
-                        reqModelPairing: reqModelPairing,
+                        reqPairing: reqModelPairing,
                       );
                     },
                     connected: () {
@@ -178,19 +174,8 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                           processType: ProcessType.connected,
                         ),
                         device: device,
-                        activeIndex: 2,
-                        reqModelPairing: reqModelPairing,
-                      );
-                    },
-                    syncing: () {
-                      return DeviceProgress(
-                        header: ProcessItem(
-                          label: context.locale.find_device_screen_sync_results,
-                          processType: ProcessType.inProgress,
-                        ),
-                        device: device,
-                        activeIndex: 3,
-                        reqModelPairing: reqModelPairing,
+                        activeIndex: 0,
+                        reqPairing: reqModelPairing,
                       );
                     },
                     pairing: () {
@@ -201,20 +186,34 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                           processType: ProcessType.inProgress,
                         ),
                         device: device,
+                        activeIndex: 1,
+                        reqPairing: reqModelPairing,
+                      );
+                    },
+                    paired: (deviceInfo) {
+                      return DeviceProgress(
+                        header: ProcessItem(
+                          label: context
+                              .locale.find_device_screen_searching_device,
+                          processType: ProcessType.inProgress,
+                        ),
+                        device: device,
                         activeIndex: 2,
-                        reqModelPairing: reqModelPairing,
+                        reqPairing: reqModelPairing,
+                      );
+                    },
+                    syncing: () {
+                      return DeviceProgress(
+                        header: ProcessItem(
+                          label: context.locale.find_device_screen_sync_results,
+                          processType: ProcessType.inProgress,
+                        ),
+                        device: device,
+                        activeIndex: 2,
+                        reqPairing: reqModelPairing,
                       );
                     },
                     synced: (hwMeasurementResult, deviceInfo) {
-                      return SyncedResult(
-                        userId: widget.userId,
-                        deviceId: device.macAddress ?? '${device.localId}',
-                        hwMeasurementResult: hwMeasurementResult,
-                        measurementType: measurementType,
-                        deviceInfo: deviceInfo,
-                      );
-                    },
-                    paired: (hwMeasurementResult, deviceInfo) {
                       return SyncedResult(
                         userId: widget.userId,
                         deviceId: device.macAddress ?? '${device.localId}',

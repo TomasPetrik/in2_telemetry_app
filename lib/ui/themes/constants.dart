@@ -163,6 +163,9 @@ class Constants {
         MeasurementType.heartRate,
       ],
       reqPairing: false,
+      askToActivateBt: true,
+      askToConfirmMeasurement: true,
+      actionButtonType: ActionButtonType.regular,
     ),
     Device(
       localId: 1,
@@ -175,6 +178,7 @@ class Constants {
         MeasurementType.heartRate,
       ],
       reqPairing: true,
+      actionButtonType: ActionButtonType.startButton,
     ),
   ];
 }

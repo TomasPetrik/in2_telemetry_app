@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
-import 'package:scalesoft_app/localization/generated/l10n.dart';
 import 'package:scalesoft_app/model/app_settings.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -10,8 +9,6 @@ import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class NotificationsHelper {
-  static final translactions = getIt<I10n>();
-
   static Future<void> setNotifications({
     required final FlutterLocalNotificationsPlugin notificationsPlugin,
     required final List<UserAccount> userAccounts,

@@ -124,7 +124,7 @@ class SyncItem extends StatelessWidget {
         ),
         buttonLabel: context.locale.common_understand,
         icon: SvgPicture.asset(
-          'assets/icons/icon_circle_exclamation.svg',
+          'assets/icons/icon_circle_exclamation_medium.svg',
           color: Theme.of(context).colorScheme.tertiary,
         ),
         buttonType: SmallButtonType.none,
@@ -143,7 +143,7 @@ class SyncItem extends StatelessWidget {
         ),
         buttonLabel: context.locale.common_understand,
         icon: SvgPicture.asset(
-          'assets/icons/icon_circle_exclamation.svg',
+          'assets/icons/icon_circle_exclamation_medium.svg',
           color: Theme.of(context).colorScheme.tertiary,
         ),
         buttonType: SmallButtonType.none,

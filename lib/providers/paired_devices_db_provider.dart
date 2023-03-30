@@ -11,6 +11,7 @@ class PairedDevicesDbProvider extends BoxProvider<Device> {
   @override
   void registerAdapters() {
     Hive.registerAdapter(DeviceModelAdapter());
+    Hive.registerAdapter(ActionButtonTypeAdapter());
   }
 
   Device? get(String macAddress) {

@@ -24,12 +24,23 @@ class Device with _$Device {
     @JsonKey(ignore: true) @HiveField(8) String? imagePath,
     @JsonKey(ignore: true) @HiveField(9) bool? reqPairing,
     @JsonKey(ignore: true) @HiveField(10) DateTime? addedAt,
+    @JsonKey(ignore: true) @HiveField(11) bool? askToActivateBt,
+    @JsonKey(ignore: true) @HiveField(12) bool? askToConfirmMeasurement,
+    @JsonKey(ignore: true) @HiveField(13) ActionButtonType? actionButtonType,
   }) = _Device;
 
   factory Device.fromJson(Map<String, dynamic> json) => _$DeviceFromJson(json);
 
   @override
   String toString() => toJson().toString();
+}
+
+@HiveType(typeId: 37)
+enum ActionButtonType {
+  @HiveField(0)
+  regular,
+  @HiveField(1)
+  startButton,
 }
 
 @HiveType(typeId: 34)
