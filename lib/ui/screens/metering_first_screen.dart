@@ -205,7 +205,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                           Gaps.gap24,
                           Center(
                             child: SvgPicture.asset(
-                              'assets/icons/icon_bluetooth_signal.svg',
+                              'assets/icons/icon_bluetooth_signal_big.svg',
                               color: Theme.of(context).colorScheme.tertiary,
                             ),
                           ),
@@ -253,7 +253,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                           SettingsItem(
                             label: context.locale.common_personal_record,
                             iconWidget: SvgPicture.asset(
-                              'assets/icons/icon_square_pen.svg',
+                              'assets/icons/icon_pen_square.svg',
                               color: Theme.of(context).colorScheme.onSecondary,
                             ),
                             hasNavigationIcon: false,

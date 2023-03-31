@@ -809,6 +809,16 @@ class I10n {
     );
   }
 
+  /// `Registrovat zařízení`
+  String get user_detail_screen_register_device_button {
+    return Intl.message(
+      'Registrovat zařízení',
+      name: 'user_detail_screen_register_device_button',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Název účtu...`
   String get hospital_selector_search_for_account {
     return Intl.message(
@@ -2082,6 +2092,26 @@ class I10n {
     return Intl.message(
       'Historie měření neobsahuje žádná data.',
       name: 'chart_placeholder_no_data_in_month',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Registrovat zařízení`
+  String get register_device_screen_title {
+    return Intl.message(
+      'Registrovat zařízení',
+      name: 'register_device_screen_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.`
+  String get register_device_screen_desc {
+    return Intl.message(
+      'Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.',
+      name: 'register_device_screen_desc',
       desc: '',
       args: [],
     );

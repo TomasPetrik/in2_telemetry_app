@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Refactored auto-measurement after pairing for Omron devices,\n2. Re-defined measurement states during metering process per speficic device,\n 3. Updated synced result page which is not including paired device state anymore."
+    "text": "1. Completed search health cares devices in admin mode\n2. Update icon_pen_square.svg instead of icon_square_pen.svg. "
   },
   {
     "language": "sk-SK",

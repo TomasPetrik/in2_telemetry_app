@@ -500,6 +500,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Můžete se začít měřit"),
         "onboarding_add_account_screen_add_account_title":
             MessageLookupByLibrary.simpleMessage("Přidat účet"),
+        "register_device_screen_desc": MessageLookupByLibrary.simpleMessage(
+            "Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat."),
+        "register_device_screen_title":
+            MessageLookupByLibrary.simpleMessage("Registrovat zařízení"),
         "result_removal_confirmation_desc": m33,
         "result_removal_confirmation_title":
             MessageLookupByLibrary.simpleMessage("Odstranit výsledek"),
@@ -546,6 +550,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "tabs_results": MessageLookupByLibrary.simpleMessage("Výsledky"),
         "user_detail_screen_measurement_plans":
             MessageLookupByLibrary.simpleMessage("Plány měření"),
+        "user_detail_screen_register_device_button":
+            MessageLookupByLibrary.simpleMessage("Registrovat zařízení"),
         "user_detail_screen_remove_account":
             MessageLookupByLibrary.simpleMessage("Odstranit účet"),
         "user_detail_screen_user_email":

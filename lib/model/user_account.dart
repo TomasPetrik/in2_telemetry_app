@@ -75,6 +75,12 @@ class UserAccount with _$UserAccount {
         UserPermission.canManuallyEnterMeasurement,
       ) ==
       true;
+
+  bool get canRegisterDevice =>
+      userPermissions?.contains(
+        UserPermission.canRegisterDevice,
+      ) ==
+      true;
 }
 
 enum UserProblemType {
@@ -94,11 +100,15 @@ enum UserPermission {
   viewOwnMeasurementData,
   @JsonValue('scs-enter-measurement-without-plan')
   @HiveField(2)
-  enterMeasurementWithoutPlan;
+  enterMeasurementWithoutPlan,
+  @JsonValue('scs-can-register-device')
+  @HiveField(3)
+  canRegisterDevice;
 }
 
 const supportedUserPermissions = [
   'scs-can-manually-enter-measurement',
   'scs-view-own-measurement-data',
-  'scs-enter-measurement-without-plan'
+  'scs-enter-measurement-without-plan',
+  'scs-can-register-device'
 ];

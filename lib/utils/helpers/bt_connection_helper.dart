@@ -10,6 +10,7 @@ import 'package:scalesoft_app/extensions/uint8_list_extension.dart';
 import 'package:scalesoft_app/model/device_info.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/model/measurement_info.dart';
+import 'package:scalesoft_app/ui/themes/constants.dart';
 
 const String genericAccess = '00001800-0000-1000-8000-00805f9b34fb';
 const String deviceInfo = '0000180a-0000-1000-8000-00805f9b34fb';
@@ -23,7 +24,7 @@ class DeviceSearchResult {
   DeviceSearchResult(this.device, this.advertisementData);
 }
 
-class OmronConnectionHelper {
+class BtConnectionHelper {
   static Future<DeviceSearchResult?> searchDevice({
     required String serviceUuid,
     required Device device,
@@ -45,9 +46,12 @@ class OmronConnectionHelper {
         final serviceUuids = result.advertisementData.serviceUuids
             .map((uuid) => uuid.toLowerCase());
         if (serviceUuids.any(
-              (devServiceUuid) => devServiceUuid.contains(serviceUuid),
+              (devServiceUuid) =>
+                  devServiceUuid.contains(serviceUuid.toLowerCase()),
             ) &&
-            result.device.name.toLowerCase().contains(device.bluetoothName!.toLowerCase()) &&
+            result.device.name
+                .toLowerCase()
+                .contains(device.bluetoothName!.toLowerCase()) &&
             (device.macAddress == null ||
                 device.macAddress == result.device.id.toString())) {
           debugPrint('found device at ${result.timeStamp}');
@@ -61,6 +65,89 @@ class OmronConnectionHelper {
         return null;
       }
     }
+  }
+
+  static Future<void> searchDevicesByService({
+    required String serviceUuid,
+    required Function(List<Device> devices) onResult,
+  }) async {
+    final flutterBlue = FlutterBluePlus.instance;
+
+    final isScanning = await flutterBlue.isScanning.first;
+    if (!isScanning) {
+      flutterBlue.startScan();
+    }
+
+    final supportedBtNames = Constants.supportedDevices
+        .map((supDev) => supDev.bluetoothName!.toLowerCase())
+        .toList();
+
+    while (true) {
+      await Future.delayed(const Duration(seconds: 1));
+      final allDevices = await flutterBlue.scanResults.first;
+
+      debugPrint('found all ${allDevices.length} devices');
+
+      final matchedResults = allDevices.where((scanResult) {
+        return scanResult.advertisementData.connectable &&
+            scanResult.advertisementData.serviceUuids
+                .map((uuid) => uuid.toLowerCase())
+                .any((uuid) => uuid.contains(serviceUuid.toLowerCase())) &&
+            supportedBtNames.any(
+              (suppBtName) =>
+                  scanResult.device.name.toLowerCase().contains(suppBtName),
+            );
+      }).toList();
+
+      debugPrint('found matching devices ${matchedResults.length}');
+
+      List<Device> availableDevices = [];
+
+      for (final scanResult in matchedResults) {
+        final devState = await scanResult.device.state.first;
+        if (devState == BluetoothDeviceState.connected) {
+          availableDevices.add(convertToDevice(scanResult.device));
+        } else {
+          try {
+            await scanResult.device
+                .connect(timeout: const Duration(seconds: 1));
+            final devState = await scanResult.device.state.first;
+            if (devState == BluetoothDeviceState.connected) {
+              availableDevices.add(convertToDevice(scanResult.device));
+            }
+          } catch (e) {
+            debugPrint('device was disconnected yet');
+          }
+        }
+      }
+
+      debugPrint('available devices devices ${matchedResults.length}');
+
+/*
+
+      final btDevices = matchedResults
+          .map((scanResult) => convertToDevice(scanResult.device))
+          .toList();
+          */
+
+      onResult.call(availableDevices);
+
+      if (await flutterBlue.isScanning.first == false) {
+        break;
+      }
+    }
+  }
+
+  static Device convertToDevice(BluetoothDevice btDevice) {
+    final supportedDev = Constants.supportedDevices
+        .firstWhere(
+          (dev) => btDevice.name
+              .toLowerCase()
+              .contains(dev.bluetoothName!.toLowerCase()),
+        )
+        .copyWith(macAddress: btDevice.id.id);
+
+    return supportedDev;
   }
 
   static Future<DeviceInfo?> requestDeviceInfo(BluetoothDevice device) async {

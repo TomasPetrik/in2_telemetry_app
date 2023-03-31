@@ -18,7 +18,7 @@ import 'package:scalesoft_app/providers/paired_devices_db_provider.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/ui/screens/constants.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
-import 'package:scalesoft_app/utils/helpers/omron_connection_helper.dart';
+import 'package:scalesoft_app/utils/helpers/bt_connection_helper.dart';
 
 @injectable
 class OmronConnectionBloc
@@ -44,12 +44,11 @@ class OmronConnectionBloc
         BluetoothDevice blDevice,
         AdvertisementData? advertisementData,
       ) async {
-        final deviceInfo =
-            await OmronConnectionHelper.requestDeviceInfo(blDevice);
+        final deviceInfo = await BtConnectionHelper.requestDeviceInfo(blDevice);
         deviceInfo?.advData = advertisementData;
 
         final batteryInfo =
-            await OmronConnectionHelper.requestBatteryInfo(blDevice);
+            await BtConnectionHelper.requestBatteryInfo(blDevice);
 
         deviceInfo?.batteryInfo = batteryInfo;
 
@@ -77,7 +76,7 @@ class OmronConnectionBloc
           emit(const OmronConnectionState.syncing());
         }
 
-        final measurementResult = await OmronConnectionHelper.requestBPData(
+        final measurementResult = await BtConnectionHelper.requestBPData(
           blDevice,
           !reqModelPairing,
         );
@@ -168,18 +167,16 @@ class OmronConnectionBloc
           this.device = device;
           this.userId = userId;
           this.measurementType = measurementType;
-          final btState = await FlutterBluePlus.instance.state.first;
+          final btState = await flutterBlue.state.first;
 
-          if (btState == BluetoothState.on) {
-            emit(const OmronConnectionState.enabledBt());
-          } else if (btState == BluetoothState.off) {
+           if (btState == BluetoothState.off) {
             emit(const OmronConnectionState.disabledBt());
           } else {
             emit(const OmronConnectionState.noBtPermissions());
           }
 
           final hasPermissionsGranted =
-              await OmronConnectionHelper.hasPermissionsGranted();
+              await BtConnectionHelper.hasPermissionsGranted();
           if (!hasPermissionsGranted) {
             emit(const OmronConnectionState.noBtPermissions());
           }
@@ -188,7 +185,6 @@ class OmronConnectionBloc
         },
         newBtState: (newBtState) async {
           if (newBtState == BluetoothState.on) {
-            emit(const OmronConnectionState.enabledBt());
             add(const OmronConnectionBlocEvent.checkDeviceAvailability());
           } else if (newBtState == BluetoothState.off) {
             emit(const OmronConnectionState.disabledBt());
@@ -213,7 +209,7 @@ class OmronConnectionBloc
         },
         searchDevice: () async {
           emit(const OmronConnectionState.searching());
-          final foundDevice = await OmronConnectionHelper.searchDevice(
+          final foundDevice = await BtConnectionHelper.searchDevice(
             serviceUuid: bloodPressureServiceUuid,
             device: device!,
           );
@@ -254,7 +250,7 @@ class OmronConnectionBloc
             device = pairedDevice;
             //straight after pairing process, device should turn off bluetooth,
             //so we can start search for device again after metering
-            final foundDevice = await OmronConnectionHelper.searchDevice(
+            final foundDevice = await BtConnectionHelper.searchDevice(
               serviceUuid: bloodPressureServiceUuid,
               device: device!,
             );

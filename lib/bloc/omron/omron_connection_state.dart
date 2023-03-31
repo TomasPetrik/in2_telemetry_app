@@ -9,7 +9,6 @@ part 'omron_connection_state.freezed.dart';
 class OmronConnectionState with _$OmronConnectionState {
   const factory OmronConnectionState.init() = _Init;
   const factory OmronConnectionState.disabledBt() = _DisabledBt;
-  const factory OmronConnectionState.enabledBt() = _EnabledBt;
   const factory OmronConnectionState.noBtPermissions() = _NoBtPermissions;
   const factory OmronConnectionState.searching() = _Searching;
   const factory OmronConnectionState.found({

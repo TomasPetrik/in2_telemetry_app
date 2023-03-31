@@ -16,6 +16,7 @@ import 'package:scalesoft_app/ui/routers/routes/no_user_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/notification_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/offline_results_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/register_device_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_history_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_added_route.dart';
@@ -79,6 +80,7 @@ class AppRouter {
             ChartRoute(navigator: navAuthManager).route,
             MeteringFirstRoute(navigator: navAuthManager).route,
             AddDeviceRoute(navigator: navAuthManager).route,
+            RegisterDeviceRoute(navigator: navAuthManager).route,
           ],
         ),
       ],
