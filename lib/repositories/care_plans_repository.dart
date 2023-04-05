@@ -5,6 +5,7 @@ import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaulation_aggregated.dart';
 import 'package:scalesoft_app/api/dto/changes_from_date_response.dart';
+import 'package:scalesoft_app/api/dto/measurement/device.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
 import 'package:scalesoft_app/model/user_account.dart';
@@ -110,5 +111,14 @@ class CarePlansRepository {
       carePlanApiClient.sendManualMeasurement(
         userAccount.hospital!.authData.baseUrl,
         manualMeasurement,
+      );
+
+  Future<void> registerDevice({
+    required UserAccount userAccount,
+    required Device device,
+  }) =>
+      carePlanApiClient.registerDevice(
+        userAccount.hospital!.authData.baseUrl,
+        device,
       );
 }

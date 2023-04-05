@@ -11,7 +11,7 @@ import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/care_plan_detail_route.dart';
-import 'package:scalesoft_app/ui/routers/routes/register_device_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/register_device_search_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -187,8 +187,10 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                               .locale.user_detail_screen_register_device_button,
                           buttonType: ButtonType.primary,
                           onPressed: () {
-                            GoRouter.of(context)
-                                .pushNamed(RegisterDeviceRoute.name);
+                            GoRouter.of(context).pushNamed(
+                              RegisterDeviceSearchRoute.name,
+                              params: {'userId': userAccount.user.muid},
+                            );
                           },
                         ),
                       ),

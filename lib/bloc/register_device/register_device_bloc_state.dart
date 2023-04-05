@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scalesoft_app/api/dto/measurement/device.dart';
 
@@ -11,4 +12,10 @@ class RegisterDeviceBlocState with _$RegisterDeviceBlocState {
   const factory RegisterDeviceBlocState.searching({
     List<Device>? devices,
   }) = _Searching;
+
+  const factory RegisterDeviceBlocState.deviceRegistered() = _DeviceRegistered;
+  const factory RegisterDeviceBlocState.deviceAlreadyRegistered(Key key) =
+      _DeviceAlreadyRegistered;
+  const factory RegisterDeviceBlocState.failedRegistration(Key key) =
+      _FailedRegistration;
 }

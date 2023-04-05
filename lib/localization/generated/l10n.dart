@@ -471,14 +471,14 @@ class I10n {
     );
   }
 
-  /// `{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace Kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} other{Jiný}}`
+  /// `{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} other{Jiný}}`
   String common_measurement_types(Object measurementType) {
     return Intl.select(
       measurementType,
       {
         'temperature': 'Teplota',
         'bloodPressure': 'Krevní tlak',
-        'oxygenSaturation': 'Saturace Kyslíku',
+        'oxygenSaturation': 'Saturace kyslíku',
         'steps': 'Kroky',
         'globalPosition': 'Pozice',
         'heartRate': 'Srdeční tep',
@@ -492,14 +492,14 @@ class I10n {
     );
   }
 
-  /// `{measurementType, select, temperature{Teploty} bloodPressure{Krevního tlaku} oxygenSaturation{Saturace Kyslíku} steps{Krokov} globalPosition{Pozice} heartRate{Srdečního tepu} ews{Ews} respiratoryRate{Dechovej frekvence} other{Jiný}}`
+  /// `{measurementType, select, temperature{Teploty} bloodPressure{Krevního tlaku} oxygenSaturation{Saturace kyslíku} steps{Krokov} globalPosition{Pozice} heartRate{Srdečního tepu} ews{Ews} respiratoryRate{Dechovej frekvence} other{Jiný}}`
   String common_measurement_types_genitive(Object measurementType) {
     return Intl.select(
       measurementType,
       {
         'temperature': 'Teploty',
         'bloodPressure': 'Krevního tlaku',
-        'oxygenSaturation': 'Saturace Kyslíku',
+        'oxygenSaturation': 'Saturace kyslíku',
         'steps': 'Krokov',
         'globalPosition': 'Pozice',
         'heartRate': 'Srdečního tepu',
@@ -1386,7 +1386,7 @@ class I10n {
     );
   }
 
-  /// `{measurementUnitName, select, systolic{Systolický} diastolic{Diastolický} temperature{Teplota} pulse{Puls} oxygenSaturation{Saturace Kyslíku} respiratoryRate{Dechová frekvence} steps{Kroky} lat{Lat} lng{Lng} ews{Ews} other{Jiný}}`
+  /// `{measurementUnitName, select, systolic{Systolický} diastolic{Diastolický} temperature{Teplota} pulse{Puls} oxygenSaturation{Saturace kyslíku} respiratoryRate{Dechová frekvence} steps{Kroky} lat{Lat} lng{Lng} ews{Ews} other{Jiný}}`
   String common_measurement_units_names(Object measurementUnitName) {
     return Intl.select(
       measurementUnitName,
@@ -1395,7 +1395,7 @@ class I10n {
         'diastolic': 'Diastolický',
         'temperature': 'Teplota',
         'pulse': 'Puls',
-        'oxygenSaturation': 'Saturace Kyslíku',
+        'oxygenSaturation': 'Saturace kyslíku',
         'respiratoryRate': 'Dechová frekvence',
         'steps': 'Kroky',
         'lat': 'Lat',
@@ -2098,22 +2098,142 @@ class I10n {
   }
 
   /// `Registrovat zařízení`
-  String get register_device_screen_title {
+  String get register_device_search_screen_title {
     return Intl.message(
       'Registrovat zařízení',
-      name: 'register_device_screen_title',
+      name: 'register_device_search_screen_title',
       desc: '',
       args: [],
     );
   }
 
   /// `Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.`
-  String get register_device_screen_desc {
+  String get register_device_search_screen_desc {
     return Intl.message(
       'Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.',
-      name: 'register_device_screen_desc',
+      name: 'register_device_search_screen_desc',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `Zařízení k registraci`
+  String get register_device_detail_screen_title {
+    return Intl.message(
+      'Zařízení k registraci',
+      name: 'register_device_detail_screen_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zařízení`
+  String get register_device_detail_screen_device {
+    return Intl.message(
+      'Zařízení',
+      name: 'register_device_detail_screen_device',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `MAC adresa`
+  String get register_device_detail_screen_mac_address {
+    return Intl.message(
+      'MAC adresa',
+      name: 'register_device_detail_screen_mac_address',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Označení`
+  String get register_device_detail_screen_label {
+    return Intl.message(
+      'Označení',
+      name: 'register_device_detail_screen_label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Například zařízení v kuchyni`
+  String get register_device_detail_screen_label_hint {
+    return Intl.message(
+      'Například zařízení v kuchyni',
+      name: 'register_device_detail_screen_label_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Technický Identifikátor`
+  String get register_device_detail_screen_identificator {
+    return Intl.message(
+      'Technický Identifikátor',
+      name: 'register_device_detail_screen_identificator',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Například sériové číslo`
+  String get register_device_detail_screen_identificator_hint {
+    return Intl.message(
+      'Například sériové číslo',
+      name: 'register_device_detail_screen_identificator_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Registrovat`
+  String get register_device_detail_screen_button_register {
+    return Intl.message(
+      'Registrovat',
+      name: 'register_device_detail_screen_button_register',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nevyplněné pole`
+  String get register_device_detail_screen_not_filled_field {
+    return Intl.message(
+      'Nevyplněné pole',
+      name: 'register_device_detail_screen_not_filled_field',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zařízení bylo úspěšně registrováno.`
+  String get register_device_success_screen_desc {
+    return Intl.message(
+      'Zařízení bylo úspěšně registrováno.',
+      name: 'register_device_success_screen_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ooops!`
+  String get register_device_detail_registration_fail_title {
+    return Intl.message(
+      'Ooops!',
+      name: 'register_device_detail_registration_fail_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zařízení s MAC adresou {macAddress} již existuje.`
+  String register_device_detail_registration_fail_message(String macAddress) {
+    return Intl.message(
+      'Zařízení s MAC adresou $macAddress již existuje.',
+      name: 'register_device_detail_registration_fail_message',
+      desc: '',
+      args: [macAddress],
     );
   }
 }

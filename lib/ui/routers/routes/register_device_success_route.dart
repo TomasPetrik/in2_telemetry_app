@@ -1,13 +1,14 @@
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
-import 'package:scalesoft_app/ui/screens/register_device_screen.dart';
+import 'package:scalesoft_app/ui/screens/register_device_success_screen.dart';
 
-class RegisterDeviceRoute extends ApplicationRoute with PageBuilderMixin {
-  static const name = 'register-device';
-  static const path = '/register-device';
+class RegisterDeviceSuccessRoute extends ApplicationRoute
+    with PageBuilderMixin {
+  static const name = 'register-device-success';
+  static const path = '/register-device-success/:deviceName';
 
-  RegisterDeviceRoute({
+  RegisterDeviceSuccessRoute({
     required super.navigator,
     super.routes,
   });
@@ -22,7 +23,8 @@ class RegisterDeviceRoute extends ApplicationRoute with PageBuilderMixin {
       pageBuilder: pageBuilder(
         withTransition: false,
         builder: (state) {
-          return const RegisterDeviceScreen();
+          final deviceName = state.params['deviceName']!;
+          return RegisterDeviceSuccessScreen(deviceName: deviceName);
         },
       ),
     );

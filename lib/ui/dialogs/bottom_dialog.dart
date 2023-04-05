@@ -127,6 +127,23 @@ class BottomDialog extends StatelessWidget {
     );
   }
 
+  factory BottomDialog.deviceAlreadyRegistered({
+    Key? key,
+    required BuildContext context,
+    required String macAddress,
+  }) {
+    return _BottomDialog(
+      title: context.locale.register_device_detail_registration_fail_title,
+      description: context.locale.register_device_detail_registration_fail_message(macAddress),
+      iconPath: 'assets/icons/icon_triangle_exclamation_big.svg',
+      iconColor: Theme.of(context).colorScheme.error,
+      positiveButtonStyle: ButtonStyle(
+        buttonType: ButtonType.secondary,
+        label: context.locale.common_close,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return _BottomDialog(

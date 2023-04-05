@@ -60,7 +60,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m8(measurementType) => "${Intl.select(measurementType, {
             'temperature': 'Teplota',
             'bloodPressure': 'Krevní tlak',
-            'oxygenSaturation': 'Saturace Kyslíku',
+            'oxygenSaturation': 'Saturace kyslíku',
             'steps': 'Kroky',
             'globalPosition': 'Pozice',
             'heartRate': 'Srdeční tep',
@@ -72,7 +72,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m9(measurementType) => "${Intl.select(measurementType, {
             'temperature': 'Teploty',
             'bloodPressure': 'Krevního tlaku',
-            'oxygenSaturation': 'Saturace Kyslíku',
+            'oxygenSaturation': 'Saturace kyslíku',
             'steps': 'Krokov',
             'globalPosition': 'Pozice',
             'heartRate': 'Srdečního tepu',
@@ -87,7 +87,7 @@ class MessageLookup extends MessageLookupByLibrary {
             'diastolic': 'Diastolický',
             'temperature': 'Teplota',
             'pulse': 'Puls',
-            'oxygenSaturation': 'Saturace Kyslíku',
+            'oxygenSaturation': 'Saturace kyslíku',
             'respiratoryRate': 'Dechová frekvence',
             'steps': 'Kroky',
             'lat': 'Lat',
@@ -187,31 +187,34 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m32(name) => "Uživatel ${name} byl úspěšně přidán.";
 
-  static String m33(name) => "Výsledek měření ${name} bude nevratně odstraněn.";
+  static String m33(macAddress) =>
+      "Zařízení s MAC adresou ${macAddress} již existuje.";
 
-  static String m34(percentage) => "Plán splněn na ${percentage}%";
+  static String m34(name) => "Výsledek měření ${name} bude nevratně odstraněn.";
 
-  static String m35(name) =>
+  static String m35(percentage) => "Plán splněn na ${percentage}%";
+
+  static String m36(name) =>
       "Je nám líto, ale výsledky pro účet ${name} nejsou dostupné.";
 
-  static String m36(whenName) =>
+  static String m37(whenName) =>
       "Pro ${whenName} nejsou dostupné žádné výsledky.";
 
-  static String m37(label) => "${label} nebylo plánované žádné měření";
+  static String m38(label) => "${label} nebylo plánované žádné měření";
 
-  static String m38(name) =>
+  static String m39(name) =>
       "Je potřeba, aby se uživatel ${name} znovu přihlásil.";
 
-  static String m39(date, time) => "Poslední synchronizace ${date} ${time}";
+  static String m40(date, time) => "Poslední synchronizace ${date} ${time}";
 
-  static String m40(date, time) =>
+  static String m41(date, time) =>
       "Poslední úspěšná synchronizace ${date} ${time}";
 
-  static String m41(fromDate) => "Platný od ${fromDate}";
+  static String m42(fromDate) => "Platný od ${fromDate}";
 
-  static String m42(fromDate, toDate) => "Platný od ${fromDate} do ${toDate}";
+  static String m43(fromDate, toDate) => "Platný od ${fromDate} do ${toDate}";
 
-  static String m43(hospital) => "Měření v ${hospital} pro";
+  static String m44(hospital) => "Měření v ${hospital} pro";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -500,11 +503,36 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Můžete se začít měřit"),
         "onboarding_add_account_screen_add_account_title":
             MessageLookupByLibrary.simpleMessage("Přidat účet"),
-        "register_device_screen_desc": MessageLookupByLibrary.simpleMessage(
+        "register_device_detail_registration_fail_message": m33,
+        "register_device_detail_registration_fail_title":
+            MessageLookupByLibrary.simpleMessage("Ooops!"),
+        "register_device_detail_screen_button_register":
+            MessageLookupByLibrary.simpleMessage("Registrovat"),
+        "register_device_detail_screen_device":
+            MessageLookupByLibrary.simpleMessage("Zařízení"),
+        "register_device_detail_screen_identificator":
+            MessageLookupByLibrary.simpleMessage("Technický Identifikátor"),
+        "register_device_detail_screen_identificator_hint":
+            MessageLookupByLibrary.simpleMessage("Například sériové číslo"),
+        "register_device_detail_screen_label":
+            MessageLookupByLibrary.simpleMessage("Označení"),
+        "register_device_detail_screen_label_hint":
+            MessageLookupByLibrary.simpleMessage(
+                "Například zařízení v kuchyni"),
+        "register_device_detail_screen_mac_address":
+            MessageLookupByLibrary.simpleMessage("MAC adresa"),
+        "register_device_detail_screen_not_filled_field":
+            MessageLookupByLibrary.simpleMessage("Nevyplněné pole"),
+        "register_device_detail_screen_title":
+            MessageLookupByLibrary.simpleMessage("Zařízení k registraci"),
+        "register_device_search_screen_desc": MessageLookupByLibrary.simpleMessage(
             "Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat."),
-        "register_device_screen_title":
+        "register_device_search_screen_title":
             MessageLookupByLibrary.simpleMessage("Registrovat zařízení"),
-        "result_removal_confirmation_desc": m33,
+        "register_device_success_screen_desc":
+            MessageLookupByLibrary.simpleMessage(
+                "Zařízení bylo úspěšně registrováno."),
+        "result_removal_confirmation_desc": m34,
         "result_removal_confirmation_title":
             MessageLookupByLibrary.simpleMessage("Odstranit výsledek"),
         "result_removal_confirmation_title_button_confirm":
@@ -513,27 +541,27 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Plán měření dne"),
         "results_measurements_when_selector_title":
             MessageLookupByLibrary.simpleMessage("Plnění plánu"),
-        "results_plan_fulfilled_on": m34,
+        "results_plan_fulfilled_on": m35,
         "results_plan_no_measurement_needed":
             MessageLookupByLibrary.simpleMessage(
                 "Plán nevyžadoval žádné měření"),
-        "results_screen_no_results": m35,
-        "results_screen_no_results_at_period": m36,
-        "results_screen_no_results_in_plans": m37,
+        "results_screen_no_results": m36,
+        "results_screen_no_results_at_period": m37,
+        "results_screen_no_results_in_plans": m38,
         "results_screen_results_title":
             MessageLookupByLibrary.simpleMessage("Výsledky"),
         "server_error_desc": MessageLookupByLibrary.simpleMessage(
             "Zde je něco v nepořádku. Zkuste akci opakovat později."),
         "server_error_title": MessageLookupByLibrary.simpleMessage("Ooops!"),
-        "session_expired_description": m38,
+        "session_expired_description": m39,
         "session_expired_title":
             MessageLookupByLibrary.simpleMessage("Problém s přihlášením"),
-        "sync_failed_screen_sub_title": m39,
+        "sync_failed_screen_sub_title": m40,
         "sync_failed_screen_title":
             MessageLookupByLibrary.simpleMessage("Synchronizace"),
         "sync_failed_screen_waiting_on_sync":
             MessageLookupByLibrary.simpleMessage("Čeká na synchronizaci"),
-        "sync_widget_sync_failed_desc": m40,
+        "sync_widget_sync_failed_desc": m41,
         "sync_widget_sync_failed_title":
             MessageLookupByLibrary.simpleMessage("Synchronizace se nepovedla"),
         "sync_widget_sync_in_progress":
@@ -564,8 +592,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Telefon"),
         "user_detail_screen_user_surname":
             MessageLookupByLibrary.simpleMessage("Příjmení"),
-        "user_details_screen_plan_active_from_date": m41,
-        "user_details_screen_plan_active_from_to_date": m42,
-        "user_selection_dialog_measurement_in_hospital": m43
+        "user_details_screen_plan_active_from_date": m42,
+        "user_details_screen_plan_active_from_to_date": m43,
+        "user_selection_dialog_measurement_in_hospital": m44
       };
 }

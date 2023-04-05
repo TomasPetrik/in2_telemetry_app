@@ -98,14 +98,14 @@
     "server_error_title": "Ooops!",
     "server_error_desc": "Zde je něco v nepořádku. Zkuste akci opakovat později.",
     "not_found_screen_title": "Neznama obrazovka",
-    "common_measurement_types": "{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace Kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} other{Jiný}}",
+    "common_measurement_types": "{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} other{Jiný}}",
     "@common_measurement_types": {
         "description": "Measurement types",
         "placeholders": {
             "measurementType": {}
         }
     },
-    "common_measurement_types_genitive": "{measurementType, select, temperature{Teploty} bloodPressure{Krevního tlaku} oxygenSaturation{Saturace Kyslíku} steps{Krokov} globalPosition{Pozice} heartRate{Srdečního tepu} ews{Ews} respiratoryRate{Dechovej frekvence} other{Jiný}}",
+    "common_measurement_types_genitive": "{measurementType, select, temperature{Teploty} bloodPressure{Krevního tlaku} oxygenSaturation{Saturace kyslíku} steps{Krokov} globalPosition{Pozice} heartRate{Srdečního tepu} ews{Ews} respiratoryRate{Dechovej frekvence} other{Jiný}}",
     "@common_measurement_types_genitive": {
         "description": "Measurement types",
         "placeholders": {
@@ -325,7 +325,7 @@
     "manual_measurement_screen_diasystolic": "Diastolický",
     "manual_measurement_screen_pulse": "Puls",
     "manual_measurement_screen_measurement_time": "Čas odečtu",
-    "common_measurement_units_names": "{measurementUnitName, select, systolic{Systolický} diastolic{Diastolický} temperature{Teplota} pulse{Puls} oxygenSaturation{Saturace Kyslíku} respiratoryRate{Dechová frekvence} steps{Kroky} lat{Lat} lng{Lng} ews{Ews} other{Jiný}}",
+    "common_measurement_units_names": "{measurementUnitName, select, systolic{Systolický} diastolic{Diastolický} temperature{Teplota} pulse{Puls} oxygenSaturation{Saturace kyslíku} respiratoryRate{Dechová frekvence} steps{Kroky} lat{Lat} lng{Lng} ews{Ews} other{Jiný}}",
     "@common_measurement_units_names": {
         "description": "Measurement unit names",
         "placeholders": {
@@ -516,6 +516,25 @@
     },
     "chart_placeholder_error_loading_data": "Zde je něco v nepořádku. Zkuste akci opakovat později.",
     "chart_placeholder_no_data_in_month": "Historie měření neobsahuje žádná data.",
-    "register_device_screen_title": "Registrovat zařízení",
-    "register_device_screen_desc": "Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat."
+    "register_device_search_screen_title": "Registrovat zařízení",
+    "register_device_search_screen_desc": "Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.",
+    "register_device_detail_screen_title": "Zařízení k registraci",
+    "register_device_detail_screen_device": "Zařízení",
+    "register_device_detail_screen_mac_address": "MAC adresa",
+    "register_device_detail_screen_label": "Označení",
+    "register_device_detail_screen_label_hint": "Například zařízení v kuchyni",
+    "register_device_detail_screen_identificator": "Technický Identifikátor",
+    "register_device_detail_screen_identificator_hint": "Například sériové číslo",
+    "register_device_detail_screen_button_register": "Registrovat",
+    "register_device_detail_screen_not_filled_field": "Nevyplněné pole",
+    "register_device_success_screen_desc": "Zařízení bylo úspěšně registrováno.",
+    "register_device_detail_registration_fail_title": "Ooops!",
+    "register_device_detail_registration_fail_message": "Zařízení s MAC adresou {macAddress} již existuje.",
+    "@register_device_detail_registration_fail_message": {
+        "placeholders": {
+            "macAddress": {
+                "type": "String"
+            }
+        }
+    }
 }

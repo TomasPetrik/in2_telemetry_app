@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_event.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/ui/routers/routes/register_device_detail_route.dart';
 import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
@@ -15,14 +17,21 @@ import 'package:scalesoft_app/ui/widgets/device_item.dart';
 import 'package:scalesoft_app/ui/widgets/process_item.dart';
 import 'package:scalesoft_app/ui/widgets/warning_item.dart';
 
-class RegisterDeviceScreen extends StatefulWidget {
-  const RegisterDeviceScreen({super.key});
+class RegisterDeviceSearchScreen extends StatefulWidget {
+  const RegisterDeviceSearchScreen({
+    super.key,
+    required this.userId,
+  });
+
+  final String userId;
 
   @override
-  State<RegisterDeviceScreen> createState() => _RegisterDeviceScreenState();
+  State<RegisterDeviceSearchScreen> createState() =>
+      _RegisterDeviceSearchScreenState();
 }
 
-class _RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
+class _RegisterDeviceSearchScreenState
+    extends State<RegisterDeviceSearchScreen> {
   final RegisterDeviceBloc registerDeviceBloc = getIt<RegisterDeviceBloc>();
 
   Future<bool> _onWillPop() async {
@@ -41,7 +50,7 @@ class _RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
               bloc: registerDeviceBloc
                 ..add(const RegisterDeviceBlocEvent.init()),
               builder: (context, state) {
-                final header = state.when(
+                final header = state.whenOrNull(
                   disabledBt: () => WarningItem(
                     title: context.locale.find_device_screen_disabled_bt_title,
                     description:
@@ -109,7 +118,8 @@ class _RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
                               padding: Paddings.horizontal48,
                               child: Center(
                                 child: Text(
-                                  context.locale.register_device_screen_desc,
+                                  context.locale
+                                      .register_device_search_screen_desc,
                                   style: ScaleTextStyles.text.apply(
                                     color: Theme.of(context)
                                         .colorScheme
@@ -124,23 +134,36 @@ class _RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
                       ),
                     ),
                     const SliverGap(Dimensions.padding24),
-                    SliverPadding(
-                      padding: Paddings.horizontal16,
-                      sliver: header,
-                    ),
+                    if (header != null)
+                      SliverPadding(
+                        padding: Paddings.horizontal16,
+                        sliver: header,
+                      ),
                     if (btDevices?.isNotEmpty == true) ...{
                       SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
                             final foundDev = btDevices[index];
-                            return Padding(
-                              padding: const EdgeInsets.only(
-                                top: Dimensions.padding24,
-                                left: Dimensions.padding16,
-                                right: Dimensions.padding16,
-                              ),
-                              child: DeviceItem(
-                                device: foundDev,
+                            return InkWell(
+                              onTap: () {
+                                GoRouter.of(context).replaceNamed(
+                                  RegisterDeviceDetailRoute.name,
+                                  params: {
+                                    'userId': widget.userId,
+                                    'localId': '${foundDev.localId!}',
+                                    'macAddress': foundDev.macAddress!,
+                                  },
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                  top: Dimensions.padding24,
+                                  left: Dimensions.padding16,
+                                  right: Dimensions.padding16,
+                                ),
+                                child: DeviceItem(
+                                  device: foundDev,
+                                ),
                               ),
                             );
                           },
@@ -157,7 +180,7 @@ class _RegisterDeviceScreenState extends State<RegisterDeviceScreen> {
               left: 0,
               right: 0,
               child: BluredScaleAppBar(
-                title: context.locale.register_device_screen_title,
+                title: context.locale.register_device_search_screen_title,
                 showClose: true,
                 onCloseTap: _onWillPop,
               ),

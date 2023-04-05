@@ -38,6 +38,24 @@ mixin BottomSheetMixin {
     return result;
   }
 
+  Future<void> showDevAlreadyRegistered(
+    BuildContext context,
+    String macAddress,
+  ) async {
+    await showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return BottomDialog.deviceAlreadyRegistered(
+          context: context,
+          macAddress: macAddress,
+        );
+      },
+    );
+  }
+
   Future<void> showServerError(BuildContext context) async {
     await showModalBottomSheet(
       context: context,
