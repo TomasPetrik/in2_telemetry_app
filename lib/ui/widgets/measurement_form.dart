@@ -130,7 +130,7 @@ class MeasurementForm extends StatelessWidget {
                           return null;
                         }
                       },
-                      inputFormatters: const [],
+                      inputFormatters: measurementConfig.inputFormatters,
                     ),
                   ],
                 ),
@@ -174,7 +174,7 @@ class MeasurementForm extends StatelessWidget {
                             return null;
                           }
                         },
-                        inputFormatters: const [],
+                        inputFormatters: measurementConfig.inputFormatters,
                       ),
                     ],
                   ),

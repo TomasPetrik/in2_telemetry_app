@@ -253,7 +253,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                           SettingsItem(
                             label: context.locale.common_personal_record,
                             iconWidget: SvgPicture.asset(
-                              'assets/icons/icon_pen_square.svg',
+                              'assets/icons/icon_square_pen_medium.svg',
                               color: Theme.of(context).colorScheme.onSecondary,
                             ),
                             hasNavigationIcon: false,

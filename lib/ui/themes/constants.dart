@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:scalesoft_app/api/dto/auth_data.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/api/dto/measurement/device.dart';
+import 'package:scalesoft_app/utils/input_formatters/decimal_text_input_formatter.dart';
 
 class Constants {
   /* API */
@@ -82,6 +84,10 @@ class Constants {
       300,
       TextInputType.number,
       ['0', '0'],
+      [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(3)
+      ],
     ),
     MeasurementType.temperature: MeasurementConfig(
       MeasurementConfigType.single,
@@ -91,6 +97,7 @@ class Constants {
       45,
       const TextInputType.numberWithOptions(decimal: true),
       ['0'],
+      [DecimalTextInputFormatter(1)],
     ),
     MeasurementType.heartRate: MeasurementConfig(
       MeasurementConfigType.single,
@@ -100,6 +107,10 @@ class Constants {
       250,
       TextInputType.number,
       ['0'],
+      [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(3)
+      ],
     ),
     MeasurementType.oxygenSaturation: MeasurementConfig(
       MeasurementConfigType.single,
@@ -109,6 +120,7 @@ class Constants {
       100,
       const TextInputType.numberWithOptions(decimal: true),
       ['0'],
+      [DecimalTextInputFormatter(1)],
     ),
     MeasurementType.respiratoryRate: MeasurementConfig(
       MeasurementConfigType.single,
@@ -118,6 +130,10 @@ class Constants {
       60,
       TextInputType.number,
       ['0'],
+      [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(3)
+      ],
     ),
     MeasurementType.steps: MeasurementConfig(
       MeasurementConfigType.single,
@@ -127,6 +143,10 @@ class Constants {
       1000000,
       TextInputType.number,
       ['0'],
+      [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(10)
+      ],
     ),
     MeasurementType.globalPosition: MeasurementConfig(
       MeasurementConfigType.composed,
@@ -139,6 +159,7 @@ class Constants {
         decimal: true,
       ),
       ['48.2389', '17.3693'],
+      [DecimalTextInputFormatter(12), LengthLimitingTextInputFormatter(15)],
     ),
     MeasurementType.ews: MeasurementConfig(
       MeasurementConfigType.single,
@@ -148,6 +169,10 @@ class Constants {
       10,
       TextInputType.number,
       ['0'],
+      [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(2)
+      ],
     ),
   };
 
@@ -192,6 +217,7 @@ class MeasurementConfig {
   final double max;
   final TextInputType textInputType;
   final List<String> hintText;
+  final List<TextInputFormatter> inputFormatters;
 
   MeasurementConfig(
     this.type,
@@ -201,6 +227,7 @@ class MeasurementConfig {
     this.max,
     this.textInputType,
     this.hintText,
+    this.inputFormatters,
   );
 }
 
