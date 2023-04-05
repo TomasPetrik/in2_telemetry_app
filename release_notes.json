@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Completed error handling for device registration, still waiting on permission to show register device button in admin mode and on endpoint to send data for device registration . TODO.. test 400, 403 cases what can happen when device is already registered."
+    "text": "1. Completed error handling for device registration, still waiting on permission to show register device button in admin mode and on endpoint to send data for device registration . TODO.. test 400, 403 cases what can happen when device is already registered.\n2. Fixed SCALESOFT-53."
   },
   {
     "language": "sk-SK",

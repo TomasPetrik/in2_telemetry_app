@@ -14,12 +14,12 @@ class NotificationsHelper {
     required final List<UserAccount> userAccounts,
     required final AppSettings? appSettings,
   }) async {
-    if (appSettings?.enabledNotifications == null) {
-      return;
-    }
-
     //clear all notifications set first
     notificationsPlugin.cancelAll();
+
+    if (appSettings?.enabledNotifications != true) {
+      return;
+    }
 
     final notifyAtStartOfMeasurement =
         appSettings?.notifyAtStartOfMeasurement == true;

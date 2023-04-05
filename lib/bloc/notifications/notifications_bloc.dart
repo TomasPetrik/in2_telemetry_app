@@ -86,6 +86,8 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
               notificationsPlugin: _notificationsPlugin,
               userAccounts: _session.getSessionAccounts(),
             );
+
+            emit(NotificationsState.loaded(appSettings: newAppSettings));
           },
           notifyAtStartOfMeasurement: (bool enabled) async {
             final appSettings = _appSettingsDbProvider.read();
@@ -101,6 +103,8 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
               notificationsPlugin: _notificationsPlugin,
               userAccounts: _session.getSessionAccounts(),
             );
+
+            emit(NotificationsState.loaded(appSettings: newAppSettings));
           },
           notify10MinBeforeMeasurement: (bool enabled) async {
             final appSettings = _appSettingsDbProvider.read();
@@ -115,6 +119,8 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
               notificationsPlugin: _notificationsPlugin,
               userAccounts: _session.getSessionAccounts(),
             );
+
+            emit(NotificationsState.loaded(appSettings: newAppSettings));
           },
         );
       },
