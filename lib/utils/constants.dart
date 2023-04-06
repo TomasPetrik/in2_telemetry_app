@@ -7,6 +7,9 @@ import 'package:scalesoft_app/model/measurement_config.dart';
 import 'package:scalesoft_app/utils/input_formatters/decimal_text_input_formatter.dart';
 
 class Constants {
+  /* Background service interval fetch */
+  static const int autoSyncIntervalMinutes = 15;
+  
   /* API */
   static const String privateDioName = 'privateDio';
 
@@ -25,8 +28,7 @@ class Constants {
   ];
   static const String redirectUrl = 'cz.scalesoft.tlm://auth-callback';
 
-  /* Background service interval fetch */
-  static const int autoSyncIntervalMinutes = 15;
+  
 
   /* Enviroments */
   static const List<Hospital> hospitals = [

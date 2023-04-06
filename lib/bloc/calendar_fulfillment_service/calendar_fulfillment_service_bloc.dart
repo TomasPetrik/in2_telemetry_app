@@ -5,8 +5,8 @@ import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
-import 'package:scalesoft_app/bloc/calendar_service/fulfillment_service_bloc_event.dart';
-import 'package:scalesoft_app/bloc/calendar_service/fulfillment_service_bloc_state.dart';
+import 'package:scalesoft_app/bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc_event.dart';
+import 'package:scalesoft_app/bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc_state.dart';
 import 'package:scalesoft_app/cubit/calendar_footer/calendar_footer_cubit.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/calendar_db_provider.dart';
@@ -16,19 +16,19 @@ import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
 
 @injectable
-class FulfillmentServiceBloc
-    extends Bloc<FulfillmentServiceBlocEvent, FulfillmentServiceBlocState> {
+class CalendarFulfillmentServiceBloc extends Bloc<
+    CalendarFulfillmentServiceBlocEvent, CalendarFulfillmentServiceBlocState> {
   final AccountDbProvider _accountDbProvider;
   final CalendarFooterCubit _calendarFooterCubit;
   final CarePlansRepository _carePlansRepository;
   final CalendarDbProvider _calendarDbProvider;
 
-  FulfillmentServiceBloc(
+  CalendarFulfillmentServiceBloc(
     this._accountDbProvider,
     this._calendarFooterCubit,
     this._carePlansRepository,
     this._calendarDbProvider,
-  ) : super(const FulfillmentServiceBlocState()) {
+  ) : super(const CalendarFulfillmentServiceBlocState()) {
     Future<void> loadMonthFulfillments(
       CalendarMonth calendarMonth,
       List<CarePlan> carePlans,
@@ -52,7 +52,7 @@ class FulfillmentServiceBloc
           );
         } on DioError {
           debugPrint(
-            'Not loaded month fulfillments for ${userAccount.user.fullName}',
+            'Not loaded month ${calendarMonth.month} in year ${calendarMonth.year} fulfillments for ${userAccount.user.fullName}',
           );
         }
       }
@@ -164,7 +164,7 @@ class FulfillmentServiceBloc
       }
     }
 
-    on<FulfillmentServiceBlocEvent>((event, emit) async {
+    on<CalendarFulfillmentServiceBlocEvent>((event, emit) async {
       await event.when(
         init: (calendarMonth, carePlans) async {
           //we need wait here because this init is invoked everytime when
@@ -175,14 +175,17 @@ class FulfillmentServiceBloc
           await setCalendarMonth(calendarMonth, carePlans);
           if (calendarMonth.monthStartDate.isAfter(DateTime.now())) {
             emit(
-              FulfillmentServiceBlocState(month: calendarMonth, loading: false),
+              CalendarFulfillmentServiceBlocState(
+                month: calendarMonth,
+                loading: false,
+              ),
             );
             return;
           }
 
           await populateMonth(calendarMonth, carePlans);
           emit(
-            FulfillmentServiceBlocState(
+            CalendarFulfillmentServiceBlocState(
               month: calendarMonth,
               loading: false,
             ),
@@ -190,7 +193,7 @@ class FulfillmentServiceBloc
 
           if (calendarMonth.wasResolved != true) {
             add(
-              FulfillmentServiceBlocEvent.loadMonthFulfillments(
+              CalendarFulfillmentServiceBlocEvent.loadMonthFulfillments(
                 calendarMonth,
                 carePlans,
               ),

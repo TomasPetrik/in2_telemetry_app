@@ -38,45 +38,6 @@ class LightMode {
 
   static Color get cardShadow => ScaleColorsLight.cardShadow;
 
-  static TextTheme get textTheme => TextTheme(
-        headlineLarge: TextStyle(
-          fontSize: 36,
-          height: 1.33,
-          fontWeight: FontWeight.w700,
-          color: fontColor,
-        ), //big
-        headlineMedium: TextStyle(
-          fontSize: 28,
-          height: 1.14,
-          fontWeight: FontWeight.w700,
-          color: fontColor,
-        ), //headline
-        titleLarge: TextStyle(
-          fontSize: 22,
-          height: 1.27,
-          fontWeight: FontWeight.w600,
-          color: fontColor,
-        ), //title
-        bodyMedium: TextStyle(
-          fontSize: 16,
-          height: 1.25,
-          fontWeight: FontWeight.w500,
-          color: fontColor,
-        ), //text
-        titleMedium: TextStyle(
-          fontSize: 16,
-          height: 1.25,
-          fontWeight: FontWeight.w700,
-          color: fontColor,
-        ), //textAccent
-        labelSmall: TextStyle(
-          fontSize: 13,
-          height: 1.23,
-          fontWeight: FontWeight.w700,
-          color: fontColor,
-        ), //label
-      );
-
   static ColorScheme get colorScheme => ColorScheme(
         background: backgroundColor,
         brightness: Brightness.dark,
@@ -97,14 +58,13 @@ class LightMode {
         onTertiary: positive,
       );
   static ThemeData get theme => ThemeData(
-        primaryColor: ScaleColorsLight.primary,
+        primaryColor: primary,
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         canvasColor: backgroundColor,
         scaffoldBackgroundColor: backgroundColor,
         cardColor: paperAccent,
         hintColor: colorContent80,
-        textTheme: textTheme,
         colorScheme: colorScheme,
         cardTheme: CardTheme(
           elevation: Dimensions.cardElevation,

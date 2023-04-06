@@ -1,6 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
+class Dimensions {
+  static const double appBarHeight = 56;
+  static const double twoLinedBarHeight = 76;
+  static const double navigationTabBarHeight = 32;
+  static const double buttonHeight = 48;
+  static const double searchBarHeight = 48;
+  static const double singleLineSwitchRowHeight = 54;
+  static const double doubleLineSwitchRowHeight = 92;
+  static const double cardElevation = 10;
+
+  static const double padding2 = 2;
+  static const double padding4 = 4;
+  static const double padding5 = 5;
+  static const double padding6 = 6;
+  static const double padding7 = 7;
+  static const double padding8 = 8;
+  static const double padding10 = 10;
+  static const double padding12 = 12;
+  static const double padding14 = 14;
+  static const double padding16 = 16;
+  static const double padding17 = 17;
+  static const double padding18 = 18;
+  static const double padding20 = 20;
+  static const double padding24 = 24;
+  static const double padding25 = 25;
+  static const double padding26 = 26;
+  static const double padding30 = 30;
+  static const double padding32 = 32;
+  static const double padding34 = 34;
+  static const double padding35 = 35;
+  static const double padding36 = 36;
+  static const double padding40 = 40;
+  static const double padding42 = 42;
+  static const double padding48 = 48;
+  static const double padding60 = 60;
+  static const double padding64 = 64;
+}
+
 class Paddings {
   static const EdgeInsetsGeometry left5 =
       EdgeInsets.only(left: Dimensions.padding5);
@@ -168,45 +206,6 @@ class Gaps {
   static Gap gap42 = const Gap(Dimensions.padding42);
   static Gap gap48 = const Gap(Dimensions.padding48);
   static Gap gap60 = const Gap(Dimensions.padding60);
-}
-
-class Dimensions {
-  /* Ui component sizes */
-  static const double appBarHeight = 56;
-  static const double twoLinedBarHeight = 76;
-  static const double navigationTabBarHeight = 32;
-  static const double buttonHeight = 48;
-  static const double searchBarHeight = 48;
-  static const double singleLineRowHeight = 54;
-  static const double doubleLineRowHeight = 92;
-  static const double cardElevation = 10;
-
-  static const double padding2 = 2;
-  static const double padding4 = 4;
-  static const double padding5 = 5;
-  static const double padding6 = 6;
-  static const double padding7 = 7;
-  static const double padding8 = 8;
-  static const double padding10 = 10;
-  static const double padding12 = 12;
-  static const double padding14 = 14;
-  static const double padding16 = 16;
-  static const double padding17 = 17;
-  static const double padding18 = 18;
-  static const double padding20 = 20;
-  static const double padding24 = 24;
-  static const double padding25 = 25;
-  static const double padding26 = 26;
-  static const double padding30 = 30;
-  static const double padding32 = 32;
-  static const double padding34 = 34;
-  static const double padding35 = 35;
-  static const double padding36 = 36;
-  static const double padding40 = 40;
-  static const double padding42 = 42;
-  static const double padding48 = 48;
-  static const double padding60 = 60;
-  static const double padding64 = 64;
 }
 
 class RadiusSize {

@@ -4,9 +4,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_event.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
-import 'package:scalesoft_app/bloc/calendar_service/fulfillment_service_bloc.dart';
-import 'package:scalesoft_app/bloc/calendar_service/fulfillment_service_bloc_event.dart';
-import 'package:scalesoft_app/bloc/calendar_service/fulfillment_service_bloc_state.dart';
+import 'package:scalesoft_app/bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc.dart';
+import 'package:scalesoft_app/bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc_event.dart';
+import 'package:scalesoft_app/bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc_state.dart';
 import 'package:scalesoft_app/cubit/calendar_footer/calendar_footer_cubit.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
@@ -28,13 +28,14 @@ class CalendarMonthWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final calendarServiceBloc = getIt<FulfillmentServiceBloc>();
+    final calendarServiceBloc = getIt<CalendarFulfillmentServiceBloc>();
     final carePlans = getIt<Session>().getAllCarePlans();
 
-    return BlocBuilder<FulfillmentServiceBloc, FulfillmentServiceBlocState>(
+    return BlocBuilder<CalendarFulfillmentServiceBloc,
+        CalendarFulfillmentServiceBlocState>(
       bloc: calendarServiceBloc
         ..add(
-          FulfillmentServiceBlocEvent.init(
+          CalendarFulfillmentServiceBlocEvent.init(
             calendarMonth,
             carePlans,
           ),
@@ -114,7 +115,7 @@ class CalendarMonthWidget extends StatelessWidget {
                                       child: InkWell(
                                         onTap: () {
                                           calendarServiceBloc.add(
-                                            FulfillmentServiceBlocEvent
+                                            CalendarFulfillmentServiceBlocEvent
                                                 .onDaySelected(
                                               day.startDt,
                                             ),

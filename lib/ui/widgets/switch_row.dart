@@ -27,7 +27,7 @@ class SwitchRow extends StatelessWidget {
     bool? defaultValue,
   }) {
     return _TitleSwitchRow(
-      height: Dimensions.singleLineRowHeight,
+      height: Dimensions.singleLineSwitchRowHeight,
       title: title,
       onChanged: onChanged,
       defaultValue: defaultValue,
@@ -40,7 +40,7 @@ class SwitchRow extends StatelessWidget {
     bool? defaultValue,
   }) {
     return _TextSwitchRow(
-      height: Dimensions.singleLineRowHeight,
+      height: Dimensions.singleLineSwitchRowHeight,
       title: title,
       onChanged: onChanged,
       defaultValue: defaultValue,
@@ -54,7 +54,7 @@ class SwitchRow extends StatelessWidget {
     bool? defaultValue,
   }) {
     return _MultiLineSwitchRow(
-      height: Dimensions.doubleLineRowHeight,
+      height: Dimensions.doubleLineSwitchRowHeight,
       title: title,
       label: label,
       onChanged: onChanged,
