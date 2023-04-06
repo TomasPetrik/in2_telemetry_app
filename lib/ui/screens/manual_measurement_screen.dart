@@ -8,7 +8,6 @@ import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
@@ -86,7 +85,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                     ),
                     Gaps.gap16,
                     Text(
-                      context.locale.manual_measurement_screen_type,
+                      translactions.manual_measurement_screen_type,
                       style: ScaleTextStyles.text.apply(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
@@ -111,7 +110,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                         return DropdownMenuItem<MeasurementType>(
                           value: measurementType,
                           child: Text(
-                            context.locale
+                            translactions
                                 .common_measurement_types(measurementType.name),
                           ),
                         );
@@ -121,7 +120,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                     measurementForm,
                     Gaps.gap24,
                     Text(
-                      context.locale.manual_measurement_screen_measurement_time,
+                      translactions.manual_measurement_screen_measurement_time,
                       style: ScaleTextStyles.text.apply(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
@@ -161,7 +160,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                     ),
                     Gaps.gap24,
                     HighlightedElevatedButton(
-                      label: context.locale.common_save,
+                      label: translactions.common_save,
                       buttonType: ButtonType.primary,
                       onPressed: () async {
                         final measurement = measurementForm.getMeasurement();
@@ -188,7 +187,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                   child: ScaleAppBar(
-                    title: context.locale.manual_measurement_screen_title,
+                    title: translactions.manual_measurement_screen_title,
                     showClose: true,
                   ),
                 ),

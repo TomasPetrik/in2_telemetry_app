@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_colors_dark.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_colors_light.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -44,14 +44,14 @@ class AppearanceItem extends StatelessWidget {
 
   String _getTitle(BuildContext context) {
     return itemType == AppearanceItemType.light
-        ? context.locale.configuration_screen_light
-        : context.locale.configuration_screen_dark;
+        ? translactions.configuration_screen_light
+        : translactions.configuration_screen_dark;
   }
 
   String _getSubTitle(BuildContext context) {
     return itemType == AppearanceItemType.light
-        ? context.locale.configuration_screen_good_in_day
-        : context.locale.configuration_screen_good_in_night;
+        ? translactions.configuration_screen_good_in_day
+        : translactions.configuration_screen_good_in_night;
   }
 
   String _getIconPath(BuildContext context) {

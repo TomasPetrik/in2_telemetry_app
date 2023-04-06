@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -94,7 +93,7 @@ class HistoryResultItem extends StatelessWidget with BottomSheetMixin {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          context.locale.common_measurement_types(
+                          translactions.common_measurement_types(
                             historicMeasurement
                                 .carePlan.activity.measurementType.name,
                           ),
@@ -104,7 +103,7 @@ class HistoryResultItem extends StatelessWidget with BottomSheetMixin {
                         ),
                         Gaps.gap6,
                         Text(
-                          context.locale.dashboard_screen_measurement_interval(
+                          translactions.dashboard_screen_measurement_interval(
                             historicMeasurement.whenStart
                                 .toLocal()
                                 .toTimeOfDay()
@@ -120,7 +119,7 @@ class HistoryResultItem extends StatelessWidget with BottomSheetMixin {
                         ),
                         if (historicMeasurement.whenCode != null)
                           Text(
-                            context.locale.common_when_code(
+                            translactions.common_when_code(
                               historicMeasurement.whenCode!.name,
                             ),
                             style: ScaleTextStyles.label.apply(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/api/dto/measurement/device.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
@@ -17,13 +17,13 @@ class DeviceItem extends StatelessWidget {
   final VoidCallback? onRemove;
 
   String getSubTitle(BuildContext context) {
-    String subTitle = context.locale.measurement_dialog_device_desc(
+    String subTitle = translactions.measurement_dialog_device_desc(
       device.deviceModel!.name,
     );
 
     if (device.addedAt != null) {
       subTitle +=
-          '\n${context.locale.common_addded_at_time(device.addedAt!.toDateFormatLong2())}';
+          '\n${translactions.common_addded_at_time(device.addedAt!.toDateFormatLong2())}';
     }
 
     return subTitle;

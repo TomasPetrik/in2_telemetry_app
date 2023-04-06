@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:scalesoft_app/api/dto/measurement/device.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/icon_label_row.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 
@@ -22,30 +22,30 @@ class DeviceProgressList extends StatelessWidget {
       return [
         ConnectionState(
           'assets/icons/icon_power_off.svg',
-          context.locale.find_device_screen_step1_p(device.modelName!),
+          translactions.find_device_screen_step1_p(device.modelName!),
           1,
         ),
         ConnectionState(
           'assets/icons/icon_bluetooth_on.svg',
-          context.locale.find_device_screen_step2_p,
+          translactions.find_device_screen_step2_p,
           1,
         ),
         ConnectionState(
           'assets/icons/icon_arrow_spin.svg',
-          context.locale.find_device_screen_step3_p,
+          translactions.find_device_screen_step3_p,
           2,
         ),
         ConnectionState(
           'assets/icons/icon_wave_pulse.svg',
-          context.locale.find_device_screen_step4_p(
-            context.locale
+          translactions.find_device_screen_step4_p(
+            translactions
                 .common_action_button_label(device.actionButtonType!.name),
           ),
           3,
         ),
         ConnectionState(
           'assets/icons/icon_arrow_spin.svg',
-          context.locale.find_device_screen_step5_p,
+          translactions.find_device_screen_step5_p,
           3,
         )
       ];
@@ -54,14 +54,14 @@ class DeviceProgressList extends StatelessWidget {
         if (device.askToActivateBt == true) ...{
           ConnectionState(
             'assets/icons/icon_circle_information.svg',
-            context.locale.find_device_screen_step1(device.modelName!),
+            translactions.find_device_screen_step1(device.modelName!),
             1,
           )
         },
         ConnectionState(
           'assets/icons/icon_power_off.svg',
-          context.locale.find_device_screen_step2(
-            context.locale
+          translactions.find_device_screen_step2(
+            translactions
                 .common_action_button_label(device.actionButtonType!.name),
           ),
           1,
@@ -69,13 +69,13 @@ class DeviceProgressList extends StatelessWidget {
         if (device.askToConfirmMeasurement == true) ...{
           ConnectionState(
             'assets/icons/icon_wave_pulse.svg',
-            context.locale.find_device_screen_step3,
+            translactions.find_device_screen_step3,
             1,
           )
         },
         ConnectionState(
           'assets/icons/icon_arrow_spin.svg',
-          context.locale.find_device_screen_step4,
+          translactions.find_device_screen_step4,
           1,
         ),
       ];

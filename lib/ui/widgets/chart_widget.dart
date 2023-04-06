@@ -6,7 +6,6 @@ import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/chart_loader_bloc/chart_loader_bloc.dart';
 import 'package:scalesoft_app/bloc/chart_loader_bloc/chart_loader_bloc_event.dart';
 import 'package:scalesoft_app/bloc/chart_loader_bloc/chart_loader_bloc_state.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -139,8 +138,8 @@ class _ChartPlaceHolder extends StatelessWidget {
               Gaps.gap24,
               Text(
                 chartLoadedResult == ChartResultType.error
-                    ? context.locale.chart_placeholder_error_loading_data
-                    : context.locale.chart_placeholder_no_data_in_month,
+                    ? translactions.chart_placeholder_error_loading_data
+                    : translactions.chart_placeholder_no_data_in_month,
                 style: ScaleTextStyles.text.apply(
                   color: Theme.of(context).colorScheme.onSecondary,
                 ),

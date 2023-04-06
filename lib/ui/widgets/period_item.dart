@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
@@ -26,13 +26,13 @@ class PlannedPeriodItem extends StatelessWidget {
   String _getSubtitle(BuildContext context, int measurements) {
     switch (whenPeriod) {
       case PlanWhenPeriod.today:
-        return context.locale
+        return translactions
             .measurement_screen_today_n_measurements(measurements);
       case PlanWhenPeriod.next10:
-        return context.locale
+        return translactions
             .measurement_screen_upcomming_n_measurements(measurements);
       case PlanWhenPeriod.tomorrow:
-        return context.locale
+        return translactions
             .measurement_screen_tomorrow_n_measurements(measurements);
     }
   }
@@ -53,7 +53,7 @@ class PlannedPeriodItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                context.locale.common_measurement_times(whenPeriod.name),
+                translactions.common_measurement_times(whenPeriod.name),
                 style: ScaleTextStyles.textAccent,
               ),
               Gaps.gap6,

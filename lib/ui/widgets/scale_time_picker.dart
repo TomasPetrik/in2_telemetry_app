@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 
@@ -87,7 +87,7 @@ class _ScaleTimePickerState extends State<ScaleTimePicker> {
                   GoRouter.of(context).pop(null);
                 },
                 child: Text(
-                  context.locale.common_cancel,
+                  translactions.common_cancel,
                   style: ScaleTextStyles.text.apply(
                     color: Theme.of(context).colorScheme.error,
                   ),
@@ -103,7 +103,7 @@ class _ScaleTimePickerState extends State<ScaleTimePicker> {
                   GoRouter.of(context).pop(DailyTime(selectedHour, minute, 0));
                 },
                 child: Text(
-                  context.locale.common_confirm,
+                  translactions.common_confirm,
                   style: ScaleTextStyles.text.apply(
                     color: Theme.of(context).colorScheme.primary,
                   ),

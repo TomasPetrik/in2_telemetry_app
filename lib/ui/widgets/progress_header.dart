@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -72,7 +72,7 @@ class ProgressHeader extends StatelessWidget {
                         openWhenSelector?.call();
                       },
                       child: Text(
-                        context.locale
+                        translactions
                             .common_measurement_times(whenPeriod!.name),
                         style: ScaleTextStyles.text.apply(
                           color: Theme.of(context).primaryColor,

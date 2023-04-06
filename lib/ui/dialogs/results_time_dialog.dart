@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -35,7 +35,7 @@ class ResultsTimeDialog extends StatelessWidget {
           Padding(
             padding: Paddings.horizontal16,
             child: Text(
-              context.locale.results_measurements_when_selector_title,
+              translactions.results_measurements_when_selector_title,
               style: ScaleTextStyles.textAccent
                   .apply(color: Theme.of(context).colorScheme.onSecondary),
             ),
@@ -64,7 +64,7 @@ class ResultsTimeDialog extends StatelessWidget {
           Padding(
             padding: Paddings.horizontal16,
             child: HighlightedElevatedButton(
-              label: context.locale.common_show_calendar,
+              label: translactions.common_show_calendar,
               onPressed: () {
                 GoRouter.of(context)
                     .pop(ResultPeriodSelection(showCalendar: true));
@@ -75,7 +75,7 @@ class ResultsTimeDialog extends StatelessWidget {
           Padding(
             padding: Paddings.horizontal16,
             child: HighlightedElevatedButton(
-              label: context.locale.common_close,
+              label: translactions.common_close,
               onPressed: () {
                 GoRouter.of(context).pop();
               },

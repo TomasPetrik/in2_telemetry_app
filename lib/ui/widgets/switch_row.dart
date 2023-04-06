@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/scale_switch.dart';
@@ -70,7 +70,7 @@ class SwitchRow extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              context.locale.notifications_screen_10_min_before_measurement,
+              translactions.notifications_screen_10_min_before_measurement,
               style: ScaleTextStyles.text.apply(
                 color: Theme.of(context).colorScheme.onPrimary,
               ),

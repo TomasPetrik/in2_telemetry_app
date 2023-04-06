@@ -104,8 +104,21 @@ class MessageLookup extends MessageLookupByLibrary {
             'other': ' ',
           })}";
 
-  static String m12(month, Leden, Duben, Srpen, Listopad, Prosinec) =>
-      "{month, select, 1${Leden} 2{Únor} 3{Březen} 4${Duben} 5{Květen} 6{Červen} 7{Červenec} 8${Srpen} 9{Září} 10{Říjen} 11${Listopad} 12${Prosinec} other{Jiný}}";
+  static String m12(month) => "${Intl.select(month, {
+            'jan': 'Leden',
+            'feb': 'Únor',
+            'march': 'Březen',
+            'april': 'Duben',
+            'may': 'Květen',
+            'june': 'Červen',
+            'july': 'Červenec',
+            'aug': 'Srpen',
+            'sept': 'Září',
+            'oct': 'Říjen',
+            'nov': 'Listopad',
+            'dec': 'Prosinec',
+            'other': 'Jiný',
+          })}";
 
   static String m13(count) =>
       "${Intl.plural(count, zero: 'Plnění plánu', one: 'Plnění plánu', other: 'Plnění plánů')}";

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -36,7 +36,7 @@ class PlannedMeasurementTimeDialog extends StatelessWidget {
           Padding(
             padding: Paddings.horizontal16,
             child: Text(
-              context.locale.common_measurement,
+              translactions.common_measurement,
               style: ScaleTextStyles.textAccent
                   .apply(color: Theme.of(context).colorScheme.onSecondary),
             ),
@@ -65,7 +65,7 @@ class PlannedMeasurementTimeDialog extends StatelessWidget {
           Padding(
             padding: Paddings.horizontal16,
             child: HighlightedElevatedButton(
-              label: context.locale.common_show_calendar,
+              label: translactions.common_show_calendar,
               onPressed: () {
                 GoRouter.of(context)
                     .pop(PlannedPeriodSelection(showCalendar: true));
@@ -76,7 +76,7 @@ class PlannedMeasurementTimeDialog extends StatelessWidget {
           Padding(
             padding: Paddings.horizontal16,
             child: HighlightedElevatedButton(
-              label: context.locale.common_close,
+              label: translactions.common_close,
               onPressed: () {
                 GoRouter.of(context).pop();
               },

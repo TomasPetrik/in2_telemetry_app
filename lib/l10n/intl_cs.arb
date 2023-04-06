@@ -88,7 +88,7 @@
             "day": {}
         }
     },
-    "common_months": "{month, select, 1{Leden} 2{Únor} 3{Březen} 4{Duben} 5{Květen} 6{Červen} 7{Červenec} 8{Srpen} 9{Září} 10{Říjen} 11{Listopad} 12{Prosinec} other{Jiný}}",
+    "common_months": "{month, select, jan{Leden} feb{Únor} march{Březen} april{Duben} may{Květen} june{Červen} july{Červenec} aug{Srpen} sept{Září} oct{Říjen} nov{Listopad} dec{Prosinec} other{Jiný}}",
     "@common_months": {
         "description": "Months in year",
         "placeholders": {

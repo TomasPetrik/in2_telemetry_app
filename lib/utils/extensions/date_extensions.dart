@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart' as tdw;
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 extension DateParse on DateTime {
@@ -119,12 +119,12 @@ extension DateParse on DateTime {
     final difference = daysBetween(currentDt, this);
 
     if (difference == -1) {
-      return context.locale.common_measurement_times(WhenPeriod.yesterday.name);
+      return translactions.common_measurement_times(WhenPeriod.yesterday.name);
     }
     if (difference == 0) {
-      return context.locale.common_measurement_times(WhenPeriod.today.name);
+      return translactions.common_measurement_times(WhenPeriod.today.name);
     } else if (difference == 1) {
-      return context.locale.common_measurement_times(WhenPeriod.tomorrow.name);
+      return translactions.common_measurement_times(WhenPeriod.tomorrow.name);
     } else {
       return toRegularDate();
     }

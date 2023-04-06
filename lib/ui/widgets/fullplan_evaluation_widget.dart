@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/scale_card.dart';
@@ -50,7 +50,7 @@ class FullPlanEvaluationWidget extends StatelessWidget {
                     ),
                     Gaps.gap16,
                     Text(
-                      context.locale
+                      translactions
                           .care_plan_detail_screen_fulfillment_evaluation,
                       style: ScaleTextStyles.text.apply(
                         color: Theme.of(context).colorScheme.onPrimary,
@@ -72,7 +72,7 @@ class FullPlanEvaluationWidget extends StatelessWidget {
                 if (veryFirstMeasurement.whenEnd.isAfter(DateTime.now())) ...[
                   Gaps.gap6,
                   Text(
-                    context.locale
+                    translactions
                         .care_plan_detail_screen_fulfillment_evaluation_valid_from(
                       veryFirstMeasurement.whenStart.toDateOrDay(context),
                       veryFirstMeasurement.whenStart.toTimeShort(),

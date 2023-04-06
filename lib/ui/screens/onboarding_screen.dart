@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -38,7 +37,7 @@ class OnboardingScreen extends StatelessWidget with BottomSheetMixin {
                     ),
                     Gaps.gap36,
                     Text(
-                      context.locale
+                      translactions
                           .onboarding_add_account_screen_add_account_subtitle,
                       textAlign: TextAlign.center,
                       style: ScaleTextStyles.text.apply(
@@ -48,22 +47,22 @@ class OnboardingScreen extends StatelessWidget with BottomSheetMixin {
                     Gaps.gap24,
                     OnboardingItemDesc(
                       imagePath: 'assets/icons/icon_hospital_user.svg',
-                      desc: context.locale
+                      desc: translactions
                           .onboarding_add_account_screen_add_account_text1,
                     ),
                     OnboardingItemDesc(
                       imagePath: 'assets/icons/icon_shield_keyhole.svg',
-                      desc: context.locale
+                      desc: translactions
                           .onboarding_add_account_screen_add_account_text2,
                     ),
                     OnboardingItemDesc(
                       imagePath: 'assets/icons/icon_wave_pulse.svg',
-                      desc: context.locale
+                      desc: translactions
                           .onboarding_add_account_screen_add_account_text3,
                     ),
                     Gaps.gap24,
                     HighlightedElevatedButton(
-                      label: context.locale
+                      label: translactions
                           .onboarding_add_account_screen_add_account_button,
                       onPressed: () async {
                         final hospitalSelection =
@@ -79,7 +78,7 @@ class OnboardingScreen extends StatelessWidget with BottomSheetMixin {
                     ),
                     Gaps.gap24,
                     HighlightedElevatedButton(
-                      label: context.locale
+                      label: translactions
                           .onboarding_add_account_screen_add_account_how_it_works_button,
                       buttonType: ButtonType.secondary,
                       onPressed: () async {},
@@ -94,8 +93,8 @@ class OnboardingScreen extends StatelessWidget with BottomSheetMixin {
             left: 0,
             right: 0,
             child: BluredScaleAppBar(
-              title: context
-                  .locale.onboarding_add_account_screen_add_account_title,
+              title:
+                  translactions.onboarding_add_account_screen_add_account_title,
             ),
           ),
         ],

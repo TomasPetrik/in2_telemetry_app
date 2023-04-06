@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:scalesoft_app/api/dto/measurement/device.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/action_item.dart';
@@ -33,7 +33,7 @@ class DeviceProgress extends StatelessWidget {
         const SliverGap(Dimensions.padding42),
         SliverToBoxAdapter(
           child: Text(
-            context.locale.common_procedure,
+            translactions.common_procedure,
             style: ScaleTextStyles.textAccent.apply(
               color: Theme.of(context).colorScheme.onSecondary,
             ),
@@ -46,7 +46,7 @@ class DeviceProgress extends StatelessWidget {
         ),
         const SliverGap(Dimensions.padding60),
         ActionItem(
-          label: context.locale.find_device_screen_device_reference,
+          label: translactions.find_device_screen_device_reference,
           onTap: () {},
         ),
       ],

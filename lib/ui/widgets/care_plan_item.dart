@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/chart_screen_route.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -70,7 +70,7 @@ class CarePlanItem extends StatelessWidget {
                 ),
                 Gaps.gap12,
                 Text(
-                  context.locale.common_measurement_types(
+                  translactions.common_measurement_types(
                     carePlan.activity.measurementType.name,
                   ),
                   style: ScaleTextStyles.textAccent.apply(
@@ -114,11 +114,11 @@ class CarePlanItem extends StatelessWidget {
             Gaps.gap6,
             Text(
               carePlan.scheduledEnd != null
-                  ? context.locale.user_details_screen_plan_active_from_to_date(
+                  ? translactions.user_details_screen_plan_active_from_to_date(
                       carePlan.scheduledStart.toRegularDate(),
                       carePlan.scheduledEnd!.toRegularDate(),
                     )
-                  : context.locale.user_details_screen_plan_active_from_date(
+                  : translactions.user_details_screen_plan_active_from_date(
                       carePlan.scheduledStart.toRegularDate(),
                     ),
               style: ScaleTextStyles.textAccent.apply(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/painters/user_item_painter.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -66,11 +66,11 @@ class UserItem extends StatelessWidget {
     final carePlans = userAccount.carePlans;
     if (carePlans?.isEmpty == true) return null;
 
-    String label = context.locale
+    String label = translactions
         .common_measurement_types(carePlans![0].activity.measurementType.name);
 
     if (carePlans.length > 1) {
-      label += ' ${context.locale.common_plus_n_others(carePlans.length - 1)}';
+      label += ' ${translactions.common_plus_n_others(carePlans.length - 1)}';
     }
     return label;
   }

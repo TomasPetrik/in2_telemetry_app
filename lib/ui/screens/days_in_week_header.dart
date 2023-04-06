@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 
@@ -19,7 +19,7 @@ class DaysInWeekHeader extends StatelessWidget {
                 (dayInWeek) => Expanded(
                   child: Center(
                     child: Text(
-                      context.locale.common_days_in_week_short(dayInWeek.name),
+                      translactions.common_days_in_week_short(dayInWeek.name),
                       style: ScaleTextStyles.label.apply(
                         color: Theme.of(context).colorScheme.onSecondary,
                       ),

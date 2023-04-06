@@ -4,7 +4,6 @@ import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
@@ -89,7 +88,7 @@ class UserAppBar extends StatelessWidget with BottomSheetMixin {
                         child: Text(
                           style: ScaleTextStyles.textAccent,
                           session.isMultiUser == true
-                              ? context.locale.common_all_accounts
+                              ? translactions.common_all_accounts
                               : sessionAccounts[0].hospital?.title ?? '',
                           textAlign: TextAlign.center,
                         ),
@@ -105,7 +104,7 @@ class UserAppBar extends StatelessWidget with BottomSheetMixin {
                   ),
                   session.isMultiUser == true
                       ? '${sessionAccounts.first.user.fullName}'
-                          ' ${sessionAccounts.length > 1 ? context.locale.common_plus_n_others(sessionAccounts.length - 1) : ''}'
+                          ' ${sessionAccounts.length > 1 ? translactions.common_plus_n_others(sessionAccounts.length - 1) : ''}'
                       : sessionAccounts[0].user.fullName,
                   textAlign: TextAlign.center,
                 ),

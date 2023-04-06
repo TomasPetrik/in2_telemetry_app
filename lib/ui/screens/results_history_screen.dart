@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/navigation_screen.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
@@ -60,7 +60,7 @@ class ResultsHistoryScreen extends StatelessWidget {
               navigationHeader: Row(
                 children: [
                   Text(
-                    context.locale.results_screen_results_title,
+                    translactions.results_screen_results_title,
                     style: ScaleTextStyles.textAccent.apply(
                       color: Theme.of(context).colorScheme.onSecondary,
                     ),
@@ -70,7 +70,7 @@ class ResultsHistoryScreen extends StatelessWidget {
               tabs: [
                 if (measurementTypes.length > 1) ...{
                   NavigationTabBarItem(
-                    label: context.locale.dashboard_screen_all,
+                    label: translactions.dashboard_screen_all,
                     slivers: [
                       HistoryResultsList(
                         isMultiUser: isMultiUser,
@@ -83,7 +83,7 @@ class ResultsHistoryScreen extends StatelessWidget {
                 ...measurementTypes
                     .map(
                       (measurementType) => NavigationTabBarItem(
-                        label: context.locale.common_measurement_types(
+                        label: translactions.common_measurement_types(
                           measurementType.name,
                         ),
                         slivers: [
@@ -113,7 +113,7 @@ class ResultsHistoryScreen extends StatelessWidget {
             child: BluredScaleAppBar(
               title: date.toRegularDate(),
               subTitle:
-                  '${userNames.first}${userNames.length > 1 ? ' ${context.locale.common_plus_n_others(userNames.length - 1)}' : ''}',
+                  '${userNames.first}${userNames.length > 1 ? ' ${translactions.common_plus_n_others(userNames.length - 1)}' : ''}',
               showClose: true,
               onCloseTap: () {},
               onBackTap: () {},

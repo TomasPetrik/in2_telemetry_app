@@ -9,7 +9,6 @@ import 'package:scalesoft_app/api/dto/care_plan/when_time_value.dart';
 import 'package:scalesoft_app/bloc/daily_times_settings/times_settings_bloc.dart';
 import 'package:scalesoft_app/bloc/daily_times_settings/times_settings_event.dart';
 import 'package:scalesoft_app/bloc/daily_times_settings/times_settings_state.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -100,7 +99,7 @@ class _TimeSettingsForm extends StatelessWidget with BottomSheetMixin {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  context.locale.care_plan_detail_daily_times,
+                  translactions.care_plan_detail_daily_times,
                   style: ScaleTextStyles.textAccent.apply(
                     color: Theme.of(context).colorScheme.onSecondary,
                   ),

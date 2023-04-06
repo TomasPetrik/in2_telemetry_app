@@ -5,7 +5,6 @@ import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
@@ -57,7 +56,7 @@ class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
                     right: Dimensions.padding48,
                   ),
                   child: Text(
-                    context.locale.onboarding_account_added_screen_user_added(
+                    translactions.onboarding_account_added_screen_user_added(
                       userAccount.user.fullName,
                     ),
                     style: ScaleTextStyles.text.apply(
@@ -68,8 +67,8 @@ class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
                 ),
                 Gaps.gap24,
                 HighlightedElevatedButton(
-                  label: context
-                      .locale.onboarding_account_added_screen_continue_to_app,
+                  label: translactions
+                      .onboarding_account_added_screen_continue_to_app,
                   onPressed: () async {
                     getIt<ContentBloc>()
                         .add(SwitchUserContentEvent(userAccount: userAccount));
@@ -77,8 +76,8 @@ class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
                 ),
                 Gaps.gap24,
                 HighlightedElevatedButton(
-                  label: context
-                      .locale.onboarding_account_added_screen_add_other_account,
+                  label: translactions
+                      .onboarding_account_added_screen_add_other_account,
                   buttonType: ButtonType.secondary,
                   onPressed: () async {
                     final hospitalSelection =
@@ -100,8 +99,8 @@ class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
             left: 0,
             right: 0,
             child: BluredScaleAppBar(
-              title: context
-                  .locale.onboarding_account_added_screen_add_account_title,
+              title: translactions
+                  .onboarding_account_added_screen_add_account_title,
             ),
           ),
         ],

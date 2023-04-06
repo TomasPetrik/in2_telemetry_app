@@ -3,9 +3,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/device_info.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -33,33 +33,33 @@ class SyncedResult extends StatelessWidget {
   String _getTitle(BuildContext context) {
     switch (hwMeasurementResult.resultState) {
       case ResultState.success:
-        return context.locale.measurement_summary_screen_success_title;
+        return translactions.measurement_summary_screen_success_title;
       case ResultState.noData:
-        return context.locale.measurement_summary_screen_no_data_title;
+        return translactions.measurement_summary_screen_no_data_title;
       case ResultState.connectionError:
-        return context.locale.measurement_summary_screen_sync_error_title;
+        return translactions.measurement_summary_screen_sync_error_title;
     }
   }
 
   String _getSubTitle(BuildContext context) {
     switch (hwMeasurementResult.resultState) {
       case ResultState.success:
-        return context.locale.measurement_summary_screen_success_subtitle;
+        return translactions.measurement_summary_screen_success_subtitle;
       case ResultState.noData:
-        return context.locale.measurement_summary_screen_no_data_subtitle;
+        return translactions.measurement_summary_screen_no_data_subtitle;
       case ResultState.connectionError:
-        return context.locale.measurement_summary_screen_sync_error_subtitle;
+        return translactions.measurement_summary_screen_sync_error_subtitle;
     }
   }
 
   String _getDesc(BuildContext context) {
     switch (hwMeasurementResult.resultState) {
       case ResultState.success:
-        return context.locale.measurement_summary_screen_result_success_desc;
+        return translactions.measurement_summary_screen_result_success_desc;
       case ResultState.noData:
-        return context.locale.measurement_summary_screen_no_data_desc;
+        return translactions.measurement_summary_screen_no_data_desc;
       case ResultState.connectionError:
-        return context.locale.measurement_summary_screen_sync_error_desc;
+        return translactions.measurement_summary_screen_sync_error_desc;
     }
   }
 
@@ -157,7 +157,7 @@ class SyncedResult extends StatelessWidget {
                       Gaps.gap16,
                       Expanded(
                         child: Text(
-                          context.locale.common_measurement_types(
+                          translactions.common_measurement_types(
                             measurementType.name,
                           ),
                           style: ScaleTextStyles.textAccent.apply(
@@ -203,8 +203,8 @@ class SyncedResult extends StatelessWidget {
           const SliverGap(Dimensions.padding24),
           SliverToBoxAdapter(
             child: HighlightedElevatedButton(
-              label: context
-                  .locale.measurement_summary_screen_no_data_repeat_measurement,
+              label: translactions
+                  .measurement_summary_screen_no_data_repeat_measurement,
               onPressed: () {
                 GoRouter.of(context).pushReplacementNamed(
                   OmronFlowRoute.name,
@@ -222,7 +222,7 @@ class SyncedResult extends StatelessWidget {
         const SliverGap(Dimensions.padding24),
         SliverToBoxAdapter(
           child: HighlightedElevatedButton(
-            label: context.locale.common_close,
+            label: translactions.common_close,
             onPressed: () {
               GoRouter.of(context).goNamed(DashboardRoute.name);
             },

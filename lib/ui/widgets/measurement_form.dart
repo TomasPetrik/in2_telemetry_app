@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/dto/measurement/composed_int_value.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/measurement_config.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/scale_text_form_field.dart';
+import 'package:scalesoft_app/utils/constants.dart';
 
 final formKey = GlobalKey<FormState>();
 final List<GlobalKey<FormState>> fieldGlobalKeys = [
@@ -100,7 +100,7 @@ class MeasurementForm extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      context.locale.common_measurement_units_names(
+                      translactions.common_measurement_units_names(
                         measurementConfig.unitNames[0].name,
                       ),
                       style: ScaleTextStyles.text.apply(
@@ -126,7 +126,7 @@ class MeasurementForm extends StatelessWidget {
                             value.isEmpty == true ||
                             measurementConfig.min > double.parse(value) ||
                             measurementConfig.max < double.parse(value)) {
-                          return context.locale.common_wrong_value;
+                          return translactions.common_wrong_value;
                         } else {
                           _value1 = double.parse(value);
                           return null;
@@ -144,7 +144,7 @@ class MeasurementForm extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        context.locale.common_measurement_units_names(
+                        translactions.common_measurement_units_names(
                           measurementConfig.unitNames[1].name,
                         ),
                         style: ScaleTextStyles.text.apply(
@@ -170,7 +170,7 @@ class MeasurementForm extends StatelessWidget {
                               value.isEmpty == true ||
                               measurementConfig.min > double.parse(value) ||
                               measurementConfig.max < double.parse(value)) {
-                            return context.locale.common_wrong_value;
+                            return translactions.common_wrong_value;
                           } else {
                             _value2 = double.parse(value);
                             return null;

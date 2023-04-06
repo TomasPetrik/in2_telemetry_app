@@ -9,7 +9,6 @@ import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc.dart';
 import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc_event.dart';
 import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc_state.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -133,18 +132,18 @@ class _ChartScreenState extends State<ChartScreen> {
                   left: 0,
                   right: 0,
                   child: ScaleAppBar(
-                    title: context.locale.chart_screen_title(
-                      context.locale
+                    title: translactions.chart_screen_title(
+                      translactions
                           .common_measurement_types_genitive(
                             measurementType.name,
                           )
                           .toLowerCase(),
-                      context.locale.common_measurement_units_types(
+                      translactions.common_measurement_units_types(
                         measurementType.name,
                       ),
                     ),
                     subTitle:
-                        '${userAccount.user.fullName} - ${context.locale.common_months(
+                        '${userAccount.user.fullName} - ${translactions.common_months(
                       '${state.currentMonth!}',
                     )}',
                     customLeftWidget: SizedBox(

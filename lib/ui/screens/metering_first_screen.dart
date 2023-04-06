@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/cubit/device_management/device_management_cubit.dart';
 import 'package:scalesoft_app/cubit/device_management/device_management_state.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
@@ -57,10 +56,10 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
   }
 
   String getTitle() {
-    String title = context.locale.common_measurement;
+    String title = translactions.common_measurement;
     if (widget.selectedMeasurementType != null) {
       title +=
-          ' ${context.locale.common_measurement_types_genitive(defaultMeasurementType.name).toLowerCase()}';
+          ' ${translactions.common_measurement_types_genitive(defaultMeasurementType.name).toLowerCase()}';
     }
     return title;
   }
@@ -113,7 +112,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                                       (measurementType) => Row(
                                         children: [
                                           NavigationTabChip(
-                                            label: context.locale
+                                            label: translactions
                                                 .common_measurement_types(
                                               measurementType.name,
                                             ),
@@ -154,8 +153,8 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                             padding: Paddings.horizontal48,
                             child: Center(
                               child: Text(
-                                context
-                                    .locale.device_selector_unsupported_devices,
+                                translactions
+                                    .device_selector_unsupported_devices,
                                 style: ScaleTextStyles.text.apply(
                                   color:
                                       Theme.of(context).colorScheme.onSecondary,
@@ -214,8 +213,8 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                             padding: Paddings.horizontal48,
                             child: Center(
                               child: Text(
-                                context
-                                    .locale.metering_screen_no_added_device_yet,
+                                translactions
+                                    .metering_screen_no_added_device_yet,
                                 style: ScaleTextStyles.text.apply(
                                   color:
                                       Theme.of(context).colorScheme.onSecondary,
@@ -228,7 +227,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                         if (supportDeviceMeasurement) ...[
                           Gaps.gap24,
                           SettingsItem(
-                            label: context.locale.metering_screen_add_device,
+                            label: translactions.metering_screen_add_device,
                             iconWidget: SvgPicture.asset(
                               'assets/icons/icon_plus.svg',
                               color: Theme.of(context).colorScheme.onSecondary,
@@ -251,7 +250,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                         )) ...[
                           Gaps.gap24,
                           SettingsItem(
-                            label: context.locale.common_personal_record,
+                            label: translactions.common_personal_record,
                             iconWidget: SvgPicture.asset(
                               'assets/icons/icon_square_pen_medium.svg',
                               color: Theme.of(context).colorScheme.onSecondary,

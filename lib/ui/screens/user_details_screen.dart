@@ -6,7 +6,6 @@ import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
@@ -45,11 +44,11 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
         final anyProgressWidget = state.whenOrNull(
           inProgress: () => ProcessItem(
             processType: ProcessType.inProgress,
-            label: context.locale.sync_widget_sync_in_progress,
+            label: translactions.sync_widget_sync_in_progress,
           ),
           synced: () => ProcessItem(
             processType: ProcessType.done,
-            label: context.locale.sync_widget_synced,
+            label: translactions.sync_widget_synced,
           ),
         );
 
@@ -98,7 +97,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                       padding: Paddings.left16,
                       sliver: SliverToBoxAdapter(
                         child: Text(
-                          context.locale.user_detail_screen_measurement_plans,
+                          translactions.user_detail_screen_measurement_plans,
                           style: ScaleTextStyles.textAccent.apply(
                             color: Theme.of(context).colorScheme.onSecondary,
                           ),
@@ -142,7 +141,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                     padding: Paddings.left16,
                     sliver: SliverToBoxAdapter(
                       child: Text(
-                        context.locale.user_detail_screen_user_info,
+                        translactions.user_detail_screen_user_info,
                         style: ScaleTextStyles.textAccent.apply(
                           color: Theme.of(context).colorScheme.onSecondary,
                         ),
@@ -151,25 +150,25 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                   ),
                   const SliverGap(Dimensions.padding24),
                   SliverNameValueRow(
-                    name: context.locale.user_detail_screen_user_name,
+                    name: translactions.user_detail_screen_user_name,
                     value: userAccount.user.firstNames[0],
                   ),
                   const SliverGap(Dimensions.padding8),
                   SliverNameValueRow(
-                    name: context.locale.user_detail_screen_user_surname,
+                    name: translactions.user_detail_screen_user_surname,
                     value: userAccount.user.lastNames[0],
                   ),
                   if (userAccount.user.phoneNumbers?.isNotEmpty == true) ...[
                     const SliverGap(Dimensions.padding8),
                     SliverNameValueRow(
-                      name: context.locale.user_detail_screen_user_phone,
+                      name: translactions.user_detail_screen_user_phone,
                       value: userAccount.user.phoneNumbers![0],
                     ),
                   ],
                   if (userAccount.user.emailAddresses?.isNotEmpty == true) ...[
                     const SliverGap(Dimensions.padding8),
                     SliverNameValueRow(
-                      name: context.locale.user_detail_screen_user_email,
+                      name: translactions.user_detail_screen_user_email,
                       value: userAccount.user.emailAddresses![0],
                     ),
                   ],
@@ -183,8 +182,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                       child: Padding(
                         padding: Paddings.horizontal16,
                         child: HighlightedElevatedButton(
-                          label: context
-                              .locale.user_detail_screen_register_device_button,
+                          label: translactions.user_detail_screen_register_device_button,
                           buttonType: ButtonType.primary,
                           onPressed: () {
                             GoRouter.of(context).pushNamed(
@@ -203,7 +201,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                         padding: Paddings.horizontal16,
                         child: HighlightedElevatedButton(
                           label:
-                              context.locale.user_detail_screen_remove_account,
+                              translactions.user_detail_screen_remove_account,
                           buttonType: ButtonType.alert,
                           onPressed: () async {
                             final confirmed =

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
@@ -42,7 +41,7 @@ class UserHospitalSelectionDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    context.locale.hospital_selection_dialog_measurement_for,
+                    translactions.hospital_selection_dialog_measurement_for,
                     style: ScaleTextStyles.textAccent.apply(
                       color: Theme.of(context).colorScheme.onSecondary,
                     ),
@@ -69,10 +68,10 @@ class UserHospitalSelectionDialog extends StatelessWidget {
               Padding(
                 padding: Paddings.horizontal16,
                 child: SettingsItem(
-                  label: context.locale.common_all_accounts,
+                  label: translactions.common_all_accounts,
                   subLabel:
                       '${hospitalUserEntries.first.value[0].user.fullName}'
-                      ' ${hospitalUserEntries.first.value.length > 1 ? context.locale.common_plus_n_others(hospitalUserEntries.first.value.length - 1) : ''}',
+                      ' ${hospitalUserEntries.first.value.length > 1 ? translactions.common_plus_n_others(hospitalUserEntries.first.value.length - 1) : ''}',
                   iconWidget: Padding(
                     padding: Paddings.all8,
                     child: SvgPicture.asset(
@@ -102,7 +101,7 @@ class UserHospitalSelectionDialog extends StatelessWidget {
                   child: SettingsItem(
                     label: hospital.key.title,
                     subLabel: '${hospital.value[0].user.fullName}'
-                        ' ${hospital.value.length > 1 ? context.locale.common_plus_n_others(hospital.value.length - 1) : ''}',
+                        ' ${hospital.value.length > 1 ? translactions.common_plus_n_others(hospital.value.length - 1) : ''}',
                     iconWidget: Padding(
                       padding: Paddings.all8,
                       child: SvgPicture.asset(
@@ -143,7 +142,7 @@ class UserHospitalSelectionDialog extends StatelessWidget {
             Padding(
               padding: Paddings.horizontal16,
               child: HighlightedElevatedButton(
-                label: context.locale.common_close,
+                label: translactions.common_close,
                 buttonType: ButtonType.secondary,
                 onPressed: () {
                   Navigator.of(context).pop();

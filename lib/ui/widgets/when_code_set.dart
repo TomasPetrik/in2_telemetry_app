@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -51,7 +51,7 @@ class _WhenCodeSetState extends State<WhenCodeSet> with BottomSheetMixin {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '${whenCode != null ? context.locale.common_when_code(whenCode!.name) : ''} ${context.locale.common_from.toLowerCase()}',
+          '${whenCode != null ? translactions.common_when_code(whenCode!.name) : ''} ${translactions.common_from.toLowerCase()}',
           style: ScaleTextStyles.text.apply(
             color: Theme.of(context).colorScheme.onPrimary,
           ),

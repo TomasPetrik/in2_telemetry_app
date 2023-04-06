@@ -3,14 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/cubit/hospital_search/hospital_search_cubit.dart';
 import 'package:scalesoft_app/cubit/hospital_search/hospital_search_state.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
-import 'package:scalesoft_app/utils/constants.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/search_bar.dart';
 import 'package:scalesoft_app/ui/widgets/settings_item.dart';
+import 'package:scalesoft_app/utils/constants.dart';
 
 class HospitalSelectionDialog extends StatelessWidget {
   const HospitalSelectionDialog({
@@ -46,7 +45,7 @@ class HospitalSelectionDialog extends StatelessWidget {
           Padding(
             padding: Paddings.horizontal16,
             child: SearchBar(
-              searchHint: context.locale.hospital_selector_search_for_account,
+              searchHint: translactions.hospital_selector_search_for_account,
               searchController: searchController,
               onBack: () {
                 Navigator.of(context).pop();
@@ -101,7 +100,7 @@ class HospitalSelectionDialog extends StatelessWidget {
           Padding(
             padding: Paddings.horizontal16,
             child: HighlightedElevatedButton(
-              label: context.locale.common_close,
+              label: translactions.common_close,
               buttonType: ButtonType.secondary,
               onPressed: () {
                 Navigator.of(context).pop();

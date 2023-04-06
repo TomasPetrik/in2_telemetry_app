@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -51,7 +51,7 @@ class UserSelectionDialog extends StatelessWidget {
                   Gaps.gap20,
                   Expanded(
                     child: Text(
-                      context.locale
+                      translactions
                           .user_selection_dialog_measurement_in_hospital(
                         hospital.title,
                       ),
@@ -102,7 +102,7 @@ class UserSelectionDialog extends StatelessWidget {
             Padding(
               padding: Paddings.horizontal16,
               child: HighlightedElevatedButton(
-                label: context.locale.common_close,
+                label: translactions.common_close,
                 buttonType: ButtonType.secondary,
                 onPressed: () {
                   Navigator.of(context).pop();

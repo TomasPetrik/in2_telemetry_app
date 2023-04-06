@@ -7,7 +7,6 @@ import 'package:scalesoft_app/bloc/results/results_bloc_state.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
@@ -131,7 +130,7 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                       navigationHeader: Row(
                         children: [
                           Text(
-                            context.locale.results_screen_results_title,
+                            translactions.results_screen_results_title,
                             style: ScaleTextStyles.textAccent.apply(
                               color: Theme.of(context).colorScheme.onSecondary,
                             ),
@@ -141,7 +140,7 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                       tabs: [
                         if (supportedMeasurementTypes.length > 1) ...{
                           NavigationTabBarItem(
-                            label: context.locale.dashboard_screen_all,
+                            label: translactions.dashboard_screen_all,
                             slivers: [
                               ResultsList(
                                 mResults: state.results!,
@@ -154,7 +153,7 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                         ...supportedMeasurementTypes
                             .map(
                               (measurementType) => NavigationTabBarItem(
-                                label: context.locale.common_measurement_types(
+                                label: translactions.common_measurement_types(
                                   measurementType.name,
                                 ),
                                 slivers: [

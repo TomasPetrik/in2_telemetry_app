@@ -430,14 +430,28 @@ class I10n {
     );
   }
 
-  /// `{month, select, 1{Leden} 2{Únor} 3{Březen} 4{Duben} 5{Květen} 6{Červen} 7{Červenec} 8{Srpen} 9{Září} 10{Říjen} 11{Listopad} 12{Prosinec} other{Jiný}}`
-  String common_months(Object month, Object Leden, Object Duben, Object Srpen,
-      Object Listopad, Object Prosinec) {
-    return Intl.message(
-      '{month, select, 1$Leden 2{Únor} 3{Březen} 4$Duben 5{Květen} 6{Červen} 7{Červenec} 8$Srpen 9{Září} 10{Říjen} 11$Listopad 12$Prosinec other{Jiný}}',
+  /// `{month, select, jan{Leden} feb{Únor} march{Březen} april{Duben} may{Květen} june{Červen} july{Červenec} aug{Srpen} sept{Září} oct{Říjen} nov{Listopad} dec{Prosinec} other{Jiný}}`
+  String common_months(Object month) {
+    return Intl.select(
+      month,
+      {
+        'jan': 'Leden',
+        'feb': 'Únor',
+        'march': 'Březen',
+        'april': 'Duben',
+        'may': 'Květen',
+        'june': 'Červen',
+        'july': 'Červenec',
+        'aug': 'Srpen',
+        'sept': 'Září',
+        'oct': 'Říjen',
+        'nov': 'Listopad',
+        'dec': 'Prosinec',
+        'other': 'Jiný',
+      },
       name: 'common_months',
       desc: 'Months in year',
-      args: [month, Leden, Duben, Srpen, Listopad, Prosinec],
+      args: [month],
     );
   }
 

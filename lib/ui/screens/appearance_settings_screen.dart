@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:scalesoft_app/bloc/settings/app_settings_bloc.dart';
 import 'package:scalesoft_app/bloc/settings/app_settings_bloc_event.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/app_settings.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -29,7 +28,8 @@ class AppearanceSettingsScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Gap(
-                      MediaQuery.of(context).viewPadding.top + Dimensions.appBarHeight,
+                      MediaQuery.of(context).viewPadding.top +
+                          Dimensions.appBarHeight,
                     ),
                     Gaps.gap16,
                     Padding(
@@ -40,10 +40,10 @@ class AppearanceSettingsScreen extends StatelessWidget {
                           return Column(
                             children: [
                               SwitchRow.titleAndLabel(
-                                title: context.locale
+                                title: translactions
                                     .configuration_screen_auto_mode_title,
-                                label: context
-                                    .locale.configuration_screen_auto_mode_desc,
+                                label: translactions
+                                    .configuration_screen_auto_mode_desc,
                                 defaultValue:
                                     settingsBloc.state.autosetAppearance ==
                                         true,
@@ -106,7 +106,7 @@ class AppearanceSettingsScreen extends StatelessWidget {
             left: 0,
             right: 0,
             child: ScaleAppBar(
-              title: context.locale.appearance_screen_title,
+              title: translactions.appearance_screen_title,
               onBackTap: () {},
             ),
           ),

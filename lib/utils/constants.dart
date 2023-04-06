@@ -1,4 +1,3 @@
-
 import 'package:flutter/services.dart';
 import 'package:scalesoft_app/api/dto/auth_data.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
@@ -199,4 +198,18 @@ class Constants {
     ),
   ];
 
+  static const Map<int, String> monthsInYear = {
+    1: 'jan',
+    2: 'feb',
+    3: 'march',
+    4: 'april',
+    5: 'may',
+    6: 'june',
+    7: 'july',
+    8: 'aug',
+    9: 'sept',
+    10: 'oct',
+    11: 'nov',
+    12: 'dec'
+  };
 }

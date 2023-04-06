@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -24,13 +24,13 @@ class ResultPeriodItem extends StatelessWidget {
 
   String _getSubtitle(BuildContext context) {
     if (percentage == null) {
-      return context.locale.results_plan_no_measurement_needed;
+      return translactions.results_plan_no_measurement_needed;
     }
     switch (whenPeriod) {
       case ResultsWhenPeriod.today:
-        return context.locale.results_plan_fulfilled_on(percentage!);
+        return translactions.results_plan_fulfilled_on(percentage!);
       case ResultsWhenPeriod.yesterday:
-        return context.locale.results_plan_fulfilled_on(percentage!);
+        return translactions.results_plan_fulfilled_on(percentage!);
     }
   }
 
@@ -50,7 +50,7 @@ class ResultPeriodItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                context.locale.common_measurement_times(whenPeriod.name),
+                translactions.common_measurement_times(whenPeriod.name),
                 style: ScaleTextStyles.textAccent,
               ),
               Gaps.gap6,

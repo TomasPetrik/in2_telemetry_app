@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
@@ -56,7 +55,7 @@ class CarePlansEvaluationHeader extends StatelessWidget {
       if (progress != null) {
         progressItems.add(
           ProgressItem(
-            context.locale.common_measurement_types(measurementType.name),
+            translactions.common_measurement_types(measurementType.name),
             progress,
           ),
         );
@@ -73,7 +72,7 @@ class CarePlansEvaluationHeader extends StatelessWidget {
       if (progress != null) {
         progressItems.add(
           ProgressItem(
-            context.locale.common_overall,
+            translactions.common_overall,
             progress,
           ),
         );
@@ -93,7 +92,7 @@ class CarePlansEvaluationHeader extends StatelessWidget {
                   whenPeriod: whenPeriod,
                   openWhenSelector: openWhenSelector,
                   progressItems: progressItems,
-                  label: context.locale.common_plans_fulfillment_plural(
+                  label: translactions.common_plans_fulfillment_plural(
                     progressItems.length,
                   ),
                 ),

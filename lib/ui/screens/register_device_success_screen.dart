@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -41,7 +41,7 @@ class RegisterDeviceSuccessScreen extends StatelessWidget {
                   child: Padding(
                     padding: Paddings.horizontal48,
                     child: Text(
-                      context.locale.register_device_success_screen_desc,
+                      translactions.register_device_success_screen_desc,
                       style: ScaleTextStyles.text.apply(
                         color: Theme.of(context).colorScheme.onSecondary,
                       ),
@@ -52,7 +52,7 @@ class RegisterDeviceSuccessScreen extends StatelessWidget {
                 const SliverGap(Dimensions.padding24),
                 SliverToBoxAdapter(
                   child: HighlightedElevatedButton(
-                    label: context.locale.common_close,
+                    label: translactions.common_close,
                     onPressed: () {
                       GoRouter.of(context).goNamed(DashboardRoute.name);
                     },

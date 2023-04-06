@@ -7,7 +7,6 @@ import 'package:scalesoft_app/api/dto/measurement/device.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_bloc.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_bloc_event.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_state.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/popup_dialog_mixin.dart';
 import 'package:scalesoft_app/ui/screens/synced_result.dart';
@@ -99,11 +98,11 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                     disabledBt: () {
                       return DeviceProgress(
                         header: WarningItem(
-                          title: context
-                              .locale.find_device_screen_disabled_bt_title,
-                          description: context
-                              .locale.find_device_screen_disabled_bt_desc,
-                          buttonLabel: context.locale
+                          title: translactions
+                              .find_device_screen_disabled_bt_title,
+                          description:
+                              translactions.find_device_screen_disabled_bt_desc,
+                          buttonLabel: translactions
                               .find_device_screen_disabled_bt_btn_settings,
                           icon: SvgPicture.asset(
                             'assets/icons/icon_bluetooth_slash_big.svg',
@@ -121,11 +120,11 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                     noBtPermissions: () {
                       return DeviceProgress(
                         header: WarningItem(
-                          title: context
-                              .locale.find_device_screen_not_granted_bt_title,
-                          description: context
-                              .locale.find_device_screen_not_granted_bt_desc,
-                          buttonLabel: context.locale
+                          title: translactions
+                              .find_device_screen_not_granted_bt_title,
+                          description: translactions
+                              .find_device_screen_not_granted_bt_desc,
+                          buttonLabel: translactions
                               .find_device_screen_not_granted_bt_btn_settings,
                           icon: SvgPicture.asset(
                             'assets/icons/icon_bluetooth_slash_big.svg',
@@ -145,8 +144,8 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                     init: () {
                       return DeviceProgress(
                         header: ProcessItem(
-                          label: context
-                              .locale.find_device_screen_searching_device,
+                          label:
+                              translactions.find_device_screen_searching_device,
                           processType: ProcessType.inProgress,
                         ),
                         device: device,
@@ -157,8 +156,8 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                     searching: () {
                       return DeviceProgress(
                         header: ProcessItem(
-                          label: context
-                              .locale.find_device_screen_searching_device,
+                          label:
+                              translactions.find_device_screen_searching_device,
                           processType: ProcessType.inProgress,
                         ),
                         device: device,
@@ -169,8 +168,8 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                     connected: () {
                       return DeviceProgress(
                         header: ProcessItem(
-                          label: context
-                              .locale.find_device_screen_device_connected,
+                          label:
+                              translactions.find_device_screen_device_connected,
                           processType: ProcessType.connected,
                         ),
                         device: device,
@@ -182,7 +181,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                       return DeviceProgress(
                         header: ProcessItem(
                           label:
-                              context.locale.find_device_screen_pairing_device,
+                              translactions.find_device_screen_pairing_device,
                           processType: ProcessType.inProgress,
                         ),
                         device: device,
@@ -193,8 +192,8 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                     paired: (deviceInfo) {
                       return DeviceProgress(
                         header: ProcessItem(
-                          label: context
-                              .locale.find_device_screen_searching_device,
+                          label:
+                              translactions.find_device_screen_searching_device,
                           processType: ProcessType.inProgress,
                         ),
                         device: device,
@@ -205,7 +204,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                     syncing: () {
                       return DeviceProgress(
                         header: ProcessItem(
-                          label: context.locale.find_device_screen_sync_results,
+                          label: translactions.find_device_screen_sync_results,
                           processType: ProcessType.inProgress,
                         ),
                         device: device,
@@ -237,8 +236,8 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
               right: 0,
               child: BluredScaleAppBar(
                 title: device.modelName ?? '',
-                subTitle: '${context.locale.common_measurement} '
-                    '${context.locale.common_measurement_types_genitive(measurementType.name).toLowerCase()}',
+                subTitle: '${translactions.common_measurement} '
+                    '${translactions.common_measurement_types_genitive(measurementType.name).toLowerCase()}',
                 showClose: true,
                 onCloseTap: _onWillPop,
               ),

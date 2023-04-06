@@ -8,7 +8,6 @@ import 'package:scalesoft_app/bloc/calendar/calendar_bloc_event.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_day.dart';
 import 'package:scalesoft_app/cubit/calendar_footer/calendar_footer_cubit.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/future_measurements_route.dart';
@@ -19,6 +18,7 @@ import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/calendar_month_widget.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
+import 'package:scalesoft_app/utils/constants.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
 
@@ -120,7 +120,7 @@ class CalendarScreen extends StatelessWidget {
                         } else {
                           return ScaleAppBar(
                             title:
-                                '${context.locale.common_months('${state.currentMonth}')} ${state.currentYear}',
+                                '${translactions.common_months(Constants.monthsInYear[state.currentMonth!]!)} ${state.currentYear}',
                             showClose: true,
                             onCloseTap: onWillPop,
                             customLeftWidget: state.isCurrentMonth == true
@@ -134,7 +134,7 @@ class CalendarScreen extends StatelessWidget {
                                       );
                                     },
                                     child: Text(
-                                      context.locale.common_today,
+                                      translactions.common_today,
                                       style: ScaleTextStyles.text.apply(
                                         color: Theme.of(context)
                                             .colorScheme
@@ -239,7 +239,7 @@ class _CalendarFooter extends StatelessWidget {
                             Gaps.gap6,
                             Text(
                               '${selectedDay.userAccounts!.first.user.fullName}'
-                              ' ${selectedDay.userAccounts!.length > 1 ? context.locale.common_plus_n_others(selectedDay.userAccounts!.length - 1) : ''}',
+                              ' ${selectedDay.userAccounts!.length > 1 ? translactions.common_plus_n_others(selectedDay.userAccounts!.length - 1) : ''}',
                               style: ScaleTextStyles.label.apply(
                                 color:
                                     Theme.of(context).colorScheme.onSecondary,
@@ -250,7 +250,7 @@ class _CalendarFooter extends StatelessWidget {
                       ),
                       Gaps.gap16,
                       Text(
-                        '${selectedDay.plannedMeasurements?.length ?? 0} ${context.locale.common_measurement.toLowerCase()}',
+                        '${selectedDay.plannedMeasurements?.length ?? 0} ${translactions.common_measurement.toLowerCase()}',
                         style: ScaleTextStyles.text.apply(
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),

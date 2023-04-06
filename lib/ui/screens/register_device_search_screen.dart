@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_event.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_state.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/register_device_detail_route.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -52,11 +51,11 @@ class _RegisterDeviceSearchScreenState
               builder: (context, state) {
                 final header = state.whenOrNull(
                   disabledBt: () => WarningItem(
-                    title: context.locale.find_device_screen_disabled_bt_title,
+                    title: translactions.find_device_screen_disabled_bt_title,
                     description:
-                        context.locale.find_device_screen_disabled_bt_desc,
-                    buttonLabel: context
-                        .locale.find_device_screen_disabled_bt_btn_settings,
+                        translactions.find_device_screen_disabled_bt_desc,
+                    buttonLabel: translactions
+                        .find_device_screen_disabled_bt_btn_settings,
                     icon: SvgPicture.asset(
                       'assets/icons/icon_bluetooth_slash_big.svg',
                       color: Theme.of(context).colorScheme.error,
@@ -67,11 +66,11 @@ class _RegisterDeviceSearchScreenState
                   ),
                   noBtPermissions: () => WarningItem(
                     title:
-                        context.locale.find_device_screen_not_granted_bt_title,
+                        translactions.find_device_screen_not_granted_bt_title,
                     description:
-                        context.locale.find_device_screen_not_granted_bt_desc,
-                    buttonLabel: context
-                        .locale.find_device_screen_not_granted_bt_btn_settings,
+                        translactions.find_device_screen_not_granted_bt_desc,
+                    buttonLabel: translactions
+                        .find_device_screen_not_granted_bt_btn_settings,
                     icon: SvgPicture.asset(
                       'assets/icons/icon_bluetooth_slash_big.svg',
                       color: Theme.of(context).colorScheme.error,
@@ -83,11 +82,11 @@ class _RegisterDeviceSearchScreenState
                     },
                   ),
                   init: () => ProcessItem(
-                    label: context.locale.find_device_screen_searching_device,
+                    label: translactions.find_device_screen_searching_device,
                     processType: ProcessType.inProgress,
                   ),
                   searching: (devices) => ProcessItem(
-                    label: context.locale.find_device_screen_searching_device,
+                    label: translactions.find_device_screen_searching_device,
                     processType: ProcessType.inProgress,
                   ),
                 );
@@ -118,7 +117,7 @@ class _RegisterDeviceSearchScreenState
                               padding: Paddings.horizontal48,
                               child: Center(
                                 child: Text(
-                                  context.locale
+                                  translactions
                                       .register_device_search_screen_desc,
                                   style: ScaleTextStyles.text.apply(
                                     color: Theme.of(context)
@@ -180,7 +179,7 @@ class _RegisterDeviceSearchScreenState
               left: 0,
               right: 0,
               child: BluredScaleAppBar(
-                title: context.locale.register_device_search_screen_title,
+                title: translactions.register_device_search_screen_title,
                 showClose: true,
                 onCloseTap: _onWillPop,
               ),

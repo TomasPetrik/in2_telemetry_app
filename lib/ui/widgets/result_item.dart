@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -95,7 +94,7 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          context.locale.common_measurement_types(
+                          translactions.common_measurement_types(
                             mResult.measurementType!.name,
                           ),
                           style: ScaleTextStyles.text.apply(
@@ -105,8 +104,7 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                         if (mResult.measurementFinishDateTime != null) ...[
                           Gaps.gap6,
                           Text(
-                            context.locale
-                                .dashboard_screen_measurement_interval(
+                            translactions.dashboard_screen_measurement_interval(
                               mResult.measurementDateTime
                                   .toLocal()
                                   .toTimeOfDay()
@@ -122,7 +120,7 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                           ),
                           if (mResult.whenCode != null)
                             Text(
-                              context.locale
+                              translactions
                                   .common_when_code(mResult.whenCode!.name),
                               style: ScaleTextStyles.label.apply(
                                 color:
@@ -135,7 +133,7 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                     const Spacer(),
                     if (mResult.evaluationItem?.wasMeasured() == false) ...{
                       Text(
-                        context.locale.common_not_measured,
+                        translactions.common_not_measured,
                         style: ScaleTextStyles.text
                             .apply(color: Theme.of(context).colorScheme.error),
                       ),

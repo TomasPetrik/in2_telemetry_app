@@ -4,7 +4,6 @@ import 'package:gap/gap.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_bloc.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_event.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_state.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -45,8 +44,8 @@ class NotificationsSettingsScreen extends StatelessWidget {
                         ),
                         Gaps.gap16,
                         SwitchRow.title(
-                          title: context
-                              .locale.notifications_screen_allow_notifications,
+                          title: translactions
+                              .notifications_screen_allow_notifications,
                           defaultValue: appSettings.enabledNotifications,
                           onChanged: (turnedOn) {
                             notificationsBloc.add(
@@ -61,7 +60,7 @@ class NotificationsSettingsScreen extends StatelessWidget {
                           SizedBox(
                             height: 40,
                             child: Text(
-                              context.locale.notifications_screen_measurements,
+                              translactions.notifications_screen_measurements,
                               style: ScaleTextStyles.textAccent.apply(
                                 color:
                                     Theme.of(context).colorScheme.onSecondary,
@@ -70,7 +69,7 @@ class NotificationsSettingsScreen extends StatelessWidget {
                           ),
                           Gaps.gap24,
                           SwitchRow.text(
-                            title: context.locale
+                            title: translactions
                                 .notifications_screen_at_start_of_measurement,
                             defaultValue:
                                 appSettings.notifyAtStartOfMeasurement,
@@ -83,7 +82,7 @@ class NotificationsSettingsScreen extends StatelessWidget {
                             },
                           ),
                           SwitchRow.text(
-                            title: context.locale
+                            title: translactions
                                 .notifications_screen_10_min_before_measurement,
                             defaultValue:
                                 appSettings.notify10minBeforeMeasurement,
@@ -108,7 +107,7 @@ class NotificationsSettingsScreen extends StatelessWidget {
             left: 0,
             right: 0,
             child: BluredScaleAppBar(
-              title: context.locale.notifications_screen_title,
+              title: translactions.notifications_screen_title,
               onBackTap: () {},
             ),
           ),

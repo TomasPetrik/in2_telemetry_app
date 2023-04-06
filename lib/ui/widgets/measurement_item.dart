@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -97,7 +96,7 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          context.locale.common_measurement_types(
+                          translactions.common_measurement_types(
                             carePlan.activity.measurementType.name,
                           ),
                           style: ScaleTextStyles.textAccent.apply(
@@ -108,7 +107,7 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
                         ),
                         Gaps.gap6,
                         Text(
-                          context.locale.dashboard_screen_measurement_interval(
+                          translactions.dashboard_screen_measurement_interval(
                             timingDayWhen.start.toString(),
                             timingDayWhen.end.toString(),
                           ),
@@ -120,7 +119,7 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
                         ),
                         if (timingDayWhen.whenCode != null)
                           Text(
-                            context.locale
+                            translactions
                                 .common_when_code(timingDayWhen.whenCode!.name),
                             style: ScaleTextStyles.label.apply(
                               color: measurementNeed == MeasurementNeed.now
@@ -133,7 +132,7 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
                     const Spacer(),
                     if (measurementNeed == MeasurementNeed.now) ...{
                       NavigationTabChip(
-                        label: context.locale.common_measure,
+                        label: translactions.common_measure,
                         isSelected: true,
                         onTap: () {
                           MeasurementHelper.doMeasurement(

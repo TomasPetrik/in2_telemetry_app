@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
@@ -57,7 +56,7 @@ class UsersProfilesEvaluationHeader extends StatelessWidget {
             whenPeriod: whenPeriod,
             openWhenSelector: openWhenSelector,
             progressItems: progressItems,
-            label: context.locale.common_plan_fulfillment,
+            label: translactions.common_plan_fulfillment,
           ),
           Gaps.gap24,
         ],

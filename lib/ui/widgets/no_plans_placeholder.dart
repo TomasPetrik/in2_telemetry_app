@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/info_placeholder.dart';
@@ -38,8 +38,8 @@ class NoPlansPlaceholder extends StatelessWidget with BottomSheetMixin {
               color: Theme.of(context).colorScheme.tertiary,
             ),
             label: userAccount != null
-                ? context.locale.dashboard_screen_no_user_plan
-                : context.locale.dashboard_screen_any_user_plan,
+                ? translactions.dashboard_screen_no_user_plan
+                : translactions.dashboard_screen_any_user_plan,
           ),
         ),
         if (enterMeasurementWithoutPlan) ...{

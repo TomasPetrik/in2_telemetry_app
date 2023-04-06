@@ -8,7 +8,6 @@ import 'package:scalesoft_app/bloc/calendar_service/fulfillment_service_bloc.dar
 import 'package:scalesoft_app/bloc/calendar_service/fulfillment_service_bloc_event.dart';
 import 'package:scalesoft_app/bloc/calendar_service/fulfillment_service_bloc_state.dart';
 import 'package:scalesoft_app/cubit/calendar_footer/calendar_footer_cubit.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -56,7 +55,7 @@ class CalendarMonthWidget extends StatelessWidget {
               children: [
                 Gaps.gap24,
                 Text(
-                  '${context.locale.common_months('${loadedMonth.month}')} ${loadedMonth.year}',
+                  '${translactions.common_months('${loadedMonth.month}')} ${loadedMonth.year}',
                   style: ScaleTextStyles.label.apply(
                     color: Theme.of(context).colorScheme.onPrimary,
                   ),

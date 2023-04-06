@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/configuration_route.dart';
@@ -92,7 +91,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   isActive: true,
                 ),
-                label: context.locale.tabs_measurement,
+                label: translactions.tabs_measurement,
               ),
               BottomNavigationBarItem(
                 icon: TabIconWidget(
@@ -109,7 +108,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   isActive: true,
                 ),
-                label: context.locale.tabs_results,
+                label: translactions.tabs_results,
               ),
               BottomNavigationBarItem(
                 icon: TabIconWidget(
@@ -128,7 +127,7 @@ class HomeScreen extends StatelessWidget {
                   isActive: true,
                   showWarning: showWarning,
                 ),
-                label: context.locale.tabs_more,
+                label: translactions.tabs_more,
               ),
             ],
           );

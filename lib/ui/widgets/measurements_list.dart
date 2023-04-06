@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -68,7 +68,7 @@ class MeasurementsList extends StatelessWidget {
                 'assets/icons/icon_circle_check_big.svg',
                 color: Theme.of(context).colorScheme.onTertiary,
               ),
-              label: context.locale.dashboard_screen_todays_plan_finished(
+              label: translactions.dashboard_screen_todays_plan_finished(
                 _getPlanEvaluation(),
               ),
             ),
@@ -82,7 +82,7 @@ class MeasurementsList extends StatelessWidget {
                     color: Theme.of(context).colorScheme.tertiary,
                   ),
                   label:
-                      context.locale.dashboard_screen_upcoming_measurement_info(
+                      translactions.dashboard_screen_upcoming_measurement_info(
                     nextMeasurement.whenStart
                         .toDateOrDay(context)
                         .toLowerCase(),

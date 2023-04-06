@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
@@ -30,9 +30,9 @@ class BottomDialog extends StatelessWidget {
     required MeasurementType measurementType,
   }) {
     return _BottomDialog(
-      title: context.locale.result_removal_confirmation_title,
-      description: context.locale.result_removal_confirmation_desc(
-        context.locale
+      title: translactions.result_removal_confirmation_title,
+      description: translactions.result_removal_confirmation_desc(
+        translactions
             .common_measurement_types_genitive(measurementType.name)
             .toLowerCase(),
       ),
@@ -40,11 +40,11 @@ class BottomDialog extends StatelessWidget {
       iconColor: Theme.of(context).colorScheme.tertiary,
       positiveButtonStyle: ButtonStyle(
         buttonType: ButtonType.alert,
-        label: context.locale.result_removal_confirmation_title_button_confirm,
+        label: translactions.result_removal_confirmation_title_button_confirm,
       ),
       negativeButtonStyle: ButtonStyle(
         buttonType: ButtonType.secondary,
-        label: context.locale.common_close,
+        label: translactions.common_close,
       ),
     );
   }
@@ -54,17 +54,17 @@ class BottomDialog extends StatelessWidget {
     required BuildContext context,
   }) {
     return _BottomDialog(
-      title: context.locale.metering_screen_device_removal_title,
-      description: context.locale.metering_screen_device_removal_message,
+      title: translactions.metering_screen_device_removal_title,
+      description: translactions.metering_screen_device_removal_message,
       iconPath: 'assets/icons/icon_trash_blank_big.svg',
       iconColor: Theme.of(context).colorScheme.tertiary,
       positiveButtonStyle: ButtonStyle(
         buttonType: ButtonType.alert,
-        label: context.locale.metering_screen_device_removal_button_confirm,
+        label: translactions.metering_screen_device_removal_button_confirm,
       ),
       negativeButtonStyle: ButtonStyle(
         buttonType: ButtonType.secondary,
-        label: context.locale.common_close,
+        label: translactions.common_close,
       ),
     );
   }
@@ -75,18 +75,18 @@ class BottomDialog extends StatelessWidget {
     required String accountName,
   }) {
     return _BottomDialog(
-      title: context.locale.dialog_account_removal_confirmation_title,
-      description: context.locale
+      title: translactions.dialog_account_removal_confirmation_title,
+      description: translactions
           .dialog_account_removal_confirmation_description(accountName),
       iconPath: 'assets/icons/icon_trash_blank_big.svg',
       iconColor: Theme.of(context).colorScheme.tertiary,
       positiveButtonStyle: ButtonStyle(
         buttonType: ButtonType.alert,
-        label: context.locale.dialog_account_removal_confirmation_title,
+        label: translactions.dialog_account_removal_confirmation_title,
       ),
       negativeButtonStyle: ButtonStyle(
         buttonType: ButtonType.secondary,
-        label: context.locale.common_close,
+        label: translactions.common_close,
       ),
     );
   }
@@ -96,17 +96,17 @@ class BottomDialog extends StatelessWidget {
     required BuildContext context,
   }) {
     return _BottomDialog(
-      title: context.locale.daily_when_time_reset_confirmation_title,
-      description: context.locale.daily_when_time_reset_confirmation_info,
+      title: translactions.daily_when_time_reset_confirmation_title,
+      description: translactions.daily_when_time_reset_confirmation_info,
       iconPath: 'assets/icons/icon_clock_big.svg',
       iconColor: Theme.of(context).colorScheme.tertiary,
       positiveButtonStyle: ButtonStyle(
         buttonType: ButtonType.primary,
-        label: context.locale.daily_when_time_reset_confirmation_confirm,
+        label: translactions.daily_when_time_reset_confirmation_confirm,
       ),
       negativeButtonStyle: ButtonStyle(
         buttonType: ButtonType.secondary,
-        label: context.locale.common_close,
+        label: translactions.common_close,
       ),
     );
   }
@@ -116,13 +116,13 @@ class BottomDialog extends StatelessWidget {
     required BuildContext context,
   }) {
     return _BottomDialog(
-      title: context.locale.server_error_title,
-      description: context.locale.server_error_desc,
+      title: translactions.server_error_title,
+      description: translactions.server_error_desc,
       iconPath: 'assets/icons/icon_triangle_exclamation_big.svg',
       iconColor: Theme.of(context).colorScheme.error,
       positiveButtonStyle: ButtonStyle(
         buttonType: ButtonType.secondary,
-        label: context.locale.common_close,
+        label: translactions.common_close,
       ),
     );
   }
@@ -133,14 +133,14 @@ class BottomDialog extends StatelessWidget {
     required String macAddress,
   }) {
     return _BottomDialog(
-      title: context.locale.register_device_detail_registration_fail_title,
-      description: context.locale
+      title: translactions.register_device_detail_registration_fail_title,
+      description: translactions
           .register_device_detail_registration_fail_message(macAddress),
       iconPath: 'assets/icons/icon_triangle_exclamation_big.svg',
       iconColor: Theme.of(context).colorScheme.error,
       positiveButtonStyle: ButtonStyle(
         buttonType: ButtonType.secondary,
-        label: context.locale.common_close,
+        label: translactions.common_close,
       ),
     );
   }

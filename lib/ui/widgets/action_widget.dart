@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -42,23 +41,23 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
   String getMeasurementText(BuildContext context) {
     switch (measurementType) {
       case MeasurementWhenType.ongoing:
-        return '${context.locale.common_measurement} ${context.locale.common_measurement_types_genitive(
+        return '${translactions.common_measurement} ${translactions.common_measurement_types_genitive(
               nextMeasurement!.carePlan.activity.measurementType.name,
-            ).toLowerCase()} ${nextMeasurement!.timingDayWhen.whenCode != null ? context.locale.common_when_code(
+            ).toLowerCase()} ${nextMeasurement!.timingDayWhen.whenCode != null ? translactions.common_when_code(
               nextMeasurement!.timingDayWhen.whenCode!.name,
             ).toLowerCase() : ''}';
 
       case MeasurementWhenType.upcoming:
-        return '${context.locale.common_measurement} ${context.locale.common_measurement_types_genitive(
+        return '${translactions.common_measurement} ${translactions.common_measurement_types_genitive(
               nextMeasurement!.carePlan.activity.measurementType.name,
-            ).toLowerCase()} ${nextMeasurement!.timingDayWhen.whenCode != null ? context.locale.common_when_code(
+            ).toLowerCase()} ${nextMeasurement!.timingDayWhen.whenCode != null ? translactions.common_when_code(
               nextMeasurement!.timingDayWhen.whenCode!.name,
             ).toLowerCase() : ''} v ${nextMeasurement!.timingDayWhen.start.toString()}';
 
       case MeasurementWhenType.finished:
-        return context.locale.dashboard_screen_no_more_measurements;
+        return translactions.dashboard_screen_no_more_measurements;
       case MeasurementWhenType.noMeasurement:
-        return context.locale.dashboard_screen_no_todays_measurements;
+        return translactions.dashboard_screen_no_todays_measurements;
     }
   }
 
@@ -140,7 +139,7 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
                   nextMeasurement != null) ...[
                 Gaps.gap16,
                 HighlightedElevatedButton(
-                  label: context.locale.common_measure_now,
+                  label: translactions.common_measure_now,
                   buttonType: ButtonType.secondary,
                   onPressed: () {
                     MeasurementHelper.doMeasurement(

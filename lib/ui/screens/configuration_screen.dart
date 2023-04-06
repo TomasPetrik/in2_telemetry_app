@@ -9,7 +9,6 @@ import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
@@ -58,7 +57,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            context.locale.configuration_screen_logged_accounts,
+                            translactions.configuration_screen_logged_accounts,
                             style: ScaleTextStyles.textAccent.apply(
                               color: Theme.of(context).colorScheme.onSecondary,
                             ),
@@ -107,7 +106,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                                 showWarning: showWarning,
                                 label: hospital.key.title,
                                 subLabel: '${hospital.value[0].user.fullName}'
-                                    ' ${hospital.value.length > 1 ? context.locale.common_plus_n_others(hospital.value.length - 1) : ''}',
+                                    ' ${hospital.value.length > 1 ? translactions.common_plus_n_others(hospital.value.length - 1) : ''}',
                                 iconWidget: Padding(
                                   padding: Paddings.all8,
                                   child: SvgPicture.asset(
@@ -150,7 +149,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                       ),
                       Gaps.gap24,
                       SettingsItem(
-                        label: context.locale.configuration_screen_add_account,
+                        label: translactions.configuration_screen_add_account,
                         iconWidget: SvgPicture.asset(
                           'assets/icons/icon_plus.svg',
                           color: Theme.of(context).colorScheme.onSecondary,
@@ -171,17 +170,17 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                       ),
                       Gaps.gap42,
                       Text(
-                        context.locale.configuration_screen_settings,
+                        translactions.configuration_screen_settings,
                         style: ScaleTextStyles.textAccent.apply(
                           color: Theme.of(context).colorScheme.onSecondary,
                         ),
                       ),
                       Gaps.gap24,
                       SettingsItem(
-                        label: context
-                            .locale.configuration_screen_notification_label,
-                        subLabel: context
-                            .locale.configuration_screen_notification_sublabel,
+                        label: translactions
+                            .configuration_screen_notification_label,
+                        subLabel: translactions
+                            .configuration_screen_notification_sublabel,
                         iconWidget: SvgPicture.asset(
                           'assets/icons/icon_message_square_notification.svg',
                           color: Theme.of(context).colorScheme.onSecondary,
@@ -193,10 +192,10 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                       ),
                       Gaps.gap24,
                       SettingsItem(
-                        label: context
-                            .locale.configuration_screen_appearance_label,
-                        subLabel: context
-                            .locale.configuration_screen_appearance_sublabel,
+                        label:
+                            translactions.configuration_screen_appearance_label,
+                        subLabel: translactions
+                            .configuration_screen_appearance_sublabel,
                         iconWidget: SvgPicture.asset(
                           'assets/icons/icon_paint_roller.svg',
                           color: Theme.of(context).colorScheme.onSecondary,
@@ -218,7 +217,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                               Gaps.gap24,
                               Center(
                                 child: Text(
-                                  context.locale
+                                  translactions
                                       .app_version(packageInfo.version),
                                   style: ScaleTextStyles.label.apply(
                                     color:
@@ -240,7 +239,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                 left: 0,
                 right: 0,
                 child: BluredScaleAppBar(
-                  title: context.locale.common_telemedicine,
+                  title: translactions.common_telemedicine,
                 ),
               ),
             ],

@@ -5,7 +5,6 @@ import 'package:gap/gap.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
-import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
@@ -43,16 +42,16 @@ class OfflineResultsScreen extends StatelessWidget with BottomSheetMixin {
         final warningWidget = syncState.whenOrNull(
           inProgress: () => ProcessItem(
             processType: ProcessType.inProgress,
-            label: context.locale.sync_widget_sync_in_progress,
+            label: translactions.sync_widget_sync_in_progress,
           ),
           synced: () => ProcessItem(
             processType: ProcessType.done,
-            label: context.locale.sync_widget_synced,
+            label: translactions.sync_widget_synced,
           ),
           syncUserDataFailed: (_, __) => WarningItem(
-            title: context.locale.sync_widget_sync_results_failed_title,
-            description: context.locale.sync_widget_sync_results_failed_desc,
-            buttonLabel: context.locale.common_do_sync,
+            title: translactions.sync_widget_sync_results_failed_title,
+            description: translactions.sync_widget_sync_results_failed_desc,
+            buttonLabel: translactions.common_do_sync,
             icon: SvgPicture.asset(
               'assets/icons/icon_triangle_exclamation_medium.svg',
               color: Theme.of(context).colorScheme.error,
@@ -64,9 +63,9 @@ class OfflineResultsScreen extends StatelessWidget with BottomSheetMixin {
             },
           ),
           userResultsFailed: (_, __) => WarningItem(
-            title: context.locale.sync_widget_sync_results_failed_title,
-            description: context.locale.sync_widget_sync_results_failed_desc,
-            buttonLabel: context.locale.common_do_sync,
+            title: translactions.sync_widget_sync_results_failed_title,
+            description: translactions.sync_widget_sync_results_failed_desc,
+            buttonLabel: translactions.common_do_sync,
             icon: SvgPicture.asset(
               'assets/icons/icon_triangle_exclamation_medium.svg',
               color: Theme.of(context).colorScheme.error,
@@ -78,9 +77,9 @@ class OfflineResultsScreen extends StatelessWidget with BottomSheetMixin {
             },
           ),
           someUsersResultsFailed: (_) => WarningItem(
-            title: context.locale.sync_widget_sync_results_failed_title,
-            description: context.locale.sync_widget_sync_results_failed_desc,
-            buttonLabel: context.locale.common_do_sync,
+            title: translactions.sync_widget_sync_results_failed_title,
+            description: translactions.sync_widget_sync_results_failed_desc,
+            buttonLabel: translactions.common_do_sync,
             icon: SvgPicture.asset(
               'assets/icons/icon_triangle_exclamation_medium.svg',
               color: Theme.of(context).colorScheme.error,
@@ -92,9 +91,9 @@ class OfflineResultsScreen extends StatelessWidget with BottomSheetMixin {
             },
           ),
           syncSomeUsersDataFailed: (_) => WarningItem(
-            title: context.locale.sync_widget_sync_results_failed_title,
-            description: context.locale.sync_widget_sync_results_failed_desc,
-            buttonLabel: context.locale.common_do_sync,
+            title: translactions.sync_widget_sync_results_failed_title,
+            description: translactions.sync_widget_sync_results_failed_desc,
+            buttonLabel: translactions.common_do_sync,
             icon: SvgPicture.asset(
               'assets/icons/icon_triangle_exclamation_medium.svg',
               color: Theme.of(context).colorScheme.error,
@@ -133,7 +132,7 @@ class OfflineResultsScreen extends StatelessWidget with BottomSheetMixin {
                     padding: Paddings.horizontal16,
                     sliver: SliverToBoxAdapter(
                       child: Text(
-                        context.locale.sync_failed_screen_waiting_on_sync,
+                        translactions.sync_failed_screen_waiting_on_sync,
                         style: ScaleTextStyles.textAccent.apply(
                           color: Theme.of(context).colorScheme.onSecondary,
                         ),
@@ -216,10 +215,10 @@ class OfflineResultsScreen extends StatelessWidget with BottomSheetMixin {
                 left: 0,
                 right: 0,
                 child: BluredScaleAppBar(
-                  title: context.locale.sync_failed_screen_title,
+                  title: translactions.sync_failed_screen_title,
                   subTitle: lastSyncAt == null
                       ? ''
-                      : context.locale.sync_failed_screen_sub_title(
+                      : translactions.sync_failed_screen_sub_title(
                           lastSyncAt.toDateOrDay(context),
                           lastSyncAt.toTimeOfDay().toString(),
                         ),
