@@ -9,8 +9,8 @@ import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/fixed_item_height_delegate.dart';
 import 'package:scalesoft_app/ui/widgets/process_item.dart';
@@ -118,7 +118,7 @@ class OfflineResultsScreen extends StatelessWidget with BottomSheetMixin {
                     delegate: FixedHeightItemDelegate(
                       child: const SizedBox.shrink(),
                       fixedHeight: MediaQuery.of(context).viewPadding.top +
-                          Constants.twoLinedBarHeight,
+                          Dimensions.twoLinedBarHeight,
                     ),
                   ),
                   if (warningWidget != null) ...[

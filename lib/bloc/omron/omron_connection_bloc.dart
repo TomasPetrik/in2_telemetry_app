@@ -17,7 +17,6 @@ import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/providers/paired_devices_db_provider.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/ui/screens/constants.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/utils/helpers/bt_connection_helper.dart';
 
 @injectable
@@ -32,7 +31,7 @@ class OmronConnectionBloc
   MeasurementType? measurementType;
 
   bool get reqModelPairing =>
-      device!.deviceModel == DeviceModel.omronM7 && device!.macAddress == null;
+      device!.reqPairing == true && device!.macAddress == null;
 
   OmronConnectionBloc(
     this._pendingResultsDbProvider,
@@ -123,12 +122,7 @@ class OmronConnectionBloc
 
           //save paired device
           if (measurementResult.resultState != ResultState.connectionError) {
-            final Device supportedDevice =
-                Constants.supportedDevices.firstWhere(
-              (suppDevice) => suppDevice.deviceModel == device!.deviceModel,
-            );
-
-            final pairedDevice = supportedDevice.copyWith(
+            final pairedDevice = device!.copyWith(
               macAddress: blDevice.id.id,
               addedAt: DateTime.now(),
             );
@@ -169,7 +163,7 @@ class OmronConnectionBloc
           this.measurementType = measurementType;
           final btState = await flutterBlue.state.first;
 
-           if (btState == BluetoothState.off) {
+          if (btState == BluetoothState.off) {
             emit(const OmronConnectionState.disabledBt());
           } else {
             emit(const OmronConnectionState.noBtPermissions());

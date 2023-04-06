@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 
 class SearchBar extends StatefulWidget {
   const SearchBar({
@@ -41,7 +41,7 @@ class _SearchBarState extends State<SearchBar> {
   Widget build(BuildContext context) {
     return ConstrainedBox(
       constraints:
-          const BoxConstraints.tightFor(height: Constants.searchBarHeight),
+          const BoxConstraints.tightFor(height: Dimensions.searchBarHeight),
       child: CupertinoTextField(
         focusNode: _searchBoxNode,
         decoration: BoxDecoration(

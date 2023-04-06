@@ -13,7 +13,7 @@ import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/calendar_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/screens/navigation_screen.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/action_widget.dart';
 import 'package:scalesoft_app/ui/widgets/blured_user_app_bar.dart';
 import 'package:scalesoft_app/ui/widgets/measurement_header.dart';

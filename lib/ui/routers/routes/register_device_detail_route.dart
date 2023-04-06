@@ -4,7 +4,7 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
 import 'package:scalesoft_app/ui/screens/register_device_detail_screen.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/utils/constants.dart';
 
 class RegisterDeviceDetailRoute extends ApplicationRoute with PageBuilderMixin {
   static const name = 'register-device-detail';

@@ -6,7 +6,7 @@ import 'package:scalesoft_app/bloc/settings/app_settings_bloc_event.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/app_settings.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/appearance_item.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
 import 'package:scalesoft_app/ui/widgets/switch_row.dart';
@@ -29,8 +29,7 @@ class AppearanceSettingsScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Gap(
-                      MediaQuery.of(context).viewPadding.top +
-                          Constants.appBarHeight,
+                      MediaQuery.of(context).viewPadding.top + Dimensions.appBarHeight,
                     ),
                     Gaps.gap16,
                     Padding(
@@ -43,8 +42,8 @@ class AppearanceSettingsScreen extends StatelessWidget {
                               SwitchRow.titleAndLabel(
                                 title: context.locale
                                     .configuration_screen_auto_mode_title,
-                                label: context.locale
-                                    .configuration_screen_auto_mode_desc,
+                                label: context
+                                    .locale.configuration_screen_auto_mode_desc,
                                 defaultValue:
                                     settingsBloc.state.autosetAppearance ==
                                         true,
@@ -62,12 +61,9 @@ class AppearanceSettingsScreen extends StatelessWidget {
                                       children: [
                                         Gaps.gap24,
                                         AppearanceItem(
-                                          itemType:
-                                              AppearanceItemType.light,
-                                          isSelected: settingsBloc
-                                                  .state
-                                                  .themeModeLocal
-                                                  .themeMode ==
+                                          itemType: AppearanceItemType.light,
+                                          isSelected: settingsBloc.state
+                                                  .themeModeLocal.themeMode ==
                                               ThemeMode.light,
                                           onSelected: () {
                                             settingsBloc.add(
@@ -81,10 +77,8 @@ class AppearanceSettingsScreen extends StatelessWidget {
                                         Gaps.gap24,
                                         AppearanceItem(
                                           itemType: AppearanceItemType.dark,
-                                          isSelected: settingsBloc
-                                                  .state
-                                                  .themeModeLocal
-                                                  .themeMode ==
+                                          isSelected: settingsBloc.state
+                                                  .themeModeLocal.themeMode ==
                                               ThemeMode.dark,
                                           onSelected: () {
                                             settingsBloc.add(

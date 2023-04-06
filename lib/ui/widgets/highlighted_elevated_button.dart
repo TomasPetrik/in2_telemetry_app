@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/dark_mode.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 
 class HighlightedElevatedButton extends StatelessWidget {
   final VoidCallback? onPressed;
@@ -37,7 +37,7 @@ class HighlightedElevatedButton extends StatelessWidget {
             : Theme.of(context).colorScheme.error;
 
     return SizedBox(
-      height: Constants.buttonHeight,
+      height: Dimensions.buttonHeight,
       child: ElevatedButton(
         onPressed: onPressed,
         style: DarkMode.elevatedButtonStyle.copyWith(
@@ -53,7 +53,7 @@ class HighlightedElevatedButton extends StatelessWidget {
         ),
         child: Ink(
           padding: EdgeInsets.zero,
-          height: Constants.buttonHeight,
+          height: Dimensions.buttonHeight,
           decoration: BoxDecoration(
             borderRadius: BorderRadii.radius8,
           ),

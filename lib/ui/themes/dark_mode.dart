@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_colors_dark.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 
 class DarkMode {
   static Color get backgroundColor => ScaleColorsDark.paper;
@@ -127,7 +127,7 @@ class DarkMode {
         hintColor: colorContent80,
         colorScheme: colorScheme,
         cardTheme: CardTheme(
-          elevation: Constants.cardElevation,
+          elevation: Dimensions.cardElevation,
           shadowColor: cardShadow,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadii.radius16,

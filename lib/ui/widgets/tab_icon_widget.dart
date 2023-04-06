@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 
 class TabIconWidget extends StatelessWidget {
   const TabIconWidget({

@@ -8,8 +8,8 @@ import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 
 class UserAppBar extends StatelessWidget with BottomSheetMixin {
   const UserAppBar({
@@ -28,7 +28,7 @@ class UserAppBar extends StatelessWidget with BottomSheetMixin {
           top: MediaQuery.of(context).viewPadding.top,
         ),
         child: SizedBox(
-          height: Constants.twoLinedBarHeight,
+          height: Dimensions.twoLinedBarHeight,
           child: Padding(
             padding: const EdgeInsets.only(
               top: Dimensions.padding16,

@@ -11,7 +11,7 @@ import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/popup_dialog_mixin.dart';
 import 'package:scalesoft_app/ui/screens/synced_result.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/device_progress.dart';
 import 'package:scalesoft_app/ui/widgets/process_item.dart';
@@ -44,7 +44,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
   late final Device device;
 
   bool get reqModelPairing =>
-      device.deviceModel == DeviceModel.omronM7 && device.macAddress == null;
+      device.reqPairing == true && device.macAddress == null;
 
   @override
   void initState() {

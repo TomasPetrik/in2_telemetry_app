@@ -11,8 +11,8 @@ import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/calendar_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/fullplan_evaluation_widget.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
@@ -72,8 +72,7 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
               CustomScrollView(
                 slivers: [
                   SliverGap(
-                    MediaQuery.of(context).viewPadding.top +
-                        Constants.appBarHeight,
+                    MediaQuery.of(context).viewPadding.top + Dimensions.appBarHeight,
                   ),
                   const SliverGap(Dimensions.padding24),
                   if (widget.carePlan.wasChanged == true) ...[

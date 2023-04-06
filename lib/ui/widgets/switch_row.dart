@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/scale_switch.dart';
 
 class SwitchRow extends StatelessWidget {
@@ -27,7 +27,7 @@ class SwitchRow extends StatelessWidget {
     bool? defaultValue,
   }) {
     return _TitleSwitchRow(
-      height: Constants.singleLineRowHeight,
+      height: Dimensions.singleLineRowHeight,
       title: title,
       onChanged: onChanged,
       defaultValue: defaultValue,
@@ -40,7 +40,7 @@ class SwitchRow extends StatelessWidget {
     bool? defaultValue,
   }) {
     return _TextSwitchRow(
-      height: Constants.singleLineRowHeight,
+      height: Dimensions.singleLineRowHeight,
       title: title,
       onChanged: onChanged,
       defaultValue: defaultValue,
@@ -54,7 +54,7 @@ class SwitchRow extends StatelessWidget {
     bool? defaultValue,
   }) {
     return _MultiLineSwitchRow(
-      height: Constants.doubleLineRowHeight,
+      height: Dimensions.doubleLineRowHeight,
       title: title,
       label: label,
       onChanged: onChanged,

@@ -9,7 +9,7 @@ import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/utils/constants.dart';
 import 'package:scalesoft_app/utils/exceptions/exception/invalid_request_exception.dart';
 
 @injectable

@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/fixed_item_height_delegate.dart';
 import 'package:scalesoft_app/ui/widgets/navigation_tab_bar.dart';
 
@@ -86,7 +86,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     }
 
     if (widget.tabs.isNotEmpty) {
-      height += Dimensions.padding26 + Constants.navigationTabBarHeight;
+      height += Dimensions.padding26 + Dimensions.navigationTabBarHeight;
     }
 
     height += Dimensions.padding24;
@@ -97,7 +97,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   @override
   Widget build(BuildContext context) {
     final topGap = MediaQuery.of(context).viewPadding.top;
-    final fixedHeight = topGap + Constants.twoLinedBarHeight;
+    final fixedHeight = topGap + Dimensions.twoLinedBarHeight;
 
     return Material(
       child: Stack(
@@ -121,7 +121,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                     pinned: true,
                     delegate: FixedHeightItemDelegate(
                       child: const SizedBox.shrink(),
-                      fixedHeight: topGap + Constants.twoLinedBarHeight,
+                      fixedHeight: topGap + Dimensions.twoLinedBarHeight,
                     ),
                   ),
                   ...widget.topSlivers,

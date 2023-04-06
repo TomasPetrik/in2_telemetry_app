@@ -11,8 +11,8 @@ import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/register_device_success_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
 import 'package:scalesoft_app/ui/widgets/scale_text_form_field.dart';
@@ -62,7 +62,7 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
                     children: [
                       Gap(
                         MediaQuery.of(context).viewPadding.top +
-                            Constants.appBarHeight,
+                            Dimensions.appBarHeight,
                       ),
                       const Gap(Dimensions.padding16),
                       Text(

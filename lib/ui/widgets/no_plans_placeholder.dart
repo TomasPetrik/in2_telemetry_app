@@ -5,9 +5,10 @@ import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/info_placeholder.dart';
 import 'package:scalesoft_app/ui/widgets/personal_measurement_footer.dart';
+import 'package:scalesoft_app/utils/constants.dart';
 import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 class NoPlansPlaceholder extends StatelessWidget with BottomSheetMixin {
@@ -28,7 +29,7 @@ class NoPlansPlaceholder extends StatelessWidget with BottomSheetMixin {
 
     return CustomScrollView(
       slivers: [
-        SliverGap(topGap + Constants.twoLinedBarHeight),
+        SliverGap(topGap + Dimensions.twoLinedBarHeight),
         SliverPadding(
           padding: Paddings.horizontal64,
           sliver: InfoPlaceholder(

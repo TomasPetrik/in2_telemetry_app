@@ -8,7 +8,7 @@ import 'package:scalesoft_app/api/dto/changes_from_date_response.dart';
 import 'package:scalesoft_app/api/dto/measurement/device.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
 import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/utils/constants.dart';
 
 part 'care_plan_api_client.g.dart';
 

@@ -9,8 +9,8 @@ import 'package:scalesoft_app/bloc/chart_loader_bloc/chart_loader_bloc_state.dar
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/interactive_chart/chart_style.dart';
 import 'package:scalesoft_app/ui/widgets/interactive_chart/interactive_chart.dart';
 import 'package:scalesoft_app/ui/widgets/rotating_icon.dart';
@@ -95,7 +95,7 @@ class ChartWidget extends StatelessWidget {
                 top: 0,
                 left: 0,
                 right: 0,
-                bottom: Constants.twoLinedBarHeight,
+                bottom: Dimensions.twoLinedBarHeight,
                 child: Center(
                   child: RotatingIcon(
                     child: SvgPicture.asset(

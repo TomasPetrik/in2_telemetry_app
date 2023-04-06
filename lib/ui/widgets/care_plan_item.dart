@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/routers/routes/chart_screen_route.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/scale_card.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
@@ -85,8 +85,7 @@ class CarePlanItem extends StatelessWidget {
                         ChartRoute.name,
                         params: {
                           'userId': carePlan.userId!,
-                          'dateTime':
-                              _getOptimalDateTime().toIso8601String(),
+                          'dateTime': _getOptimalDateTime().toIso8601String(),
                           'measurementType':
                               carePlan.activity.measurementType.name,
                         },

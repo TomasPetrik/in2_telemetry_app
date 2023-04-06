@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 
 class BottomDialog extends StatelessWidget {
@@ -134,7 +134,8 @@ class BottomDialog extends StatelessWidget {
   }) {
     return _BottomDialog(
       title: context.locale.register_device_detail_registration_fail_title,
-      description: context.locale.register_device_detail_registration_fail_message(macAddress),
+      description: context.locale
+          .register_device_detail_registration_fail_message(macAddress),
       iconPath: 'assets/icons/icon_triangle_exclamation_big.svg',
       iconColor: Theme.of(context).colorScheme.error,
       positiveButtonStyle: ButtonStyle(

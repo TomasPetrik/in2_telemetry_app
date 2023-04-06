@@ -15,8 +15,8 @@ import 'package:scalesoft_app/ui/routers/routes/future_measurements_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_history_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_route.dart';
 import 'package:scalesoft_app/ui/screens/days_in_week_header.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/calendar_month_widget.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
@@ -50,7 +50,7 @@ class CalendarScreen extends StatelessWidget {
                 children: [
                   Gap(
                     MediaQuery.of(context).viewPadding.top +
-                        Constants.appBarHeight,
+                        Dimensions.appBarHeight,
                   ),
                   SizedBox(
                     height:

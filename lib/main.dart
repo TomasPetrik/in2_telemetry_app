@@ -35,7 +35,7 @@ import 'package:scalesoft_app/ui/routers/routes/no_user_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_added_route.dart';
 import 'package:scalesoft_app/ui/scale_app.dart';
 import 'package:scalesoft_app/ui/screens/splash_screen.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/utils/constants.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 
 // [Android-only] This "Headless Task" is run when the Android app is terminated with `enableHeadless: true`

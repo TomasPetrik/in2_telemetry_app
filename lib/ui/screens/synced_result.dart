@@ -8,8 +8,8 @@ import 'package:scalesoft_app/model/device_info.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/scale_card.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
@@ -109,7 +109,7 @@ class SyncedResult extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final topGap = MediaQuery.of(context).viewPadding.top;
-    final fixedHeight = topGap + Constants.twoLinedBarHeight;
+    final fixedHeight = topGap + Dimensions.twoLinedBarHeight;
     return CustomScrollView(
       shrinkWrap: true,
       slivers: [

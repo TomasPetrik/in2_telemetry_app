@@ -10,7 +10,7 @@ import 'package:scalesoft_app/extensions/uint8_list_extension.dart';
 import 'package:scalesoft_app/model/device_info.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/model/measurement_info.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/utils/constants.dart';
 
 const String genericAccess = '00001800-0000-1000-8000-00805f9b34fb';
 const String deviceInfo = '0000180a-0000-1000-8000-00805f9b34fb';

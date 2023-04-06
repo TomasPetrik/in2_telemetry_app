@@ -13,8 +13,8 @@ import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/care_plan_detail_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/register_device_search_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/care_plan_item.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
@@ -89,7 +89,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                 slivers: [
                   SliverGap(
                     MediaQuery.of(context).viewPadding.top +
-                        Constants.appBarHeight,
+                        Dimensions.appBarHeight,
                   ),
                   const SliverGap(Dimensions.padding16),
                   anyInfoWidget,

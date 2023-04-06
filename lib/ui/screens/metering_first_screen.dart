@@ -14,8 +14,8 @@ import 'package:scalesoft_app/ui/routers/routes/add_device_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/manual_measurement_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/device_item.dart';
 import 'package:scalesoft_app/ui/widgets/navigation_tab_chip.dart';
@@ -78,7 +78,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
               children: [
                 Gap(
                   MediaQuery.of(context).viewPadding.top +
-                      Constants.appBarHeight,
+                      Dimensions.appBarHeight,
                 ),
                 BlocBuilder<DeviceManagementCubit, DeviceManagementState>(
                   bloc: devManagementCubit

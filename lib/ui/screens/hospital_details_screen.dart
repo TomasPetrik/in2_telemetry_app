@@ -10,7 +10,7 @@ import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_detail_route.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/user_item_compound.dart';
 
@@ -52,7 +52,7 @@ class HospitalDetailScreen extends StatelessWidget {
                     slivers: [
                       SliverGap(
                         MediaQuery.of(context).viewPadding.top +
-                            Constants.appBarHeight,
+                            Dimensions.appBarHeight,
                       ),
                       const SliverGap(Dimensions.padding24),
                       SliverList(

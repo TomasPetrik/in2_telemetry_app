@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/ui/screens/navigation_screen.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/navigation_tab_chip.dart';
 
 class NavigationTabBar extends StatelessWidget {

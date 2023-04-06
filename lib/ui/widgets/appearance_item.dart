@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_colors_dark.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_colors_light.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 
 class AppearanceItem extends StatelessWidget {
   const AppearanceItem({
@@ -19,19 +19,27 @@ class AppearanceItem extends StatelessWidget {
   final VoidCallback onSelected;
 
   Color _getTitleColor(BuildContext context) {
-    return itemType == AppearanceItemType.light ? ScaleColorsLight.content100 : ScaleColorsDark.content100;
+    return itemType == AppearanceItemType.light
+        ? ScaleColorsLight.content100
+        : ScaleColorsDark.content100;
   }
 
   Color _getSubTitleColor(BuildContext context) {
-    return itemType == AppearanceItemType.light ? ScaleColorsLight.content80 : ScaleColorsDark.content80;
+    return itemType == AppearanceItemType.light
+        ? ScaleColorsLight.content80
+        : ScaleColorsDark.content80;
   }
 
   Color _getItemBackgroundColor(BuildContext context) {
-    return itemType == AppearanceItemType.light ? ScaleColorsLight.paperAccent : ScaleColorsDark.paperAccent;
+    return itemType == AppearanceItemType.light
+        ? ScaleColorsLight.paperAccent
+        : ScaleColorsDark.paperAccent;
   }
 
   Color _getRectColor(BuildContext context) {
-    return itemType == AppearanceItemType.light ? ScaleColorsLight.content20 : ScaleColorsDark.content20;
+    return itemType == AppearanceItemType.light
+        ? ScaleColorsLight.content20
+        : ScaleColorsDark.content20;
   }
 
   String _getTitle(BuildContext context) {
@@ -47,7 +55,9 @@ class AppearanceItem extends StatelessWidget {
   }
 
   String _getIconPath(BuildContext context) {
-    return itemType == AppearanceItemType.light ? 'assets/icons/icon_sun.svg' : 'assets/icons/icon_moon.svg';
+    return itemType == AppearanceItemType.light
+        ? 'assets/icons/icon_sun.svg'
+        : 'assets/icons/icon_moon.svg';
   }
 
   @override
@@ -91,11 +101,13 @@ class AppearanceItem extends StatelessWidget {
               children: [
                 Text(
                   _getTitle(context),
-                  style: ScaleTextStyles.text.apply(color: _getTitleColor(context)),
+                  style: ScaleTextStyles.text
+                      .apply(color: _getTitleColor(context)),
                 ),
                 Text(
                   _getSubTitle(context),
-                  style: ScaleTextStyles.label.apply(color: _getSubTitleColor(context)),
+                  style: ScaleTextStyles.label
+                      .apply(color: _getSubTitleColor(context)),
                 ),
               ],
             ),

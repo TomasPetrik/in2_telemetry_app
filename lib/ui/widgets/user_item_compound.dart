@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/ui/painters/user_item_painter.dart';
 import 'package:scalesoft_app/ui/screens/user_item.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/user_item_shape.dart';
 
 enum UserItemCompoundType {

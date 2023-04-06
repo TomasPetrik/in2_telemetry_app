@@ -12,7 +12,7 @@ import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc_state.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/chart_widget.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
 
@@ -96,7 +96,7 @@ class _ChartScreenState extends State<ChartScreen> {
                     children: [
                       Gap(
                         MediaQuery.of(context).viewPadding.top +
-                            Constants.twoLinedBarHeight,
+                            Dimensions.twoLinedBarHeight,
                       ),
                       Expanded(
                         child: PageView.builder(

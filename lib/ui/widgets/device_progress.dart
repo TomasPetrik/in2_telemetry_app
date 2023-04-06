@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:scalesoft_app/api/dto/measurement/device.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/action_item.dart';
 import 'package:scalesoft_app/ui/widgets/device_progress_list.dart';
 
@@ -24,7 +24,7 @@ class DeviceProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final topGap = MediaQuery.of(context).viewPadding.top;
-    final fixedHeight = topGap + Constants.twoLinedBarHeight;
+    final fixedHeight = topGap + Dimensions.twoLinedBarHeight;
     return CustomScrollView(
       shrinkWrap: true,
       slivers: [

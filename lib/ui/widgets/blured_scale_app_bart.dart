@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
 
 class BluredScaleAppBar extends StatelessWidget {
@@ -34,7 +34,7 @@ class BluredScaleAppBar extends StatelessWidget {
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
-                height: topGap + Constants.appBarHeight,
+                height: topGap + Dimensions.appBarHeight,
                 color:
                     Theme.of(context).colorScheme.background.withOpacity(0.8),
               ),

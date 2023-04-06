@@ -5,7 +5,7 @@ import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/no_results_in_plans_header.dart';
 import 'package:scalesoft_app/ui/widgets/progress_header.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';

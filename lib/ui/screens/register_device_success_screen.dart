@@ -4,8 +4,8 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 
@@ -17,7 +17,7 @@ class RegisterDeviceSuccessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final topGap = MediaQuery.of(context).viewPadding.top;
-    final fixedHeight = topGap + Constants.appBarHeight;
+    final fixedHeight = topGap + Dimensions.appBarHeight;
     return Material(
       child: Stack(
         children: [

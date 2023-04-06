@@ -4,9 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/l10n/localized_build_context_extension.dart';
 import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
-import 'package:scalesoft_app/ui/themes/constants.dart';
+import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/device_item.dart';
+import 'package:scalesoft_app/utils/constants.dart';
 
 class AddDeviceScreen extends StatelessWidget {
   const AddDeviceScreen({
@@ -29,7 +30,7 @@ class AddDeviceScreen extends StatelessWidget {
               children: [
                 Gap(
                   MediaQuery.of(context).viewPadding.top +
-                      Constants.appBarHeight,
+                      Dimensions.appBarHeight,
                 ),
                 ...Constants.supportedDevices
                     .map(
