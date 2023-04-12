@@ -54,7 +54,7 @@ class CarePlanHelper {
                   carePlan.weekDays?.isEmpty == true) ||
               carePlan.weekDays?.contains(tomorrowWeekDay) == true,
         )
-        .fold(
+        .fold<int>(
           0,
           (sum, carePlan) => sum + carePlan.timingDayWhen.length,
         );

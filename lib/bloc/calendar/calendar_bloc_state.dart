@@ -230,7 +230,7 @@ class CarePlanSingleDayEvaluation with _$CarePlanSingleDayEvaluation {
   }
 
   int getReqCount() {
-    final reqCount = plannedMeasurements.fold(
+    final reqCount = plannedMeasurements.fold<int>(
       0,
       (previousValue, plannedMeasurement) =>
           previousValue + plannedMeasurement.reqCount,

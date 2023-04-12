@@ -23,13 +23,13 @@ class HistorySingleUserEvaluationHeader extends StatelessWidget {
       (carePlanFulfillment) {
         final measurementTypeCarePlans = carePlanFulfillment.value;
 
-        final reqCounts = measurementTypeCarePlans.fold(
+        final reqCounts = measurementTypeCarePlans.fold<int>(
           0,
           (previousValue, carePlanEvaluation) =>
               previousValue + carePlanEvaluation.getReqCount(),
         );
 
-        final actualCounts = measurementTypeCarePlans.fold(
+        final actualCounts = measurementTypeCarePlans.fold<int>(
           0,
           (previousValue, carePlanEvaluation) =>
               previousValue + carePlanEvaluation.getActualCount(),
