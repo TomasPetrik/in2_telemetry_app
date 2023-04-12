@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Completed error handling for device registration, still waiting on permission to show register device button in admin mode and on endpoint to send data for device registration . TODO.. test 400, 403 cases what can happen when device is already registered.\n2. Fixed SCALESOFT-53."
+    "text": "1. Updated README.md file,\n2. Refactored using constants,\n3. Unified translations to be using only flutter_intl from (l10n.dart)  without polluting context,\n4. Added how it works screen."
   },
   {
     "language": "sk-SK",
