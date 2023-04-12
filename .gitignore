@@ -53,5 +53,3 @@ app.*.map.json
 *.g.dart
 *.freezed.dart
 
-# Gradle
-/android/gradle.properties
