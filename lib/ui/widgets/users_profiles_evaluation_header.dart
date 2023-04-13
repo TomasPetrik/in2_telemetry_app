@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';

@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:scalesoft_app/api/dto/care_plan/when_time_value.dart';
+import 'package:scalesoft_app/api/model/care_plan/when_time_value.dart';
 
 part 'template_time_set.freezed.dart';
 part 'template_time_set.g.dart';

@@ -1,6 +1,6 @@
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
-import 'package:scalesoft_app/api/dto/measurement/device.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/providers/paired_devices_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';

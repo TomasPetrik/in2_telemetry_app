@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:scalesoft_app/api/dto/settings/time_setting.dart';
-import 'package:scalesoft_app/api/dto/settings/time_settings.dart';
-import 'package:scalesoft_app/api/dto/template_time_set.dart';
+import 'package:scalesoft_app/api/model/settings/time_setting.dart';
+import 'package:scalesoft_app/api/model/settings/time_settings.dart';
+import 'package:scalesoft_app/api/model/template_time_set.dart';
 import 'package:scalesoft_app/utils/constants.dart';
 
 part 'time_settings_api_client.g.dart';

@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/dto/care_plan_changes.dart';
-import 'package:scalesoft_app/api/dto/measurement/device.dart';
-import 'package:scalesoft_app/api/dto/user.dart';
+import 'package:scalesoft_app/api/model/care_plan_changes.dart';
+import 'package:scalesoft_app/api/model/measurement/device.dart';
+import 'package:scalesoft_app/api/model/user.dart';
 
 part 'changes_from_date_response.freezed.dart';
 part 'changes_from_date_response.g.dart';

@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
+import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 
 part 'sync_event.freezed.dart';
 

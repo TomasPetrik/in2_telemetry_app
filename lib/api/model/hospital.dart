@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:scalesoft_app/api/dto/auth_data.dart';
+import 'package:scalesoft_app/api/model/auth_data.dart';
 
 part 'hospital.freezed.dart';
 part 'hospital.g.dart';

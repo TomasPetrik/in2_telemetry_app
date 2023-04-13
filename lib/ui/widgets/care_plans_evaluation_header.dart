@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
+import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';

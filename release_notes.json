@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Removed unused code (classes, functions, variables, extensions, enums, mixins and type aliases) by dart_code_metrics,\n 2. Removed unused files. \n 3. Using GoRouter completely instead of Navigator. \n 4. Removed cupertino_icons."
+    "text": "1. Updated package_info_plus,\n 2. Removed web folder,\n3. Renamed dto to model."
   },
   {
     "language": "sk-SK",

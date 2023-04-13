@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/dto/settings/time_setting.dart';
-import 'package:scalesoft_app/api/dto/settings/time_settings.dart';
+import 'package:scalesoft_app/api/model/settings/time_setting.dart';
+import 'package:scalesoft_app/api/model/settings/time_settings.dart';
 import 'package:scalesoft_app/bloc/daily_times_settings/times_settings_event.dart';
 import 'package:scalesoft_app/bloc/daily_times_settings/times_settings_state.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';

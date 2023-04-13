@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/account_api_client.dart';
-import 'package:scalesoft_app/api/dto/user_info.dart';
+import 'package:scalesoft_app/api/model/user_info.dart';
 
 @singleton
 class AccountRepository {

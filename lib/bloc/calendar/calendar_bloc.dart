@@ -33,7 +33,7 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
           int? defaultMonth = defaultDt.month;
 
           //toDate should be always 2 months ahead
-          final fromDate = _session.getLatestDtOfCarePlans();
+          final fromDate = _session.getLatestmodelfCarePlans();
           DateTime? toDate = CalendarHelper.getDateByMonthsOffset(defaultDt, 2);
           if (preSelectedDt != null) {
             if (preSelectedDt.isAfter(toDate) == true) {

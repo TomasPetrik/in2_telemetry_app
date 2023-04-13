@@ -1,7 +1,7 @@
 import 'package:hive_flutter/adapters.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
-import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/providers/box_provider.dart';
 
 @singleton

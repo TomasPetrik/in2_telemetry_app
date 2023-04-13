@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:scalesoft_app/api/dto/measurement/device.dart';
+import 'package:scalesoft_app/api/model/measurement/device.dart';
 
 part 'source_device_info.freezed.dart';
 part 'source_device_info.g.dart';

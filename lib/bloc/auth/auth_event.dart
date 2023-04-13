@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:scalesoft_app/api/dto/hospital.dart';
+import 'package:scalesoft_app/api/model/hospital.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 
 abstract class AuthEvent extends Equatable {

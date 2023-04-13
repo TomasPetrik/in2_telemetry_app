@@ -1,10 +1,10 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
-import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
-import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart';
-import 'package:scalesoft_app/api/dto/measurement/composed_double_value.dart';
-import 'package:scalesoft_app/api/dto/measurement/device.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
+import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
+import 'package:scalesoft_app/api/model/measurement/composed_double_value.dart';
+import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 part 'measurement_result.freezed.dart';

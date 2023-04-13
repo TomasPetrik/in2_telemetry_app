@@ -1,15 +1,15 @@
 import 'package:flutter/services.dart';
-import 'package:scalesoft_app/api/dto/auth_data.dart';
-import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
-import 'package:scalesoft_app/api/dto/hospital.dart';
-import 'package:scalesoft_app/api/dto/measurement/device.dart';
+import 'package:scalesoft_app/api/model/auth_data.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/hospital.dart';
+import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/model/measurement_config.dart';
 import 'package:scalesoft_app/utils/input_formatters/decimal_text_input_formatter.dart';
 
 class Constants {
   /* Background service interval fetch */
   static const int autoSyncIntervalMinutes = 15;
-  
+
   /* API */
   static const String privateDioName = 'privateDio';
 
@@ -27,8 +27,6 @@ class Constants {
     'mobile_api.Default',
   ];
   static const String redirectUrl = 'cz.scalesoft.tlm://auth-callback';
-
-  
 
   /* Enviroments */
   static const List<Hospital> hospitals = [

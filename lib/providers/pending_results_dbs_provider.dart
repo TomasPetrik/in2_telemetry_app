@@ -1,8 +1,8 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/dto/measurement/composed_int_value.dart';
-import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
-import 'package:scalesoft_app/api/dto/measurement/source_device_info.dart';
+import 'package:scalesoft_app/api/model/measurement/composed_int_value.dart';
+import 'package:scalesoft_app/api/model/measurement/measurement.dart';
+import 'package:scalesoft_app/api/model/measurement/source_device_info.dart';
 import 'package:scalesoft_app/providers/box_provider.dart';
 
 @singleton

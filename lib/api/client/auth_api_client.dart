@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:scalesoft_app/api/dto/refresh_token_response.dart';
+import 'package:scalesoft_app/api/model/refresh_token_response.dart';
 import 'package:scalesoft_app/utils/constants.dart';
 
 part 'auth_api_client.g.dart';

@@ -1,13 +1,13 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:scalesoft_app/api/dto/auth_token.dart';
-import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/dto/hospital.dart';
-import 'package:scalesoft_app/api/dto/measurement/device.dart';
-import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
-import 'package:scalesoft_app/api/dto/settings/time_setting.dart';
-import 'package:scalesoft_app/api/dto/template_time_set.dart';
-import 'package:scalesoft_app/api/dto/user.dart';
+import 'package:scalesoft_app/api/model/auth_token.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
+import 'package:scalesoft_app/api/model/hospital.dart';
+import 'package:scalesoft_app/api/model/measurement/device.dart';
+import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/model/settings/time_setting.dart';
+import 'package:scalesoft_app/api/model/template_time_set.dart';
+import 'package:scalesoft_app/api/model/user.dart';
 
 part 'user_account.freezed.dart';
 part 'user_account.g.dart';

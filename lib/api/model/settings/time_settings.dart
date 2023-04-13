@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/dto/settings/time_setting.dart';
+import 'package:scalesoft_app/api/model/settings/time_setting.dart';
 
 part 'time_settings.freezed.dart';
 part 'time_settings.g.dart';

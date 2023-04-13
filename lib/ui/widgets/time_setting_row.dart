@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart';
-import 'package:scalesoft_app/api/dto/care_plan/when_time_value.dart';
+import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
+import 'package:scalesoft_app/api/model/care_plan/when_time_value.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/when_code_set.dart';

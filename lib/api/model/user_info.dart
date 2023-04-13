@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/dto/user.dart';
+import 'package:scalesoft_app/api/model/user.dart';
 
 part 'user_info.freezed.dart';
 part 'user_info.g.dart';

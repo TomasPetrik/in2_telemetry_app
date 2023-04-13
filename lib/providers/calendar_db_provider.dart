@@ -1,5 +1,5 @@
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
+import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/providers/box_provider.dart';
 
 @singleton

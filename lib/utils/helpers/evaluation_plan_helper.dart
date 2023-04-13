@@ -1,8 +1,8 @@
-import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
-import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaulation_aggregated.dart';
-import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
-import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
+import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
+import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaulation_aggregated.dart';
+import 'package:scalesoft_app/api/model/measurement/measurement.dart';
+import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/calendar_db_provider.dart';

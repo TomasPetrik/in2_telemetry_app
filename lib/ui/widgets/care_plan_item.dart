@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/chart_screen_route.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';

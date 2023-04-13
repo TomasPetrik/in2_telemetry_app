@@ -1,13 +1,13 @@
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/care_plan_api_client.dart';
-import 'package:scalesoft_app/api/dto/active_care_plans_response.dart';
-import 'package:scalesoft_app/api/dto/care_plan/care_plan_activity.dart';
-import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaluation.dart';
-import 'package:scalesoft_app/api/dto/care_plan/fulfillment_evaulation_aggregated.dart';
-import 'package:scalesoft_app/api/dto/changes_from_date_response.dart';
-import 'package:scalesoft_app/api/dto/measurement/device.dart';
-import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
-import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/model/active_care_plans_response.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
+import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaulation_aggregated.dart';
+import 'package:scalesoft_app/api/model/changes_from_date_response.dart';
+import 'package:scalesoft_app/api/model/measurement/device.dart';
+import 'package:scalesoft_app/api/model/measurement/measurement.dart';
+import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/storage/session.dart';
 

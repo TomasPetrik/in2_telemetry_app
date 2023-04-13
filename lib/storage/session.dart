@@ -1,10 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/dto/auth_token.dart';
-import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/dto/hospital.dart';
-import 'package:scalesoft_app/api/dto/measurement/measurement.dart';
-import 'package:scalesoft_app/api/dto/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/model/auth_token.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
+import 'package:scalesoft_app/api/model/hospital.dart';
+import 'package:scalesoft_app/api/model/measurement/measurement.dart';
+import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/model/user_account.dart';
@@ -23,7 +23,6 @@ class Session {
 
   //For history and future details restoration
   List<UserEvaluationDay>? usersEvaluationsDayRestoration;
-
   //For calendar restoration
   DateTime? preSelecteDtRestoration;
 
@@ -79,7 +78,7 @@ class Session {
     );
   }
 
-  DateTime getLatestDtOfCarePlans() {
+  DateTime getLatestmodelfCarePlans() {
     final carePlans = getActiveCarePlans();
     final veryLastDt = carePlans
         .map((carePlan) => carePlan.scheduledStart)

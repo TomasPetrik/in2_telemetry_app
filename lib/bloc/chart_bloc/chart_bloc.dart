@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc_event.dart';
 import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc_state.dart';
@@ -15,7 +15,7 @@ class ChartBloc extends Bloc<ChartBlocEvent, ChartBlocState> {
   late final BuildContext context;
 
   ChartBloc() : super(const ChartBlocState()) {
-    DateTime getVeryFirstDtOfCarePlans(List<CarePlan> carePlans) {
+    DateTime getVeryFirstmodelfCarePlans(List<CarePlan> carePlans) {
       return carePlans
           .map((carePlan) => carePlan.scheduledStart)
           .sorted((a, b) => b.compareTo(a))
@@ -43,7 +43,7 @@ class ChartBloc extends Bloc<ChartBlocEvent, ChartBlocState> {
         init: (context, initDate, carePlans, color) async {
           this.context = context;
 
-          final fromMonthDate = getVeryFirstDtOfCarePlans(carePlans);
+          final fromMonthDate = getVeryFirstmodelfCarePlans(carePlans);
           final toMonthDate =
               CalendarHelper.getDateByMonthsOffset(DateTime.now(), 0);
 

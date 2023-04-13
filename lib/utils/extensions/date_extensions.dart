@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:scalesoft_app/api/dto/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/dto/care_plan/timing_day_when.dart' as tdw;
+import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
+import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart' as tdw;
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
