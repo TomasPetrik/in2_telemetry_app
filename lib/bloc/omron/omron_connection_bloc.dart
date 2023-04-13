@@ -16,7 +16,6 @@ import 'package:scalesoft_app/model/device_info.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/providers/paired_devices_db_provider.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
-import 'package:scalesoft_app/ui/screens/constants.dart';
 import 'package:scalesoft_app/utils/helpers/bt_connection_helper.dart';
 
 @injectable

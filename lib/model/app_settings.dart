@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive/hive.dart';
 import 'package:scalesoft_app/model/local_locale.dart';
@@ -6,9 +5,6 @@ import 'package:scalesoft_app/model/theme_mode_local.dart';
 
 part 'app_settings.freezed.dart';
 part 'app_settings.g.dart';
-
-const defaultLocale = Locale('cz');
-const defaultThemeMode = ThemeMode.dark;
 
 @freezed
 class AppSettings with _$AppSettings {

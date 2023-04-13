@@ -12,10 +12,10 @@ import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/model/measurement_info.dart';
 import 'package:scalesoft_app/utils/constants.dart';
 
-const String genericAccess = '00001800-0000-1000-8000-00805f9b34fb';
 const String deviceInfo = '0000180a-0000-1000-8000-00805f9b34fb';
 const String bloodPressure = '00001810-0000-1000-8000-00805f9b34fb';
 const String batteryService = '0000180f-0000-1000-8000-00805f9b34fb';
+const String bloodPressureServiceUuid = "1810";
 
 class DeviceSearchResult {
   BluetoothDevice device;

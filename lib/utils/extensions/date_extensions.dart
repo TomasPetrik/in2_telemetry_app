@@ -136,11 +136,6 @@ DateTime toLocalDate(String dtUtc) {
   return dtLocal;
 }
 
-DateTime? toUtcDate(DateTime? dtLocal) {
-  final dtUtc = dtLocal?.toUtc();
-  return dtUtc;
-}
-
 DateTime? toLocalDateNullable(String? dtUtc) {
   if (dtUtc == null) return null;
   final dtLocal = DateTime.parse(dtUtc).toLocal();

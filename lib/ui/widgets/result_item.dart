@@ -158,5 +158,3 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
     );
   }
 }
-
-enum MeasurementNeed { now, upcoming }

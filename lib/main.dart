@@ -64,18 +64,17 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
 }
 
 Future<void> main() async {
-  await _main(themeMode: ThemeMode.dark, locale: cs, isDev: true);
+  await _main(themeMode: ThemeMode.dark, locale: cs);
 }
 
 Future<void> _main({
   required final ThemeMode themeMode,
   required final Locale locale,
-  required final bool isDev,
 }) async {
   WidgetsFlutterBinding.ensureInitialized();
 
   tz.initializeTimeZones();
-  initializeGlobals(themeMode: themeMode, locale: locale, isDev: isDev);
+  initializeGlobals(themeMode: themeMode, locale: locale);
   WebView.debugLoggingSettings.enabled = false;
 
   runApp(const ScalesoftApp());

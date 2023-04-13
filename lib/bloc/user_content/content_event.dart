@@ -62,13 +62,6 @@ class OnDaylightAppearanceChangedContentEvent extends ContentEvent {
   List<Object?> get props => [originalLocation];
 }
 
-class SwitchAllUsersContentEvent extends ContentEvent {
-  const SwitchAllUsersContentEvent();
-
-  @override
-  List<Object?> get props => [];
-}
-
 class SwitchNoUserContentEvent extends ContentEvent {
   const SwitchNoUserContentEvent();
 

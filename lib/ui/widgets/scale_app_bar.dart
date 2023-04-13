@@ -54,7 +54,7 @@ class ScaleAppBar extends StatelessWidget {
                                       padding: EdgeInsets.zero,
                                       onPressed: () {
                                         onBackTap?.call();
-                                        Navigator.of(context).pop();
+                                        GoRouter.of(context).pop();
                                       },
                                       icon: SvgPicture.asset(
                                         'assets/icons/icon_back.svg',

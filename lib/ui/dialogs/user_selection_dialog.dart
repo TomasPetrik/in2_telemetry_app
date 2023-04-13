@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/dto/hospital.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -41,7 +42,7 @@ class UserSelectionDialog extends StatelessWidget {
                 children: [
                   InkWell(
                     onTap: () {
-                      Navigator.of(context).pop();
+                      GoRouter.of(context).pop();
                     },
                     child: Icon(
                       Icons.arrow_back,
@@ -62,7 +63,7 @@ class UserSelectionDialog extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: () {
-                      Navigator.of(context).pop(
+                      GoRouter.of(context).pop(
                         UserSelection(action: SwitchUserAction.addUserAccount),
                       );
                     },
@@ -84,7 +85,7 @@ class UserSelectionDialog extends StatelessWidget {
                   userAccount: userAccount,
                   userItemCompoundType: UserItemCompoundType.bottomSheet,
                   onUserSelected: (userAccount) {
-                    Navigator.of(context).pop(
+                    GoRouter.of(context).pop(
                       UserSelection(
                         action: SwitchUserAction.selectedUser,
                         selectedUser: userAccount,
@@ -105,7 +106,7 @@ class UserSelectionDialog extends StatelessWidget {
                 label: translactions.common_close,
                 buttonType: ButtonType.secondary,
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  GoRouter.of(context).pop();
                 },
               ),
             ),

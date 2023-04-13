@@ -6,7 +6,6 @@ import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_event.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_state.dart';
 import 'package:scalesoft_app/repositories/care_plans_repository.dart';
-import 'package:scalesoft_app/ui/screens/constants.dart';
 import 'package:scalesoft_app/utils/helpers/bt_connection_helper.dart';
 import 'package:scalesoft_app/utils/helpers/dio_helper.dart';
 

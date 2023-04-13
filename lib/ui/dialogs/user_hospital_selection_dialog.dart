@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
@@ -49,7 +50,7 @@ class UserHospitalSelectionDialog extends StatelessWidget {
                   const Spacer(),
                   InkWell(
                     onTap: () {
-                      Navigator.of(context).pop(
+                      GoRouter.of(context).pop(
                         UserSelection(
                           action: SwitchUserAction.addUserAccount,
                         ),
@@ -80,7 +81,7 @@ class UserHospitalSelectionDialog extends StatelessWidget {
                     ),
                   ),
                   onTap: () {
-                    Navigator.of(context).pop(
+                    GoRouter.of(context).pop(
                       UserSelection(
                         action: SwitchUserAction.selectedMultiUser,
                       ),
@@ -111,7 +112,7 @@ class UserHospitalSelectionDialog extends StatelessWidget {
                     ),
                     onTap: () {
                       if (hospital.value.length == 1) {
-                        Navigator.of(context).pop(
+                        GoRouter.of(context).pop(
                           UserSelection(
                             action: SwitchUserAction.selectedUser,
                             selectedUser: hospital.value[0],
@@ -120,7 +121,7 @@ class UserHospitalSelectionDialog extends StatelessWidget {
                       } else {
                         final hospitalUsers = accountDbProvider
                             .getRootUsersFromHospital(hospital.key);
-                        Navigator.of(context).pop(
+                        GoRouter.of(context).pop(
                           UserSelection(
                             action: SwitchUserAction.selectedHospital,
                             selectedHospital: hospital.key,
@@ -145,7 +146,7 @@ class UserHospitalSelectionDialog extends StatelessWidget {
                 label: translactions.common_close,
                 buttonType: ButtonType.secondary,
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  GoRouter.of(context).pop();
                 },
               ),
             ),

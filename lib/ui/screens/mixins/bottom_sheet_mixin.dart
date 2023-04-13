@@ -206,8 +206,7 @@ mixin BottomSheetMixin {
     required final BuildContext context,
     final bool? supportMultiUser,
   }) async {
-    final userHospitalSelectionResult =
-        await showModalBottomSheet<UserSelection>(
+    return await showModalBottomSheet<UserSelection>(
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
@@ -217,39 +216,37 @@ mixin BottomSheetMixin {
           supportMultiUser: supportMultiUser,
         );
       },
-    );
-
-    SwitchUserResult? switchUserResult;
-
-    if (userHospitalSelectionResult?.action ==
-        SwitchUserAction.selectedMultiUser) {
-      switchUserResult = SwitchUserResult(activeMultiUser: true);
-    } else if (userHospitalSelectionResult?.action ==
-        SwitchUserAction.addUserAccount) {
-      switchUserResult = SwitchUserResult(addNewUser: true);
-    } else if (userHospitalSelectionResult?.action ==
-        SwitchUserAction.selectedUser) {
-      switchUserResult = SwitchUserResult(
-        selectedUser: userHospitalSelectionResult!.selectedUser,
-      );
-    } else if (userHospitalSelectionResult?.action ==
-        SwitchUserAction.selectedHospital) {
-      final userSelection = await _selectUserFromHospital(
-        context: context,
-        hospital: userHospitalSelectionResult!.selectedHospital!,
-        userAccounts: userHospitalSelectionResult.hospitalUsers!,
-      );
-      if (userSelection?.action == SwitchUserAction.addUserAccount) {
+    ).then((userHospitalSelectionResult) async {
+      SwitchUserResult switchUserResult;
+      if (userHospitalSelectionResult?.action ==
+          SwitchUserAction.selectedMultiUser) {
+        switchUserResult = SwitchUserResult(activeMultiUser: true);
+      } else if (userHospitalSelectionResult?.action ==
+          SwitchUserAction.addUserAccount) {
         switchUserResult = SwitchUserResult(addNewUser: true);
+      } else if (userHospitalSelectionResult?.action ==
+          SwitchUserAction.selectedUser) {
+        switchUserResult = SwitchUserResult(
+          selectedUser: userHospitalSelectionResult!.selectedUser,
+        );
+      } else if (userHospitalSelectionResult?.action ==
+          SwitchUserAction.selectedHospital) {
+        final userSelection = await _selectUserFromHospital(
+          context: context,
+          hospital: userHospitalSelectionResult!.selectedHospital!,
+          userAccounts: userHospitalSelectionResult.hospitalUsers!,
+        );
+        if (userSelection?.action == SwitchUserAction.addUserAccount) {
+          switchUserResult = SwitchUserResult(addNewUser: true);
+        } else {
+          switchUserResult =
+              SwitchUserResult(selectedUser: userSelection?.selectedUser);
+        }
       } else {
-        switchUserResult =
-            SwitchUserResult(selectedUser: userSelection!.selectedUser);
+        switchUserResult = SwitchUserResult();
       }
-    } else {
-      switchUserResult = SwitchUserResult();
-    }
-
-    return switchUserResult;
+      return switchUserResult;
+    });
   }
 
   Future<UserSelection?> _selectUserFromHospital({
@@ -272,14 +269,6 @@ mixin BottomSheetMixin {
 
     return userSelectionResult;
   }
-}
-
-class DeviceSelectionResult {
-  bool? manualMeasurement;
-
-  DeviceSelectionResult({
-    this.manualMeasurement,
-  });
 }
 
 enum SwitchUserAction {

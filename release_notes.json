@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Updated README.md file,\n2. Refactored using constants,\n3. Unified translations to be using only flutter_intl from (l10n.dart)  without polluting context,\n4. Added how it works screen."
+    "text": "1. Removed unused code (classes, functions, variables, extensions, enums, mixins and type aliases) by dart_code_metrics,\n 2. Removed unused files. \n 3. Using GoRouter completely instead of Navigator. \n 4. Removed cupertino_icons."
   },
   {
     "language": "sk-SK",

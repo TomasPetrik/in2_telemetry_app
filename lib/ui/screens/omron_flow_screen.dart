@@ -8,18 +8,12 @@ import 'package:scalesoft_app/bloc/omron/omron_connection_bloc.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_bloc_event.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/ui/screens/mixins/popup_dialog_mixin.dart';
 import 'package:scalesoft_app/ui/screens/synced_result.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/device_progress.dart';
 import 'package:scalesoft_app/ui/widgets/process_item.dart';
 import 'package:scalesoft_app/ui/widgets/warning_item.dart';
-
-const Map<String, String> characteristicsMap = {
-  "00002a49-0000-1000-8000-00805f9b34fb": 'Blood pressure feature char',
-  "00002a35-0000-1000-8000-00805f9b34fb": 'Blood pressure measurement char'
-};
 
 class OmronFlowScreen extends StatefulWidget {
   const OmronFlowScreen({
@@ -36,8 +30,7 @@ class OmronFlowScreen extends StatefulWidget {
   State<OmronFlowScreen> createState() => _OmronFlowScreenState();
 }
 
-class _OmronFlowScreenState extends State<OmronFlowScreen>
-    with PopupDialogMixin {
+class _OmronFlowScreenState extends State<OmronFlowScreen> {
   late final OmronConnectionBloc omronConnectionBloc;
   late final MeasurementType measurementType;
   late final Device device;

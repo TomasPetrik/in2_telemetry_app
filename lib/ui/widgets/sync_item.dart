@@ -13,7 +13,7 @@ import 'package:scalesoft_app/ui/widgets/warning_item.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 class SyncItem extends StatelessWidget {
-  const SyncItem({
+    const SyncItem({
     super.key,
     required this.syncState,
     this.onRefresh,

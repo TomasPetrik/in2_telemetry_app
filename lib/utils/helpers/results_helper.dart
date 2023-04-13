@@ -329,4 +329,3 @@ class ResultsHelper {
   }
 }
 
-class Result {}
