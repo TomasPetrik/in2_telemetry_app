@@ -228,7 +228,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
               left: 0,
               right: 0,
               child: BluredScaleAppBar(
-                title: device.modelName ?? '',
+                title: device.visibleName ?? '',
                 subTitle: '${translactions.common_measurement} '
                     '${translactions.common_measurement_types_genitive(measurementType.name).toLowerCase()}',
                 showClose: true,

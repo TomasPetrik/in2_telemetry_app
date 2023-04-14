@@ -12,21 +12,22 @@ class Device with _$Device {
   @HiveType(typeId: 33, adapterName: 'DeviceAdapter')
   const factory Device({
     @HiveField(0) String? deviceIdentifier,
-    @HiveField(1) String? modelName,
-    @HiveField(2) String? deviceManufacturer,
-    @JsonKey(ignore: true) @HiveField(3) String? bluetoothName,
-    @JsonKey(ignore: true) @HiveField(4) String? macAddress,
-    @JsonKey(ignore: true) @HiveField(5) int? localId,
-    @JsonKey(ignore: true) @HiveField(6) DeviceModel? deviceModel,
+    @HiveField(1) String? visibleName,
+    @HiveField(2) String? modelName,
+    @HiveField(3) String? deviceManufacturer,
+    @JsonKey(ignore: true) @HiveField(4) String? bluetoothName,
+    @JsonKey(ignore: true) @HiveField(5) String? macAddress,
+    @JsonKey(ignore: true) @HiveField(6) int? localId,
+    @JsonKey(ignore: true) @HiveField(7) DeviceModelType? deviceModelType,
     @JsonKey(ignore: true)
-    @HiveField(7)
+    @HiveField(8)
         List<MeasurementType>? supportedMeasurementTypes,
-    @JsonKey(ignore: true) @HiveField(8) String? imagePath,
-    @JsonKey(ignore: true) @HiveField(9) bool? reqPairing,
-    @JsonKey(ignore: true) @HiveField(10) DateTime? addedAt,
-    @JsonKey(ignore: true) @HiveField(11) bool? askToActivateBt,
-    @JsonKey(ignore: true) @HiveField(12) bool? askToConfirmMeasurement,
-    @JsonKey(ignore: true) @HiveField(13) ActionButtonType? actionButtonType,
+    @JsonKey(ignore: true) @HiveField(9) String? imagePath,
+    @JsonKey(ignore: true) @HiveField(10) bool? reqPairing,
+    @JsonKey(ignore: true) @HiveField(11) DateTime? addedAt,
+    @JsonKey(ignore: true) @HiveField(12) bool? askToActivateBt,
+    @JsonKey(ignore: true) @HiveField(13) bool? askToConfirmMeasurement,
+    @JsonKey(ignore: true) @HiveField(14) ActionButtonType? actionButtonType,
   }) = _Device;
 
   factory Device.fromJson(Map<String, dynamic> json) => _$DeviceFromJson(json);
@@ -44,7 +45,7 @@ enum ActionButtonType {
 }
 
 @HiveType(typeId: 34)
-enum DeviceModel {
+enum DeviceModelType {
   @HiveField(0)
   beurerBm77,
   @HiveField(1)

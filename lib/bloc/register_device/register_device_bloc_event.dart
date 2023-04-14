@@ -21,5 +21,7 @@ class RegisterDeviceBlocEvent with _$RegisterDeviceBlocEvent {
   const factory RegisterDeviceBlocEvent.registerDevice(
     UserAccount userAccount,
     Device device,
+    String deviceLabel,
+    String deviceIdentifier,
   ) = _RegisterDevice;
 }

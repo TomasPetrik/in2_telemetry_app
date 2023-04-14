@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/cubit/hospital_search/hospital_search_cubit.dart';
 import 'package:scalesoft_app/cubit/hospital_search/hospital_search_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -49,7 +48,7 @@ class HospitalSelectionDialog extends StatelessWidget {
               searchHint: translactions.hospital_selector_search_for_account,
               searchController: searchController,
               onBack: () {
-                GoRouter.of(context).pop();
+                Navigator.of(context).pop();
               },
             ),
           ),
@@ -79,7 +78,7 @@ class HospitalSelectionDialog extends StatelessWidget {
                         ),
                       ),
                       onTap: () {
-                        GoRouter.of(context).pop(
+                        Navigator.of(context).pop(
                           UserSelection(
                             action: SwitchUserAction.addUserAccount,
                             selectedHospital: hospital,
@@ -104,7 +103,7 @@ class HospitalSelectionDialog extends StatelessWidget {
               label: translactions.common_close,
               buttonType: ButtonType.secondary,
               onPressed: () {
-                GoRouter.of(context).pop();
+                Navigator.of(context).pop();
               },
             ),
           ),

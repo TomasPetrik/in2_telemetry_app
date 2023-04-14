@@ -32,6 +32,9 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
   final UserAccount userAccount;
   final Device device;
   final RegisterDeviceBloc registerDeviceBloc = getIt<RegisterDeviceBloc>();
+  final TextEditingController deviceLabelController = TextEditingController();
+  final TextEditingController deviceIdentifierController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +47,7 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
               state.whenOrNull(
                 deviceRegistered: () => GoRouter.of(context).replaceNamed(
                   RegisterDeviceSuccessRoute.name,
-                  params: {'deviceName': device.modelName!},
+                  params: {'deviceName': device.visibleName!},
                 ),
                 deviceAlreadyRegistered: (key) =>
                     showDevAlreadyRegistered(context, device.macAddress!),
@@ -76,7 +79,7 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
                       const Gap(Dimensions.padding8),
                       TextFormField(
                         enabled: false,
-                        initialValue: device.modelName,
+                        initialValue: device.visibleName,
                         style: ScaleTextStyles.text.apply(
                           color: Theme.of(context).colorScheme.tertiary,
                         ),
@@ -112,6 +115,7 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
                       const Gap(Dimensions.padding8),
                       ScaleTextFormField(
                         textFormKey: registerDevGlobalKeys[0],
+                        controller: deviceLabelController,
                         hintText: translactions
                             .register_device_detail_screen_label_hint,
                         validator: (value) {
@@ -136,6 +140,7 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
                       const Gap(Dimensions.padding8),
                       ScaleTextFormField(
                         textFormKey: registerDevGlobalKeys[1],
+                        controller: deviceIdentifierController,
                         hintText: translactions
                             .register_device_detail_screen_identificator_hint,
                         validator: (value) {
@@ -158,6 +163,8 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
                               RegisterDeviceBlocEvent.registerDevice(
                                 userAccount,
                                 device,
+                                deviceLabelController.text,
+                                deviceIdentifierController.text,
                               ),
                             );
                           }

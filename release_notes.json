@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Updated package_info_plus,\n 2. Removed web folder,\n3. Renamed dto to model."
+    "text": "1. Added endpoint for device registration,\n 2. Completed device registration,\n 3. Fixed SCALESOFT-45 (app freezed when user does not have any care plan),\n 4. Fixed do personal measurement in case when user does not  have any care plan assigned."
   },
   {
     "language": "sk-SK",

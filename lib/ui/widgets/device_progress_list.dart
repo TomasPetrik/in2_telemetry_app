@@ -22,7 +22,7 @@ class DeviceProgressList extends StatelessWidget {
       return [
         ConnectionState(
           'assets/icons/icon_power_off.svg',
-          translactions.find_device_screen_step1_p(device.modelName!),
+          translactions.find_device_screen_step1_p(device.visibleName!),
           1,
         ),
         ConnectionState(
@@ -54,7 +54,7 @@ class DeviceProgressList extends StatelessWidget {
         if (device.askToActivateBt == true) ...{
           ConnectionState(
             'assets/icons/icon_circle_information.svg',
-            translactions.find_device_screen_step1(device.modelName!),
+            translactions.find_device_screen_step1(device.visibleName!),
             1,
           )
         },

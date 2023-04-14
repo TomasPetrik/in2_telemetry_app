@@ -10,7 +10,7 @@ class PairedDevicesDbProvider extends BoxProvider<Device> {
 
   @override
   void registerAdapters() {
-    Hive.registerAdapter(DeviceModelAdapter());
+    Hive.registerAdapter(DeviceModelTypeAdapter());
     Hive.registerAdapter(ActionButtonTypeAdapter());
   }
 

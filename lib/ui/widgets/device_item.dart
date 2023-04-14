@@ -18,7 +18,7 @@ class DeviceItem extends StatelessWidget {
 
   String getSubTitle(BuildContext context) {
     String subTitle = translactions.measurement_dialog_device_desc(
-      device.deviceModel!.name,
+      device.deviceModelType!.name,
     );
 
     if (device.addedAt != null) {
@@ -47,7 +47,7 @@ class DeviceItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                device.modelName ?? '',
+                device.visibleName ?? '',
                 style: ScaleTextStyles.text.apply(
                   color: Theme.of(context).colorScheme.onPrimary,
                 ),

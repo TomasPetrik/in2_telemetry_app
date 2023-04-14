@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -84,7 +83,7 @@ class _ScaleTimePickerState extends State<ScaleTimePicker> {
             children: [
               TextButton(
                 onPressed: () {
-                  GoRouter.of(context).pop(null);
+                  Navigator.of(context).pop(null);
                 },
                 child: Text(
                   translactions.common_cancel,
@@ -100,7 +99,7 @@ class _ScaleTimePickerState extends State<ScaleTimePicker> {
                       : minuteMode == MinuteMode.minMinute
                           ? selectedMinute + minMinute
                           : selectedMinute;
-                  GoRouter.of(context).pop(DailyTime(selectedHour, minute, 0));
+                  Navigator.of(context).pop(DailyTime(selectedHour, minute, 0));
                 },
                 child: Text(
                   translactions.common_confirm,

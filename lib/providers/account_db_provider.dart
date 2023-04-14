@@ -10,6 +10,8 @@ import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaulation_aggregated.dart';
 import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/api/model/care_plan/when_time_value.dart';
+import 'package:scalesoft_app/api/model/device_model.dart';
+import 'package:scalesoft_app/api/model/device_to_register.dart';
 import 'package:scalesoft_app/api/model/hospital.dart';
 import 'package:scalesoft_app/api/model/measurement/composed_double_value.dart';
 import 'package:scalesoft_app/api/model/measurement/device.dart';
@@ -53,6 +55,8 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
     Hive.registerAdapter(TemplateTimeSetAdapter());
     Hive.registerAdapter(WhenTimeValueAdapter());
     Hive.registerAdapter(TimeSettingAdapter());
+    Hive.registerAdapter(DeviceModelAdapter());
+    Hive.registerAdapter(DeviceToRegisterAdapter());
   }
 
   @override

@@ -11,12 +11,13 @@ import 'package:injectable/injectable.dart' as _i2;
 import 'package:scalesoft_app/api/client/account_api_client.dart' as _i24;
 import 'package:scalesoft_app/api/client/auth_api_client.dart' as _i27;
 import 'package:scalesoft_app/api/client/care_plan_api_client.dart' as _i29;
+import 'package:scalesoft_app/api/client/device_api_client.dart' as _i33;
 import 'package:scalesoft_app/api/client/time_settings_api_client.dart' as _i21;
-import 'package:scalesoft_app/api/interceptors/token_interceptor.dart' as _i37;
-import 'package:scalesoft_app/bloc/auth/auth_bloc.dart' as _i38;
+import 'package:scalesoft_app/api/interceptors/token_interceptor.dart' as _i39;
+import 'package:scalesoft_app/bloc/auth/auth_bloc.dart' as _i40;
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc.dart' as _i28;
 import 'package:scalesoft_app/bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc.dart'
-    as _i39;
+    as _i41;
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart' as _i9;
 import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc.dart' as _i10;
 import 'package:scalesoft_app/bloc/chart_loader_bloc/chart_loader_bloc.dart'
@@ -24,19 +25,19 @@ import 'package:scalesoft_app/bloc/chart_loader_bloc/chart_loader_bloc.dart'
 import 'package:scalesoft_app/bloc/daily_times_settings/times_settings_bloc.dart'
     as _i23;
 import 'package:scalesoft_app/bloc/notifications/notifications_bloc.dart'
-    as _i34;
-import 'package:scalesoft_app/bloc/omron/omron_connection_bloc.dart' as _i41;
+    as _i36;
+import 'package:scalesoft_app/bloc/omron/omron_connection_bloc.dart' as _i43;
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc.dart'
-    as _i35;
+    as _i37;
 import 'package:scalesoft_app/bloc/results/results_bloc.dart' as _i18;
 import 'package:scalesoft_app/bloc/settings/app_settings_bloc.dart' as _i26;
-import 'package:scalesoft_app/bloc/sync/sync_bloc.dart' as _i40;
+import 'package:scalesoft_app/bloc/sync/sync_bloc.dart' as _i42;
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart' as _i32;
 import 'package:scalesoft_app/cubit/auth_web/auth_web_cubit.dart' as _i6;
 import 'package:scalesoft_app/cubit/calendar_footer/calendar_footer_cubit.dart'
     as _i8;
 import 'package:scalesoft_app/cubit/device_management/device_management_cubit.dart'
-    as _i33;
+    as _i34;
 import 'package:scalesoft_app/cubit/hospital_search/hospital_search_cubit.dart'
     as _i12;
 import 'package:scalesoft_app/providers/account_db_provider.dart' as _i3;
@@ -50,15 +51,16 @@ import 'package:scalesoft_app/providers/session_db_provider.dart' as _i20;
 import 'package:scalesoft_app/providers/settings_db_provider.dart' as _i4;
 import 'package:scalesoft_app/repositories/account_repository.dart' as _i25;
 import 'package:scalesoft_app/repositories/care_plans_repository.dart' as _i30;
+import 'package:scalesoft_app/repositories/device_repository.dart' as _i35;
 import 'package:scalesoft_app/repositories/time_settings_repository.dart'
     as _i22;
 import 'package:scalesoft_app/services/auth_service.dart' as _i5;
 import 'package:scalesoft_app/services/internet_service.dart' as _i13;
 import 'package:scalesoft_app/services/location_service.dart' as _i14;
-import 'package:scalesoft_app/services/sync_service.dart' as _i36;
+import 'package:scalesoft_app/services/sync_service.dart' as _i38;
 import 'package:scalesoft_app/storage/session.dart' as _i19;
 
-import '../api/dio_module.dart' as _i42;
+import '../api/dio_module.dart' as _i44;
 
 // ignore_for_file: unnecessary_lambdas
 // ignore_for_file: lines_longer_than_80_chars
@@ -142,15 +144,21 @@ _i1.GetIt init(
     gh<_i9.CarePlanBloc>(),
     gh<_i14.LocationService>(),
   ));
-  gh.factory<_i33.DeviceManagementCubit>(
-      () => _i33.DeviceManagementCubit(gh<_i16.PairedDevicesDbProvider>()));
-  gh.singleton<_i34.NotificationsBloc>(_i34.NotificationsBloc(
+  gh.factory<_i33.DeviceApiClient>(
+      () => _i33.DeviceApiClient(gh<_i11.Dio>(instanceName: 'privateDio')));
+  gh.factory<_i34.DeviceManagementCubit>(
+      () => _i34.DeviceManagementCubit(gh<_i16.PairedDevicesDbProvider>()));
+  gh.singleton<_i35.DeviceRepository>(_i35.DeviceRepository(
+    gh<_i33.DeviceApiClient>(),
+    gh<_i19.Session>(),
+  ));
+  gh.singleton<_i36.NotificationsBloc>(_i36.NotificationsBloc(
     gh<_i19.Session>(),
     gh<_i4.AppSettingsDbProvider>(),
   ));
-  gh.factory<_i35.RegisterDeviceBloc>(
-      () => _i35.RegisterDeviceBloc(gh<_i30.CarePlansRepository>()));
-  gh.singleton<_i36.SyncService>(_i36.SyncService(
+  gh.factory<_i37.RegisterDeviceBloc>(
+      () => _i37.RegisterDeviceBloc(gh<_i35.DeviceRepository>()));
+  gh.singleton<_i38.SyncService>(_i38.SyncService(
     gh<_i19.Session>(),
     gh<_i3.AccountDbProvider>(),
     gh<_i17.PendingResultsDbProvider>(),
@@ -158,37 +166,37 @@ _i1.GetIt init(
     gh<_i22.TimeSettingsRepository>(),
     gh<_i4.AppSettingsDbProvider>(),
   ));
-  gh.factory<_i37.TokenInterceptor>(() => _i37.TokenInterceptor(
+  gh.factory<_i39.TokenInterceptor>(() => _i39.TokenInterceptor(
         gh<_i19.Session>(),
         gh<_i24.AccountApiClient>(),
       ));
-  gh.singleton<_i38.AuthBloc>(_i38.AuthBloc(
+  gh.singleton<_i40.AuthBloc>(_i40.AuthBloc(
     gh<_i5.AuthService>(),
     gh<_i25.AccountRepository>(),
     gh<_i19.Session>(),
     gh<_i3.AccountDbProvider>(),
     gh<_i17.PendingResultsDbProvider>(),
     gh<_i11.Dio>(instanceName: 'privateDio'),
-    gh<_i36.SyncService>(),
+    gh<_i38.SyncService>(),
   ));
-  gh.factory<_i39.CalendarFulfillmentServiceBloc>(
-      () => _i39.CalendarFulfillmentServiceBloc(
+  gh.factory<_i41.CalendarFulfillmentServiceBloc>(
+      () => _i41.CalendarFulfillmentServiceBloc(
             gh<_i3.AccountDbProvider>(),
             gh<_i8.CalendarFooterCubit>(),
             gh<_i30.CarePlansRepository>(),
             gh<_i7.CalendarDbProvider>(),
           ));
-  gh.singleton<_i40.SyncBloc>(_i40.SyncBloc(
+  gh.singleton<_i42.SyncBloc>(_i42.SyncBloc(
     gh<_i3.AccountDbProvider>(),
-    gh<_i36.SyncService>(),
+    gh<_i38.SyncService>(),
     gh<_i19.Session>(),
   ));
-  gh.factory<_i41.OmronConnectionBloc>(() => _i41.OmronConnectionBloc(
+  gh.factory<_i43.OmronConnectionBloc>(() => _i43.OmronConnectionBloc(
         gh<_i17.PendingResultsDbProvider>(),
         gh<_i16.PairedDevicesDbProvider>(),
-        gh<_i40.SyncBloc>(),
+        gh<_i42.SyncBloc>(),
       ));
   return getIt;
 }
 
-class _$DioModule extends _i42.DioModule {}
+class _$DioModule extends _i44.DioModule {}

@@ -5,7 +5,6 @@ import 'package:scalesoft_app/api/model/active_care_plans_response.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaulation_aggregated.dart';
 import 'package:scalesoft_app/api/model/changes_from_date_response.dart';
-import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/utils/constants.dart';
@@ -78,11 +77,5 @@ abstract class CarePlanApiClient {
   Future<void> sendManualMeasurement(
     @Path('apiUrl') String apiUrl,
     @Body() Measurement manualMeasurement,
-  );
-
-  @POST('{apiUrl}/patient/register-device')
-  Future<void> registerDevice(
-    @Path('apiUrl') String apiUrl,
-    @Body() Device device,
   );
 }

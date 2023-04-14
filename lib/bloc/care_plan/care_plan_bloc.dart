@@ -155,7 +155,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
 
         final carePlans = state.currentCarePlans;
 
-        if (carePlans != null) {
+        if (carePlans != null && carePlans.isNotEmpty) {
           final nextMeasurement = Calendar.getNUpcomingMeasurements(
             carePlans: carePlans,
             reqCount: 1,

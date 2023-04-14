@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -46,7 +45,7 @@ class PlannedMeasurementTimeDialog extends StatelessWidget {
             (entry) {
               return InkWell(
                 onTap: () {
-                  GoRouter.of(context).pop(
+                  Navigator.of(context).pop(
                     PlannedPeriodSelection(selectedPeriod: entry.key),
                   );
                 },
@@ -67,7 +66,7 @@ class PlannedMeasurementTimeDialog extends StatelessWidget {
             child: HighlightedElevatedButton(
               label: translactions.common_show_calendar,
               onPressed: () {
-                GoRouter.of(context)
+                Navigator.of(context)
                     .pop(PlannedPeriodSelection(showCalendar: true));
               },
             ),
@@ -78,7 +77,7 @@ class PlannedMeasurementTimeDialog extends StatelessWidget {
             child: HighlightedElevatedButton(
               label: translactions.common_close,
               onPressed: () {
-                GoRouter.of(context).pop();
+                Navigator.of(context).pop();
               },
               buttonType: ButtonType.secondary,
             ),

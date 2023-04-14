@@ -76,9 +76,15 @@ class UserAccount with _$UserAccount {
       ) ==
       true;
 
-  bool get canRegisterDevice =>
+  bool get canManageTelemonitoringDevices =>
       userPermissions?.contains(
-        UserPermission.canRegisterDevice,
+        UserPermission.canManageTelemonitoringDevices,
+      ) ==
+      true;
+
+  bool get canMeasureWithUnknowDevice =>
+      userPermissions?.contains(
+        UserPermission.canMeasureWithUnknowDevice,
       ) ==
       true;
 }
@@ -101,14 +107,18 @@ enum UserPermission {
   @JsonValue('scs-enter-measurement-without-plan')
   @HiveField(2)
   enterMeasurementWithoutPlan,
-  @JsonValue('scs-can-register-device')
+  @JsonValue('scs-can-manage-telemonitoring-devices')
   @HiveField(3)
-  canRegisterDevice;
+  canManageTelemonitoringDevices,
+  @JsonValue('scs-measure-with-unknown-device')
+  @HiveField(4)
+  canMeasureWithUnknowDevice,
 }
 
 const supportedUserPermissions = [
   'scs-can-manually-enter-measurement',
   'scs-view-own-measurement-data',
   'scs-enter-measurement-without-plan',
-  'scs-can-register-device'
+  'scs-can-manage-telemonitoring-devices',
+  'scs-measure-with-unknown-device',
 ];

@@ -88,8 +88,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
 
     //debugPrint('watchdog started on ${DateTime.now().toIso8601String()}}');
     _watchDogTimer?.cancel();
-    _watchDogTimer =
-        Timer.periodic(const Duration(seconds: 60), (Timer timer) async {
+    _watchDogTimer = Timer.periodic(const Duration(seconds: 60), (Timer timer) {
       debugPrint('notifing essentials');
       _notifyEssentials();
     });

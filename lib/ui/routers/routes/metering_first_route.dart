@@ -36,13 +36,17 @@ class MeteringFirstRoute extends ApplicationRoute with PageBuilderMixin {
               (measurementType) => measurementType.name == measurementTypeName,
             );
           }
-          final supportedMeasurementTypes =
+          final supportedUserMeasurementTypes =
               CarePlanHelper.getMeasurementTypes(userAccount.carePlans!);
+
+          final allMeasurentTypes = MeasurementType.values.toSet();
 
           return MeteringFirstScreen(
             userId: userId,
             selectedMeasurementType: measurementType,
-            allMeasurementTypes: supportedMeasurementTypes,
+            allMeasurementTypes: supportedUserMeasurementTypes.isNotEmpty
+                ? supportedUserMeasurementTypes
+                : allMeasurentTypes,
           );
         },
       ),

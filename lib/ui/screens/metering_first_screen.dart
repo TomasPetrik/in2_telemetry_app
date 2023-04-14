@@ -29,7 +29,7 @@ class MeteringFirstScreen extends StatefulWidget {
   }) : assert(
           selectedMeasurementType != null ||
               (allMeasurementTypes != null && allMeasurementTypes.length > 0),
-          'Either selectedActivity or allActivities should be not empty !',
+          'Either selectedMeasurementType != null or allMeasurementTypes should be not empty !',
         );
 
   final String userId;

@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:injectable/injectable.dart';
+import 'package:scalesoft_app/api/model/device_to_register.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_event.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_state.dart';
-import 'package:scalesoft_app/repositories/care_plans_repository.dart';
+import 'package:scalesoft_app/repositories/device_repository.dart';
 import 'package:scalesoft_app/utils/helpers/bt_connection_helper.dart';
-import 'package:scalesoft_app/utils/helpers/dio_helper.dart';
 
 @injectable
 class RegisterDeviceBloc
     extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlocState> {
   final FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
-  final CarePlansRepository _carePlansRepository;
+  final DeviceRepository _deviceRepository;
 
   RegisterDeviceBloc(
-    this._carePlansRepository,
+    this._deviceRepository,
   ) : super(const RegisterDeviceBlocState.init()) {
     on<RegisterDeviceBlocEvent>((event, emit) async {
       await event.when(
@@ -65,22 +65,42 @@ class RegisterDeviceBloc
         stopSearch: () {
           _flutterBlue.stopScan();
         },
-        registerDevice: (userAccount, device) async {
+        registerDevice:
+            (userAccount, device, deviceLabel, deviceIdentifier) async {
           try {
-            await _carePlansRepository.registerDevice(
+            //1. Load device models for lookup what's the device id
+
+            final deviceModels = await _deviceRepository.getDeviceModels(
               userAccount: userAccount,
-              device: device,
+            );
+
+            final int deviceModelId = deviceModels
+                .firstWhere(
+                  (deviceModel) =>
+                      deviceModel.manufacturer == device.deviceManufacturer &&
+                      deviceModel.modelName == device.modelName,
+                )
+                .id;
+
+            final deviceToRegister = DeviceToRegister(
+              deviceModelId: deviceModelId,
+              assignedIdentifier: deviceIdentifier,
+              note: deviceLabel,
+              deviceIdentifier: device.macAddress!,
+            );
+
+            await _deviceRepository.registerDevice(
+              userAccount: userAccount,
+              deviceToRegister: deviceToRegister,
             );
 
             emit(const RegisterDeviceBlocState.deviceRegistered());
           } on DioError catch (dioError) {
-            if (dioError.response?.statusCode == 400 ||
-                dioError.response?.statusCode == 403) {
+            if (dioError.response?.statusCode == 500) {
               emit(
                 RegisterDeviceBlocState.deviceAlreadyRegistered(UniqueKey()),
               );
-            } else if (dioError.response?.statusCode == 404 ||
-                DioHelper.isNoInternet(dioError)) {
+            } else {
               emit(RegisterDeviceBlocState.failedRegistration(UniqueKey()));
             }
           }

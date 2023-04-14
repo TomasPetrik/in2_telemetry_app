@@ -175,14 +175,15 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                   if (getIt<Session>().isMultiUser != true &&
                       getIt<Session>()
                               .getSessionAccounts()[0]
-                              .canRegisterDevice ==
-                          false) ...[
+                              .canManageTelemonitoringDevices ==
+                          true) ...[
                     const SliverGap(Dimensions.padding24),
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: Paddings.horizontal16,
                         child: HighlightedElevatedButton(
-                          label: translactions.user_detail_screen_register_device_button,
+                          label: translactions
+                              .user_detail_screen_register_device_button,
                           buttonType: ButtonType.primary,
                           onPressed: () {
                             GoRouter.of(context).pushNamed(
