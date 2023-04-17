@@ -12,9 +12,9 @@ class Device with _$Device {
   @HiveType(typeId: 33, adapterName: 'DeviceAdapter')
   const factory Device({
     @HiveField(0) String? deviceIdentifier,
-    @HiveField(1) String? visibleName,
-    @HiveField(2) String? modelName,
-    @HiveField(3) String? deviceManufacturer,
+    @HiveField(1) String? modelName,
+    @HiveField(2) String? deviceManufacturer,
+    @JsonKey(ignore: true) @HiveField(3) String? visibleName,
     @JsonKey(ignore: true) @HiveField(4) String? bluetoothName,
     @JsonKey(ignore: true) @HiveField(5) String? macAddress,
     @JsonKey(ignore: true) @HiveField(6) int? localId,

@@ -14,6 +14,7 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/chart_widget.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
+import 'package:scalesoft_app/utils/constants.dart';
 
 class ChartScreen extends StatefulWidget {
   const ChartScreen({
@@ -143,9 +144,7 @@ class _ChartScreenState extends State<ChartScreen> {
                       ),
                     ),
                     subTitle:
-                        '${userAccount.user.fullName} - ${translactions.common_months(
-                      '${state.currentMonth!}',
-                    )}',
+                        '${userAccount.user.fullName} - ${translactions.common_months(Constants.monthsInYear[state.currentMonth!]!)}',
                     customLeftWidget: SizedBox(
                       height: 24,
                       child: Row(
