@@ -69,7 +69,8 @@ class SettingsItem extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: ScaleTextStyles.textAccent,
+                  style: ScaleTextStyles.textAccent
+                      .apply(color: Theme.of(context).colorScheme.onPrimary),
                 ),
                 if (subLabel?.isNotEmpty == true)
                   Text(

@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Fixed SCALESOFT-56,\n2. Fixed overflow appearing on small devices (iPhone 6s)."
+    "text": "1. Fixed label color for items on settings screen in light mode,\n 2. Fixed tabs to be aligned on left on first metering screen,\n3. Fixed SCALESOFT-50."
   },
   {
     "language": "sk-SK",

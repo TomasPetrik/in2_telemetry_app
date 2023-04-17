@@ -22,11 +22,13 @@ class SliverNameValueRow extends StatelessWidget {
           children: [
             Text(
               name,
-              style: ScaleTextStyles.text,
+              style: ScaleTextStyles.text
+                  .apply(color: Theme.of(context).colorScheme.onPrimary),
             ),
             Text(
               value,
-              style: ScaleTextStyles.text,
+              style: ScaleTextStyles.text
+                  .apply(color: Theme.of(context).colorScheme.onPrimary),
             ),
           ],
         ),

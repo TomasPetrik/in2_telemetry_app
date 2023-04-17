@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class SplashScreen extends StatelessWidget {
   final Future<void> Function() loadingFunction;
@@ -16,8 +15,6 @@ class SplashScreen extends StatelessWidget {
     return FutureBuilder<void>(
       future: loadingFunction().then(((_) => onLoaded())),
       builder: (context, snapshot) {
-        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
-
         return MaterialApp(
           home: Scaffold(
             body: SafeArea(

@@ -100,6 +100,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                     }
 
                     return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (state.hasMeasurementTabs == true) ...[
                           Gaps.gap16,

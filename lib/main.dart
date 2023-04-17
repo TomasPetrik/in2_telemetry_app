@@ -12,10 +12,10 @@ import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_bloc.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_event.dart';
-import 'package:scalesoft_app/bloc/settings/app_settings_bloc.dart';
-import 'package:scalesoft_app/bloc/settings/app_settings_bloc_event.dart';
+import 'package:scalesoft_app/globals.dart';
 import 'package:scalesoft_app/globals_initialization.dart';
 import 'package:scalesoft_app/locales.dart';
+import 'package:scalesoft_app/model/app_settings.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/calendar_db_provider.dart';
@@ -36,6 +36,9 @@ import 'package:scalesoft_app/ui/routers/routes/user_added_route.dart';
 import 'package:scalesoft_app/ui/scale_app.dart';
 import 'package:scalesoft_app/ui/screens/splash_screen.dart';
 import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/utils/extensions/locale_extensions.dart';
+import 'package:scalesoft_app/utils/extensions/theme_mode_extensions.dart';
+import 'package:scalesoft_app/utils/helpers/appearance_helper.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 
 // [Android-only] This "Headless Task" is run when the Android app is terminated with `enableHeadless: true`
@@ -159,7 +162,21 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
     final measurementDbProvider = getIt<MeasurementsDbProvider>();
     await measurementDbProvider.init();
 
-    getIt<AppSettingsBloc>().add(const AppSettingsBlocEvent.initSettings());
+    var appSettings = settingsDbProvider.read();
+    if (appSettings == null) {
+      appSettings = AppSettings(
+        themeModeLocal: buildConfig.themeMode.toLocal(),
+        localLocale: buildConfig.locale.toLocal(),
+        enabledNotifications: true,
+        notifyAtStartOfMeasurement: true,
+      );
+      settingsDbProvider.write(appSettings);
+    }
+
+    AppearanceHelper.setSystemUIOverlayStyle(
+      appSettings.themeModeLocal.themeMode,
+    );
+
     final notifcationsBloc = getIt<NotificationsBloc>();
     notifcationsBloc.add(const NotificationsEvent.initPlugin());
     notifcationsBloc.notificationsStreamController.stream.listen(
