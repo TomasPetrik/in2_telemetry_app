@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Added endpoint for device registration,\n 2. Completed device registration,\n 3. Fixed SCALESOFT-45 (app freezed when user does not have any care plan),\n 4. Fixed do personal measurement in case when user does not  have any care plan assigned."
+    "text": "1. Fixed SCALESOFT-56,\n2. Fixed overflow appearing on small devices (iPhone 6s)."
   },
   {
     "language": "sk-SK",
