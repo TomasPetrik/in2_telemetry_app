@@ -162,6 +162,7 @@ _i1.GetIt init(
     gh<_i19.Session>(),
     gh<_i3.AccountDbProvider>(),
     gh<_i17.PendingResultsDbProvider>(),
+    gh<_i25.AccountRepository>(),
     gh<_i30.CarePlansRepository>(),
     gh<_i22.TimeSettingsRepository>(),
     gh<_i4.AppSettingsDbProvider>(),

@@ -4,7 +4,6 @@ import 'package:retrofit/retrofit.dart';
 import 'package:scalesoft_app/api/model/active_care_plans_response.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaulation_aggregated.dart';
-import 'package:scalesoft_app/api/model/changes_from_date_response.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/utils/constants.dart';
@@ -59,12 +58,6 @@ abstract class CarePlanApiClient {
     @Path('carePlanId') int carePlanId,
     @Path('from') String fromDate,
     @Path('to') String toDate,
-  );
-
-  @GET('{apiUrl}/patient/me/changes-from-date?from={from}')
-  Future<ChangesFromDateResponse> loadDataChangesFrom(
-    @Path('apiUrl') String apiUrl,
-    @Path('from') String fromDate,
   );
 
   @POST('{apiUrl}/patient/measurement-batch')

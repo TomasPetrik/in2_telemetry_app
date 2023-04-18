@@ -10,6 +10,7 @@ import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/providers/settings_db_provider.dart';
+import 'package:scalesoft_app/repositories/account_repository.dart';
 import 'package:scalesoft_app/repositories/care_plans_repository.dart';
 import 'package:scalesoft_app/repositories/time_settings_repository.dart';
 import 'package:scalesoft_app/storage/session.dart';
@@ -22,6 +23,7 @@ class SyncService {
   final Session _session;
   final AccountDbProvider _accountDbProvider;
   final PendingResultsDbProvider _pendingResultsDbProvider;
+  final AccountRepository _accountRepository;
   final CarePlansRepository _carePlansRepository;
   final TimeSettingsRepository _timeSettingsRepository;
   final AppSettingsDbProvider _appSettingsDbProvider;
@@ -30,6 +32,7 @@ class SyncService {
     this._session,
     this._accountDbProvider,
     this._pendingResultsDbProvider,
+    this._accountRepository,
     this._carePlansRepository,
     this._timeSettingsRepository,
     this._appSettingsDbProvider,
@@ -93,6 +96,9 @@ class SyncService {
 
     setUserPlans(userAccount, activeCarePlans.items);
 
+    //check and update assigned devices, current user data and his represented people
+    //await checkForDataChanges(userAccount);
+
     await loadFulFillmentEvaluation(userAccount);
     await loadPartPlanEvaluation(userAccount);
     if (userAccount.viewOwnMeasurementData) {
@@ -122,11 +128,6 @@ class SyncService {
         }
       }
     }
-
-    //TODO.. consider check following:
-    //after succed loaded core data continue checking for changes of care plans,
-    //care plans expiration, represented  people, current user data and assigned devices
-    //await checkForDataChanges(userAccount);
   }
 
   Future<void> removeOfflineResult(MeasurementResult measurementResult) async {
@@ -135,52 +136,18 @@ class SyncService {
   }
 
   Future<void> checkForDataChanges(UserAccount userAccount) async {
-    final dataChangesResp = await _carePlansRepository.loadDataChangesFrom(
-      userAccount: userAccount,
-      fromDateTime: (userAccount.lastSyncAt ?? DateTime.now())
-          .add(const Duration(days: 1))
-          .toIso8601String(),
-    );
+    //check changes for root user and his represented people
+    final userInfo = await _accountRepository.loadUserInfo();
 
-    //check changes towards root user and represented people
+    //1. Update assigned devices
+    userAccount.assignedDevices = userInfo.assignedDevices;
 
-    //1. Check for all updated plans,
-    final newOrUpdatedPlans = dataChangesResp.carePlans.newOrUpdatedPlans ?? [];
-    final activeUserPlans = userAccount.carePlans;
-    for (final newOrUpdatedPlan in newOrUpdatedPlans) {
-      final updatedPlan = activeUserPlans?.firstWhereOrNull(
-        (activePlan) =>
-            activePlan.id == newOrUpdatedPlan.id &&
-            activePlan.versionId != newOrUpdatedPlan.versionId,
-      );
+    //2. Update user data
+    userAccount.user = userInfo.currentUser;
 
-      if (updatedPlan != null) {
-        updatedPlan.wasChanged = true;
-      }
-      //1.1 Consider flag if is a new plan
-    }
-
-    //2. Check if some plans were expired
-    final expiredPlanIds = dataChangesResp.carePlans.expiredPlanIds ?? [];
-    for (final expiredPlanId in expiredPlanIds) {
-      final expiredPlan = activeUserPlans?.firstWhereOrNull(
-        (activePlan) => activePlan.id == expiredPlanId,
-      );
-      if (expiredPlan != null) {
-        expiredPlan.wasExpired = true;
-      }
-    }
-
-    //3. Update assigned devices
-    userAccount.assignedDevices = dataChangesResp.assignedDevices;
-
-    //4. Update user data
-    if (dataChangesResp.user != null) {
-      userAccount.user = dataChangesResp.user!;
-    }
-
-    //5. Update represented people - possibly call it before load active care plans
-    //as this users might be not exist anymore
+    //3. Update represented people as some users might be not exist anymore
+    // dataChangesResp.representedPeople
+    //userAccount.representedPeople = userInfo.representedPeople;
   }
 
   Future<void> loadFulFillmentEvaluation(final UserAccount userAccount) async {

@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/api/model/user.dart';
 
 part 'user_info.freezed.dart';
@@ -11,6 +12,7 @@ class UserInfo with _$UserInfo {
   const factory UserInfo(
     User currentUser,
     List<User>? representedPeople,
+    List<Device>? assignedDevices,
   ) = _UserInfo;
 
   factory UserInfo.fromJson(Map<String, dynamic> json) =>

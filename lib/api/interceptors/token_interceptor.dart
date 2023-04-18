@@ -29,12 +29,6 @@ class TokenInterceptor extends Interceptor {
   ) async {
     final accessToken = session.token;
 
-    /*
-    if (accessToken == null || accessToken.isExpired()) {
-      accessToken = await refreshToken();
-    }
-    */
-
     if (accessToken != null) {
       options.headers[HttpHeaders.authorizationHeader] =
           'Bearer ${session.token!.accessToken}';
