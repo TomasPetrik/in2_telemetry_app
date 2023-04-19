@@ -210,6 +210,28 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
     return null;
   }
 
+  List<CarePlan> getCarePlans(List<int> carePlansIds) {
+    List<CarePlan> carePlans = [];
+    final rootAccounts = box.values.toList();
+    for (final rootAccount in rootAccounts) {
+      final foundPlans = rootAccount.carePlans
+          ?.where((carePlan) => carePlansIds.contains(carePlan.id));
+      if (foundPlans?.isNotEmpty == true) {
+        carePlans.addAll(foundPlans!);
+      }
+
+      for (final representedPerson in rootAccount.representedPeople!) {
+        final foundPlans = representedPerson.carePlans?.where(
+          (carePlan) => carePlansIds.contains(carePlan.id),
+        );
+        if (foundPlans?.isNotEmpty == true) {
+          carePlans.addAll(foundPlans!);
+        }
+      }
+    }
+    return carePlans;
+  }
+
   bool isAnyAccountExpired() {
     final rootAccounts = box.values.toList();
 

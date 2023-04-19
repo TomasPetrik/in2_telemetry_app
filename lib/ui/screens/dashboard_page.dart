@@ -124,8 +124,12 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                                       ),
                                     );
                                   } else if (selected?.showCalendar == true) {
-                                    GoRouter.of(context)
-                                        .pushNamed(CalendarRoute.name);
+                                    GoRouter.of(context).pushNamed(
+                                      CalendarRoute.name,
+                                      extra: session.getAllCarePlans()
+                                          .map((carePlan) => carePlan.id)
+                                          .toList(),
+                                    );
                                   }
                                 });
                               },

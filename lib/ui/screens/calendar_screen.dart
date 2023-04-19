@@ -26,14 +26,16 @@ class CalendarScreen extends StatelessWidget {
   const CalendarScreen({
     super.key,
     this.preSelectedDt,
+    required this.carePlansIds,
   });
 
   final DateTime? preSelectedDt;
+  final List<int> carePlansIds;
 
   @override
   Widget build(BuildContext context) {
     final calendarBloc = getIt<CalendarBloc>()
-      ..add(CalendarBlocEvent.init(context, preSelectedDt));
+      ..add(CalendarBlocEvent.init(context, preSelectedDt, carePlansIds));
 
     Future<bool> onWillPop() async {
       calendarBloc.add(const CalendarBlocEvent.nullDefaultDay());
@@ -90,6 +92,7 @@ class CalendarScreen extends StatelessWidget {
                                 child: CalendarMonthWidget(
                                   calendarMonth: month,
                                   calendarBloc: calendarBloc,
+                                  carePlansIds: carePlansIds,
                                 ),
                               );
                             },
@@ -239,70 +242,66 @@ class _CalendarFooter extends StatelessWidget {
                   break;
               }
             },
-            child: SizedBox(
-              height: Dimensions.footerHeight,
-              child: Column(
-                children: [
-                  if (isDownSticky)
-                    Container(
-                      height: 0.5,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                  Padding(
-                    padding: Paddings.vertical16,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/icons/icon_wave_pulse.svg',
-                          color: Theme.of(context).colorScheme.tertiary,
-                        ),
-                        Gaps.gap16,
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                selectedDay.startDt.toRegularDate(),
-                                style: ScaleTextStyles.textAccent.apply(
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                ),
-                              ),
-                              Gaps.gap6,
-                              Text(
-                                '${selectedDay.userAccounts!.first.user.fullName}'
-                                ' ${selectedDay.userAccounts!.length > 1 ? translactions.common_plus_n_others(selectedDay.userAccounts!.length - 1) : ''}',
-                                style: ScaleTextStyles.label.apply(
-                                  color:
-                                      Theme.of(context).colorScheme.onSecondary,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        Gaps.gap16,
-                        Text(
-                          '${selectedDay.plannedMeasurements?.length ?? 0} ${translactions.common_measurement.toLowerCase()}',
-                          style: ScaleTextStyles.text.apply(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
-                        ),
-                        Gaps.gap16,
-                        SvgPicture.asset(
-                          'assets/icons/icon_arrow_sm_right.svg',
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ],
-                    ),
+            child: Column(
+              children: [
+                if (isDownSticky)
+                  Container(
+                    height: 0.5,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
-                  if (!isDownSticky)
-                    Container(
-                      height: 0.5,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
-                ],
-              ),
+                Padding(
+                  padding: Paddings.vertical16,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/icons/icon_wave_pulse.svg',
+                        color: Theme.of(context).colorScheme.tertiary,
+                      ),
+                      Gaps.gap16,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              selectedDay.startDt.toRegularDate(),
+                              style: ScaleTextStyles.textAccent.apply(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                              ),
+                            ),
+                            Gaps.gap6,
+                            Text(
+                              '${selectedDay.userAccounts!.first.user.fullName}'
+                              ' ${selectedDay.userAccounts!.length > 1 ? translactions.common_plus_n_others(selectedDay.userAccounts!.length - 1) : ''}',
+                              style: ScaleTextStyles.label.apply(
+                                color:
+                                    Theme.of(context).colorScheme.onSecondary,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Gaps.gap16,
+                      Text(
+                        '${selectedDay.plannedMeasurements?.length ?? 0} ${translactions.common_measurement.toLowerCase()}',
+                        style: ScaleTextStyles.text.apply(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                      ),
+                      Gaps.gap16,
+                      SvgPicture.asset(
+                        'assets/icons/icon_arrow_sm_right.svg',
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ],
+                  ),
+                ),
+                if (!isDownSticky)
+                  Container(
+                    height: 0.5,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+              ],
             ),
           );
         }

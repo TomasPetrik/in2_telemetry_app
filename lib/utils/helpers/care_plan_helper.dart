@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
@@ -7,13 +8,22 @@ import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 class CarePlanHelper {
+  static DateTime getEarliestDateOfCarePlans(List<CarePlan> carePlans) {
+    final veryLastDt = carePlans
+        .map((carePlan) => carePlan.scheduledStart)
+        .sorted((a, b) => b.compareTo(a))
+        .last;
+
+    return veryLastDt;
+  }
+
   static List<CarePlan> getCarePlansContainingMeasurements({
     required List<CarePlan> allCarePlans,
     required ResultsWhenPeriod whenPeriod,
   }) {
     List<CarePlan> carePlans = [];
     for (final carePlan in allCarePlans) {
-      if (carePlan.fihisned == false &&
+      if (carePlan.isFinisnedByToday() == false &&
           ((whenPeriod == ResultsWhenPeriod.today &&
                   carePlan.hasMeasurementsToday()) ||
               (whenPeriod == ResultsWhenPeriod.yesterday &&
@@ -40,7 +50,9 @@ class CarePlanHelper {
     final List<CarePlan> carePlans,
     final List<MeasurementResult> todayResults,
   ) {
-    Map<PlanWhenPeriod, int> periods = {};
+    Map<PlanWhenPeriod, int> periods = {
+      PlanWhenPeriod.next10: 10,
+    };
 
     final tomorrowWeekDay = DateTime.now().tomorrowWeekDay();
 
@@ -64,8 +76,6 @@ class CarePlanHelper {
     if (tomorrowMeasurements > 0) {
       periods[PlanWhenPeriod.tomorrow] = tomorrowMeasurements;
     }
-
-    periods[PlanWhenPeriod.next10] = 10;
 
     return periods;
   }

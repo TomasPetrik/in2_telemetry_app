@@ -85,6 +85,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                       widget.selectedMeasurementType ??
                           widget.allMeasurementTypes!.first,
                       widget.allMeasurementTypes,
+                      widget.userId,
                     ),
                   builder: (context, state) {
                     final selectedMeasurementType =

@@ -194,6 +194,7 @@ class _ChartScreenState extends State<ChartScreen> {
                       ),
                     ),
                     showClose: true,
+                    isLandscape: true,
                     onCloseTap: () {},
                   ),
                 ),

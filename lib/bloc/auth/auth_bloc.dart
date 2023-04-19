@@ -113,6 +113,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       final userAccount = UserAccount(
         user: userInfo.currentUser,
+        assignedDevices: userInfo.assignedDevices,
         authToken: _session.token,
         userPermissions: _session.userPermissions,
         hospital: _session.hospital,
@@ -126,6 +127,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             ?.map(
               (representedPerson) => UserAccount(
                 user: representedPerson,
+                assignedDevices: userInfo.assignedDevices,
                 authToken: _session.token,
                 hospital: _session.hospital,
                 userPermissions: _session.userPermissions,

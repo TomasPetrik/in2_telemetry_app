@@ -124,6 +124,7 @@ _i1.GetIt init(
   gh.factory<_i28.CalendarBloc>(() => _i28.CalendarBloc(
         gh<_i19.Session>(),
         gh<_i8.CalendarFooterCubit>(),
+        gh<_i3.AccountDbProvider>(),
       ));
   gh.factory<_i29.CarePlanApiClient>(
       () => _i29.CarePlanApiClient(gh<_i11.Dio>(instanceName: 'privateDio')));
@@ -146,8 +147,10 @@ _i1.GetIt init(
   ));
   gh.factory<_i33.DeviceApiClient>(
       () => _i33.DeviceApiClient(gh<_i11.Dio>(instanceName: 'privateDio')));
-  gh.factory<_i34.DeviceManagementCubit>(
-      () => _i34.DeviceManagementCubit(gh<_i16.PairedDevicesDbProvider>()));
+  gh.factory<_i34.DeviceManagementCubit>(() => _i34.DeviceManagementCubit(
+        gh<_i3.AccountDbProvider>(),
+        gh<_i16.PairedDevicesDbProvider>(),
+      ));
   gh.singleton<_i35.DeviceRepository>(_i35.DeviceRepository(
     gh<_i33.DeviceApiClient>(),
     gh<_i19.Session>(),

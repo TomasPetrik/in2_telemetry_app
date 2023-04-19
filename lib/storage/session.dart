@@ -60,8 +60,8 @@ class Session {
   List<CarePlan> getActiveCarePlans() {
     List<CarePlan> carePlans = [];
     for (final userAccount in getSessionAccounts()) {
-      for (final carePlan in userAccount.carePlans!) {
-        if (carePlan.fihisned == false) {
+      for (final CarePlan carePlan in userAccount.carePlans!) {
+        if (carePlan.isFinisnedByToday() == false) {
           carePlans.add(carePlan);
         }
       }
@@ -76,16 +76,6 @@ class Session {
       (prevCarePlans, userAccount) =>
           [...prevCarePlans, ...userAccount.carePlans ?? []],
     );
-  }
-
-  DateTime getLatestmodelfCarePlans() {
-    final carePlans = getActiveCarePlans();
-    final veryLastDt = carePlans
-        .map((carePlan) => carePlan.scheduledStart)
-        .sorted((a, b) => b.compareTo(a))
-        .last;
-
-    return veryLastDt;
   }
 
   List<Measurement> getPendingResults() {

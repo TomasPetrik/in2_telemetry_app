@@ -8,6 +8,7 @@ class CalendarBlocEvent with _$CalendarBlocEvent {
   const factory CalendarBlocEvent.init(
     BuildContext context,
     DateTime? preSelectedDt,
+    List<int> carePlansIds,
   ) = _Init;
   const factory CalendarBlocEvent.goOnDate(DateTime dateTime) = _GoOnDate;
   const factory CalendarBlocEvent.onPageChanged(int newPage) = _OnPageChanged;

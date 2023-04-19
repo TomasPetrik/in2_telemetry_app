@@ -122,6 +122,7 @@ class OmronConnectionBloc
           //save paired device
           if (measurementResult.resultState != ResultState.connectionError) {
             final pairedDevice = device!.copyWith(
+              deviceIdentifier: blDevice.id.id,
               macAddress: blDevice.id.id,
               addedAt: DateTime.now(),
             );

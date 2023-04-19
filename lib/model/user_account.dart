@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scalesoft_app/api/model/auth_token.dart';
@@ -87,6 +88,12 @@ class UserAccount with _$UserAccount {
         UserPermission.canMeasureWithUnknowDevice,
       ) ==
       true;
+
+  bool canMeasureWithDeviceId(String deviceIdentifier) {
+    final foundDevice = assignedDevices
+        ?.firstWhereOrNull((dev) => dev.deviceIdentifier == deviceIdentifier);
+    return foundDevice != null;
+  }
 }
 
 enum UserProblemType {

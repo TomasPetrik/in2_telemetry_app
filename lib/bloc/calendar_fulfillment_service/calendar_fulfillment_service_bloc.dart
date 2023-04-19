@@ -166,10 +166,11 @@ class CalendarFulfillmentServiceBloc extends Bloc<
 
     on<CalendarFulfillmentServiceBlocEvent>((event, emit) async {
       await event.when(
-        init: (calendarMonth, carePlans) async {
+        init: (calendarMonth, carePlansIds) async {
           //we need wait here because this init is invoked everytime when
           //viewPager will change pange, so we won't freeze him
           //in process of changing page during scroll
+          final carePlans = _accountDbProvider.getCarePlans(carePlansIds);
           await Future.delayed(const Duration(milliseconds: 700));
 
           await setCalendarMonth(calendarMonth, carePlans);

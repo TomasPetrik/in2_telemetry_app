@@ -9,7 +9,6 @@ import 'package:scalesoft_app/bloc/calendar_fulfillment_service/calendar_fulfill
 import 'package:scalesoft_app/bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc_state.dart';
 import 'package:scalesoft_app/cubit/calendar_footer/calendar_footer_cubit.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/calendar_day_planned.dart';
@@ -22,15 +21,16 @@ class CalendarMonthWidget extends StatelessWidget {
     super.key,
     required this.calendarMonth,
     required this.calendarBloc,
+    required this.carePlansIds,
   });
 
   final CalendarMonth calendarMonth;
   final CalendarBloc calendarBloc;
+  final List<int> carePlansIds;
 
   @override
   Widget build(BuildContext context) {
     final calendarServiceBloc = getIt<CalendarFulfillmentServiceBloc>();
-    final carePlans = getIt<Session>().getAllCarePlans();
 
     return BlocBuilder<CalendarFulfillmentServiceBloc,
         CalendarFulfillmentServiceBlocState>(
@@ -38,7 +38,7 @@ class CalendarMonthWidget extends StatelessWidget {
         ..add(
           CalendarFulfillmentServiceBlocEvent.init(
             calendarMonth,
-            carePlans,
+            carePlansIds,
           ),
         ),
       builder: (context, state) {
@@ -63,124 +63,133 @@ class CalendarMonthWidget extends StatelessWidget {
                   ),
                 ),
                 Gaps.gap24,
-                ListView.builder(
-                  padding: EdgeInsets.zero,
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: loadedMonth.weekDays.length,
-                  itemBuilder: (context, index) {
-                    final currentWeekDays = loadedMonth.weekDays[index]!;
-                    return Column(
-                      children: [
-                        Row(
-                          children: currentWeekDays.map((day) {
-                            /*
-                            debugPrint(
-                              'Evaluation ${day.startDt.toRegularDate()} : ${day.carePlansEvaluation} vs. ${day.evaluationPercentage}',
-                            );
-                            */
+                Expanded(
+                  child: ListView.builder(
+                    padding: EdgeInsets.zero,
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: loadedMonth.weekDays.length,
+                    itemBuilder: (context, index) {
+                      final currentWeekDays = loadedMonth.weekDays[index]!;
+                      return Column(
+                        children: [
+                          Row(
+                            children: currentWeekDays.map((day) {
+                              /*
+                              debugPrint(
+                                'Evaluation ${day.startDt.toRegularDate()} : ${day.carePlansEvaluation} vs. ${day.evaluationPercentage}',
+                              );
+                              */
 
-                            return Expanded(
-                              child: day.isDayOfCurrentMonth == false
-                                  ? const SizedBox.shrink()
-                                  : Column(
-                                      children: [
-                                        Container(
-                                          margin: Paddings.horizontal8,
-                                          decoration: BoxDecoration(
-                                            color: day.isSelected == true
-                                                ? Theme.of(context)
-                                                    .colorScheme
-                                                    .primary
-                                                : day.dayPeriod ==
-                                                        CalendarDayPeriod.today
-                                                    ? Theme.of(context)
-                                                        .colorScheme
-                                                        .tertiary
-                                                    : day.dayPeriod ==
-                                                            CalendarDayPeriod
-                                                                .past
-                                                        ? Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary
-                                                        : Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary
-                                                            .withOpacity(0.48),
-                                            borderRadius: BorderRadii.radius8,
-                                          ),
-                                          child: InkWell(
-                                            onTap: () {
-                                              calendarServiceBloc.add(
-                                                CalendarFulfillmentServiceBlocEvent
-                                                    .onDaySelected(
-                                                  day.startDt,
-                                                ),
-                                              );
-                                              calendarBloc.add(
-                                                CalendarBlocEvent.onDaySelected(
-                                                  day.startDt,
-                                                ),
-                                              );
-                                              getIt<CalendarFooterCubit>()
-                                                  .selectDay(day);
-                                            },
-                                            child: AspectRatio(
-                                              aspectRatio: 1.255,
-                                              child: Padding(
-                                                padding: Paddings.vertical4,
-                                                child: Center(
-                                                  child: Text(
-                                                    '${day.startDt.day}',
-                                                    style: ScaleTextStyles.text
-                                                        .apply(
-                                                      color: day.isSelected ==
-                                                                  true ||
-                                                              day.dayPeriod !=
-                                                                  CalendarDayPeriod
-                                                                      .future
+                              return Expanded(
+                                child: day.isDayOfCurrentMonth == false
+                                    ? const SizedBox.shrink()
+                                    : Column(
+                                        children: [
+                                          Container(
+                                            margin: Paddings.horizontal8,
+                                            decoration: BoxDecoration(
+                                              color: day.isSelected == true
+                                                  ? Theme.of(context)
+                                                      .colorScheme
+                                                      .primary
+                                                  : day.dayPeriod ==
+                                                          CalendarDayPeriod
+                                                              .today
+                                                      ? Theme.of(context)
+                                                          .colorScheme
+                                                          .tertiary
+                                                      : day.dayPeriod ==
+                                                              CalendarDayPeriod
+                                                                  .past
                                                           ? Theme.of(context)
                                                               .colorScheme
-                                                              .onSurface
+                                                              .secondary
                                                           : Theme.of(context)
                                                               .colorScheme
-                                                              .onPrimary
+                                                              .secondary
                                                               .withOpacity(
                                                                 0.48,
                                                               ),
+                                              borderRadius: BorderRadii.radius8,
+                                            ),
+                                            child: InkWell(
+                                              onTap: () {
+                                                calendarServiceBloc.add(
+                                                  CalendarFulfillmentServiceBlocEvent
+                                                      .onDaySelected(
+                                                    day.startDt,
+                                                  ),
+                                                );
+                                                calendarBloc.add(
+                                                  CalendarBlocEvent
+                                                      .onDaySelected(
+                                                    day.startDt,
+                                                  ),
+                                                );
+                                                getIt<CalendarFooterCubit>()
+                                                    .selectDay(day);
+                                              },
+                                              child: AspectRatio(
+                                                aspectRatio: 1.255,
+                                                child: Padding(
+                                                  padding: Paddings.vertical4,
+                                                  child: Center(
+                                                    child: Text(
+                                                      '${day.startDt.day}',
+                                                      style: ScaleTextStyles
+                                                          .text
+                                                          .apply(
+                                                        color: day.isSelected ==
+                                                                    true ||
+                                                                day.dayPeriod !=
+                                                                    CalendarDayPeriod
+                                                                        .future
+                                                            ? Theme.of(context)
+                                                                .colorScheme
+                                                                .onSurface
+                                                            : Theme.of(context)
+                                                                .colorScheme
+                                                                .onPrimary
+                                                                .withOpacity(
+                                                                  0.48,
+                                                                ),
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        Gaps.gap8,
-                                        if (day.dayPeriod ==
-                                                CalendarDayPeriod.past ||
-                                            day.dayPeriod ==
-                                                CalendarDayPeriod.today)
-                                          CalendarDayProgress(
-                                            progress: day.evaluationPercentage,
-                                          )
-                                        else
-                                          CalendarDayPlanned(
-                                            plannedMeasurements:
-                                                day.plannedMeasurements,
-                                          )
-                                      ],
-                                    ),
-                            );
-                          }).toList(),
-                        ),
-                        Container(
-                          margin: Paddings.vertical16,
-                          height: 0.5,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        )
-                      ],
-                    );
-                  },
+                                          Gaps.gap8,
+                                          if (day.dayPeriod ==
+                                                  CalendarDayPeriod.past ||
+                                              day.dayPeriod ==
+                                                  CalendarDayPeriod.today)
+                                            CalendarDayProgress(
+                                              progress:
+                                                  day.evaluationPercentage,
+                                            )
+                                          else
+                                            CalendarDayPlanned(
+                                              plannedMeasurements:
+                                                  day.plannedMeasurements,
+                                            )
+                                        ],
+                                      ),
+                              );
+                            }).toList(),
+                          ),
+                          Container(
+                            margin: Paddings.vertical16,
+                            height: 0.5,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          )
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ],
             ),

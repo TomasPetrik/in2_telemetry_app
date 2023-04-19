@@ -4,19 +4,23 @@ import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_event.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/cubit/calendar_footer/calendar_footer_cubit.dart';
+import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/utils/helpers/calendar_helper.dart';
+import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 @injectable
 class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
   final Session _session;
   final CalendarFooterCubit _calendarFooterCubit;
+  final AccountDbProvider _accountDbProvider;
   late final PageController controller;
   late final BuildContext context;
 
   CalendarBloc(
     this._session,
     this._calendarFooterCubit,
+    this._accountDbProvider,
   ) : super(
           const CalendarBlocState(
             padEnds: true,
@@ -25,7 +29,7 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
         ) {
     on<CalendarBlocEvent>((event, emit) async {
       await event.when(
-        init: (context, preSelectedDt) async {
+        init: (context, preSelectedDt, carePlansIds) async {
           this.context = context;
 
           DateTime? defaultDt = DateTime.now();
@@ -33,7 +37,8 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
           int? defaultMonth = defaultDt.month;
 
           //toDate should be always 2 months ahead
-          final fromDate = _session.getLatestmodelfCarePlans();
+          final carePlans = _accountDbProvider.getCarePlans(carePlansIds);
+          final fromDate = CarePlanHelper.getEarliestDateOfCarePlans(carePlans);
           DateTime? toDate = CalendarHelper.getDateByMonthsOffset(defaultDt, 2);
           if (preSelectedDt != null) {
             if (preSelectedDt.isAfter(toDate) == true) {

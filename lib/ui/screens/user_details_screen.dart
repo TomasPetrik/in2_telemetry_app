@@ -172,11 +172,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                       value: userAccount.user.emailAddresses![0],
                     ),
                   ],
-                  if (getIt<Session>().isMultiUser != true &&
-                      getIt<Session>()
-                              .getSessionAccounts()[0]
-                              .canManageTelemonitoringDevices ==
-                          true) ...[
+                  if (userAccount.canManageTelemonitoringDevices) ...[
                     const SliverGap(Dimensions.padding24),
                     SliverToBoxAdapter(
                       child: Padding(

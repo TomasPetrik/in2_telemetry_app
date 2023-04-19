@@ -47,6 +47,19 @@ class CarePlan with _$CarePlan {
 
   bool get fihisned => scheduledEnd?.isBefore(DateTime.now()) == true;
 
+  //finished after whole day
+  bool isFinisnedByToday() {
+    if (scheduledEnd == null) {
+      return false;
+    }
+    final scheduledEndMidnight =
+        scheduledEnd!.copyWith(hour: 23, minute: 59, second: 59);
+
+    final isFinisnedByToday =
+        scheduledEndMidnight.isBefore(DateTime.now()) == true;
+    return isFinisnedByToday;
+  }
+
   bool hasMeasurementAt(DateTime dateTime) {
     final currentWeekDay = dateTime.toWeekDay();
     if ((periodUnit == TimeUnit.day && weekDays?.isEmpty == true) ||

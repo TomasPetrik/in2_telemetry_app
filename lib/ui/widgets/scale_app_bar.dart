@@ -13,6 +13,7 @@ class ScaleAppBar extends StatelessWidget {
     this.onBackTap,
     this.onCloseTap,
     this.customLeftWidget,
+    this.isLandscape = false,
   });
 
   final String title;
@@ -21,6 +22,7 @@ class ScaleAppBar extends StatelessWidget {
   final VoidCallback? onBackTap;
   final VoidCallback? onCloseTap;
   final Widget? customLeftWidget;
+  final bool isLandscape;
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +102,7 @@ class ScaleAppBar extends StatelessWidget {
                                             .primary,
                                       ),
                                     ),
+                                    if (isLandscape == true) Gaps.gap16,
                                   ],
                                 )
                               : const SizedBox.shrink(),

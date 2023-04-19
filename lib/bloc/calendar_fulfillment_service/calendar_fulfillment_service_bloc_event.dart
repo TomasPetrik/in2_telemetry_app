@@ -9,7 +9,7 @@ class CalendarFulfillmentServiceBlocEvent
     with _$CalendarFulfillmentServiceBlocEvent {
   const factory CalendarFulfillmentServiceBlocEvent.init(
     CalendarMonth month,
-    List<CarePlan> carePlans,
+    List<int> carePlansIds,
   ) = _Init;
 
   const factory CalendarFulfillmentServiceBlocEvent.onDaySelected(

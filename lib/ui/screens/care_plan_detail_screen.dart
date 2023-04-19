@@ -155,7 +155,10 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
                             translactions.care_plan_detail_screen_show_calendar,
                         buttonType: ButtonType.primary,
                         onPressed: () async {
-                          GoRouter.of(context).pushNamed(CalendarRoute.name);
+                          GoRouter.of(context).pushNamed(
+                            CalendarRoute.name,
+                            extra: [widget.carePlan.id],
+                          );
                         },
                       ),
                     ),
