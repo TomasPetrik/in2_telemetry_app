@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Fixed label color for items on settings screen in light mode,\n 2. Fixed tabs to be aligned on left on first metering screen,\n3. Fixed SCALESOFT-50."
+    "text": "Just Updated this notes:\n 1. Fixed SCALESOFT-60,\n 2. Fixed calendar overflow,\n3. Fixed SCALESOFT-61,\n 4. Fixed appearing active plans which are finishing by today midnight,\n 5. Fixed close icon padding in landscape mode (for chart)."
   },
   {
     "language": "sk-SK",
