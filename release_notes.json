@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "Just Updated this notes:\n 1. Fixed SCALESOFT-60,\n 2. Fixed calendar overflow,\n3. Fixed SCALESOFT-61,\n 4. Fixed appearing active plans which are finishing by today midnight,\n 5. Fixed close icon padding in landscape mode (for chart)."
+    "text": "1. Verify device usage for user who got assigned device from hospital,\n2. Fixed pop webview after login user."
   },
   {
     "language": "sk-SK",

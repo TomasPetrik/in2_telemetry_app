@@ -25,7 +25,9 @@ class OmronConnectionState with _$OmronConnectionState {
     required BluetoothDevice device,
     required DeviceInfo deviceInfo,
   }) = _Verified;
-  const factory OmronConnectionState.notVerified() = _notVerified;
+  const factory OmronConnectionState.notVerified({
+    required HwMeasurementResult measurementResult,
+  }) = _NotVerified;
   const factory OmronConnectionState.disconnected() = _Disconnected;
   const factory OmronConnectionState.syncing() = _Syncing;
   const factory OmronConnectionState.synced({

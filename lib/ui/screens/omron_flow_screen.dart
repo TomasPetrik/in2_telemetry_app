@@ -74,6 +74,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                   final showState = current.whenOrNull(
                         init: () => true,
                         disabledBt: () => true,
+                        notVerified: (measurementResult) => true,
                         noBtPermissions: () => true,
                         searching: () => true,
                         connected: () => true,
@@ -168,6 +169,14 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                         device: device,
                         activeIndex: 0,
                         reqPairing: reqModelPairing,
+                      );
+                    },
+                    notVerified: (hwMeasurementResult) {
+                      return SyncedResult(
+                        userId: widget.userId,
+                        deviceId: device.macAddress ?? '${device.localId}',
+                        hwMeasurementResult: hwMeasurementResult,
+                        measurementType: measurementType,
                       );
                     },
                     pairing: () {

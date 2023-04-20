@@ -495,11 +495,7 @@
     "measurement_summary_screen_success_title": "Měření bylo úspěšně dokončeno",
     "measurement_summary_screen_success_subtitle": "Výsledky budou automaticky odeslány",
     "measurement_summary_screen_result_success_desc": "Máte hotovo! Výsledek se připsal k ostatním.",
-    "measurement_summary_screen_sync_error_title": "Měření se nepovedlo",
-    "measurement_summary_screen_sync_error_subtitle": "Chyba pri komunikaci se zařízením",
-    "measurement_summary_screen_sync_error_desc": "Nastala chyba pri synchronizacii so zariadenim. Opakujte akciu neskor.",
-    "measurement_summary_screen_no_data_title": "Měření nebylo úspěšně dokončeno",
-    "measurement_summary_screen_no_data_subtitle": "Zařízení nedodalo žádné výsledky",
+    "measurement_summary_screen_sync_error_desc": "Nastala chyba synchronizace.",
     "measurement_summary_screen_no_data_desc": "Zařízení nedodalo žádné výsledky měření.",
     "measurement_summary_screen_no_data_repeat_measurement": "Opakovat měření",
     "results_history_screen_plan_of_day": "Plán měření dne",
@@ -514,6 +510,7 @@
             }
         }
     },
+    "measurement_summary_screen_uknow_device_desc": "Povolena jsou měření pouze se zapůjčeným zařízením.",
     "chart_placeholder_error_loading_data": "Zde je něco v nepořádku. Zkuste akci opakovat později.",
     "chart_placeholder_no_data_in_month": "Historie měření neobsahuje žádná data.",
     "register_device_search_screen_title": "Registrovat zařízení",

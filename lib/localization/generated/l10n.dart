@@ -2001,51 +2001,11 @@ class I10n {
     );
   }
 
-  /// `Měření se nepovedlo`
-  String get measurement_summary_screen_sync_error_title {
-    return Intl.message(
-      'Měření se nepovedlo',
-      name: 'measurement_summary_screen_sync_error_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Chyba pri komunikaci se zařízením`
-  String get measurement_summary_screen_sync_error_subtitle {
-    return Intl.message(
-      'Chyba pri komunikaci se zařízením',
-      name: 'measurement_summary_screen_sync_error_subtitle',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Nastala chyba pri synchronizacii so zariadenim. Opakujte akciu neskor.`
+  /// `Nastala chyba synchronizace.`
   String get measurement_summary_screen_sync_error_desc {
     return Intl.message(
-      'Nastala chyba pri synchronizacii so zariadenim. Opakujte akciu neskor.',
+      'Nastala chyba synchronizace.',
       name: 'measurement_summary_screen_sync_error_desc',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Měření nebylo úspěšně dokončeno`
-  String get measurement_summary_screen_no_data_title {
-    return Intl.message(
-      'Měření nebylo úspěšně dokončeno',
-      name: 'measurement_summary_screen_no_data_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Zařízení nedodalo žádné výsledky`
-  String get measurement_summary_screen_no_data_subtitle {
-    return Intl.message(
-      'Zařízení nedodalo žádné výsledky',
-      name: 'measurement_summary_screen_no_data_subtitle',
       desc: '',
       args: [],
     );
@@ -2088,6 +2048,16 @@ class I10n {
       name: 'chart_screen_title',
       desc: '',
       args: [measurementType, unitType],
+    );
+  }
+
+  /// `Povolena jsou měření pouze se zapůjčeným zařízením.`
+  String get measurement_summary_screen_uknow_device_desc {
+    return Intl.message(
+      'Povolena jsou měření pouze se zapůjčeným zařízením.',
+      name: 'measurement_summary_screen_uknow_device_desc',
+      desc: '',
+      args: [],
     );
   }
 

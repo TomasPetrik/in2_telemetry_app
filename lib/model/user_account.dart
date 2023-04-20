@@ -90,8 +90,10 @@ class UserAccount with _$UserAccount {
       true;
 
   bool canMeasureWithDeviceId(String deviceIdentifier) {
-    final foundDevice = assignedDevices
-        ?.firstWhereOrNull((dev) => dev.deviceIdentifier == deviceIdentifier);
+    final foundDevice = assignedDevices?.firstWhereOrNull(
+      (dev) =>
+          dev.deviceIdentifier?.toLowerCase() == deviceIdentifier.toLowerCase(),
+    );
     return foundDevice != null;
   }
 }

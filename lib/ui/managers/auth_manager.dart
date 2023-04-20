@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
@@ -46,7 +45,7 @@ class AuthManager extends StatelessWidget with BottomSheetMixin {
             );
           },
           authenticated: (credentials) {
-            GoRouter.of(context).pop();
+            Navigator.of(context).pop();
             showDialog<void>(
               context: context,
               barrierDismissible: true,
@@ -56,23 +55,23 @@ class AuthManager extends StatelessWidget with BottomSheetMixin {
             authBloc.add(const VerifyUser());
           },
           userVerified: (userAccount) => {
-            GoRouter.of(context).pop(),
+            Navigator.of(context).pop(),
             userContentBloc
                 .add(OnUserAddedContentEvent(userAccount: userAccount)),
           },
           inactiveUserRemoved: (userAccount) {
-            GoRouter.of(context).pop();
+            Navigator.of(context).pop();
           },
           errorLoadData: () {
-            GoRouter.of(context).pop();
+            Navigator.of(context).pop();
             showServerError(context);
           },
           unauthenticated: () {
-            GoRouter.of(context).pop();
+            Navigator.of(context).pop();
             showServerError(context);
           },
           cancelled: () {
-            GoRouter.of(context).pop();
+            Navigator.of(context).pop();
           },
         );
       },

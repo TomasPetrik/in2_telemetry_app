@@ -21,36 +21,14 @@ class SyncedResult extends StatelessWidget {
     required this.deviceId,
     required this.hwMeasurementResult,
     required this.measurementType,
-    required this.deviceInfo,
+    this.deviceInfo,
   });
 
   final String userId;
   final String deviceId;
   final HwMeasurementResult hwMeasurementResult;
   final MeasurementType measurementType;
-  final DeviceInfo deviceInfo;
-
-  String _getTitle(BuildContext context) {
-    switch (hwMeasurementResult.resultState) {
-      case ResultState.success:
-        return translactions.measurement_summary_screen_success_title;
-      case ResultState.noData:
-        return translactions.measurement_summary_screen_no_data_title;
-      case ResultState.connectionError:
-        return translactions.measurement_summary_screen_sync_error_title;
-    }
-  }
-
-  String _getSubTitle(BuildContext context) {
-    switch (hwMeasurementResult.resultState) {
-      case ResultState.success:
-        return translactions.measurement_summary_screen_success_subtitle;
-      case ResultState.noData:
-        return translactions.measurement_summary_screen_no_data_subtitle;
-      case ResultState.connectionError:
-        return translactions.measurement_summary_screen_sync_error_subtitle;
-    }
-  }
+  final DeviceInfo? deviceInfo;
 
   String _getDesc(BuildContext context) {
     switch (hwMeasurementResult.resultState) {
@@ -60,6 +38,8 @@ class SyncedResult extends StatelessWidget {
         return translactions.measurement_summary_screen_no_data_desc;
       case ResultState.connectionError:
         return translactions.measurement_summary_screen_sync_error_desc;
+      case ResultState.unknowDevice:
+        return translactions.measurement_summary_screen_uknow_device_desc;
     }
   }
 
@@ -71,6 +51,8 @@ class SyncedResult extends StatelessWidget {
         return Theme.of(context).colorScheme.error;
       case ResultState.connectionError:
         return Theme.of(context).colorScheme.error;
+      case ResultState.unknowDevice:
+        return Theme.of(context).colorScheme.error;
     }
   }
 
@@ -81,6 +63,8 @@ class SyncedResult extends StatelessWidget {
       case ResultState.noData:
         return 'assets/icons/icon_triangle_exclamation_huge.svg';
       case ResultState.connectionError:
+        return 'assets/icons/icon_triangle_exclamation_huge.svg';
+      case ResultState.unknowDevice:
         return 'assets/icons/icon_triangle_exclamation_huge.svg';
     }
   }
@@ -114,71 +98,73 @@ class SyncedResult extends StatelessWidget {
       shrinkWrap: true,
       slivers: [
         SliverGap(fixedHeight),
-        const SliverGap(Dimensions.padding16),
-        SliverToBoxAdapter(
-          child: ScaleCard(
-            child: Padding(
-              padding: Paddings.all16,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _getTitle(context),
-                    style: ScaleTextStyles.text.apply(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                  ),
-                  Gaps.gap6,
-                  Text(
-                    _getSubTitle(context),
-                    style: ScaleTextStyles.label.apply(
-                      color: Theme.of(context).colorScheme.onSecondary,
-                    ),
-                  ),
-                  Gaps.gap16,
-                  Container(
-                    height: 0.5,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                  Gaps.gap16,
-                  Row(
-                    children: [
-                      Text(
-                        hwMeasurementResult.measurementDt.toTimeShort(),
-                        style: ScaleTextStyles.label.apply(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        ),
+        if (hwMeasurementResult.resultState == ResultState.success) ...[
+          const SliverGap(Dimensions.padding16),
+          SliverToBoxAdapter(
+            child: ScaleCard(
+              child: Padding(
+                padding: Paddings.all16,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      translactions.measurement_summary_screen_success_title,
+                      style: ScaleTextStyles.text.apply(
+                        color: Theme.of(context).colorScheme.onPrimary,
                       ),
-                      Gaps.gap16,
-                      SvgPicture.asset(
-                        'assets/icons/icon_wave_pulse.svg',
-                        color: Theme.of(context).colorScheme.onTertiary,
+                    ),
+                    Gaps.gap6,
+                    Text(
+                      translactions.measurement_summary_screen_success_subtitle,
+                      style: ScaleTextStyles.label.apply(
+                        color: Theme.of(context).colorScheme.onSecondary,
                       ),
-                      Gaps.gap16,
-                      Expanded(
-                        child: Text(
-                          translactions.common_measurement_types(
-                            measurementType.name,
-                          ),
-                          style: ScaleTextStyles.textAccent.apply(
+                    ),
+                    Gaps.gap16,
+                    Container(
+                      height: 0.5,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    Gaps.gap16,
+                    Row(
+                      children: [
+                        Text(
+                          hwMeasurementResult.measurementDt.toTimeShort(),
+                          style: ScaleTextStyles.label.apply(
                             color: Theme.of(context).colorScheme.onPrimary,
                           ),
                         ),
-                      ),
-                      Gaps.gap16,
-                      Text(
-                        _getMeasurementValueFormatted() ?? '?',
-                        style: ScaleTextStyles.text.apply(
-                          color: Theme.of(context).colorScheme.onPrimary,
+                        Gaps.gap16,
+                        SvgPicture.asset(
+                          'assets/icons/icon_wave_pulse.svg',
+                          color: Theme.of(context).colorScheme.onTertiary,
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        Gaps.gap16,
+                        Expanded(
+                          child: Text(
+                            translactions.common_measurement_types(
+                              measurementType.name,
+                            ),
+                            style: ScaleTextStyles.textAccent.apply(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                          ),
+                        ),
+                        Gaps.gap16,
+                        Text(
+                          _getMeasurementValueFormatted() ?? '?',
+                          style: ScaleTextStyles.text.apply(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
+        ],
         const SliverGap(Dimensions.padding40),
         SliverToBoxAdapter(
           child: SvgPicture.asset(

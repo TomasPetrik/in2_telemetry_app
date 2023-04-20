@@ -443,12 +443,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Zařízení nedodalo žádné výsledky měření."),
         "measurement_summary_screen_no_data_repeat_measurement":
             MessageLookupByLibrary.simpleMessage("Opakovat měření"),
-        "measurement_summary_screen_no_data_subtitle":
-            MessageLookupByLibrary.simpleMessage(
-                "Zařízení nedodalo žádné výsledky"),
-        "measurement_summary_screen_no_data_title":
-            MessageLookupByLibrary.simpleMessage(
-                "Měření nebylo úspěšně dokončeno"),
         "measurement_summary_screen_result_success_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Máte hotovo! Výsledek se připsal k ostatním."),
@@ -460,12 +454,10 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Měření bylo úspěšně dokončeno"),
         "measurement_summary_screen_sync_error_desc":
             MessageLookupByLibrary.simpleMessage(
-                "Nastala chyba pri synchronizacii so zariadenim. Opakujte akciu neskor."),
-        "measurement_summary_screen_sync_error_subtitle":
+                "Nastala chyba synchronizace."),
+        "measurement_summary_screen_uknow_device_desc":
             MessageLookupByLibrary.simpleMessage(
-                "Chyba pri komunikaci se zařízením"),
-        "measurement_summary_screen_sync_error_title":
-            MessageLookupByLibrary.simpleMessage("Měření se nepovedlo"),
+                "Povolena jsou měření pouze se zapůjčeným zařízením."),
         "metering_screen_add_device":
             MessageLookupByLibrary.simpleMessage("Přidat zařízení"),
         "metering_screen_device_removal_button_confirm":
