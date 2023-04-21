@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Fixed typo pouzívat, \n 2. Fixed not interacting save button (SCALESOFT-63)."
+    "text": "1. Fixed SCALESOFT-62."
   },
   {
     "language": "sk-SK",

@@ -245,7 +245,7 @@ class Calendar {
 
     //start populating tomorrow and other days
     final currentDate = carePlan.scheduledStart;
-    int daysShift = 1;
+    int daysShift = 0;
     while (upcomingMeasurements.isEmpty) {
       if (carePlan.periodUnit == TimeUnit.day) {
         if (carePlan.weekDays?.isNotEmpty == true) {
