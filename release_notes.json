@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Verify device usage for user who got assigned device from hospital,\n2. Fixed pop webview after login user."
+    "text": "1. Fixed typo pouzívat, \n 2. Fixed not interacting save button (SCALESOFT-63)."
   },
   {
     "language": "sk-SK",

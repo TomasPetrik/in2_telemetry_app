@@ -8,6 +8,7 @@ import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/scale_text_form_field.dart';
 import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/utils/extensions/string_extensions.dart';
 
 final formKey = GlobalKey<FormState>();
 final List<GlobalKey<FormState>> fieldGlobalKeys = [
@@ -124,11 +125,11 @@ class MeasurementForm extends StatelessWidget {
                       validator: (value) {
                         if (value == null ||
                             value.isEmpty == true ||
-                            measurementConfig.min > double.parse(value) ||
-                            measurementConfig.max < double.parse(value)) {
+                            measurementConfig.min > value.toDouble() ||
+                            measurementConfig.max < value.toDouble()) {
                           return translactions.common_wrong_value;
                         } else {
-                          _value1 = double.parse(value);
+                          _value1 = value.toDouble();
                           return null;
                         }
                       },
@@ -168,11 +169,11 @@ class MeasurementForm extends StatelessWidget {
                         validator: (value) {
                           if (value == null ||
                               value.isEmpty == true ||
-                              measurementConfig.min > double.parse(value) ||
-                              measurementConfig.max < double.parse(value)) {
+                              measurementConfig.min > value.toDouble() ||
+                              measurementConfig.max < value.toDouble()) {
                             return translactions.common_wrong_value;
                           } else {
-                            _value2 = double.parse(value);
+                            _value2 = value.toDouble();
                             return null;
                           }
                         },

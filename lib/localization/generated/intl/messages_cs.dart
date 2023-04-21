@@ -389,7 +389,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Povolit"),
         "find_device_screen_not_granted_bt_desc":
             MessageLookupByLibrary.simpleMessage(
-                "Aplikace vyžaduje povolení pouzívat Bluetooth pro komunikaci se zařízeními."),
+                "Aplikace vyžaduje povolení používat Bluetooth pro komunikaci se zařízeními."),
         "find_device_screen_not_granted_bt_title":
             MessageLookupByLibrary.simpleMessage("Bluetooth zakázan "),
         "find_device_screen_pairing_device":

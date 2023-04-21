@@ -1951,10 +1951,10 @@ class I10n {
     );
   }
 
-  /// `Aplikace vyžaduje povolení pouzívat Bluetooth pro komunikaci se zařízeními.`
+  /// `Aplikace vyžaduje povolení používat Bluetooth pro komunikaci se zařízeními.`
   String get find_device_screen_not_granted_bt_desc {
     return Intl.message(
-      'Aplikace vyžaduje povolení pouzívat Bluetooth pro komunikaci se zařízeními.',
+      'Aplikace vyžaduje povolení používat Bluetooth pro komunikaci se zařízeními.',
       name: 'find_device_screen_not_granted_bt_desc',
       desc: '',
       args: [],

@@ -490,7 +490,7 @@
     "find_device_screen_disabled_bt_desc": "Pro spojení s přístrojem je potřeba mít Bluetooth zapnutý.",
     "find_device_screen_disabled_bt_btn_settings": "Nastavení",
     "find_device_screen_not_granted_bt_title": "Bluetooth zakázan ",
-    "find_device_screen_not_granted_bt_desc": "Aplikace vyžaduje povolení pouzívat Bluetooth pro komunikaci se zařízeními.",
+    "find_device_screen_not_granted_bt_desc": "Aplikace vyžaduje povolení používat Bluetooth pro komunikaci se zařízeními.",
     "find_device_screen_not_granted_bt_btn_settings": "Povolit",
     "measurement_summary_screen_success_title": "Měření bylo úspěšně dokončeno",
     "measurement_summary_screen_success_subtitle": "Výsledky budou automaticky odeslány",
