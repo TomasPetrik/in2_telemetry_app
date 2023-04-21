@@ -7,6 +7,7 @@ import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/cubit/device_management/device_management_cubit.dart';
 import 'package:scalesoft_app/cubit/device_management/device_management_state.dart';
 import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/add_device_route.dart';
@@ -43,12 +44,14 @@ class MeteringFirstScreen extends StatefulWidget {
 class _MeteringFirstScreenState extends State<MeteringFirstScreen>
     with BottomSheetMixin {
   final session = getIt<Session>();
+  late UserAccount userAccount;
   final DeviceManagementCubit devManagementCubit =
       getIt<DeviceManagementCubit>();
   late MeasurementType defaultMeasurementType;
 
   @override
   void initState() {
+    userAccount = getIt<AccountDbProvider>().get(widget.userId)!;
     defaultMeasurementType =
         widget.selectedMeasurementType ?? widget.allMeasurementTypes!.first;
 
@@ -172,11 +175,16 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                                   onTap: () {
                                     GoRouter.of(context).pushNamed(
                                       OmronFlowRoute.name,
-                                      params: {
+                                      queryParams: {
                                         'userId': widget.userId,
                                         'measurementType':
                                             selectedMeasurementType.name,
-                                        'deviceId': supportedDevice.macAddress!
+                                        'deviceId':
+                                            supportedDevice.deviceIdentifier!,
+                                        'modelName':
+                                            '${supportedDevice.modelName}',
+                                        'deviceManufacturer':
+                                            '${supportedDevice.deviceManufacturer}'
                                       },
                                     );
                                   },
@@ -184,19 +192,23 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                                     padding: Paddings.top24,
                                     child: DeviceItem(
                                       device: supportedDevice,
-                                      onRemove: () async {
-                                        final confirmed =
-                                            await showDeviceRemovalConfirmation(
-                                          context: context,
-                                        );
+                                      onRemove:
+                                          supportedDevice.isLendedDevice != true
+                                              ? () async {
+                                                  final confirmed =
+                                                      await showDeviceRemovalConfirmation(
+                                                    context: context,
+                                                  );
 
-                                        if (confirmed == true) {
-                                          devManagementCubit.removeDevice(
-                                            supportedDevice,
-                                            selectedMeasurementType,
-                                          );
-                                        }
-                                      },
+                                                  if (confirmed == true) {
+                                                    devManagementCubit
+                                                        .removeDevice(
+                                                      supportedDevice,
+                                                      selectedMeasurementType,
+                                                    );
+                                                  }
+                                                }
+                                              : null,
                                     ),
                                   ),
                                 ),
@@ -226,7 +238,8 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                             ),
                           ),
                         ],
-                        if (supportDeviceMeasurement) ...[
+                        if (supportDeviceMeasurement &&
+                            userAccount.canMeasureWithUnknowDevice) ...[
                           Gaps.gap24,
                           SettingsItem(
                             label: translactions.metering_screen_add_device,

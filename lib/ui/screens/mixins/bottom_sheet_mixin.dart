@@ -40,7 +40,7 @@ mixin BottomSheetMixin {
 
   Future<void> showDevAlreadyRegistered(
     BuildContext context,
-    String macAddress,
+    String deviceIdentifier,
   ) async {
     await showModalBottomSheet(
       context: context,
@@ -50,7 +50,7 @@ mixin BottomSheetMixin {
       builder: (context) {
         return BottomDialog.deviceAlreadyRegistered(
           context: context,
-          macAddress: macAddress,
+          macAddress: deviceIdentifier,
         );
       },
     );

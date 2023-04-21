@@ -455,9 +455,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "measurement_summary_screen_sync_error_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Nastala chyba synchronizace."),
-        "measurement_summary_screen_uknow_device_desc":
-            MessageLookupByLibrary.simpleMessage(
-                "Povolena jsou měření pouze se zapůjčeným zařízením."),
         "metering_screen_add_device":
             MessageLookupByLibrary.simpleMessage("Přidat zařízení"),
         "metering_screen_device_removal_button_confirm":

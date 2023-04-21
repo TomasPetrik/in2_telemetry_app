@@ -22,6 +22,6 @@ class RegisterDeviceBlocEvent with _$RegisterDeviceBlocEvent {
     UserAccount userAccount,
     Device device,
     String deviceLabel,
-    String deviceIdentifier,
+    String assignedIdentifier,
   ) = _RegisterDevice;
 }

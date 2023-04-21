@@ -42,22 +42,29 @@ class BtConnectionHelper {
 
       debugPrint('found ${availableDevices.length} devices');
 
-      for (final result in availableDevices) {
-        final serviceUuids = result.advertisementData.serviceUuids
+      for (final scanResult in availableDevices) {
+        final serviceUuids = scanResult.advertisementData.serviceUuids
             .map((uuid) => uuid.toLowerCase());
         if (serviceUuids.any(
               (devServiceUuid) =>
                   devServiceUuid.contains(serviceUuid.toLowerCase()),
             ) &&
-            result.device.name
+            scanResult.advertisementData.localName
                 .toLowerCase()
                 .contains(device.bluetoothName!.toLowerCase()) &&
-            (device.macAddress == null ||
-                device.macAddress == result.device.id.toString())) {
-          debugPrint('found device at ${result.timeStamp}');
+            (device.deviceIdentifier == null ||
+                device.deviceIdentifier?.toLowerCase() ==
+                    scanResult.advertisementData.localName
+                        .toString()
+                        .toLowerCase())) {
+          debugPrint('found device');
+          //debugPrint('found device at ${scanResult.timeStamp}');
 
           await flutterBlue.stopScan();
-          return DeviceSearchResult(result.device, result.advertisementData);
+          return DeviceSearchResult(
+            scanResult.device,
+            scanResult.advertisementData,
+          );
         }
       }
 
@@ -89,13 +96,13 @@ class BtConnectionHelper {
       debugPrint('found all ${allDevices.length} devices');
 
       final matchedResults = allDevices.where((scanResult) {
-        return scanResult.advertisementData.connectable &&
-            scanResult.advertisementData.serviceUuids
+        return scanResult.advertisementData.serviceUuids
                 .map((uuid) => uuid.toLowerCase())
                 .any((uuid) => uuid.contains(serviceUuid.toLowerCase())) &&
             supportedBtNames.any(
-              (suppBtName) =>
-                  scanResult.device.name.toLowerCase().contains(suppBtName),
+              (suppBtName) => scanResult.advertisementData.localName
+                  .toLowerCase()
+                  .contains(suppBtName),
             );
       }).toList();
 
@@ -106,14 +113,24 @@ class BtConnectionHelper {
       for (final scanResult in matchedResults) {
         final devState = await scanResult.device.state.first;
         if (devState == BluetoothDeviceState.connected) {
-          availableDevices.add(convertToDevice(scanResult.device));
+          availableDevices.add(
+            convertToDevice(
+              scanResult.advertisementData.localName,
+              scanResult.device,
+            ),
+          );
         } else {
           try {
             await scanResult.device
                 .connect(timeout: const Duration(seconds: 1));
             final devState = await scanResult.device.state.first;
             if (devState == BluetoothDeviceState.connected) {
-              availableDevices.add(convertToDevice(scanResult.device));
+              availableDevices.add(
+                convertToDevice(
+                  scanResult.advertisementData.localName,
+                  scanResult.device,
+                ),
+              );
             }
           } catch (e) {
             debugPrint('device was disconnected yet');
@@ -121,14 +138,7 @@ class BtConnectionHelper {
         }
       }
 
-      debugPrint('available devices devices ${matchedResults.length}');
-
-/*
-
-      final btDevices = matchedResults
-          .map((scanResult) => convertToDevice(scanResult.device))
-          .toList();
-          */
+      debugPrint('available devices ${matchedResults.length}');
 
       onResult.call(availableDevices);
 
@@ -138,19 +148,55 @@ class BtConnectionHelper {
     }
   }
 
-  static Device convertToDevice(BluetoothDevice btDevice) {
+  static Device convertToDevice(
+    String advertisementName,
+    BluetoothDevice btDevice,
+  ) {
     final supportedDev = Constants.supportedDevices
         .firstWhere(
-          (dev) => btDevice.name
+          (dev) => advertisementName
               .toLowerCase()
               .contains(dev.bluetoothName!.toLowerCase()),
         )
-        .copyWith(macAddress: btDevice.id.id);
+        .copyWith(deviceIdentifier: advertisementName);
 
     return supportedDev;
   }
 
   static Future<DeviceInfo?> requestDeviceInfo(BluetoothDevice device) async {
+    var services = [];
+
+    Future.delayed(const Duration(milliseconds: 100));
+    services = await device.discoverServices().timeout(
+          const Duration(seconds: 3),
+          onTimeout: () => <BluetoothService>[],
+        );
+
+    debugPrint('found services ${services.length}');
+    Future.delayed(const Duration(milliseconds: 100));
+    services = await device.discoverServices().timeout(
+          const Duration(seconds: 3),
+          onTimeout: () => <BluetoothService>[],
+        );
+
+    debugPrint('found services2 ${services.length}');
+
+    final deviceInfoService = services.firstWhereOrNull(
+      (service) => service.uuid.toString().toLowerCase() == deviceInfo,
+    );
+    if (deviceInfoService != null) {
+      final deviceInfo = await getDeviceInfoFromService(deviceInfoService);
+      deviceInfo.device = device;
+      return deviceInfo;
+    } else {
+      return null;
+    }
+  }
+
+/*
+  static Future<DeviceInfo?> requestDeviceInfo2(BluetoothDevice device) async {
+    device.se
+
     final services = await device.discoverServices();
     final deviceInfoService = services.firstWhereOrNull(
       (service) => service.uuid.toString().toLowerCase() == deviceInfo,
@@ -163,6 +209,7 @@ class BtConnectionHelper {
       return null;
     }
   }
+  */
 
   static Future<BatteryInfo?> requestBatteryInfo(BluetoothDevice device) async {
     final services = await device.discoverServices();

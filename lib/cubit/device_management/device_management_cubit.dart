@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
@@ -23,17 +24,57 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
   }
 
   List<Device> getSuitableDevices(MeasurementType measurementType) {
-    return _pairedDevicesDbProvider.box.values
+    List<Device> prioritisedDevices = [];
+
+    final allDevices = _pairedDevicesDbProvider.box.values
         .where(
           (device) =>
               device.supportedMeasurementTypes!.contains(
                 measurementType,
               ) &&
-              (userAccount.canMeasureWithUnknowDevice ||
-                  (!userAccount.canMeasureWithUnknowDevice &&
-                      userAccount.canMeasureWithDeviceId(device.macAddress!))),
+              !userAccount.canMeasureWithUnknowDevice,
         )
         .toList();
+
+    //1. Add all user assigned devices with flat if was previously paired
+    if (userAccount.assignedDevices?.isNotEmpty == true) {
+      for (final assignedDevice in userAccount.assignedDevices!) {
+        final suppDev = Constants.supportedDevices.firstWhereOrNull(
+          (suppDev) =>
+              suppDev.modelName == assignedDevice.modelName &&
+              suppDev.deviceManufacturer == assignedDevice.deviceManufacturer,
+        );
+
+        if (suppDev == null) continue;
+
+        bool wasPaired = allDevices.any(
+          (dev) =>
+              dev.deviceIdentifier?.toLowerCase() ==
+              assignedDevice.deviceIdentifier?.toLowerCase(),
+        );
+
+        prioritisedDevices.add(
+          suppDev.copyWith(
+            deviceIdentifier: assignedDevice.deviceIdentifier,
+            wasPaired: wasPaired,
+            isLendedDevice: true,
+          ),
+        );
+      }
+    }
+
+    final List<String> userDevicesIds = prioritisedDevices
+        .map((dev) => dev.deviceIdentifier!.toLowerCase())
+        .toList();
+
+    //2. Add others which are not matching with user devices
+    prioritisedDevices.addAll(
+      allDevices.where(
+        (dev) => !userDevicesIds.contains(dev.deviceIdentifier?.toLowerCase()),
+      ),
+    );
+
+    return prioritisedDevices;
   }
 
   DeviceManagementCubit(

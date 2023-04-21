@@ -8,7 +8,7 @@ import 'package:scalesoft_app/utils/constants.dart';
 
 class RegisterDeviceDetailRoute extends ApplicationRoute with PageBuilderMixin {
   static const name = 'register-device-detail';
-  static const path = '/register-device-detail/:userId/:localId/:macAddress';
+  static const path = '/register-device-detail/:userId/:localId/:deviceIdentifier';
 
   RegisterDeviceDetailRoute({
     required super.navigator,
@@ -28,10 +28,10 @@ class RegisterDeviceDetailRoute extends ApplicationRoute with PageBuilderMixin {
           final userId = state.params['userId']!;
           final userAccount = getIt<AccountDbProvider>().get(userId)!;
           final localId = int.parse(state.params['localId']!);
-          final macAddress = state.params['macAddress']!;
+          final deviceIdentifier = state.params['deviceIdentifier']!;
           final device = Constants.supportedDevices
               .firstWhere((device) => device.localId == localId)
-              .copyWith(macAddress: macAddress);
+              .copyWith(deviceIdentifier: deviceIdentifier);
 
           return RegisterDeviceDetailScreen(
             userAccount: userAccount,

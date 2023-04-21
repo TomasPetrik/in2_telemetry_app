@@ -36,7 +36,8 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
   late final Device device;
 
   bool get reqModelPairing =>
-      device.reqPairing == true && device.macAddress == null;
+      device.reqPairing == true &&
+      (device.deviceIdentifier == null || device.wasPaired != true);
 
   @override
   void initState() {
@@ -174,7 +175,8 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                     notVerified: (hwMeasurementResult) {
                       return SyncedResult(
                         userId: widget.userId,
-                        deviceId: device.macAddress ?? '${device.localId}',
+                        deviceId:
+                            device.deviceIdentifier ?? '${device.localId}',
                         hwMeasurementResult: hwMeasurementResult,
                         measurementType: measurementType,
                       );
@@ -217,7 +219,8 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                     synced: (hwMeasurementResult, deviceInfo) {
                       return SyncedResult(
                         userId: widget.userId,
-                        deviceId: device.macAddress ?? '${device.localId}',
+                        deviceId:
+                            device.deviceIdentifier ?? '${device.localId}',
                         hwMeasurementResult: hwMeasurementResult,
                         measurementType: measurementType,
                         deviceInfo: deviceInfo,

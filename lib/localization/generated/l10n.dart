@@ -2051,16 +2051,6 @@ class I10n {
     );
   }
 
-  /// `Povolena jsou měření pouze se zapůjčeným zařízením.`
-  String get measurement_summary_screen_uknow_device_desc {
-    return Intl.message(
-      'Povolena jsou měření pouze se zapůjčeným zařízením.',
-      name: 'measurement_summary_screen_uknow_device_desc',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Zde je něco v nepořádku. Zkuste akci opakovat později.`
   String get chart_placeholder_error_loading_data {
     return Intl.message(

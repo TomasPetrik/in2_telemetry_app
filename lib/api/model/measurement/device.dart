@@ -16,7 +16,6 @@ class Device with _$Device {
     @HiveField(2) String? deviceManufacturer,
     @JsonKey(ignore: true) @HiveField(3) String? visibleName,
     @JsonKey(ignore: true) @HiveField(4) String? bluetoothName,
-    @JsonKey(ignore: true) @HiveField(5) String? macAddress,
     @JsonKey(ignore: true) @HiveField(6) int? localId,
     @JsonKey(ignore: true) @HiveField(7) DeviceModelType? deviceModelType,
     @JsonKey(ignore: true)
@@ -28,6 +27,9 @@ class Device with _$Device {
     @JsonKey(ignore: true) @HiveField(12) bool? askToActivateBt,
     @JsonKey(ignore: true) @HiveField(13) bool? askToConfirmMeasurement,
     @JsonKey(ignore: true) @HiveField(14) ActionButtonType? actionButtonType,
+    @JsonKey(ignore: true) @HiveField(15) bool? devIdIsName,
+    @JsonKey(ignore: true) @HiveField(16) bool? wasPaired,
+    @JsonKey(ignore: true) @HiveField(17) bool? isLendedDevice,
   }) = _Device;
 
   factory Device.fromJson(Map<String, dynamic> json) => _$DeviceFromJson(json);

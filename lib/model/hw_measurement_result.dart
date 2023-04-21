@@ -12,4 +12,4 @@ class HwMeasurementResult with _$HwMeasurementResult {
   }) = _HwMeasurementResult;
 }
 
-enum ResultState { success, noData, connectionError, unknowDevice }
+enum ResultState { success, noData, connectionError }

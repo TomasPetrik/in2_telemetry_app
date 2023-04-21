@@ -38,8 +38,6 @@ class SyncedResult extends StatelessWidget {
         return translactions.measurement_summary_screen_no_data_desc;
       case ResultState.connectionError:
         return translactions.measurement_summary_screen_sync_error_desc;
-      case ResultState.unknowDevice:
-        return translactions.measurement_summary_screen_uknow_device_desc;
     }
   }
 
@@ -51,8 +49,6 @@ class SyncedResult extends StatelessWidget {
         return Theme.of(context).colorScheme.error;
       case ResultState.connectionError:
         return Theme.of(context).colorScheme.error;
-      case ResultState.unknowDevice:
-        return Theme.of(context).colorScheme.error;
     }
   }
 
@@ -63,8 +59,6 @@ class SyncedResult extends StatelessWidget {
       case ResultState.noData:
         return 'assets/icons/icon_triangle_exclamation_huge.svg';
       case ResultState.connectionError:
-        return 'assets/icons/icon_triangle_exclamation_huge.svg';
-      case ResultState.unknowDevice:
         return 'assets/icons/icon_triangle_exclamation_huge.svg';
     }
   }
@@ -194,10 +188,10 @@ class SyncedResult extends StatelessWidget {
               onPressed: () {
                 GoRouter.of(context).pushReplacementNamed(
                   OmronFlowRoute.name,
-                  params: {
+                  queryParams: {
                     'userId': userId,
                     'measurementType': measurementType.name,
-                    'deviceId': deviceId
+                    'deviceId': deviceId,
                   },
                 );
               },

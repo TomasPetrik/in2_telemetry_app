@@ -10,7 +10,7 @@ import 'package:scalesoft_app/utils/constants.dart';
 
 class OmronFlowRoute extends ApplicationRoute with PageBuilderMixin {
   static const name = 'omron-flow';
-  static const path = '/omron-flow/:userId/:deviceId/:measurementType';
+  static const path = '/omron-flow';
 
   OmronFlowRoute({
     required super.navigator,
@@ -27,23 +27,23 @@ class OmronFlowRoute extends ApplicationRoute with PageBuilderMixin {
       pageBuilder: pageBuilder(
         withTransition: false,
         builder: (state) {
-          final userId = state.params['userId']!;
-          final deviceId = state.params['deviceId']!;
-          final measurementTypeName = state.params['measurementType']!;
+          final userId = state.queryParams['userId']!;
+          final deviceId = state.queryParams['deviceId']!;
+          final measurementTypeName = state.queryParams['measurementType']!;
+          final modelName = state.queryParams['modelName'];
+          final deviceManufacturer = state.queryParams['deviceManufacturer'];
           final MeasurementType measurementType =
               MeasurementType.values.firstWhere(
             (measurementType) => measurementType.name == measurementTypeName,
           );
 
-          final Device device;
-          if (deviceId.contains(':')) {
-            device = getIt<PairedDevicesDbProvider>().get(deviceId)!;
-          } else {
-            final localDeviceId = int.parse(deviceId);
-            device = Constants.supportedDevices.firstWhere(
-              (device) => device.localId == localDeviceId,
-            );
-          }
+          final Device device = getIt<PairedDevicesDbProvider>().get(deviceId) ??
+                Constants.supportedDevices.firstWhere(
+                  (device) =>
+                      device.modelName == modelName &&
+                      device.deviceManufacturer == deviceManufacturer,
+                );
+          
 
           return OmronFlowScreen(
             userId: userId,

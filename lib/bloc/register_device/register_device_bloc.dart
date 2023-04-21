@@ -66,7 +66,7 @@ class RegisterDeviceBloc
           _flutterBlue.stopScan();
         },
         registerDevice:
-            (userAccount, device, deviceLabel, deviceIdentifier) async {
+            (userAccount, device, deviceLabel, assignedIdentifier) async {
           try {
             //1. Load device models for lookup what's the device id
 
@@ -84,9 +84,9 @@ class RegisterDeviceBloc
 
             final deviceToRegister = DeviceToRegister(
               deviceModelId: deviceModelId,
-              assignedIdentifier: deviceIdentifier,
+              assignedIdentifier: assignedIdentifier,
               note: deviceLabel,
-              deviceIdentifier: device.macAddress!,
+              deviceIdentifier: device.deviceIdentifier!,
             );
 
             await _deviceRepository.registerDevice(

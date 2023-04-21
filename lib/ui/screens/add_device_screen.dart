@@ -38,10 +38,12 @@ class AddDeviceScreen extends StatelessWidget {
                         onTap: () {
                           GoRouter.of(context).pushNamed(
                             OmronFlowRoute.name,
-                            params: {
+                            queryParams: {
                               'userId': userId,
                               'measurementType': measurementType.name,
-                              'deviceId': '${supportedDevice.localId}'
+                              'modelName': '${supportedDevice.modelName}',
+                              'deviceManufacturer':
+                                  '${supportedDevice.deviceManufacturer}'
                             },
                           );
                         },

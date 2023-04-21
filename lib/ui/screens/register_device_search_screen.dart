@@ -150,7 +150,7 @@ class _RegisterDeviceSearchScreenState
                                   params: {
                                     'userId': widget.userId,
                                     'localId': '${foundDev.localId!}',
-                                    'macAddress': foundDev.macAddress!,
+                                    'deviceIdentifier': foundDev.deviceIdentifier!,
                                   },
                                 );
                               },

@@ -14,16 +14,16 @@ class PairedDevicesDbProvider extends BoxProvider<Device> {
     Hive.registerAdapter(ActionButtonTypeAdapter());
   }
 
-  Device? get(String macAddress) {
-    final foundDevice = box.get(macAddress);
+  Device? get(String deviceIdentifier) {
+    final foundDevice = box.get(deviceIdentifier);
     return foundDevice;
   }
 
   Future<void> add(Device device) async {
-    await box.put(device.macAddress!, device);
+    await box.put(device.deviceIdentifier!, device);
   }
 
   Future<void> remove(Device device) async {
-    await box.delete(device.macAddress);
+    await box.delete(device.deviceIdentifier);
   }
 }

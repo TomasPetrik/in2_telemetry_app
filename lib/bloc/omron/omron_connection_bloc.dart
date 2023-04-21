@@ -28,12 +28,14 @@ class OmronConnectionBloc
   final PairedDevicesDbProvider _pairedDevicesDbProvider;
   final SyncBloc _syncBloc;
   final FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
+
   Device? _device;
   late final UserAccount _userAccount;
   late final MeasurementType _measurementType;
 
   bool get reqModelPairing =>
-      _device?.reqPairing == true && _device?.macAddress == null;
+      _device?.reqPairing == true &&
+      (_device?.deviceIdentifier == null || _device?.wasPaired != true);
 
   OmronConnectionBloc(
     this._accountDbProvider,
@@ -46,21 +48,6 @@ class OmronConnectionBloc
         BluetoothDevice blDevice,
         AdvertisementData? advertisementData,
       ) async {
-        if (_userAccount.canMeasureWithUnknowDevice == false &&
-            !_userAccount.canMeasureWithDeviceId(blDevice.id.id)) {
-          emit(
-            OmronConnectionState.notVerified(
-              measurementResult: HwMeasurementResult(
-                resultState: ResultState.unknowDevice,
-                measurementDt: DateTime.now(),
-              ),
-            ),
-          );
-
-          add(const OmronConnectionBlocEvent.stopSearch());
-          return null;
-        }
-
         final deviceInfo = await BtConnectionHelper.requestDeviceInfo(blDevice);
         deviceInfo?.advData = advertisementData;
 
@@ -77,8 +64,19 @@ class OmronConnectionBloc
             ),
           );
           return deviceInfo;
+        } else {
+          emit(
+            OmronConnectionState.notVerified(
+              measurementResult: HwMeasurementResult(
+                resultState: ResultState.connectionError,
+                measurementDt: DateTime.now(),
+              ),
+            ),
+          );
+          add(const OmronConnectionBlocEvent.stopSearch());
+
+          return null;
         }
-        return null;
       }
 
       Future<Device?> measureAndSync(
@@ -139,8 +137,8 @@ class OmronConnectionBloc
           //save paired device
           if (measurementResult.resultState != ResultState.connectionError) {
             final pairedDevice = _device!.copyWith(
-              deviceIdentifier: blDevice.id.id,
-              macAddress: blDevice.id.id,
+              deviceIdentifier: deviceInfo.advData?.localName,
+              wasPaired: true,
               addedAt: DateTime.now(),
             );
 
@@ -158,7 +156,10 @@ class OmronConnectionBloc
         return null;
       }
 
-      Future<void> connectToDevice(device, advertisementData) async {
+      Future<void> connectToDevice(
+        BluetoothDevice device,
+        advertisementData,
+      ) async {
         emit(const OmronConnectionState.connecting());
         await device.connect(autoConnect: false);
 
@@ -261,7 +262,7 @@ class OmronConnectionBloc
             _device = pairedDevice;
             //straight after pairing process, device should turn off bluetooth,
             //so we can start search for device again after metering
-            await Future.delayed(const Duration(seconds: 2));
+            await Future.delayed(const Duration(seconds: 5));
             final foundDevice = await BtConnectionHelper.searchDevice(
               serviceUuid: bloodPressureServiceUuid,
               device: _device!,
