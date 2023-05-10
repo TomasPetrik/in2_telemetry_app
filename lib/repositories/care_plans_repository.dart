@@ -21,6 +21,7 @@ class CarePlansRepository {
     int start = 0,
     int count = 100,
   }) async {
+    session.token = userAccount.authToken;
     final resp = await carePlanApiClient.loadActiveCarePlans(
       userAccount.hospital!.authData.baseUrl,
       userAccount.user.muid,
@@ -41,6 +42,7 @@ class CarePlansRepository {
     required String startDateTime,
     required String endDateTime,
   }) async {
+    session.token = userAccount.authToken;
     final results = await carePlanApiClient.loadResults(
       userAccount.hospital!.authData.baseUrl,
       userAccount.user.muid,
@@ -60,6 +62,7 @@ class CarePlansRepository {
     required UserAccount userAccount,
     required int carePlanVersionId,
   }) async {
+    session.token = userAccount.authToken;
     final fulfillmentPlan = await carePlanApiClient.loadFullPlanEvaluation(
       userAccount.hospital!.authData.baseUrl,
       carePlanVersionId,
@@ -73,6 +76,7 @@ class CarePlansRepository {
     required String fromDateTime,
     required String toDateTime,
   }) async {
+    session.token = userAccount.authToken;
     final items = await carePlanApiClient.loadPartPlanEvaluation(
       userAccount.hospital!.authData.baseUrl,
       carePlanId,
@@ -85,18 +89,22 @@ class CarePlansRepository {
   Future<void> sendMeasurementFromDevice({
     required UserAccount userAccount,
     required Measurement measurement,
-  }) =>
-      carePlanApiClient.sendMeasurementFromDevice(
-        userAccount.hospital!.authData.baseUrl,
-        [measurement],
-      );
+  }) {
+    session.token = userAccount.authToken;
+    return carePlanApiClient.sendMeasurementFromDevice(
+      userAccount.hospital!.authData.baseUrl,
+      [measurement],
+    );
+  }
 
   Future<void> sendManualMeasurement({
     required UserAccount userAccount,
     required Measurement manualMeasurement,
-  }) =>
-      carePlanApiClient.sendManualMeasurement(
-        userAccount.hospital!.authData.baseUrl,
-        manualMeasurement,
-      );
+  }) {
+    session.token = userAccount.authToken;
+    return carePlanApiClient.sendManualMeasurement(
+      userAccount.hospital!.authData.baseUrl,
+      manualMeasurement,
+    );
+  }
 }

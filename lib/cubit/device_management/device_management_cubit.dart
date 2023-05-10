@@ -28,15 +28,13 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
 
     final allDevices = _pairedDevicesDbProvider.box.values
         .where(
-          (device) =>
-              device.supportedMeasurementTypes!.contains(
-                measurementType,
-              ) &&
-              !userAccount.canMeasureWithUnknowDevice,
+          (device) => device.supportedMeasurementTypes!.contains(
+            measurementType,
+          ),
         )
         .toList();
 
-    //1. Add all user assigned devices with flat if was previously paired
+    //1. Add all user assigned devices with flag if was previously paired
     if (userAccount.assignedDevices?.isNotEmpty == true) {
       for (final assignedDevice in userAccount.assignedDevices!) {
         final suppDev = Constants.supportedDevices.firstWhereOrNull(

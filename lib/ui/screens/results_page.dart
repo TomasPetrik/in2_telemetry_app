@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc_event.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc_state.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
-import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
@@ -36,10 +36,15 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
       bloc: syncBloc..add(const SyncEvent.init()),
       builder: (context, syncState) {
         final session = getIt<Session>();
-        final UserAccount userAccount = session.userAccount!;
+        final sessionAccounts = session.getSessionAccounts();
         final allCarePlans = session.getActiveCarePlans();
         final allPendingResults = session.getPendingResults();
-        final allMeasurementResults = userAccount.measurementResults ?? [];
+        final allMeasurementResults =
+            sessionAccounts.fold<List<MeasurementResult>>(
+          [],
+          (prevResults, userAccount) =>
+              [...prevResults, ...userAccount.measurementResults ?? []],
+        );
 
         final supportedMeasurementTypes =
             CarePlanHelper.getMeasurementTypes(allCarePlans);
@@ -58,7 +63,8 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
           children: [
             if (allCarePlans.isEmpty)
               NoPlansPlaceholder(
-                userAccount: userAccount,
+                userAccount:
+                    session.isMultiUser != true ? sessionAccounts[0] : null,
                 enterMeasurementWithoutPlan: false,
                 supportedMeasurementTypes: supportedMeasurementTypes,
               )

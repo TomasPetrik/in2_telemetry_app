@@ -175,6 +175,7 @@ _i1.GetIt init(
   gh.factory<_i39.TokenInterceptor>(() => _i39.TokenInterceptor(
         gh<_i20.Session>(),
         gh<_i25.AccountApiClient>(),
+        gh<_i3.AccountDbProvider>(),
       ));
   gh.singleton<_i40.AuthBloc>(_i40.AuthBloc(
     gh<_i5.AuthService>(),

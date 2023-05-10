@@ -259,10 +259,11 @@ class ResultsHelper {
 
     final offlineResults = allOfflineResults.where((offlineResult) {
       return (measurementType == null ||
-              measurementType == offlineResult.measurementType!) &&
+                  measurementType == offlineResult.measurementType!) &&
               (whenPeriod == ResultsWhenPeriod.today &&
-              offlineResult.measurementDateTime.isBefore(tomorrowMidnight) &&
-              offlineResult.measurementDateTime.isAfter(todayMidnight)) ||
+                  offlineResult.measurementDateTime
+                      .isBefore(tomorrowMidnight) &&
+                  offlineResult.measurementDateTime.isAfter(todayMidnight)) ||
           (whenPeriod == ResultsWhenPeriod.yesterday &&
               offlineResult.measurementDateTime.isBefore(todayMidnight) &&
               offlineResult.measurementDateTime.isAfter(yeasterdayMidnight));

@@ -138,9 +138,9 @@ class NotificationsHelper {
             .common_when_code(plannedMeasurement.whenCode!.name)
             .toLowerCase();
       }
-      message += translactions.common_at_time(
+      message += ' ${translactions.common_at_time(
         plannedMeasurement.whenStart.toTimeOfDay().toString(),
-      );
+      )}';
     }
 
     return message;

@@ -14,17 +14,21 @@ class DeviceRepository {
 
   Future<List<DeviceModel>> getDeviceModels({
     required UserAccount userAccount,
-  }) =>
-      deviceApiClient.getDeviceModels(
-        userAccount.hospital!.authData.baseUrl,
-      );
+  }) {
+    session.token = userAccount.authToken;
+    return deviceApiClient.getDeviceModels(
+      userAccount.hospital!.authData.baseUrl,
+    );
+  }
 
   Future<void> registerDevice({
     required UserAccount userAccount,
     required DeviceToRegister deviceToRegister,
-  }) =>
-      deviceApiClient.registerDevice(
-        userAccount.hospital!.authData.baseUrl,
-        deviceToRegister,
-      );
+  }) {
+    session.token = userAccount.authToken;
+    return deviceApiClient.registerDevice(
+      userAccount.hospital!.authData.baseUrl,
+      deviceToRegister,
+    );
+  }
 }

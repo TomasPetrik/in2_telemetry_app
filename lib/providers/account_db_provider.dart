@@ -83,6 +83,20 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
     }
   }
 
+  UserAccount? getByToken(String accessToken) {
+    try {
+      final rootAccounts = box.values;
+      final UserAccount? local = rootAccounts.firstWhereOrNull(
+        (userAccountLocal) =>
+            userAccountLocal.authToken?.accessToken == accessToken,
+      );
+
+      return local;
+    } catch (_) {
+      return null;
+    }
+  }
+
   @override
   Future<UserAccount> save(UserAccount userAccount) async {
     if (userAccount.parentId != null) {

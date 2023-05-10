@@ -7,6 +7,7 @@ import 'package:scalesoft_app/api/client/auth_api_client.dart';
 import 'package:scalesoft_app/api/model/auth_token.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
+import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/utils/constants.dart';
@@ -16,10 +17,12 @@ import 'package:scalesoft_app/utils/exceptions/invalid_request_exception.dart';
 class TokenInterceptor extends Interceptor {
   final Session session;
   final AccountApiClient accountApiClient;
+  final AccountDbProvider accountDbProvider;
 
   TokenInterceptor(
     this.session,
     this.accountApiClient,
+    this.accountDbProvider,
   );
 
   @override
@@ -27,21 +30,21 @@ class TokenInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    final accessToken = session.token;
+    final accessToken = session.token?.accessToken;
 
-    if (accessToken != null) {
-      options.headers[HttpHeaders.authorizationHeader] =
-          'Bearer ${session.token!.accessToken}';
+    if (!options.headers.containsKey(HttpHeaders.authorizationHeader) &&
+        accessToken != null) {
+      options.headers[HttpHeaders.authorizationHeader] = 'Bearer $accessToken';
     }
 
-    return super.onRequest(options, handler);
+    return handler.next(options);
   }
 
   @override
   Future<void> onError(DioError err, ErrorInterceptorHandler handler) async {
     switch (err.response?.statusCode) {
       case 400:
-        final refreshToken = err.requestOptions.data["refresh_token"];
+        final refreshToken = err.requestOptions.data['refresh_token'];
         if (refreshToken != null) {
           getIt<SyncBloc>().add(
             SyncEvent.userSessionExpired(refreshToken),
@@ -51,15 +54,18 @@ class TokenInterceptor extends Interceptor {
         throw InvalidRequestException();
       case 401:
         try {
-          final originReqOpt = err.requestOptions;
+          final originalToken = err
+              .requestOptions.headers[HttpHeaders.authorizationHeader]
+              .toString()
+              .split(' ')[1];
 
-          final newAuthToken = await refreshToken();
+          final newAuthToken = await refreshToken(originalToken);
           if (newAuthToken != null) {
-            originReqOpt.headers[HttpHeaders.authorizationHeader] =
-                'Bearer ${session.token!.accessToken}';
+            err.requestOptions.headers[HttpHeaders.authorizationHeader] =
+                'Bearer ${newAuthToken.accessToken}';
             final dio = getIt<Dio>(instanceName: Constants.privateDioName);
-            final response = await dio.fetch(originReqOpt);
-            handler.resolve(response);
+            final response = await dio.fetch(err.requestOptions);
+            return handler.resolve(response);
           }
         } catch (_) {
           handler.next(err);
@@ -81,31 +87,32 @@ class TokenInterceptor extends Interceptor {
     }
   }
 
-  Future<AuthToken?> refreshToken() async {
-    final userId = session.userAccount?.user.muid;
-    final refreshToken = session.userAccount?.authToken?.refreshToken;
-    final tokenUrl = session.userAccount?.hospital?.authData.tokenUrl;
+  Future<AuthToken?> refreshToken(String originalToken) async {
+    final userAccount = accountDbProvider.getByToken(originalToken);
 
-    if (userId != null && refreshToken != null && tokenUrl != null) {
-      final response = await getIt<AuthApiClient>().refreshToken(
-        tokenUrl,
-        'refresh_token',
-        refreshToken,
-        Constants.clientId,
-        Constants.clientSecret,
-      );
+    if (userAccount == null) return null;
 
-      final newToken = AuthToken(
-        response.accessToken,
-        response.refreshToken,
-        DateTime.now().add(const Duration(seconds: 3600)),
-      );
+    final refreshToken = userAccount.authToken!.refreshToken;
+    final tokenUrl = userAccount.hospital!.authData.tokenUrl;
+    session.token = userAccount.authToken;
 
-      session.token = newToken;
+    final response = await getIt<AuthApiClient>().refreshToken(
+      tokenUrl,
+      'refresh_token',
+      refreshToken,
+      Constants.clientId,
+      Constants.clientSecret,
+    );
 
-      return newToken;
-    }
+    final newToken = AuthToken(
+      response.accessToken,
+      response.refreshToken,
+      DateTime.now().add(const Duration(seconds: 3600)),
+    );
 
-    return null;
+    userAccount.authToken = newToken;
+    await accountDbProvider.save(userAccount);
+
+    return newToken;
   }
 }

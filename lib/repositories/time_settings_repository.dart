@@ -15,24 +15,30 @@ class TimeSettingsRepository {
 
   Future<TemplateTimeSet> loadPlanTemplate({
     required UserAccount userAccount,
-  }) =>
-      timeSettingsApiClient.loadPlanTemplate(
-        userAccount.hospital!.authData.baseUrl,
-      );
+  }) {
+    session.token = userAccount.authToken;
+    return timeSettingsApiClient.loadPlanTemplate(
+      userAccount.hospital!.authData.baseUrl,
+    );
+  }
 
   Future<List<TimeSetting>> loadTimeSettings({
     required UserAccount userAccount,
-  }) =>
-      timeSettingsApiClient.loadTimeSettings(
-        userAccount.hospital!.authData.baseUrl,
-      );
+  }) {
+    session.token = userAccount.authToken;
+    return timeSettingsApiClient.loadTimeSettings(
+      userAccount.hospital!.authData.baseUrl,
+    );
+  }
 
   Future<void> updateTimeSettings({
     required UserAccount userAccount,
     required TimeSettings timeSettings,
-  }) =>
-      timeSettingsApiClient.updateTimeSettings(
-        userAccount.hospital!.authData.baseUrl,
-        timeSettings,
-      );
+  }) {
+    session.token = userAccount.authToken;
+    return timeSettingsApiClient.updateTimeSettings(
+      userAccount.hospital!.authData.baseUrl,
+      timeSettings,
+    );
+  }
 }

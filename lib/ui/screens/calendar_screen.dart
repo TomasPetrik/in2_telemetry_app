@@ -223,9 +223,11 @@ class _CalendarFooter extends StatelessWidget {
 
               switch (selectedDay.dayPeriod) {
                 case CalendarDayPeriod.past:
-                  GoRouter.of(context).pushNamed(
-                    ResultsHistoryRoute.name,
-                  );
+                  if (selectedDay.wasCheckedForEvaluation == true) {
+                    GoRouter.of(context).pushNamed(
+                      ResultsHistoryRoute.name,
+                    );
+                  }
                   break;
                 case CalendarDayPeriod.today:
                   GoRouter.of(context).goNamed(ResultsRoute.name);

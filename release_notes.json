@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Implemented periodical measurements. Affected parts (Dashboard, Results, Calendar, Historical Results Detail, Future Measurements Detail, Fulfillments plans evaluation, Notifications, Translations )."
+    "text": "1. Fixed open detail of day in past only if evaluation was successfully loaded before,\n 2. Fixed showing paired devices for users who have permission 'scs-measure-with-unknown-device',\n 3. Fixed loading data for multiple user (each user sets token before his endpoint is fired)."
   },
   {
     "language": "sk-SK",

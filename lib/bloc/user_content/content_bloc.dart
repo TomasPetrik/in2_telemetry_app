@@ -111,7 +111,6 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
       });
     } else {
       _session.userAccount = userAccount;
-      _session.token = userAccount.authToken;
       _session.isMultiUser = isMultiUser;
 
       //Do all sync always when start app
@@ -146,11 +145,9 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
       );
       childAccount?.lastActiveIn = DateTime.now();
       _session.userAccount = childAccount;
-      _session.token = event.userAccount.authToken;
     } else {
       _session.userAccount =
           event.userAccount.copyWith(lastActiveIn: DateTime.now());
-      _session.token = event.userAccount.authToken;
       parentAccount = _session.userAccount!;
     }
 
@@ -178,7 +175,6 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     _session.userAccount = event.userAccount;
     _session.userAccount =
         event.userAccount.copyWith(lastActiveIn: DateTime.now());
-    _session.token = event.userAccount.authToken;
     _session.isMultiUser = false;
     _sessionDbProvider.setIsMultiUser(false);
 

@@ -140,12 +140,7 @@ class CalendarFulfillmentServiceBloc extends Bloc<
         }
       }
 
-      //2. Now iterate  over each day and calculate evaluation for all careplans
-      //in calendar day
-
-      if (evaluationItems.isEmpty) {
-        return;
-      }
+      //2. Now iterate  over each day and calculate evaluation for all careplans in calendar day
 
       final weeks = calendarMonth.weekDays.entries;
 
@@ -153,11 +148,9 @@ class CalendarFulfillmentServiceBloc extends Bloc<
         final days = week.value;
 
         for (final day in days) {
-          if ((day.dayPeriod != CalendarDayPeriod.past &&
-                  day.dayPeriod != CalendarDayPeriod.today) ||
-              !day.isDayOfCurrentMonth) {
-            continue;
-          }
+          //Flag those days for which evaluation wasn't loaded,
+          //so they shoudln't be openned to see their detail
+          day.wasCheckedForEvaluation = evaluationItems.isNotEmpty;
 
           //get evItems which may started even in previous day,
           //but they were ended in this exact day
@@ -182,8 +175,6 @@ class CalendarFulfillmentServiceBloc extends Bloc<
           );
 
           day.usersEvaluationsDay = usersEvaluationsDay;
-
-          debugPrint('day: ${usersEvaluationsDay.length}');
         }
       }
     }
@@ -223,15 +214,6 @@ class CalendarFulfillmentServiceBloc extends Bloc<
             );
           }
           day.plannedMeasurements = plannedMeasurements;
-
-          final measurementsCount = plannedMeasurements.fold(
-            0,
-            (sum, current) => sum + current.reqCount,
-          );
-
-          debugPrint(
-            '$measurementsCount measurements for ${day.startDt.toRegularDate()}',
-          );
 
           final userAccounts = plannedMeasurements
               .map(

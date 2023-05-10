@@ -4,7 +4,6 @@ import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 part 'calendar_bloc_state.freezed.dart';
@@ -60,6 +59,7 @@ class CalendarDay with _$CalendarDay {
     required int dayIndex,
     required bool isDayOfCurrentMonth,
     required CalendarDayPeriod dayPeriod,
+    bool? wasCheckedForEvaluation,
     int? carePlansEvaluation,
     List<PlannedMeasurement>? plannedMeasurements,
     List<UserAccount>? userAccounts,
@@ -161,47 +161,6 @@ class UserEvaluationDay with _$UserEvaluationDay {
           [...previousValue, ...carePlanFulfillments.measurementResults],
     );
     return measurementResults;
-  }
-
-  int get evaluationPercentage => getActualCount() == 0
-      ? 0
-      : ((getActualCount() / getReqCount()) * 100).toInt();
-
-  int getReqCount() {
-    final endOfDayDt = dt.getEndDay();
-    int reqCount = 0;
-
-    for (final carePlanFulfillment in carePlanFulfillments) {
-      final plMeasurementsInDay = carePlanFulfillment.plannedMeasurements.where(
-        (plMeasurement) => plMeasurement.whenEnd.isBefore(endOfDayDt),
-      );
-      reqCount += plMeasurementsInDay
-          .map((plMeasurement) => plMeasurement.reqCount)
-          .reduce((reqCount1, reqCount2) => reqCount1 + reqCount2);
-    }
-
-    return reqCount;
-  }
-
-  int getActualCount() {
-    final endOfDayDt = dt.getEndDay();
-    int actCount = 0;
-
-    for (final carePlanFulfillment in carePlanFulfillments) {
-      final plMeasurementsInDay = carePlanFulfillment.plannedMeasurements.where(
-        (plMeasurement) => plMeasurement.whenEnd.isBefore(endOfDayDt),
-      );
-      actCount += plMeasurementsInDay
-          .map(
-            (plMeasurement) =>
-                plMeasurement.currentCount! > plMeasurement.reqCount
-                    ? plMeasurement.reqCount
-                    : plMeasurement.currentCount!,
-          )
-          .reduce((actCount1, actCount2) => actCount1 + actCount2);
-    }
-
-    return actCount;
   }
 }
 

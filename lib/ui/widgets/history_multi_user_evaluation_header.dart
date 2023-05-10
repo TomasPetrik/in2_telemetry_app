@@ -14,14 +14,28 @@ class HistoryMultiUserEvaluationHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<ProgressItem> progressItems = usersEvaluationsDay
-        .map(
-          (userEvaluationDay) => ProgressItem(
-            userEvaluationDay.userName,
-            userEvaluationDay.evaluationPercentage,
-          ),
-        )
-        .toList();
+    List<ProgressItem> progressItems =
+        usersEvaluationsDay.map((userEvaluationDay) {
+      final reqCounts = userEvaluationDay.carePlanFulfillments.fold<int>(
+        0,
+        (previousValue, carePlanEvaluation) =>
+            previousValue + carePlanEvaluation.getReqCount(),
+      );
+
+      final actualCounts = userEvaluationDay.carePlanFulfillments.fold<int>(
+        0,
+        (previousValue, carePlanEvaluation) =>
+            previousValue + carePlanEvaluation.getActualCount(),
+      );
+
+      final evaluation =
+          reqCounts == 0 ? 0 : ((actualCounts / reqCounts) * 100).toInt();
+
+      return ProgressItem(
+        userEvaluationDay.userName,
+        evaluation,
+      );
+    }).toList();
 
     return SliverToBoxAdapter(
       child: Column(
