@@ -22,7 +22,7 @@ class Measurement with _$Measurement {
     @HiveField(6) int? oxygenSaturation,
     @HiveField(7) int? respiratoryRate,
     @HiveField(8) String? patientMuid,
-    @JsonKey(ignore: true) @HiveField(9) MeasurementType? measurementType,
+    @JsonKey(includeToJson: false) @HiveField(9) MeasurementType? measurementType,
   }) = _ManualMeasurement;
 
   factory Measurement.fromJson(Map<String, dynamic> json) =>

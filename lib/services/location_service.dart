@@ -1,9 +1,10 @@
-import 'package:daylight/daylight.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:injectable/injectable.dart';
+import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/utils/constants.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
+import 'package:sunrise_sunset_calc/sunrise_sunset_calc.dart';
 
 @lazySingleton
 class LocationService {
@@ -11,39 +12,25 @@ class LocationService {
 
   Future<ThemeMode> getThemeModeByDayLight() async {
     Position? currentLocation = await getCurrentLocation();
+    final latitude = currentLocation?.latitude ?? Constants.defaultLat;
+    final longitude = currentLocation?.longitude ?? Constants.defaultLng;
 
-    DaylightLocation lastKnowLocation = currentLocation != null
-        ? DaylightLocation(
-            currentLocation.latitude,
-            currentLocation.longitude,
-          )
-        : const DaylightLocation(Constants.defaultLat, Constants.defaultLng);
+    var sunriseSunset = getSunriseSunset(
+      latitude,
+      longitude,
+      Duration.zero,
+      DateTime.now(),
+    );
 
-    final daylightCalculator = DaylightCalculator(lastKnowLocation);
-    final sunset = daylightCalculator
-        .calculateEvent(
-          DateTime.now(),
-          Zenith.civil,
-          EventType.sunset,
-        )
-        ?.toLocal()
-        .toTimeOfDay();
-
-    final sunrise = daylightCalculator
-        .calculateEvent(
-          DateTime.now(),
-          Zenith.civil,
-          EventType.sunrise,
-        )
-        ?.toLocal()
-        .toTimeOfDay();
+    DailyTime? sunrise = sunriseSunset.sunrise.toLocal().toTimeOfDay();
+    DailyTime? sunset = sunriseSunset.sunset.toLocal().toTimeOfDay();
 
     debugPrint(
-      'sunrise: $sunrise , sunset: $sunset , position: ${lastKnowLocation.lat}, ${lastKnowLocation.long}',
+      'sunrise: $sunrise , sunset: $sunset , position: $latitude, $longitude',
     );
 
     final dtNow = DateTime.now().toTimeOfDay();
-    if (sunset?.isBefore(dtNow) == true || sunrise?.isAfter(dtNow) == true) {
+    if (sunset.isBefore(dtNow) == true || sunrise.isAfter(dtNow) == true) {
       debugPrint('is dark mode: ${dtNow.toString()}');
       return ThemeMode.dark;
     } else {

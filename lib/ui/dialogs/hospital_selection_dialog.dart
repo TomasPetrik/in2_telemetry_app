@@ -7,7 +7,6 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
-import 'package:scalesoft_app/ui/widgets/search_bar.dart';
 import 'package:scalesoft_app/ui/widgets/settings_item.dart';
 import 'package:scalesoft_app/utils/constants.dart';
 
@@ -45,11 +44,13 @@ class HospitalSelectionDialog extends StatelessWidget {
           Padding(
             padding: Paddings.horizontal16,
             child: SearchBar(
-              searchHint: translactions.hospital_selector_search_for_account,
-              searchController: searchController,
+              hintText: translactions.hospital_selector_search_for_account,
+              controller: searchController,
+              /*
               onBack: () {
                 Navigator.of(context).pop();
               },
+              */
             ),
           ),
           Gaps.gap24,

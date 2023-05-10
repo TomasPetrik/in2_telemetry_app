@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Fixed open detail of day in past only if evaluation was successfully loaded before,\n 2. Fixed showing paired devices for users who have permission 'scs-measure-with-unknown-device',\n 3. Fixed loading data for multiple user (each user sets token before his endpoint is fired)."
+    "text": "1. Updated Flutter to 3.10,\n2. Fixed project compatibility for Flutter 3.10, 3. Replaced daylight by sunrise_sunset_calc for sunset / sunrise calculation."
   },
   {
     "language": "sk-SK",
