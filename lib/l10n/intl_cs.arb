@@ -267,6 +267,28 @@
             }
         }
     },
+    "dashboard_screen_measurement_periodical_interval": "Začíná {fromTime}\nKončí {toTime}",
+    "@dashboard_screen_measurement_periodical_interval": {
+        "placeholders": {
+            "fromTime": {
+                "type": "String"
+            },
+            "toTime": {
+                "type": "String"
+            }
+        }
+    },
+    "dashboard_screen_measurements_left": "Zostávají {currentCount} ze {reqCount} měření",
+    "@dashboard_screen_measurements_left": {
+        "placeholders": {
+            "currentCount": {
+                "type": "int"
+            },
+            "reqCount": {
+                "type": "int"
+            }
+        }
+    },
     "dashboard_screen_manual_measurement_info": "Vlastní měření můžete spustit\ni mimo předepsaný plán.",
     "dashboard_screen_upcoming_measurement_info": "Nejbližší měření je {date} v {time}.",
     "@dashboard_screen_upcoming_measurement_info": {
@@ -280,6 +302,7 @@
         }
     },
     "dashboard_screen_no_more_measurements": "Dnes plánované měření skončilo.",
+    "dashboard_screen_no_more_future_measurements": "Zadne dalsi planovane mereni.",
     "dashboard_screen_todays_plan_finished": "Dnešní plán byl splněn na {percentage} %.",
     "@dashboard_screen_todays_plan_finished": {
         "placeholders": {
@@ -297,6 +320,7 @@
             }
         }
     },
+    "dashboard_screen_periodical_measurements": "Periodické měření",
     "measurement_dialog_device_desc": "{deviceModel, select, beurerBm77{Akční tlačítko je pod displejem} omronM7{Akční tlačítko je vedle displeje} other{Nedefinovano}}",
     "@measurement_dialog_device_desc": {
         "description": "Device model",
@@ -399,6 +423,17 @@
         "placeholders": {
             "label": {
                 "type": "String"
+            }
+        }
+    },
+    "results_screen_measurements_completed": "{currentCount} ze {reqCount} měření",
+    "@results_screen_measurements_completed": {
+        "placeholders": {
+            "currentCount": {
+                "type": "int"
+            },
+            "reqCount": {
+                "type": "int"
             }
         }
     },
@@ -529,6 +564,20 @@
     "@register_device_detail_registration_fail_message": {
         "placeholders": {
             "macAddress": {
+                "type": "String"
+            }
+        }
+    },
+    "notification_periodical_frequency_from_to": "{frequency} krát od {fromTime} do {toTime}",
+    "@notification_periodical_frequency_from_to": {
+        "placeholders": {
+            "frequency": {
+                "type": "int"
+            },
+            "fromTime": {
+                "type": "String"
+            },
+            "toTime": {
                 "type": "String"
             }
         }

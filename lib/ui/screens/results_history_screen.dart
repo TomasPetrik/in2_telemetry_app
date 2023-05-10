@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/navigation_screen.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/history_multi_user_evaluation_header.dart';
-import 'package:scalesoft_app/ui/widgets/history_results_list.dart';
 import 'package:scalesoft_app/ui/widgets/history_single_user_evaluation_header.dart';
+import 'package:scalesoft_app/ui/widgets/results_list.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
-import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 class ResultsHistoryScreen extends StatelessWidget {
   ResultsHistoryScreen({
@@ -28,19 +28,19 @@ class ResultsHistoryScreen extends StatelessWidget {
 
     final bool isMultiUser = usersEvaluationsDay.length > 1;
 
-    final historicMeasurements =
-        usersEvaluationsDay.fold<List<HistoricMeasurement>>(
+    final measurementResults =
+        usersEvaluationsDay.fold<List<MeasurementResult>>(
       [],
       (previousValue, userEvaluationsDay) => [
         ...previousValue,
-        ...userEvaluationsDay.getHistoricMeasurements(),
+        ...userEvaluationsDay.getMeasurementResults(),
       ],
     )..sort(
-            (a, b) => b.whenStart.compareTo(a.whenStart),
+            (a, b) => b.measurementDateTime.compareTo(a.measurementDateTime),
           );
 
-    final measurementTypes = historicMeasurements
-        .map((measurement) => measurement.carePlan.activity.measurementType)
+    final measurementTypes = measurementResults
+        .map((measurement) => measurement.measurementType!)
         .toSet();
 
     return Material(
@@ -72,9 +72,10 @@ class ResultsHistoryScreen extends StatelessWidget {
                   NavigationTabBarItem(
                     label: translactions.dashboard_screen_all,
                     slivers: [
-                      HistoryResultsList(
+                      ResultsList(
+                        dayDt: date,
                         isMultiUser: isMultiUser,
-                        historicMeasurements: historicMeasurements,
+                        mResults: measurementResults,
                       ),
                     ],
                     bottomSlivers: [],
@@ -87,13 +88,13 @@ class ResultsHistoryScreen extends StatelessWidget {
                           measurementType.name,
                         ),
                         slivers: [
-                          HistoryResultsList(
+                          ResultsList(
+                            dayDt: date,
                             isMultiUser: isMultiUser,
-                            historicMeasurements: historicMeasurements
+                            mResults: measurementResults
                                 .where(
                                   (measurement) =>
-                                      measurement
-                                          .carePlan.activity.measurementType ==
+                                      measurement.measurementType ==
                                       measurementType,
                                 )
                                 .toList(),

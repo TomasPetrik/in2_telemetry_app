@@ -186,26 +186,35 @@ class SyncService {
     var tomorrowMidnight = DateTime.now().getTomorrowMidnight();
 
     for (final carePlan in carePlans) {
-      if (carePlan.scheduledStart.isAfter(yesterdayMidnight)) continue;
-
-      if (carePlan.scheduledEnd?.isBefore(tomorrowMidnight) == true) {
-        if (carePlan.scheduledEnd?.isBefore(yesterdayMidnight) == true) {
-          debugPrint(
-            'skipping load last two days evaluation for planId = ${carePlan.id}',
-          );
-          continue;
-        }
-        tomorrowMidnight = carePlan.scheduledEnd!.toUtc();
+      if (carePlan.scheduledEnd?.isBefore(yesterdayMidnight) == true ||
+          carePlan.scheduledStart.isAfter(tomorrowMidnight)) {
+        debugPrint(
+          'skipping load last two days evaluation for planId = ${carePlan.id}',
+        );
+        continue;
       }
+
+      DateTime from = yesterdayMidnight;
+      if (carePlan.scheduledStart.isAfter(yesterdayMidnight)) {
+        from = carePlan.scheduledStart;
+      }
+
+      DateTime to = tomorrowMidnight;
+      if (carePlan.scheduledEnd?.isBefore(tomorrowMidnight) == true) {
+        to = carePlan.scheduledEnd!;
+      }
+
+      from = from.toUtc();
+      to = to.toUtc();
 
       final lastTwoDaysEvaluation =
           await _carePlansRepository.loadPartPlanEvaluation(
         userAccount: userAccount,
         carePlanId: carePlan.id,
-        fromDateTime: yesterdayMidnight.toIso8601String(),
-        toDateTime: tomorrowMidnight.toIso8601String(),
+        fromDateTime: from.toIso8601String(),
+        toDateTime: to.toIso8601String(),
       );
-      carePlan.lastTwoDaysEvaluation = lastTwoDaysEvaluation;
+      carePlan.serverEvaluationItems = lastTwoDaysEvaluation.items;
     }
   }
 
@@ -213,10 +222,6 @@ class SyncService {
   Future<void> loadMeasurementResults(final UserAccount userAccount) async {
     final carePlans = userAccount.carePlans;
     if (carePlans == null) return;
-
-    //TODO.. load measurement results regardless care plans, because he could try to measure something
-    //for for each supported measurement hit endpoint for measurements,
-    //this will also affect results page which could be possibly filled even without care plans
 
     final supportedMeasurementTypes =
         CarePlanHelper.getMeasurementTypes(carePlans);
@@ -256,7 +261,7 @@ class SyncService {
     NotificationsHelper.setNotifications(
       appSettings: _appSettingsDbProvider.read(),
       notificationsPlugin: FlutterLocalNotificationsPlugin(),
-      userAccounts: userAccounts,
+      userAccounts: _accountDbProvider.getAll(),
     );
   }
 
@@ -275,7 +280,7 @@ class SyncService {
 
       try {
         final userMeasurements = _pendingResultsDbProvider.getPerUser(userId);
-        if (userMeasurements == null || userMeasurements.isEmpty == true) {
+        if (userMeasurements.isEmpty) {
           continue;
         }
 
@@ -293,6 +298,8 @@ class SyncService {
           }
           await _pendingResultsDbProvider.remove(userMeasurement);
         }
+        //TODO.. here is gap when we should wait until backend will udpate date in their dbs
+        await Future.delayed(const Duration(seconds: 3));
         //reload user results
         await loadFulFillmentEvaluation(userAccount);
         await loadPartPlanEvaluation(userAccount);

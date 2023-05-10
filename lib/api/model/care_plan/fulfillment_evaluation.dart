@@ -21,7 +21,7 @@ class FulfillmentEvaluation with _$FulfillmentEvaluation {
   String toString() => toJson().toString();
 }
 
-@freezed
+@unfreezed
 class FulfillmentEvaluationItem with _$FulfillmentEvaluationItem {
   FulfillmentEvaluationItem._();
 

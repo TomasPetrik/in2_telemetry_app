@@ -18,7 +18,7 @@ import 'package:scalesoft_app/locales.dart';
 import 'package:scalesoft_app/model/app_settings.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
-import 'package:scalesoft_app/providers/calendar_db_provider.dart';
+import 'package:scalesoft_app/providers/calendar_evaluation_db_provider.dart';
 import 'package:scalesoft_app/providers/measurements_db_provider.dart';
 import 'package:scalesoft_app/providers/paired_devices_db_provider.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
@@ -156,8 +156,8 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
     final pairedDevicesDbProvider = getIt<PairedDevicesDbProvider>();
     await pairedDevicesDbProvider.init();
 
-    final calendarDbProvider = getIt<CalendarDbProvider>();
-    await calendarDbProvider.init();
+    final calendarEvaluationDbProvider = getIt<CalendarEvaluationDbProvider>();
+    await calendarEvaluationDbProvider.init();
 
     final measurementDbProvider = getIt<MeasurementsDbProvider>();
     await measurementDbProvider.init();

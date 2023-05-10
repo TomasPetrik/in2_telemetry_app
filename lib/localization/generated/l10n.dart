@@ -1185,6 +1185,27 @@ class I10n {
     );
   }
 
+  /// `Začíná {fromTime}\nKončí {toTime}`
+  String dashboard_screen_measurement_periodical_interval(
+      String fromTime, String toTime) {
+    return Intl.message(
+      'Začíná $fromTime\nKončí $toTime',
+      name: 'dashboard_screen_measurement_periodical_interval',
+      desc: '',
+      args: [fromTime, toTime],
+    );
+  }
+
+  /// `Zostávají {currentCount} ze {reqCount} měření`
+  String dashboard_screen_measurements_left(int currentCount, int reqCount) {
+    return Intl.message(
+      'Zostávají $currentCount ze $reqCount měření',
+      name: 'dashboard_screen_measurements_left',
+      desc: '',
+      args: [currentCount, reqCount],
+    );
+  }
+
   /// `Vlastní měření můžete spustit\ni mimo předepsaný plán.`
   String get dashboard_screen_manual_measurement_info {
     return Intl.message(
@@ -1210,6 +1231,16 @@ class I10n {
     return Intl.message(
       'Dnes plánované měření skončilo.',
       name: 'dashboard_screen_no_more_measurements',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zadne dalsi planovane mereni.`
+  String get dashboard_screen_no_more_future_measurements {
+    return Intl.message(
+      'Zadne dalsi planovane mereni.',
+      name: 'dashboard_screen_no_more_future_measurements',
       desc: '',
       args: [],
     );
@@ -1242,6 +1273,16 @@ class I10n {
       name: 'measurement_dialog_title',
       desc: '',
       args: [label],
+    );
+  }
+
+  /// `Periodické měření`
+  String get dashboard_screen_periodical_measurements {
+    return Intl.message(
+      'Periodické měření',
+      name: 'dashboard_screen_periodical_measurements',
+      desc: '',
+      args: [],
     );
   }
 
@@ -1588,6 +1629,16 @@ class I10n {
       name: 'results_screen_no_results_in_plans',
       desc: '',
       args: [label],
+    );
+  }
+
+  /// `{currentCount} ze {reqCount} měření`
+  String results_screen_measurements_completed(int currentCount, int reqCount) {
+    return Intl.message(
+      '$currentCount ze $reqCount měření',
+      name: 'results_screen_measurements_completed',
+      desc: '',
+      args: [currentCount, reqCount],
     );
   }
 
@@ -2208,6 +2259,17 @@ class I10n {
       name: 'register_device_detail_registration_fail_message',
       desc: '',
       args: [macAddress],
+    );
+  }
+
+  /// `{frequency} krát od {fromTime} do {toTime}`
+  String notification_periodical_frequency_from_to(
+      int frequency, String fromTime, String toTime) {
+    return Intl.message(
+      '$frequency krát od $fromTime do $toTime',
+      name: 'notification_periodical_frequency_from_to',
+      desc: '',
+      args: [frequency, fromTime, toTime],
     );
   }
 

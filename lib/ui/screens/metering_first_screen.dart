@@ -28,14 +28,13 @@ class MeteringFirstScreen extends StatefulWidget {
     this.selectedMeasurementType,
     required this.allMeasurementTypes,
   }) : assert(
-          selectedMeasurementType != null ||
-              (allMeasurementTypes != null && allMeasurementTypes.length > 0),
+          selectedMeasurementType != null || allMeasurementTypes.length > 0,
           'Either selectedMeasurementType != null or allMeasurementTypes should be not empty !',
         );
 
   final String userId;
   final MeasurementType? selectedMeasurementType;
-  final Set<MeasurementType>? allMeasurementTypes;
+  final Set<MeasurementType> allMeasurementTypes;
 
   @override
   State<MeteringFirstScreen> createState() => _MeteringFirstScreenState();
@@ -53,7 +52,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
   void initState() {
     userAccount = getIt<AccountDbProvider>().get(widget.userId)!;
     defaultMeasurementType =
-        widget.selectedMeasurementType ?? widget.allMeasurementTypes!.first;
+        widget.selectedMeasurementType ?? widget.allMeasurementTypes.first;
 
     super.initState();
   }
@@ -86,7 +85,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                   bloc: devManagementCubit
                     ..init(
                       widget.selectedMeasurementType ??
-                          widget.allMeasurementTypes!.first,
+                          widget.allMeasurementTypes.first,
                       widget.allMeasurementTypes,
                       widget.userId,
                     ),

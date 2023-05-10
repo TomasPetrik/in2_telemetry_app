@@ -13,14 +13,14 @@ import 'package:scalesoft_app/ui/widgets/warning_item.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 class SyncItem extends StatelessWidget {
-    const SyncItem({
+  const SyncItem({
     super.key,
     required this.syncState,
-    this.onRefresh,
+    required this.onRefresh,
   });
 
   final SyncState syncState;
-  final VoidCallback? onRefresh;
+  final VoidCallback onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class SyncItem extends StatelessWidget {
         label: translactions.sync_widget_sync_failed_title,
         desc: lastSync != null
             ? translactions.sync_widget_sync_failed_desc(
-                lastSync.toDateOrDay(context),
+                lastSync.toDateOrDay().toLowerCase(),
                 lastSync.toTimeOfDay().toString(),
               )
             : null,
@@ -87,7 +87,7 @@ class SyncItem extends StatelessWidget {
         label: translactions.sync_widget_sync_failed_title,
         desc: lastSync != null
             ? translactions.sync_widget_sync_failed_desc(
-                lastSync.toDateOrDay(context),
+                lastSync.toDateOrDay().toLowerCase(),
                 lastSync.toTimeOfDay().toString(),
               )
             : null,

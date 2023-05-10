@@ -10,6 +10,7 @@ import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -22,10 +23,10 @@ class ManualMeasurementScreen extends StatefulWidget {
   const ManualMeasurementScreen({
     super.key,
     required this.userId,
-    this.measurementType,
+    required this.measurementType,
   });
 
-  final MeasurementType? measurementType;
+  final MeasurementType measurementType;
   final String userId;
 
   @override
@@ -42,7 +43,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
 
   @override
   void initState() {
-    dropdownValue = widget.measurementType ?? MeasurementType.values.first;
+    dropdownValue = widget.measurementType;
 
     final currentTime = DateTime.now().toTimeOfDay();
     timeEditingController = TextEditingController(
@@ -53,8 +54,8 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
   }
 
   void _goToMainAndSync() {
-    GoRouter.of(context).pop();
     getIt<SyncBloc>().add(const SyncEvent.syncResults());
+    GoRouter.of(context).goNamed(DashboardRoute.name);
   }
 
   @override

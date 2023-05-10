@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scalesoft_app/model/user_account.dart';
@@ -15,27 +16,63 @@ import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 class ActionWidget extends StatelessWidget with BottomSheetMixin {
   const ActionWidget({
     super.key,
-    required this.nextMeasurement,
+    required this.whenPeriod,
+    required this.upcomingMeasurements,
+    required this.allTodayMeasurements,
   });
 
-  final PlannedMeasurement? nextMeasurement;
+  final PlanWhenPeriod whenPeriod;
+  final List<PlannedMeasurement> upcomingMeasurements;
+  final List<PlannedMeasurement> allTodayMeasurements;
+
+  PlannedMeasurement? get nextMeasurement => upcomingMeasurements
+      .firstWhereOrNull((measurement) => !measurement.isLongPeriod);
+
+  List<PlannedMeasurement> get _pMeasurements => upcomingMeasurements
+      .where((measurement) => measurement.isLongPeriod)
+      .toList();
+
+  List<PlannedMeasurement> get _rMeasurements => upcomingMeasurements
+      .where(
+        (measurement) => !measurement.isLongPeriod,
+      )
+      .toList();
 
   MeasurementWhenType get measurementType {
+    MeasurementWhenType? measurementWhenType;
+
     final now = DateTime.now();
 
-    if (nextMeasurement != null) {
+    //we want to have this widget blank when there is no next measurement in next 10
+    if (whenPeriod == PlanWhenPeriod.next10 && nextMeasurement == null) {
+      measurementWhenType = MeasurementWhenType.notVisible;
+
+      //or there are only long ongoing periodical measurements remaining in this day
+    } else if (_rMeasurements.isEmpty && _pMeasurements.isNotEmpty) {
+      measurementWhenType = MeasurementWhenType.notVisible;
+    } else if (allTodayMeasurements.isEmpty) {
+      measurementWhenType = MeasurementWhenType.noMeasurement;
+    } else if (allTodayMeasurements.isNotEmpty &&
+        upcomingMeasurements.isEmpty) {
+      measurementWhenType = MeasurementWhenType.finished;
+    } else if (nextMeasurement != null) {
       final todayStart = nextMeasurement!.timingDayWhen.start.todayDateTime();
-      final todayEnd = nextMeasurement!.timingDayWhen.end.todayDateTime();
+      var todayEnd = nextMeasurement!.timingDayWhen.end.todayDateTime();
+      if (todayEnd.isBefore(todayStart)) {
+        todayEnd = todayEnd.add(const Duration(days: 1));
+      }
       if (now.isBefore(todayEnd) && now.isAfter(todayStart)) {
-        return MeasurementWhenType.ongoing;
+        measurementWhenType = MeasurementWhenType.ongoing;
       } else if (now.isBefore(todayStart)) {
-        return MeasurementWhenType.upcoming;
-      } else if (nextMeasurement?.carePlan.hasMeasurementsToday() == true) {
-        return MeasurementWhenType.finished;
+        measurementWhenType = MeasurementWhenType.upcoming;
+      } else if (nextMeasurement!.carePlan.hasMeasurementsToday() == true) {
+        measurementWhenType = MeasurementWhenType.finished;
       }
     }
 
-    return MeasurementWhenType.noMeasurement;
+    measurementWhenType ??= MeasurementWhenType.noMeasurement;
+
+    return measurementWhenType;
   }
 
   String getMeasurementText(BuildContext context) {
@@ -58,105 +95,123 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
         return translactions.dashboard_screen_no_more_measurements;
       case MeasurementWhenType.noMeasurement:
         return translactions.dashboard_screen_no_todays_measurements;
+      case MeasurementWhenType.notVisible:
+        return translactions.dashboard_screen_no_more_future_measurements;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (measurementType == MeasurementWhenType.notVisible) {
+      return const SizedBox.shrink();
+    }
+
     final isMultiUser = getIt<Session>().isMultiUser == true;
     UserAccount? userAccount;
     if (nextMeasurement?.userId != null && isMultiUser) {
       userAccount = getIt<AccountDbProvider>().get(nextMeasurement!.userId);
     }
 
-    return Padding(
-      padding: Paddings.horizontal16,
-      child: ScaleCard(
-        child: Container(
-          padding: Paddings.all16,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadii.radius16,
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Theme.of(context).colorScheme.primaryContainer,
-                Theme.of(context).colorScheme.onPrimaryContainer,
-              ],
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+    return Column(
+      children: [
+        Gaps.gap16,
+        Padding(
+          padding: Paddings.horizontal16,
+          child: ScaleCard(
+            child: Container(
+              padding: Paddings.all16,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadii.radius16,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Theme.of(context).colorScheme.primaryContainer,
+                    Theme.of(context).colorScheme.onPrimaryContainer,
+                  ],
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SvgPicture.asset(
-                    'assets/icons/icon_wave_pulse.svg',
-                    color: Theme.of(context).colorScheme.onSurface,
+                  Row(
+                    children: [
+                      SvgPicture.asset(
+                        'assets/icons/icon_wave_pulse.svg',
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                      Gaps.gap16,
+                      Expanded(
+                        child: Text(
+                          getMeasurementText(context),
+                          style: ScaleTextStyles.text.apply(
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                        ),
+                      ),
+                      if (measurementType == MeasurementWhenType.ongoing) ...[
+                        Gaps.gap16,
+                        Text(
+                          nextMeasurement?.timingDayWhen.start.toString() ?? '',
+                          style: ScaleTextStyles.text.apply(
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
-                  Gaps.gap16,
-                  Expanded(
-                    child: Text(
-                      getMeasurementText(context),
+                  if (userAccount != null) ...[
+                    Gaps.gap16,
+                    Container(
+                      height: 0.5,
+                      color: Theme.of(context).colorScheme.surfaceTint,
+                    ),
+                    Gaps.gap12,
+                    Text(
+                      userAccount.user.fullName,
                       style: ScaleTextStyles.text.apply(
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
-                  ),
-                  if (measurementType == MeasurementWhenType.ongoing) ...[
-                    Gaps.gap16,
+                    Gaps.gap6,
                     Text(
-                      nextMeasurement?.timingDayWhen.start.toString() ?? '',
-                      style: ScaleTextStyles.text.apply(
+                      userAccount.hospital!.title,
+                      style: ScaleTextStyles.label.apply(
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                   ],
+                  if (measurementType == MeasurementWhenType.ongoing &&
+                      nextMeasurement != null) ...[
+                    Gaps.gap16,
+                    HighlightedElevatedButton(
+                      label: translactions.common_measure_now,
+                      buttonType: ButtonType.secondary,
+                      onPressed: () {
+                        MeasurementHelper.doMeasurement(
+                          context: context,
+                          userId: nextMeasurement!.userId,
+                          selectedMeasurementType: nextMeasurement!
+                              .carePlan.activity.measurementType,
+                        );
+                      },
+                    ),
+                  ],
                 ],
               ),
-              if (userAccount != null) ...[
-                Gaps.gap16,
-                Container(
-                  height: 0.5,
-                  color: Theme.of(context).colorScheme.surfaceTint,
-                ),
-                Gaps.gap12,
-                Text(
-                  userAccount.user.fullName,
-                  style: ScaleTextStyles.text.apply(
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                ),
-                Gaps.gap6,
-                Text(
-                  userAccount.hospital!.title,
-                  style: ScaleTextStyles.label.apply(
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                ),
-              ],
-              if (measurementType == MeasurementWhenType.ongoing &&
-                  nextMeasurement != null) ...[
-                Gaps.gap16,
-                HighlightedElevatedButton(
-                  label: translactions.common_measure_now,
-                  buttonType: ButtonType.secondary,
-                  onPressed: () {
-                    MeasurementHelper.doMeasurement(
-                      context: context,
-                      userId: nextMeasurement!.userId,
-                      selectedMeasurementType:
-                          nextMeasurement!.carePlan.activity.measurementType,
-                    );
-                  },
-                ),
-              ],
-            ],
+            ),
           ),
         ),
-      ),
+        Gaps.gap26,
+      ],
     );
   }
 }
 
-enum MeasurementWhenType { ongoing, upcoming, finished, noMeasurement }
+enum MeasurementWhenType {
+  ongoing,
+  upcoming,
+  finished,
+  noMeasurement,
+  notVisible
+}

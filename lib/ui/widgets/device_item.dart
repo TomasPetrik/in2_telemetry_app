@@ -23,7 +23,7 @@ class DeviceItem extends StatelessWidget {
 
     if (device.addedAt != null) {
       subTitle +=
-          '\n${translactions.common_addded_at_time(device.addedAt!.toDateFormatLong2())}';
+          '\n${translactions.common_addded_at_time(device.addedAt!.toDateFormatLong())}';
     }
 
     return subTitle;

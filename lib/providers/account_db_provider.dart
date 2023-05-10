@@ -142,8 +142,23 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
   }
 
   @override
-  Iterable<UserAccount> getAll() {
+  Iterable<UserAccount> getRootAccounts() {
     return box.values;
+  }
+
+  @override
+  List<UserAccount> getAll() {
+    final allAccounts = box.values.fold<List<UserAccount>>(
+      [],
+      (prevAccounts, rootAccount) => [
+        ...prevAccounts,
+        rootAccount,
+        if (rootAccount.representedPeople != null)
+          ...rootAccount.representedPeople!
+      ],
+    );
+
+    return allAccounts;
   }
 
   List<UserAccount> getRootUsersFromHospital(Hospital hospital) {
@@ -255,5 +270,6 @@ abstract class AccountDb {
   Future<UserAccount> save(UserAccount account);
   Future<UserAccount> remove(UserAccount account);
   UserAccount? getLast();
+  Iterable<UserAccount> getRootAccounts();
   Iterable<UserAccount> getAll();
 }

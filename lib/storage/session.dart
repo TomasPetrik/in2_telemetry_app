@@ -31,7 +31,7 @@ class Session {
   Session(this._accountDbProvider, this._pendingResultsDbProvider);
 
   bool supportMultiUser() {
-    return _accountDbProvider.getAll().length > 1;
+    return _accountDbProvider.getRootAccounts().length > 1;
   }
 
   DateTime? getLastSyncAt() {
@@ -51,7 +51,7 @@ class Session {
 
   List<UserAccount> getSessionAccounts() {
     if (isMultiUser == true) {
-      return _accountDbProvider.getAll().toList();
+      return _accountDbProvider.getRootAccounts().toList();
     } else {
       return [if (userAccount != null) userAccount!];
     }
@@ -83,7 +83,7 @@ class Session {
     for (final userAccount in getSessionAccounts()) {
       final userPendingResults =
           _pendingResultsDbProvider.getPerUser(userAccount.user.muid);
-      if (userPendingResults != null && userPendingResults.isNotEmpty == true) {
+      if (userPendingResults.isNotEmpty == true) {
         pendingResults.addAll(userPendingResults);
       }
     }
@@ -184,7 +184,7 @@ class Session {
 
     final pendingResults =
         _pendingResultsDbProvider.getPerUser(userAccount.user.muid);
-    if (pendingResults?.isNotEmpty == true) {
+    if (pendingResults.isNotEmpty == true) {
       return UserProblemType.syncResultsFailed;
     }
     return null;

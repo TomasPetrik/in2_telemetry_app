@@ -12,7 +12,7 @@ class NavigationTabChip extends StatelessWidget {
 
   final String label;
   final bool isSelected;
-  final VoidCallback? onTap;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {

@@ -1,44 +1,68 @@
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
-import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaulation_aggregated.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/providers/calendar_db_provider.dart';
+import 'package:scalesoft_app/providers/calendar_evaluation_db_provider.dart';
+import 'package:scalesoft_app/providers/measurements_db_provider.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
+import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 import 'package:scalesoft_app/utils/helpers/results_helper.dart';
 
 class EvaluationPlanHelper {
-  static int getProgressFromFullPlanEvaluation(
-    FulfillmentEvaluationAggregated fullPlanEvaluation,
-  ) {
-    int actualCount = fullPlanEvaluation.measurementInPlanCount;
-    int requiredMeasurementCount = fullPlanEvaluation.requiredMeasurementCount;
+  static int getProgressFromFullPlanEvaluation({
+    required CarePlan carePlan,
+    required List<MeasurementResult> offlineResults,
+  }) {
+    int actualCount = carePlan.fullPlanEvaluation!.measurementInPlanCount;
+    int requiredMeasurementCount =
+        carePlan.fullPlanEvaluation!.requiredMeasurementCount;
 
-    //TODO.. here should be included also offline results if this plan contains planned measurements
-    //and their intervals are matching with offline results
+    int offlineResultsCount = 0;
+
+    if (offlineResults.isNotEmpty) {
+      //get all planned measurements within current time since plan exists
+      final allPlannedMeasurements =
+          carePlan.getAllPlannedMeasurements(offlineResults: offlineResults);
+
+      //check if offline results are included in these measurements
+      final allLegitDateTimes = allPlannedMeasurements.fold<List<DateTime>>(
+        [],
+        (prevDateTimes, plMeasurement) => [
+          ...prevDateTimes,
+          ...plMeasurement.fulfillmentEvaluationItem!.actualMeasurementTimes
+        ],
+      ).toSet();
+      offlineResultsCount = allLegitDateTimes
+          .where(
+            (legitDt) => offlineResults.any(
+              (offlineResult) => offlineResult.measurementDateTime == legitDt,
+            ),
+          )
+          .length;
+    }
+
+    int allActualCount = actualCount + offlineResultsCount;
+    requiredMeasurementCount = allActualCount > requiredMeasurementCount
+        ? allActualCount
+        : requiredMeasurementCount;
 
     int percentage = requiredMeasurementCount == 0
-        ? requiredMeasurementCount
-        : (actualCount / requiredMeasurementCount * 100).round();
+        ? 0
+        : (allActualCount / requiredMeasurementCount * 100).round();
     return percentage;
-  }
-
-  static int getProgressFromEvaluation(
-    FulfillmentEvaluation fulfillmentEvaluation,
-  ) {
-    return getProgressFromEvaluationItems(fulfillmentEvaluation.items);
   }
 
   static int? getProgressFromPlans({
     required List<CarePlan> carePlans,
-    required List<MeasurementResult> offlineResults,
     required ResultsWhenPeriod whenPeriod,
+    required List<MeasurementResult> offlineResults,
   }) {
     int expectedCount = 0;
     int actualCount = 0;
@@ -48,58 +72,31 @@ class EvaluationPlanHelper {
       carePlans,
       whenPeriod,
       null,
+      offlineResults,
+    );
+
+    final dtNow = DateTime.now();
+    final dayFinishAt = whenPeriod == ResultsWhenPeriod.today
+        ? dtNow.getTomorrowMidnight()
+        : dtNow.getTodayMidnight();
+
+    //filter out periodical measurement
+    //which are not ending within exact day,
+    //and they still haven't been fulfilled until measurement's finish time
+    plannedMeasurements.removeWhere(
+      (pMeasurement) =>
+          pMeasurement.carePlan.isPeriodical &&
+          (!pMeasurement.whenEnd.isBefore(dayFinishAt) &&
+              !pMeasurement.fulfillmentEvaluationItem!.wasMeasured()),
     );
 
     for (final plannedMeasurement in plannedMeasurements) {
       expectedCount += plannedMeasurement.reqCount;
-    }
-
-    //Include fulfillments evaluation items
-    for (final carePlan in carePlans) {
-      if (carePlan.lastTwoDaysEvaluation?.items.isNotEmpty == true) {
-        for (final evItem in carePlan.lastTwoDaysEvaluation!.items) {
-          if ((whenPeriod == ResultsWhenPeriod.today &&
-                  evItem.start.isToday()) ||
-              (whenPeriod == ResultsWhenPeriod.yesterday &&
-                  evItem.start.wasYesterday())) {
-            actualCount +=
-                evItem.actualMeasurementCount > evItem.requiredMeasurementCount
-                    ? evItem.requiredMeasurementCount
-                    : evItem.actualMeasurementCount;
-          }
-        }
-      }
-    }
-
-    //Include offline results if exists into plan fulfillment evaluation:
-
-    //1. get planned measurements by careplan within current time inlcude ongoing results
-
-    final dtNow = DateTime.now();
-    final plannedMeasurementsWithingCurrentTime =
-        plannedMeasurements.where((measurement) {
-      return measurement.whenStart.isBefore(dtNow);
-    }).toList();
-
-    //2. check their expected frequency in interval
-    for (final plannedMeasurement in plannedMeasurementsWithingCurrentTime) {
-      //3. then look if offline results matching this period and measurementType
-      final matchingResultsInPeriod = offlineResults.where((offlineResult) {
-        return (offlineResult.measurementType ==
-                plannedMeasurement.carePlan.activity.measurementType &&
-            plannedMeasurement.hasMeasurementAt(
-              offlineResult.measurementDateTime,
-            ));
-      });
-
-      //4. Add offline measurements count to actualCount with overflow check
-      if (matchingResultsInPeriod.isNotEmpty) {
-        final maxIntervalCount =
-            matchingResultsInPeriod.length > plannedMeasurement.reqCount
-                ? plannedMeasurement.reqCount
-                : matchingResultsInPeriod.length;
-        actualCount += maxIntervalCount;
-      }
+      actualCount += plannedMeasurement.currentCount == null
+          ? 0
+          : plannedMeasurement.currentCount! > plannedMeasurement.reqCount
+              ? plannedMeasurement.reqCount
+              : plannedMeasurement.currentCount!;
     }
 
     return expectedCount == 0
@@ -112,60 +109,112 @@ class EvaluationPlanHelper {
   ) {
     if (items.isEmpty) return 0;
 
-    int allActualMeasurementCount = items.fold(
-      0,
-      (sum, current) =>
-          sum +
-          (current.actualMeasurementCount > current.requiredMeasurementCount
-              ? current.requiredMeasurementCount
-              : current.actualMeasurementCount),
+    //1. Get required count
+    final allRequiredMeasurementCount = items
+        .map((evItem) => evItem.requiredMeasurementCount)
+        .reduce((prevVal, nextVal) => prevVal + nextVal);
+
+    //1. Get current measurement count
+    final measurementTimes = items.fold<List<DateTime>>(
+      [],
+      (prevEvTimes, evItem) => [
+        ...prevEvTimes,
+        ...evItem.actualMeasurementTimes,
+      ],
     );
-    int allRequiredMeasurementCount =
-        items.fold(0, (sum, current) => sum + current.requiredMeasurementCount);
+
+    //2. Make sure they are unique
+    final measurementTimesSet = measurementTimes.toSet();
+    final allActualMeasurementCount = measurementTimesSet.length;
 
     return (allActualMeasurementCount / allRequiredMeasurementCount * 100)
         .round();
   }
 
   static List<UserEvaluationDay> getUserEvaluationDays(
-    int year,
-    int month,
-    CalendarDay day,
-    List<UserAccount> userAccounts,
+    final int year,
+    final int month,
+    final CalendarDay day,
+    final List<UserAccount> userAccounts,
+    final MeasurementsDbProvider measurementsDbProvider,
   ) {
-    CalendarDbProvider calendarDbProvider = getIt<CalendarDbProvider>();
-    PendingResultsDbProvider pendingResultsDbProvider =
+    final CalendarEvaluationDbProvider calendarDbProvider =
+        getIt<CalendarEvaluationDbProvider>();
+    final PendingResultsDbProvider pendingResultsDbProvider =
         getIt<PendingResultsDbProvider>();
-    List<UserEvaluationDay> userEvDays = [];
+    final List<UserEvaluationDay> userEvDays = [];
 
     for (final userAccount in userAccounts) {
-      final List<Measurement>? offlineResults =
+      final List<Measurement> offlineMeasurements =
           pendingResultsDbProvider.getPerUser(userAccount.user.muid);
 
-      final List<CarePlanSingleDayEvaluation> carePlanFulfillments = [];
+      final List<MeasurementResult> offlineResults =
+          MeasurementHelper.getOffilneResultsConverted(
+        offlineMeasurements,
+        null,
+        null,
+      );
 
-      for (final carePlan in userAccount.carePlans!) {
+      final List<SingleDayMeasurementsOfExactType> carePlanFulfillments = [];
+
+      Set<MeasurementType> measurementTypes = userAccount.carePlans!
+          .map((carePlan) => carePlan.activity.measurementType)
+          .toSet();
+
+      for (final measurementType in measurementTypes) {
+        final List<MeasurementResult> serverResultsOfExactType =
+            measurementsDbProvider
+                    .get(
+                      userAccount.user.muid,
+                      measurementType,
+                      year,
+                      month,
+                    )
+                    ?.items
+                    .where(
+                      (result) =>
+                          result.measurementDateTime.isBefore(day.endDt) &&
+                          result.measurementDateTime.isAfter(day.startDt),
+                    )
+                    .toList() ??
+                [];
+
+        final carePlansOfExactType = userAccount.carePlans!
+            .where(
+              (carePlan) =>
+                  carePlan.activity.measurementType == measurementType,
+            )
+            .toList();
+
+        for (final carePlan in carePlansOfExactType) {
+          final monthlyEvItems = calendarDbProvider
+              .get(
+                carePlan.id,
+                year,
+                month,
+              )
+              ?.items;
+
+          if (monthlyEvItems != null) {
+            carePlan.addEvaluationItems(monthlyEvItems);
+          }
+        }
+
         final List<PlannedMeasurement> plannedMeasurements =
-            Calendar.getMeasurementOfDay(
-          carePlans: [carePlan],
+            Calendar.getMeasurementsOfDay(
+          carePlans: carePlansOfExactType,
           dayDt: day.startDt,
+          offlineResults: offlineResults,
+          all: true,
         );
 
-        final evItems = calendarDbProvider
-                .get(
-                  carePlan.id,
-                  year,
-                  month,
-                )
-                ?.items
-                .where(
-                  (evItem) =>
-                      evItem.start.isSameDate(day.startDt) ||
-                      (evItem.start.isAfter(day.startDt) &&
-                          evItem.start.isBefore(day.endDt)),
-                )
-                .toList() ??
-            [];
+        //get list of MeasurementResult as this method is about to get historical results
+        final measurementResultsOfExactType = ResultsHelper.getResultsOfDay(
+          plannedMeasurements: plannedMeasurements,
+          serverResults: serverResultsOfExactType,
+          offlineResults: offlineResults,
+          startOfDay: day.startDt,
+        );
 
         /*
         debugPrint(
@@ -173,11 +222,11 @@ class EvaluationPlanHelper {
         );
         */
 
-        final carePlanSingleEvaluation = CarePlanSingleDayEvaluation(
-          carePlan,
-          evItems,
+        final carePlanSingleEvaluation = SingleDayMeasurementsOfExactType(
+          measurementType,
           plannedMeasurements,
-          offlineResults,
+          offlineMeasurements,
+          measurementResultsOfExactType,
         );
 
 /*
@@ -190,14 +239,13 @@ class EvaluationPlanHelper {
       }
 
       if (carePlanFulfillments.isNotEmpty) {
-        userEvDays.add(
-          UserEvaluationDay(
-            carePlanFulfillments,
-            day.startDt,
-            userAccount.user.fullName,
-            day.dayPeriod,
-          ),
+        final userEvaluationDay = UserEvaluationDay(
+          carePlanFulfillments,
+          day.startDt,
+          userAccount.user.fullName,
+          day.dayPeriod,
         );
+        userEvDays.add(userEvaluationDay);
       }
     }
 

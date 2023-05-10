@@ -162,7 +162,7 @@ class OfflineResultsScreen extends StatelessWidget with BottomSheetMixin {
                               Padding(
                                 padding: Paddings.left16,
                                 child: Text(
-                                  date.toDateOrDay(context),
+                                  date.toDateOrDay(),
                                   style: ScaleTextStyles.label.apply(
                                     color:
                                         Theme.of(context).colorScheme.onPrimary,
@@ -172,6 +172,7 @@ class OfflineResultsScreen extends StatelessWidget with BottomSheetMixin {
                               Gaps.gap8,
                             ],
                             ResultItem(
+                              isMultiUser: getIt<Session>().isMultiUser == true,
                               mResult: offlineResults[index],
                               onRemove: () async {
                                 final confirmed =
@@ -219,7 +220,7 @@ class OfflineResultsScreen extends StatelessWidget with BottomSheetMixin {
                   subTitle: lastSyncAt == null
                       ? ''
                       : translactions.sync_failed_screen_sub_title(
-                          lastSyncAt.toDateOrDay(context),
+                          lastSyncAt.toDateOrDay(),
                           lastSyncAt.toTimeOfDay().toString(),
                         ),
                   showClose: true,

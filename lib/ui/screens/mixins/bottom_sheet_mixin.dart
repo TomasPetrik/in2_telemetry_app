@@ -204,7 +204,7 @@ mixin BottomSheetMixin {
 
   Future<SwitchUserResult?> switchUser({
     required final BuildContext context,
-    final bool? supportMultiUser,
+    required final bool supportMultiUser,
   }) async {
     return await showModalBottomSheet<UserSelection>(
       context: context,

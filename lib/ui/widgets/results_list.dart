@@ -1,24 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
-import 'package:scalesoft_app/ui/routers/routes/chart_screen_route.dart';
+import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/info_placeholder.dart';
 import 'package:scalesoft_app/ui/widgets/result_item.dart';
+import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 class ResultsList extends StatelessWidget {
   const ResultsList({
     super.key,
+    required this.dayDt,
+    required this.isMultiUser,
     required this.mResults,
-    required this.whenPeriod,
+    this.canOpenChart = false,
   });
 
+  final DateTime dayDt;
+  final bool isMultiUser;
   final List<MeasurementResult> mResults;
-  final ResultsWhenPeriod whenPeriod;
+  final bool canOpenChart;
+
+  List<MeasurementResult> get _longPeriodicalNotCompletedMeasurements =>
+      mResults
+          .where(
+            (measurement) =>
+                measurement.isLongPeriod && !measurement.wasMeasured,
+          )
+          .toList();
+
+  List<MeasurementResult> get _rMeasurements => mResults
+      .where(
+        (measurement) =>
+            !(measurement.isLongPeriod && !measurement.wasMeasured),
+      )
+      .toList();
 
   @override
   Widget build(BuildContext context) {
@@ -30,51 +48,113 @@ class ResultsList extends StatelessWidget {
                 'assets/icons/icon_chart_pie_simple_big.svg',
                 color: Theme.of(context).colorScheme.tertiary,
               ),
-              label: translactions.results_screen_no_results_at_period(
-                translactions.common_when_day_name(whenPeriod.name),
-              ),
+              label: dayDt.toHistoricalDateOrDay(),
             ),
           )
-        : SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (_, int index) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        final userAccount = getIt<AccountDbProvider>()
-                            .get(mResults[index].userId!);
-
-                        if (userAccount?.viewOwnMeasurementData == true) {
-                          GoRouter.of(context).pushNamed(
-                            ChartRoute.name,
-                            params: {
-                              'userId': mResults[index].userId!,
-                              'dateTime': mResults[index]
-                                  .measurementDateTime
-                                  .toIso8601String(),
-                              'measurementType':
-                                  mResults[index].measurementType!.name,
-                            },
-                          );
-                        }
-                      },
-                      child: ResultItem(
-                        mResult: mResults[index],
+        : MultiSliver(
+            children: [
+              if (_longPeriodicalNotCompletedMeasurements.isNotEmpty) ...[
+                SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Gaps.gap24,
+                      Padding(
+                        padding: Paddings.left16,
+                        child: Text(
+                          translactions
+                              .dashboard_screen_periodical_measurements,
+                          style: ScaleTextStyles.label.apply(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                        ),
                       ),
+                      Gaps.gap8,
+                    ],
+                  ),
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (_, int index) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ResultItem(
+                            isMultiUser: isMultiUser,
+                            mResult:
+                                _longPeriodicalNotCompletedMeasurements[index],
+                            canOpenChart: canOpenChart,
+                          ),
+                          if (index !=
+                                  (_longPeriodicalNotCompletedMeasurements
+                                          .length -
+                                      1) ||
+                              (index ==
+                                      (_longPeriodicalNotCompletedMeasurements
+                                              .length -
+                                          1) &&
+                                  _rMeasurements.isNotEmpty))
+                            Container(
+                              margin: Paddings.horizontal16,
+                              height: 0.5,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                            ),
+                        ],
+                      );
+                    },
+                    childCount: _longPeriodicalNotCompletedMeasurements.length,
+                  ),
+                ),
+              ],
+              if (_rMeasurements.isNotEmpty) ...[
+                if (_longPeriodicalNotCompletedMeasurements.isNotEmpty)
+                  SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Gaps.gap24,
+                        Padding(
+                          padding: Paddings.left16,
+                          child: Text(
+                            dayDt.toDateOrDay(),
+                            style: ScaleTextStyles.label.apply(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                            ),
+                          ),
+                        ),
+                        Gaps.gap8,
+                      ],
                     ),
-                    if (index != (mResults.length - 1))
-                      Container(
-                        margin: Paddings.horizontal16,
-                        height: 0.5,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                  ],
-                );
-              },
-              childCount: mResults.length,
-            ),
+                  ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (_, int index) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ResultItem(
+                            isMultiUser: isMultiUser,
+                            mResult: _rMeasurements[index],
+                            canOpenChart: canOpenChart,
+                          ),
+                          if (index != (_rMeasurements.length - 1))
+                            Container(
+                              margin: Paddings.horizontal16,
+                              height: 0.5,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                            ),
+                        ],
+                      );
+                    },
+                    childCount: _rMeasurements.length,
+                  ),
+                ),
+              ],
+            ],
           );
   }
 }

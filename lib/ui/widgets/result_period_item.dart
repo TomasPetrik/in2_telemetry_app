@@ -51,7 +51,8 @@ class ResultPeriodItem extends StatelessWidget {
             children: [
               Text(
                 translactions.common_measurement_times(whenPeriod.name),
-                style: ScaleTextStyles.textAccent,
+                style: ScaleTextStyles.textAccent
+                    .apply(color: Theme.of(context).colorScheme.onPrimary),
               ),
               Gaps.gap6,
               Text(

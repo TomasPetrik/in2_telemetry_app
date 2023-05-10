@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/cubit/auth_web/auth_web_cubit.dart';
 import 'package:scalesoft_app/cubit/auth_web/auth_web_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -25,8 +24,6 @@ class AuthWebScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        onCancelled.call();
-        GoRouter.of(context).pop();
         return true;
       },
       child: Material(
@@ -79,7 +76,6 @@ class AuthWebScreen extends StatelessWidget {
                 icon: const Icon(Icons.close_rounded),
                 onPressed: () {
                   onCancelled.call();
-                  GoRouter.of(context).pop();
                 },
               ),
             )

@@ -4,16 +4,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
+import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc_event.dart';
 import 'package:scalesoft_app/bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc_state.dart';
 import 'package:scalesoft_app/cubit/calendar_footer/calendar_footer_cubit.dart';
+import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
-import 'package:scalesoft_app/providers/calendar_db_provider.dart';
+import 'package:scalesoft_app/providers/calendar_evaluation_db_provider.dart';
+import 'package:scalesoft_app/providers/measurements_db_provider.dart';
+import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/repositories/care_plans_repository.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
+import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 @injectable
 class CalendarFulfillmentServiceBloc extends Bloc<
@@ -21,19 +26,70 @@ class CalendarFulfillmentServiceBloc extends Bloc<
   final AccountDbProvider _accountDbProvider;
   final CalendarFooterCubit _calendarFooterCubit;
   final CarePlansRepository _carePlansRepository;
-  final CalendarDbProvider _calendarDbProvider;
+  final CalendarEvaluationDbProvider _calendarEvaluationDbProvider;
+  final MeasurementsDbProvider _measurementsDbProvider;
+  final PendingResultsDbProvider _pendingResultsDbProvider;
+  late List<MeasurementResult> offlineResults;
 
   CalendarFulfillmentServiceBloc(
     this._accountDbProvider,
     this._calendarFooterCubit,
     this._carePlansRepository,
-    this._calendarDbProvider,
+    this._calendarEvaluationDbProvider,
+    this._measurementsDbProvider,
+    this._pendingResultsDbProvider,
   ) : super(const CalendarFulfillmentServiceBlocState()) {
+    Future<void> loadAllUsersMeasurements(
+      CalendarMonth calendarMonth,
+      List<CarePlan> carePlans,
+    ) async {
+      final userAccounts =
+          carePlans.fold<List<UserAccount>>([], (prevAccounts, carePlan) {
+        final userAccount = _accountDbProvider.get(carePlan.userId!)!;
+
+        return [...prevAccounts, userAccount];
+      }).toSet();
+
+      //Load all measurements results (even any out of plan)
+      for (final userAccount in userAccounts) {
+        if (!userAccount.viewOwnMeasurementData) {
+          continue;
+        }
+        try {
+          final supportedMeasurementTypes =
+              CarePlanHelper.getMeasurementTypes(carePlans);
+
+          final startDateTime = calendarMonth.monthStartDate;
+          final endDateTime = calendarMonth.monthEndDate;
+
+          for (final mesurementType in supportedMeasurementTypes) {
+            final measurementResults = await _carePlansRepository.loadResults(
+              userAccount: userAccount,
+              measurementType: mesurementType,
+              startDateTime: startDateTime.toIso8601String(),
+              endDateTime: endDateTime.toIso8601String(),
+            );
+            await _measurementsDbProvider.put(
+              userAccount.user.muid,
+              mesurementType,
+              calendarMonth.year,
+              calendarMonth.month,
+              MeasurementResults(items: measurementResults),
+            );
+          }
+        } on DioError {
+          debugPrint(
+            'Not loaded month ${calendarMonth.month} in year ${calendarMonth.year} measurements for ${userAccount.user.fullName}',
+          );
+        }
+      }
+    }
+
     Future<void> loadMonthFulfillments(
       CalendarMonth calendarMonth,
       List<CarePlan> carePlans,
     ) async {
-      //2. find and populate past and ongoing month,
+      //1. Load plan evaluation,
       for (final carePlan in carePlans) {
         final userAccount = _accountDbProvider.get(carePlan.userId!)!;
         try {
@@ -44,7 +100,7 @@ class CalendarFulfillmentServiceBloc extends Bloc<
             toDateTime: calendarMonth.monthEndDate.toIso8601String(),
           );
 
-          await _calendarDbProvider.put(
+          await _calendarEvaluationDbProvider.put(
             carePlan.id,
             calendarMonth.year,
             calendarMonth.month,
@@ -70,9 +126,9 @@ class CalendarFulfillmentServiceBloc extends Bloc<
       Map<CarePlan, FulfillmentEvaluation> carePlansEvaluations = {};
       List<FulfillmentEvaluationItem> evaluationItems = [];
 
-      //1. Find and populate past and ongoing month,
+      //1. Get and populate month by evaluation items
       for (final carePlan in carePlans) {
-        var evaluation = _calendarDbProvider.get(
+        var evaluation = _calendarEvaluationDbProvider.get(
           carePlan.id,
           calendarMonth.year,
           calendarMonth.month,
@@ -103,21 +159,31 @@ class CalendarFulfillmentServiceBloc extends Bloc<
             continue;
           }
 
+          //get evItems which may started even in previous day,
+          //but they were ended in this exact day
           final dayEvItems = evaluationItems.where((evItem) {
-            return evItem.start.isAtSameMomentAs(day.startDt) ||
-                (evItem.start.isAfter(day.startDt) &&
-                    evItem.start.isBefore(day.endDt));
+            return evItem.end.isAfter(day.startDt) &&
+                ((evItem.end.isBefore(day.endDt) ||
+                    evItem.end.isAtSameMomentAs(day.endDt)));
           }).toList();
 
           day.carePlansEvaluation =
-              EvaluationPlanHelper.getProgressFromEvaluationItems(dayEvItems);
+              EvaluationPlanHelper.getProgressFromEvaluationItems(
+            dayEvItems,
+          );
 
-          day.usersEvaluationsDay = EvaluationPlanHelper.getUserEvaluationDays(
+          final usersEvaluationsDay =
+              EvaluationPlanHelper.getUserEvaluationDays(
             calendarMonth.year,
             calendarMonth.month,
             day,
             day.userAccounts!,
+            _measurementsDbProvider,
           );
+
+          day.usersEvaluationsDay = usersEvaluationsDay;
+
+          debugPrint('day: ${usersEvaluationsDay.length}');
         }
       }
     }
@@ -144,13 +210,28 @@ class CalendarFulfillmentServiceBloc extends Bloc<
           final plannedMeasurements = Calendar.getMeasurementOfDay(
             carePlans: carePlans,
             dayDt: day.startDt,
+            offlineResults: offlineResults,
           );
+
+          //filter out only future measurements which were already completed
+          //it can happened for regular measurements which started and was completed before todays midnight
+          //or for periodical measurements which ending in future but was completed earlier
+          if (day.dayPeriod == CalendarDayPeriod.future) {
+            plannedMeasurements.removeWhere(
+              (pMeasurement) =>
+                  pMeasurement.fulfillmentEvaluationItem?.wasMeasured() == true,
+            );
+          }
           day.plannedMeasurements = plannedMeasurements;
-          /*
-          debugPrint(
-            '${plannedMeasurements.length} measurements for ${day.startDt.toRegularDate()}',
+
+          final measurementsCount = plannedMeasurements.fold(
+            0,
+            (sum, current) => sum + current.reqCount,
           );
-          */
+
+          debugPrint(
+            '$measurementsCount measurements for ${day.startDt.toRegularDate()}',
+          );
 
           final userAccounts = plannedMeasurements
               .map(
@@ -170,6 +251,13 @@ class CalendarFulfillmentServiceBloc extends Bloc<
           //we need wait here because this init is invoked everytime when
           //viewPager will change pange, so we won't freeze him
           //in process of changing page during scroll
+          final pendingResults = _pendingResultsDbProvider.getAll();
+          offlineResults = MeasurementHelper.getOffilneResultsConverted(
+            pendingResults,
+            null,
+            null,
+          );
+
           final carePlans = _accountDbProvider.getCarePlans(carePlansIds);
           await Future.delayed(const Duration(milliseconds: 700));
 
@@ -221,6 +309,8 @@ class CalendarFulfillmentServiceBloc extends Bloc<
             state.copyWith(month: calendarMonth, loading: true),
           );
           await loadMonthFulfillments(calendarMonth, carePlans);
+          await loadAllUsersMeasurements(calendarMonth, carePlans);
+
           await populateMonth(calendarMonth, carePlans);
           calendarMonth.wasResolved = true;
           emit(

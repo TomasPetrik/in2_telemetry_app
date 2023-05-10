@@ -8,7 +8,7 @@ part 'auth_state.freezed.dart';
 class AuthState with _$AuthState {
   const factory AuthState.authenticating() = _Authenticating;
   const factory AuthState.cancelled() = _Cancelled;
-  const factory AuthState.authenticated({Credentials? credentials}) =
+  const factory AuthState.authenticated({required Credentials credentials}) =
       _Authenticated;
   const factory AuthState.unauthenticated() = _Unauthenticated;
   const factory AuthState.openAuthRequest({required Uri authUri}) =
@@ -19,7 +19,8 @@ class AuthState with _$AuthState {
     required UserAccount userAccount,
   }) = _InactiveUserRemoved;
   const factory AuthState.logoutSuccess() = _LogoutSuccess;
-  const factory AuthState.logoutFailed({Exception? error}) = _LogoutFailed;
+  const factory AuthState.logoutFailed({required Exception error}) =
+      _LogoutFailed;
   const factory AuthState.lastSessionRestored({UserAccount? userAccount}) =
       _LastSessionRestored;
   const factory AuthState.error(String message) = _Error;

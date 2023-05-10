@@ -10,14 +10,14 @@ class NavigationTabBarItem {
   NavigationTabBarItem({
     required this.label,
     required this.slivers,
-    this.bottomSlivers,
+    required this.bottomSlivers,
     this.scrollPosition,
   });
 
   final String label;
 
   final List<Widget> slivers;
-  final List<Widget>? bottomSlivers;
+  final List<Widget> bottomSlivers;
   double? scrollPosition;
 }
 
@@ -182,8 +182,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
                     ),
                   ),
                   ...widget.tabs[currentTab].slivers,
-                  if (widget.tabs[currentTab].bottomSlivers?.isNotEmpty == true)
-                    ...widget.tabs[currentTab].bottomSlivers!,
+                  if (widget.tabs[currentTab].bottomSlivers.isNotEmpty == true)
+                    ...widget.tabs[currentTab].bottomSlivers,
                   const SliverFillRemaining(
                     hasScrollBody: false,
                     child: SizedBox.shrink(),

@@ -18,7 +18,7 @@ class CarePlanInitializeEvent extends CarePlanBlocEvent {
 
   final PlanWhenPeriod whenPeriod;
   final List<CarePlan> carePlans;
-  final List<Measurement>? pendingResults;
+  final List<Measurement> pendingResults;
 }
 
 class TimePeriodChangeEvent extends CarePlanBlocEvent {

@@ -11,13 +11,13 @@ class SearchBar extends StatefulWidget {
     required this.searchHint,
     required this.searchController,
     this.autoFocus = false,
-    this.onBack,
+    required this.onBack,
   });
 
   final String searchHint;
-  final TextEditingController? searchController;
+  final TextEditingController searchController;
   final bool autoFocus;
-  final VoidCallback? onBack;
+  final VoidCallback onBack;
 
   @override
   State<SearchBar> createState() => _SearchBarState();
@@ -53,7 +53,7 @@ class _SearchBarState extends State<SearchBar> {
         ),
         prefix: InkWell(
           onTap: () {
-            widget.onBack?.call();
+            widget.onBack.call();
           },
           child: Padding(
             padding: Paddings.horizontal16,

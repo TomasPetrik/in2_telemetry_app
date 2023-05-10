@@ -51,7 +51,7 @@ class SwitchRow extends StatelessWidget {
     required String title,
     required String label,
     required Function(bool turnedOn) onChanged,
-    bool? defaultValue,
+    required bool defaultValue,
   }) {
     return _MultiLineSwitchRow(
       height: Dimensions.doubleLineSwitchRowHeight,
@@ -168,7 +168,7 @@ class _MultiLineSwitchRow extends SwitchRow {
     required String title,
     required String label,
     required Function(bool turnedOn) onChanged,
-    bool? defaultValue,
+    required bool defaultValue,
   }) : super(
           height: height,
           title: title,

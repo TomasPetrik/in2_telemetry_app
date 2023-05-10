@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart' as tdw;
@@ -7,15 +6,7 @@ import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 extension DateParse on DateTime {
   String toDateFormatLong() {
-    return DateFormat('d.M.yyyy, HH:mm').format(toLocal());
-  }
-
-  String toDateFormatLong2() {
-    return DateFormat('d.M.yyyy - HH:mm').format(toLocal());
-  }
-
-  String toDateFormatShort() {
-    return DateFormat('d.M.yyyy').format(toLocal());
+    return DateFormat('d. M. yyyy - HH:mm').format(toLocal());
   }
 
   String toTimeShort() {
@@ -81,23 +72,15 @@ extension DateParse on DateTime {
     return today;
   }
 
-  DateTime fromTimeOfDayString(String tod) {
-    final parts = tod.split(":");
-    final int hours = int.parse(parts[0]);
-    final int minute = int.parse(parts[1]);
-    final returnDt = copyWith(hour: hours, minute: minute);
-    return returnDt;
+  DateTime getStartDay() {
+    final startDayDt = DateTime(year, month, day, 0, 0, 0, 0, 0);
+    return startDayDt;
   }
 
-  DateTime fromTimeOfDay(tdw.DailyTime timeOfDay) {
-    return DateTime(
-      year,
-      month,
-      day,
-      timeOfDay.hour,
-      timeOfDay.minute,
-      timeOfDay.second,
-    );
+  DateTime getEndDay() {
+    final endDayDt =
+        DateTime(year, month, day, 0, 0, 0, 0, 0).add(const Duration(days: 1));
+    return endDayDt;
   }
 
   tdw.DailyTime toTimeOfDay() {
@@ -114,7 +97,7 @@ extension DateParse on DateTime {
     return (to.difference(from).inHours / 24).round();
   }
 
-  String toDateOrDay(BuildContext context) {
+  String toDateOrDay() {
     final currentDt = DateTime.now();
     final difference = daysBetween(currentDt, this);
 
@@ -125,6 +108,20 @@ extension DateParse on DateTime {
       return translactions.common_measurement_times(WhenPeriod.today.name);
     } else if (difference == 1) {
       return translactions.common_measurement_times(WhenPeriod.tomorrow.name);
+    } else {
+      return toRegularDate();
+    }
+  }
+
+  String toHistoricalDateOrDay() {
+    final currentDt = DateTime.now();
+    final difference = daysBetween(currentDt, this);
+
+    if (difference == -1) {
+      return translactions.common_when_day_name(WhenPeriod.yesterday.name);
+    }
+    if (difference == 0) {
+      return translactions.common_when_day_name(WhenPeriod.today.name);
     } else {
       return toRegularDate();
     }

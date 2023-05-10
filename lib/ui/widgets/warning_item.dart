@@ -11,16 +11,16 @@ class WarningItem extends StatelessWidget {
     required this.description,
     required this.buttonLabel,
     this.buttonType = SmallButtonType.regular,
-    this.icon,
-    this.onTap,
+    required this.icon,
+    required this.onTap,
   });
 
   final String title;
   final String description;
   final String buttonLabel;
   final SmallButtonType buttonType;
-  final Widget? icon;
-  final VoidCallback? onTap;
+  final Widget icon;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +41,8 @@ class _WarningItem extends WarningItem {
     required String description,
     required String buttonLabel,
     required SmallButtonType buttonType,
-    Widget? icon,
-    VoidCallback? onTap,
+    required Widget icon,
+    required VoidCallback onTap,
   }) : super(
           title: title,
           description: description,
@@ -65,50 +65,48 @@ class _WarningItem extends WarningItem {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (icon != null) ...[
-                Container(
-                  height: 64,
-                  width: 64,
-                  padding: Paddings.all14,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadii.radius8,
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                  child: icon,
+              Container(
+                height: 64,
+                width: 64,
+                padding: Paddings.all14,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadii.radius8,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
-                Gaps.gap16,
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: ScaleTextStyles.textAccent.apply(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        ),
+                child: icon,
+              ),
+              Gaps.gap16,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: ScaleTextStyles.textAccent.apply(
+                        color: Theme.of(context).colorScheme.onPrimary,
                       ),
-                      Gaps.gap16,
-                      Text(
-                        description,
-                        style: ScaleTextStyles.text.apply(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        ),
+                    ),
+                    Gaps.gap16,
+                    Text(
+                      description,
+                      style: ScaleTextStyles.text.apply(
+                        color: Theme.of(context).colorScheme.onPrimary,
                       ),
-                      Gaps.gap16,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          NavigationTabChip(
-                            label: buttonLabel,
-                            onTap: onTap,
-                            isSelected: buttonType == SmallButtonType.regular,
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
+                    ),
+                    Gaps.gap16,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        NavigationTabChip(
+                          label: buttonLabel,
+                          onTap: onTap,
+                          isSelected: buttonType == SmallButtonType.regular,
+                        ),
+                      ],
+                    )
+                  ],
                 ),
-              ],
+              ),
             ],
           ),
         ),

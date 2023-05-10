@@ -49,7 +49,7 @@ class FutureMeasurementsScreen extends StatelessWidget {
               navigationHeader: Row(
                 children: [
                   Text(
-                    translactions.results_screen_results_title,
+                    translactions.common_measurement,
                     style: ScaleTextStyles.textAccent.apply(
                       color: Theme.of(context).colorScheme.onSecondary,
                     ),
@@ -62,6 +62,7 @@ class FutureMeasurementsScreen extends StatelessWidget {
                     label: translactions.dashboard_screen_all,
                     slivers: [
                       FutureMeasurementsList(
+                        dayDt: date,
                         isMultiUser: isMultiUser,
                         futureMeasurements: futureMeasurements,
                       ),
@@ -77,6 +78,7 @@ class FutureMeasurementsScreen extends StatelessWidget {
                         ),
                         slivers: [
                           FutureMeasurementsList(
+                            dayDt: date,
                             isMultiUser: isMultiUser,
                             futureMeasurements: futureMeasurements
                                 .where(

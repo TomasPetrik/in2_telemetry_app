@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
+import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -14,14 +15,17 @@ class FullPlanEvaluationWidget extends StatelessWidget {
   const FullPlanEvaluationWidget({
     super.key,
     required this.carePlan,
+    required this.offlineResults,
   });
 
   final CarePlan carePlan;
+  final List<MeasurementResult> offlineResults;
 
   @override
   Widget build(BuildContext context) {
     final progress = EvaluationPlanHelper.getProgressFromFullPlanEvaluation(
-      carePlan.fullPlanEvaluation!,
+      carePlan: carePlan,
+      offlineResults: offlineResults,
     );
 
     final veryFirstMeasurement = Calendar.getVeryFirstMeasurement(
@@ -74,7 +78,7 @@ class FullPlanEvaluationWidget extends StatelessWidget {
                   Text(
                     translactions
                         .care_plan_detail_screen_fulfillment_evaluation_valid_from(
-                      veryFirstMeasurement.whenStart.toDateOrDay(context),
+                      veryFirstMeasurement.whenStart.toDateOrDay(),
                       veryFirstMeasurement.whenStart.toTimeShort(),
                     ),
                     style: ScaleTextStyles.label.apply(

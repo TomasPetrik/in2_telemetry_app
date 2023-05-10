@@ -17,7 +17,7 @@ class HistorySingleUserEvaluationHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final measurementTypesCarePlans = userEvaluationDay.carePlanFulfillments
         .where((carePlanFulfillment) => carePlanFulfillment.getReqCount() > 0)
-        .groupListsBy((element) => element.carePlan.activity.measurementType);
+        .groupListsBy((evDay) => evDay.measurementType);
 
     final progressItems = measurementTypesCarePlans.entries.map(
       (carePlanFulfillment) {

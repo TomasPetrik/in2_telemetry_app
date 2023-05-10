@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Allowed users do measurement only with assigned devices, \n 2. Measurement with other devices are possible only with active persmission scs-measure-with-unknown-device, \n3. Pair and register devices by <advertisement local name> instead of MAC address (works only for Omron devices)."
+    "text": "1. Implemented periodical measurements. Affected parts (Dashboard, Results, Calendar, Historical Results Detail, Future Measurements Detail, Fulfillments plans evaluation, Notifications, Translations )."
   },
   {
     "language": "sk-SK",

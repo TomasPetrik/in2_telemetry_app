@@ -7,11 +7,11 @@ class CalendarDayProgress extends StatelessWidget {
     required this.progress,
   });
 
-  final int? progress;
+  final int progress;
 
   @override
   Widget build(BuildContext context) {
-    final mProgress = progress ?? 0;
+    final mProgress = progress;
     int? sideFlex;
     if (mProgress < 100) {
       sideFlex = (100 - mProgress) ~/ 2;

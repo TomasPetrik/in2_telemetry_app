@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
+import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
@@ -24,9 +25,11 @@ class CarePlanDetailScreen extends StatefulWidget with BottomSheetMixin {
   const CarePlanDetailScreen({
     super.key,
     required this.carePlan,
+    required this.offlineResults,
   });
 
   final CarePlan carePlan;
+  final List<MeasurementResult> offlineResults;
 
   @override
   State<CarePlanDetailScreen> createState() => _CarePlanDetailScreenState();
@@ -107,6 +110,7 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
                   if (widget.carePlan.fullPlanEvaluation != null)
                     FullPlanEvaluationWidget(
                       carePlan: widget.carePlan,
+                      offlineResults: widget.offlineResults,
                     ),
                   const SliverGap(Dimensions.padding42),
                   SliverPadding(

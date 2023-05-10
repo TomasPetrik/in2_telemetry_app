@@ -9,10 +9,10 @@ import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 import 'package:scalesoft_app/utils/helpers/results_helper.dart';
 
-@singleton
+@injectable
 class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
-  final List<Measurement> _pendingResults = [];
-  final List<CarePlan> _allCarePlans = [];
+  late final List<MeasurementResult> _offlineResults;
+  late final List<CarePlan> _allCarePlans;
 
   ResultsBloc() : super(ResultsBlocState()) {
     on<ResultsBlocEvent>((event, emit) async {
@@ -20,34 +20,30 @@ class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
         init: (
           final ResultsWhenPeriod whenPeriod,
           final List<CarePlan> carePlans,
-          final List<MeasurementResult> uncategorizedResults,
+          final List<MeasurementResult> allServerResults,
           final List<Measurement>? pendingResults,
         ) async {
-          _allCarePlans.clear();
-          _allCarePlans.addAll(carePlans);
-          _pendingResults.clear();
-          _pendingResults.addAll(pendingResults ?? []);
+          _allCarePlans = carePlans;
 
-          final List<MeasurementResult> offlineResults =
-              MeasurementHelper.getOffilneResultsConverted(
-            _pendingResults,
-            [ResultsWhenPeriod.today, ResultsWhenPeriod.yesterday],
+          _offlineResults = MeasurementHelper.getOffilneResultsConverted(
+            pendingResults ?? [],
+            null,
             null,
           );
 
           final Map<ResultsWhenPeriod, int?> plansEvaluationPerPeriod =
               ResultsHelper.getPeriodFultillments(
             _allCarePlans,
-            offlineResults,
+            _offlineResults,
           );
 
           final results = carePlans.isEmpty
               ? null
-              : ResultsHelper.getResults(
+              : ResultsHelper.getResultsByWhenPeriod(
                   carePlans: carePlans,
                   whenPeriod: whenPeriod,
-                  measurementResults: uncategorizedResults,
-                  offlineResults: _pendingResults,
+                  allServerResults: allServerResults,
+                  allOfflineResults: _offlineResults,
                   measurementType: null,
                 );
 
@@ -55,7 +51,7 @@ class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
             ResultsBlocState(
               currentCarePlans: carePlans,
               selectedWhenPeriod: whenPeriod,
-              uncategorizedResults: uncategorizedResults,
+              uncategorizedResults: allServerResults,
               results: results,
               plansEvaluationPerPeriod: plansEvaluationPerPeriod,
             ),
@@ -71,11 +67,11 @@ class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
                   )
                   .toList();
 
-          final results = ResultsHelper.getResults(
+          final results = ResultsHelper.getResultsByWhenPeriod(
             carePlans: carePlans,
             whenPeriod: state.selectedWhenPeriod!,
-            measurementResults: state.uncategorizedResults!,
-            offlineResults: _pendingResults,
+            allServerResults: state.uncategorizedResults!,
+            allOfflineResults: _offlineResults,
             measurementType: measurementType,
           );
 
@@ -88,11 +84,11 @@ class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
           );
         },
         whenPeriodChange: (final whenPeriod) {
-          final results = ResultsHelper.getResults(
+          final results = ResultsHelper.getResultsByWhenPeriod(
             carePlans: state.currentCarePlans!,
             whenPeriod: whenPeriod,
-            measurementResults: state.uncategorizedResults!,
-            offlineResults: _pendingResults,
+            allServerResults: state.uncategorizedResults!,
+            allOfflineResults: _offlineResults,
             measurementType: state.measurementType,
           );
 

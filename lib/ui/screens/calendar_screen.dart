@@ -20,7 +20,6 @@ import 'package:scalesoft_app/ui/widgets/calendar_month_widget.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
 import 'package:scalesoft_app/utils/constants.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
-import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
 
 class CalendarScreen extends StatelessWidget {
   const CalendarScreen({
@@ -214,17 +213,13 @@ class _CalendarFooter extends StatelessWidget {
             selectedDay.plannedMeasurements!.isEmpty) {
           return const SizedBox.shrink();
         } else {
+          int measurementsCount = selectedDay.plannedMeasurements!
+              .fold(0, (sum, current) => sum + current.reqCount);
+
           return InkWell(
             onTap: () {
-              final usersEvaluationsDay =
-                  EvaluationPlanHelper.getUserEvaluationDays(
-                selectedDay.startDt.year,
-                selectedDay.startDt.month,
-                selectedDay,
-                session.getSessionAccounts(),
-              );
-
-              session.usersEvaluationsDayRestoration = usersEvaluationsDay;
+              session.usersEvaluationsDayRestoration =
+                  selectedDay.usersEvaluationsDay;
 
               switch (selectedDay.dayPeriod) {
                 case CalendarDayPeriod.past:
@@ -283,7 +278,7 @@ class _CalendarFooter extends StatelessWidget {
                       ),
                       Gaps.gap16,
                       Text(
-                        '${selectedDay.plannedMeasurements?.length ?? 0} ${translactions.common_measurement.toLowerCase()}',
+                        '$measurementsCount ${translactions.common_measurement.toLowerCase()}',
                         style: ScaleTextStyles.text.apply(
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),

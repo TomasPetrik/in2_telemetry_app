@@ -8,15 +8,15 @@ import 'package:scalesoft_app/bloc/notifications/notifications_event.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_state.dart';
 import 'package:scalesoft_app/globals.dart';
 import 'package:scalesoft_app/model/app_settings.dart';
+import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/settings_db_provider.dart';
-import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/utils/extensions/locale_extensions.dart';
 import 'package:scalesoft_app/utils/extensions/theme_mode_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/notifications_helper.dart';
 
 @singleton
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
-  final Session _session;
+  final AccountDbProvider _accountDbProvider;
   final AppSettingsDbProvider _appSettingsDbProvider;
 
   final FlutterLocalNotificationsPlugin _notificationsPlugin =
@@ -26,7 +26,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
       StreamController<bool>.broadcast();
 
   NotificationsBloc(
-    this._session,
+    this._accountDbProvider,
     this._appSettingsDbProvider,
   ) : super(const NotificationsState.init()) {
     on<NotificationsEvent>(
@@ -57,7 +57,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
             NotificationsHelper.setNotifications(
               appSettings: appSettings,
               notificationsPlugin: _notificationsPlugin,
-              userAccounts: _session.getSessionAccounts(),
+              userAccounts: _accountDbProvider.getAll(),
             );
           },
           initSettings: () {
@@ -69,7 +69,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
             NotificationsHelper.setNotifications(
               appSettings: appSettings,
               notificationsPlugin: _notificationsPlugin,
-              userAccounts: _session.getSessionAccounts(),
+              userAccounts: _accountDbProvider.getAll(),
             );
           },
           enableNotifications: (enabled) async {
@@ -84,7 +84,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
             NotificationsHelper.setNotifications(
               appSettings: newAppSettings,
               notificationsPlugin: _notificationsPlugin,
-              userAccounts: _session.getSessionAccounts(),
+              userAccounts: _accountDbProvider.getAll(),
             );
 
             emit(NotificationsState.loaded(appSettings: newAppSettings));
@@ -101,7 +101,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
             NotificationsHelper.setNotifications(
               appSettings: newAppSettings,
               notificationsPlugin: _notificationsPlugin,
-              userAccounts: _session.getSessionAccounts(),
+              userAccounts: _accountDbProvider.getAll(),
             );
 
             emit(NotificationsState.loaded(appSettings: newAppSettings));
@@ -117,7 +117,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
             NotificationsHelper.setNotifications(
               appSettings: newAppSettings,
               notificationsPlugin: _notificationsPlugin,
-              userAccounts: _session.getSessionAccounts(),
+              userAccounts: _accountDbProvider.getAll(),
             );
 
             emit(NotificationsState.loaded(appSettings: newAppSettings));

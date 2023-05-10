@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
@@ -7,7 +8,6 @@ import 'package:scalesoft_app/ui/widgets/interactive_chart/candle_data.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
-import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 class ResultsHelper {
   static Map<ResultsWhenPeriod, int?> getPeriodFultillments(
@@ -32,6 +32,7 @@ class ResultsHelper {
     final List<CarePlan> allCarePlans,
     final ResultsWhenPeriod whenPeriod,
     final MeasurementType? measurementType,
+    final List<MeasurementResult> offlineResults,
   ) {
     List<PlannedMeasurement> measurements = [];
 
@@ -46,17 +47,19 @@ class ResultsHelper {
 
     switch (whenPeriod) {
       case ResultsWhenPeriod.today:
-        measurements = Calendar.getMeasurements(
+        measurements = Calendar.getMeasurementsOfDay(
           carePlans: carePlans,
-          weekDay: DateTime.now().toWeekDay(),
-          resultsWhenPeriod: ResultsWhenPeriod.today,
+          dayDt: DateTime.now().getTodayMidnight(),
+          offlineResults: offlineResults,
+          all: true,
         );
         break;
       case ResultsWhenPeriod.yesterday:
-        measurements = Calendar.getMeasurements(
+        measurements = Calendar.getMeasurementsOfDay(
           carePlans: carePlans,
-          weekDay: DateTime.now().yesterdaywWeekDay(),
-          resultsWhenPeriod: ResultsWhenPeriod.yesterday,
+          dayDt: DateTime.now().getYesterdayMidnight(),
+          offlineResults: offlineResults,
+          all: true,
         );
         break;
     }
@@ -69,159 +72,238 @@ class ResultsHelper {
     return measurements;
   }
 
-  static List<MeasurementResult> getResults({
-    required final List<CarePlan> carePlans,
-    required final ResultsWhenPeriod whenPeriod,
-    required final List<MeasurementResult> measurementResults,
-    required final List<Measurement> offlineResults,
-    MeasurementType? measurementType,
+  static List<MeasurementResult> getResultsOfDay({
+    required final List<PlannedMeasurement> plannedMeasurements,
+    required final List<MeasurementResult> serverResults,
+    required final List<MeasurementResult> offlineResults,
+    required final DateTime startOfDay,
   }) {
     final List<MeasurementResult> allResults = [];
-    //1. create list of results matching whenPeriod
 
-    List<MeasurementResult> offlineResultsConverted =
-        MeasurementHelper.getOffilneResultsConverted(
-      offlineResults,
-      [whenPeriod],
-      measurementType,
+    //sort by isPeriodical because later on we want to add periodicals partials
+    //measurements which haven't been included in previous measurements
+    plannedMeasurements.sort(
+      (a, b) => a.carePlan.isPeriodical != b.carePlan.isPeriodical ? 1 : 0,
     );
 
-    //2. Add not measured results within current time
-    final List<PlannedMeasurement> plannedMeasurements =
-        getMeasurements(carePlans, whenPeriod, measurementType);
+    final resultsUntilNow = plannedMeasurements
+        .fold<List<MeasurementResult>>([], (prevMeasurements, plMeasurement) {
+      List<MeasurementResult> results = [];
 
-    final dtNow = DateTime.now();
-    final plannedMeasurementsWithingCurrentTime =
-        plannedMeasurements.where((measurement) {
-      return measurement.whenEnd.isBefore(dtNow);
-    }).toList();
+      final evaluationItem = plMeasurement.fulfillmentEvaluationItem!;
 
-    final notMeasuredResults = plannedMeasurementsWithingCurrentTime
-        .where(
-      (measurement) =>
-          MeasurementHelper.getEvaluation(
-            measurement,
-            offlineResultsConverted,
-          )?.wasMeasured() ==
-          false,
-    )
-        .map((measurement) {
-      final evaluationItem = MeasurementHelper.getEvaluation(
-        measurement,
-        offlineResultsConverted,
-      );
-      return MeasurementResult(
-        measurementDateTime: measurement.whenStart,
-        measurementFinishDateTime: measurement.whenEnd,
-        evaluationItem: evaluationItem,
-        measurementType: measurement.carePlan.activity.measurementType,
-        userId: measurement.userId,
-        whenCode: measurement.whenCode,
-      );
-    });
-
-    allResults.addAll(notMeasuredResults);
-
-    //3. Add ongoing already measured results
-
-    final ongoingResolvedMeasurements =
-        plannedMeasurements.where((measurement) {
-      return measurement.whenStart.isBefore(dtNow);
-    }).toList();
-    final ongoingResolvedResults = ongoingResolvedMeasurements
-        .where(
-      (measurement) =>
-          MeasurementHelper.getEvaluation(
-            measurement,
-            offlineResultsConverted,
-          )?.wasMeasured() ==
-          true,
-    )
-        .map((measurement) {
-      final evaluationItem = MeasurementHelper.getEvaluation(
-        measurement,
-        offlineResultsConverted,
-      );
-      return MeasurementResult(
-        measurementDateTime: measurement.whenStart,
-        measurementFinishDateTime: measurement.whenEnd,
-        evaluationItem: evaluationItem,
-        measurementType: measurement.carePlan.activity.measurementType,
-        userId: measurement.userId,
-        whenCode: measurement.whenCode,
-      );
-    });
-
-    allResults.addAll(ongoingResolvedResults);
-
-    //4. Add pending results
-    //they are covered in ongoing already measured results (offline included)
-    //allResults.addAll(offlineResultsConverted);
-
-    //5. Add other patient/measurement (s) not included in previous ongoing resolved results
-
-    final exactTypeAndWhenResults = measurementResults.where((mResult) {
-      return ((measurementType == null ||
-              (measurementType == mResult.measurementType)) &&
-          ((whenPeriod == ResultsWhenPeriod.today &&
-                  mResult.measurementDateTime.isToday()) ||
-              (whenPeriod == ResultsWhenPeriod.yesterday) &&
-                  mResult.measurementDateTime.wasYesterday()));
-    });
-
-    final manualMeasurements =
-        exactTypeAndWhenResults.where((measurementResult) {
-      return !ongoingResolvedResults.any((ongoingResults) {
-        return ongoingResults.measurementDateTime
-                .isBefore(measurementResult.measurementDateTime) &&
-            (ongoingResults.measurementFinishDateTime
-                    ?.isAfter(measurementResult.measurementDateTime) ==
-                true);
-      });
-    });
-    allResults.addAll(manualMeasurements);
-
-    //6. Add other patient/measurement (s) extra included toward previous ongoing resolved results
-
-    final Set<MeasurementResult> extraMeasurements = {};
-
-    for (final resolvedOngoingResult in ongoingResolvedResults) {
-      final measurementsInInterval = exactTypeAndWhenResults.where((pResult) {
-        if (resolvedOngoingResult.measurementFinishDateTime
-                    ?.isAfter(pResult.measurementDateTime) ==
-                true &&
-            resolvedOngoingResult.measurementDateTime
-                .isBefore(pResult.measurementDateTime)) {
-          return true;
-        } else {
-          return false;
-        }
-      }).toList();
-
-      //add last N items out of interval
-      if (resolvedOngoingResult.evaluationItem != null &&
-          measurementsInInterval.length >
-              resolvedOngoingResult.evaluationItem!.requiredMeasurementCount) {
-        extraMeasurements.addAll(
-          measurementsInInterval.toList().reversed.take(
-                measurementsInInterval.length -
-                    resolvedOngoingResult
-                        .evaluationItem!.requiredMeasurementCount,
-              ),
+      if (!plMeasurement.carePlan.isPeriodical) {
+        results.add(
+          MeasurementResult(
+            measurementDateTime:
+                evaluationItem.actualMeasurementTimes.isNotEmpty
+                    ? evaluationItem.actualMeasurementTimes.first
+                    : plMeasurement.whenStart,
+            measurementIntervalStart: plMeasurement.whenStart,
+            measurementIntervalEnd: plMeasurement.whenEnd,
+            evaluationItem: evaluationItem,
+            reqCount: plMeasurement.reqCount,
+            currentCount: plMeasurement.currentCount!,
+            measurementType: plMeasurement.carePlan.activity.measurementType,
+            userId: plMeasurement.userId,
+            whenCode: plMeasurement.whenCode,
+          ),
         );
+      } else {
+        //we want to show any periodical partial measurements separated
+        final actualMeasurementTimes = evaluationItem.actualMeasurementTimes
+            .where((measurementTime) => measurementTime.isAfter(startOfDay));
+        for (final measurementTime in actualMeasurementTimes) {
+          final prevMeasurementTimes = prevMeasurements
+              .map((prevMeasurement) => prevMeasurement.measurementDateTime)
+              .toList();
+
+          //add this partials only if wasn't included before in other measurements
+          if (prevMeasurementTimes.none(
+            (prevMeasurementTime) => prevMeasurementTime == measurementTime,
+          )) {
+            results.add(
+              MeasurementResult(
+                measurementDateTime: measurementTime,
+                measurementIntervalStart: plMeasurement.whenStart,
+                measurementIntervalEnd:
+                    null, //because we want to show them separated
+                evaluationItem: evaluationItem,
+                reqCount: 1,
+                currentCount: 1,
+                measurementType:
+                    plMeasurement.carePlan.activity.measurementType,
+                userId: plMeasurement.userId,
+                whenCode: plMeasurement.whenCode,
+              ),
+            );
+          }
+        }
+
+        //then show if periodical measurement haven't bee fully completed
+        if (!evaluationItem.wasMeasured()) {
+          results.add(
+            MeasurementResult(
+              measurementDateTime: plMeasurement.whenStart,
+              measurementIntervalStart: plMeasurement.whenStart,
+              measurementIntervalEnd: plMeasurement.whenEnd,
+              evaluationItem: evaluationItem,
+              reqCount: evaluationItem.requiredMeasurementCount,
+              currentCount: evaluationItem.actualMeasurementCount,
+              measurementType: plMeasurement.carePlan.activity.measurementType,
+              userId: plMeasurement.userId,
+              whenCode: plMeasurement.whenCode,
+            ),
+          );
+        }
       }
+
+      return [
+        ...prevMeasurements,
+        ...results,
+      ];
+    });
+
+    allResults.addAll(resultsUntilNow);
+
+    //2. Add offline results if they haven't been included in previos measurements
+    if (offlineResults.isNotEmpty) {
+      final resultsTimes =
+          resultsUntilNow.fold<List<DateTime>>([], (prevTimes, result) {
+        return [
+          ...prevTimes,
+          ...result.evaluationItem!.actualMeasurementTimes,
+        ];
+      });
+      //2.1 First remove already included
+      offlineResults.removeWhere(
+        (offlineResult) => resultsTimes
+            .any((dateTime) => dateTime == offlineResult.measurementDateTime),
+      );
+
+      //2.2 Then convert them and add to all measurements
+      allResults.addAll(
+        offlineResults
+            .map(
+              (offlineResult) => MeasurementResult(
+                measurementDateTime: offlineResult.measurementDateTime,
+                measurementIntervalEnd: null,
+                reqCount: 1,
+                currentCount: 1,
+                measurementType: offlineResult.measurementType,
+                userId: offlineResult.userId,
+                whenCode: offlineResult.whenCode,
+              ),
+            )
+            .toList(),
+      );
     }
 
-    allResults.addAll(extraMeasurements);
+    //3. Add other patient/measurement (s) not included in previous ongoing resolved results
+    if (serverResults.isNotEmpty) {
+      final resultsTimes =
+          resultsUntilNow.fold<List<DateTime>>([], (prevTimes, result) {
+        return [
+          ...prevTimes,
+          ...result.evaluationItem!.actualMeasurementTimes,
+        ];
+      });
+
+      //3.1 First remove already included
+      serverResults.removeWhere(
+        (serverResult) => resultsTimes.any(
+          (resultTime) => resultTime == serverResult.measurementDateTime,
+        ),
+      );
+
+      //3.2 Then convert them and add to all measurements
+      allResults.addAll(
+        serverResults
+            .map(
+              (serverResult) => MeasurementResult(
+                measurementDateTime: serverResult.measurementDateTime,
+                measurementIntervalEnd: null,
+                reqCount: 1,
+                currentCount: 1,
+                measurementType: serverResult.measurementType,
+                userId: serverResult.userId,
+                whenCode: serverResult.whenCode,
+              ),
+            )
+            .toList(),
+      );
+    }
 
     allResults.sort((a, b) {
-      final dtA = a.measurementFinishDateTime ?? a.measurementDateTime;
-      final dtB = b.measurementFinishDateTime ?? b.measurementDateTime;
+      final dtA = a.measurementDateTime;
+      final dtB = b.measurementDateTime;
 
       return dtB.millisecondsSinceEpoch.compareTo(dtA.millisecondsSinceEpoch);
     });
 
     return allResults;
+  }
+
+  static List<MeasurementResult> getResultsByWhenPeriod({
+    required final List<CarePlan> carePlans,
+    required final ResultsWhenPeriod whenPeriod,
+    required final List<MeasurementResult> allServerResults,
+    required final List<MeasurementResult> allOfflineResults,
+    MeasurementType? measurementType,
+  }) {
+    final dtNow = DateTime.now();
+
+    final yeasterdayMidnight = dtNow.getYesterdayMidnight();
+    final todayMidnight = dtNow.getTodayMidnight();
+    final tomorrowMidnight = dtNow.getTomorrowMidnight();
+
+    final offlineResults = allOfflineResults.where((offlineResult) {
+      return (measurementType == null ||
+              measurementType == offlineResult.measurementType!) &&
+              (whenPeriod == ResultsWhenPeriod.today &&
+              offlineResult.measurementDateTime.isBefore(tomorrowMidnight) &&
+              offlineResult.measurementDateTime.isAfter(todayMidnight)) ||
+          (whenPeriod == ResultsWhenPeriod.yesterday &&
+              offlineResult.measurementDateTime.isBefore(todayMidnight) &&
+              offlineResult.measurementDateTime.isAfter(yeasterdayMidnight));
+    }).toList();
+
+    final serverResults = allServerResults.where((serverResult) {
+      return (measurementType == null ||
+              measurementType == serverResult.measurementType!) &&
+          ((whenPeriod == ResultsWhenPeriod.today &&
+                  serverResult.measurementDateTime.isBefore(tomorrowMidnight) &&
+                  serverResult.measurementDateTime.isAfter(todayMidnight)) ||
+              (whenPeriod == ResultsWhenPeriod.yesterday &&
+                  serverResult.measurementDateTime.isBefore(todayMidnight) &&
+                  serverResult.measurementDateTime
+                      .isAfter(yeasterdayMidnight)));
+    }).toList();
+
+    //1. Get results within current time
+    final List<PlannedMeasurement> plannedMeasurements = getMeasurements(
+      carePlans,
+      whenPeriod,
+      measurementType,
+      offlineResults,
+    );
+
+    final pMeasurementsUntilNow = plannedMeasurements.where((measurement) {
+      return measurement.whenEnd.isBefore(dtNow) ||
+          measurement.fulfillmentEvaluationItem!
+              .wasMeasured(); //it's finished measurement
+    }).toList();
+
+    final resultsOfDay = getResultsOfDay(
+      plannedMeasurements: pMeasurementsUntilNow,
+      serverResults: serverResults,
+      offlineResults: offlineResults,
+      startOfDay: whenPeriod == ResultsWhenPeriod.today
+          ? todayMidnight
+          : yeasterdayMidnight,
+    );
+
+    return resultsOfDay;
   }
 
   static CandleData getCandleByMeasurementResult(

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
@@ -44,28 +46,50 @@ class MeasurementHelper {
     }
   }
 
-  static FulfillmentEvaluationItem? getEvaluation(
+  static FulfillmentEvaluationItem getFulfillmentEvaluation(
     PlannedMeasurement plannedMeasurement,
     List<MeasurementResult> offlineResults,
   ) {
-    //check if was measured
-    final evaluationItems =
-        plannedMeasurement.carePlan.lastTwoDaysEvaluation?.items;
-    if (evaluationItems?.isNotEmpty == true) {
-      for (final measurementEvalutionItem in evaluationItems!) {
-        if (plannedMeasurement.whenStart
-                .isAtSameMomentAs(measurementEvalutionItem.start) &&
-            (measurementEvalutionItem.end
-                    .isBefore(plannedMeasurement.whenEnd) ||
-                plannedMeasurement.whenEnd
-                    .isAtSameMomentAs(measurementEvalutionItem.end))) {
-          return measurementEvalutionItem;
-        }
-      }
+    int totalCount = 0;
+    List<DateTime> measuredTimes = [];
+
+    List<FulfillmentEvaluationItem> evItems =
+        plannedMeasurement.carePlan.serverEvaluationItems ?? [];
+
+    //get all datetimes in last two days
+    final measurementTimes = evItems.fold<List<DateTime>>(
+      [],
+      (previousValue, evItem) =>
+          [...previousValue, ...evItem.actualMeasurementTimes],
+    );
+
+    //filter them by matching exact measurement time
+    final matchedMeasurementTimes = measurementTimes
+        .where(
+          (measurementTime) =>
+              measurementTime.isBefore(plannedMeasurement.whenEnd) &&
+              measurementTime.isAfter(plannedMeasurement.whenStart),
+        )
+        .toList();
+
+    if (matchedMeasurementTimes.isNotEmpty == true) {
+      measuredTimes.addAll(matchedMeasurementTimes);
+    }
+    totalCount = measuredTimes.length;
+
+    //if we are already satisfied from server side
+    if (plannedMeasurement.reqCount <= totalCount) {
+      return FulfillmentEvaluationItem(
+        plannedMeasurement.whenStart,
+        plannedMeasurement.whenEnd,
+        plannedMeasurement.reqCount,
+        totalCount,
+        measuredTimes.take(plannedMeasurement.reqCount).toList(),
+      );
     }
 
-    //check if was measured offline
-    final measuredTimesSet = offlineResults.where(
+    //otherwise check offline results
+    final matchedOfflineMeasurementTimes = offlineResults.where(
       (mResult) {
         return mResult.measurementType ==
                 plannedMeasurement.carePlan.activity.measurementType &&
@@ -73,23 +97,22 @@ class MeasurementHelper {
       },
     ).map((mResult) => mResult.measurementDateTime);
 
-    int matchedResultCount = 0;
-    List<DateTime> actualMeasurementTimes = [];
-    for (final measuredTime in measuredTimesSet) {
-      if (plannedMeasurement.whenStart.isBefore(measuredTime) &&
-          plannedMeasurement.whenEnd.isAfter(measuredTime)) {
-        matchedResultCount += 1;
-
-        actualMeasurementTimes.add(measuredTime);
+    for (final measuredTime in matchedOfflineMeasurementTimes) {
+      if (measuredTime.isBefore(plannedMeasurement.whenEnd) &&
+          measuredTime.isAfter(plannedMeasurement.whenStart)) {
+        measuredTimes.add(measuredTime);
+        totalCount += 1;
       }
     }
+
+    final minSatisfiedCount = min(totalCount, plannedMeasurement.reqCount);
 
     return FulfillmentEvaluationItem(
       plannedMeasurement.whenStart,
       plannedMeasurement.whenEnd,
       plannedMeasurement.reqCount,
-      matchedResultCount,
-      actualMeasurementTimes,
+      totalCount,
+      measuredTimes.take(minSatisfiedCount).toList(),
     );
   }
 

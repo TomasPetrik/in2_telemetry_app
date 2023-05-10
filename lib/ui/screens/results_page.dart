@@ -21,6 +21,7 @@ import 'package:scalesoft_app/ui/widgets/no_plans_placeholder.dart';
 import 'package:scalesoft_app/ui/widgets/results_list.dart';
 import 'package:scalesoft_app/ui/widgets/sync_widget.dart';
 import 'package:scalesoft_app/ui/widgets/users_profiles_evaluation_header.dart';
+import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 class ResultsPage extends StatelessWidget with BottomSheetMixin {
@@ -48,7 +49,7 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
             ResultsBlocEvent.init(
               carePlans: allCarePlans,
               whenPeriod: ResultsWhenPeriod.today,
-              uncategorizedResults: allMeasurementResults,
+              allServerResults: allMeasurementResults,
               pendingResults: allPendingResults,
             ),
           );
@@ -80,7 +81,8 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                       } else if (selected?.showCalendar == true) {
                         GoRouter.of(context).pushNamed(
                           CalendarRoute.name,
-                          extra: session.getAllCarePlans()
+                          extra: session
+                              .getAllCarePlans()
                               .map((carePlan) => carePlan.id)
                               .toList(),
                         );
@@ -148,8 +150,14 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                             label: translactions.dashboard_screen_all,
                             slivers: [
                               ResultsList(
+                                dayDt: state.selectedWhenPeriod ==
+                                        ResultsWhenPeriod.today
+                                    ? DateTime.now().getTodayMidnight()
+                                    : DateTime.now().getYesterdayMidnight(),
+                                isMultiUser:
+                                    getIt<Session>().isMultiUser == true,
                                 mResults: state.results!,
-                                whenPeriod: state.selectedWhenPeriod!,
+                                canOpenChart: true,
                               ),
                             ],
                             bottomSlivers: [],
@@ -163,8 +171,14 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                                 ),
                                 slivers: [
                                   ResultsList(
+                                    dayDt: state.selectedWhenPeriod ==
+                                            ResultsWhenPeriod.today
+                                        ? DateTime.now().getTodayMidnight()
+                                        : DateTime.now().getYesterdayMidnight(),
+                                    isMultiUser:
+                                        getIt<Session>().isMultiUser == true,
                                     mResults: state.results!,
-                                    whenPeriod: state.selectedWhenPeriod!,
+                                    canOpenChart: true,
                                   ),
                                 ],
                                 bottomSlivers: [],

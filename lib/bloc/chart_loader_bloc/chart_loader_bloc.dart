@@ -38,19 +38,18 @@ class ChartLoaderBloc extends Bloc<ChartLoaderBlocEvent, ChartLoaderBlocState> {
       );
 
       final offlineResults = _pendingResultsDbProvider
-              .getPerUser(userAccount.user.muid)
-              ?.where(
-                (offlineResult) =>
-                    offlineResult.measurementType == measurementType &&
-                    offlineResult.measurementDateTime!.isAfter(
-                      calendarMonth.monthStartDate,
-                    ) &&
-                    offlineResult.measurementDateTime!.isBefore(
-                      calendarMonth.monthEndDate,
-                    ),
-              )
-              .toList() ??
-          [];
+          .getPerUser(userAccount.user.muid)
+          .where(
+            (offlineResult) =>
+                offlineResult.measurementType == measurementType &&
+                offlineResult.measurementDateTime!.isAfter(
+                  calendarMonth.monthStartDate,
+                ) &&
+                offlineResult.measurementDateTime!.isBefore(
+                  calendarMonth.monthEndDate,
+                ),
+          )
+          .toList();
 
       if (measurements == null) {
         return null;

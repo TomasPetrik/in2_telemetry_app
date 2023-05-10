@@ -28,8 +28,11 @@ class MeasurementResult with _$MeasurementResult {
     @JsonKey(ignore: true)
     @HiveField(7)
         FulfillmentEvaluationItem? evaluationItem,
-    @JsonKey(ignore: true) @HiveField(8) DateTime? measurementFinishDateTime,
+    @JsonKey(ignore: true) @HiveField(8) DateTime? measurementIntervalEnd,
     @JsonKey(ignore: true) @HiveField(9) String? userId,
+    @JsonKey(ignore: true) @HiveField(10) int? reqCount,
+    @JsonKey(ignore: true) @HiveField(11) int? currentCount,
+    @JsonKey(ignore: true) @HiveField(12) DateTime? measurementIntervalStart,
   }) = _MeasurementResult;
 
   factory MeasurementResult.fromJson(Map<String, dynamic> json) =>
@@ -37,6 +40,16 @@ class MeasurementResult with _$MeasurementResult {
 
   @override
   String toString() => toJson().toString();
+
+  bool get isLongPeriod =>
+      reqCount! > 1 &&
+      measurementIntervalStart!
+              .difference(measurementIntervalEnd!)
+              .abs()
+              .inHours >
+          23;
+
+  bool get wasMeasured => currentCount! >= reqCount!;
 }
 
 @freezed

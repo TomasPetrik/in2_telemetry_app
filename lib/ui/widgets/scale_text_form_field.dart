@@ -5,9 +5,9 @@ import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/outlined_text_form_field_decoration.dart';
 
 class ScaleTextFormField extends StatefulWidget {
-  final Key? textFormKey;
+  final Key textFormKey;
   final bool autofocus;
-  final FormFieldValidator<String>? validator;
+  final FormFieldValidator<String> validator;
   final InputDecoration? decoration;
   final ValueChanged<String>? onChanged;
   final ValueChanged<bool>? onFocusChange;
@@ -21,13 +21,14 @@ class ScaleTextFormField extends StatefulWidget {
   final Color? cursorColor;
   final List<TextInputFormatter>? inputFormatters;
   final Widget? suffixIcon;
-  final String? hintText;
+  final String hintText;
 
   const ScaleTextFormField({
     super.key,
-    this.textFormKey,
+    required this.textFormKey,
+    required this.validator,
+    required this.hintText,
     this.autofocus = false,
-    this.validator,
     this.decoration,
     this.onChanged,
     this.keyboardType,
@@ -41,7 +42,6 @@ class ScaleTextFormField extends StatefulWidget {
     this.cursorColor,
     this.inputFormatters,
     this.suffixIcon,
-    this.hintText,
   });
 
   @override
@@ -78,7 +78,7 @@ class _ScaleTextFormFieldState extends State<ScaleTextFormField> {
             autofocus: widget.autofocus,
             validator: widget.validator,
             decoration: OutlinedTextFormFieldDecoration(
-              hintText: widget.hintText ?? '',
+              hintText: widget.hintText,
             ),
             onChanged: widget.onChanged,
             keyboardType: widget.keyboardType,

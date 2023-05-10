@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
 import 'package:scalesoft_app/model/app_settings.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -35,9 +34,12 @@ class NotificationsHelper {
     int notificationId = 100;
     for (final userAccount in userAccounts) {
       for (final carePlan in userAccount.carePlans!) {
-        if (carePlan.wasExpired != true) {
+        //only for current active plans
+        if (carePlan.wasExpired != true &&
+            carePlan.started &&
+            !carePlan.fihisned) {
           //schedule for next 30 measurements of this plan
-          final nextMeasurements = Calendar.getNNextMeasurements(
+          final nextMeasurements = Calendar.getNScheduledMeasurements(
             carePlans: [carePlan],
             reqCount: 30,
           );
@@ -48,7 +50,6 @@ class NotificationsHelper {
                 notificationId += 1,
                 notificationsPlugin,
                 nextMeasurement,
-                carePlan,
                 userAccount,
               );
             }
@@ -57,7 +58,6 @@ class NotificationsHelper {
                 notificationId += 1,
                 notificationsPlugin,
                 nextMeasurement,
-                carePlan,
                 userAccount,
                 10,
               );
@@ -71,18 +71,17 @@ class NotificationsHelper {
   static Future<void> _zonedSchedule(
     int id,
     FlutterLocalNotificationsPlugin notificationsPlugin,
-    PlannedMeasurement nextMeasurement,
-    CarePlan carePlan,
+    PlannedMeasurement plannedMeasurement,
     UserAccount userAccount, [
     int? hitBeforeNMinutes,
   ]) async {
-    final whenStart = nextMeasurement.whenStart
+    final whenStart = plannedMeasurement.whenStart
         .subtract(Duration(minutes: hitBeforeNMinutes ?? 0));
 
     //skip ongoing before N minutes scheduled notifications
     if (whenStart.isBefore(DateTime.now())) {
       debugPrint(
-        'Skipping zoned schedule for ${whenStart.toTimeOfDay().toString()}',
+        'Skipping ongoing measurement to be scheduled for notification [${whenStart.toTimeOfDay().toString()}]',
       );
       return;
     }
@@ -97,11 +96,7 @@ class NotificationsHelper {
     await notificationsPlugin.zonedSchedule(
       id,
       translactions.common_telemedicine,
-      '${userAccount.user.fullName} - ${translactions.common_measurement} '
-      '${translactions.common_measurement_types_genitive(
-            carePlan.activity.measurementType.name,
-          ).toLowerCase()} '
-      '${nextMeasurement.whenCode != null ? translactions.common_when_code(nextMeasurement.whenCode!.name).toLowerCase() : translactions.common_at_time(nextMeasurement.whenStart.toTimeOfDay().toString())}',
+      _getBodyMessage(userAccount, plannedMeasurement),
       scheduledTime,
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -114,5 +109,40 @@ class NotificationsHelper {
           UILocalNotificationDateInterpretation.wallClockTime,
       androidAllowWhileIdle: true,
     );
+  }
+
+  static String _getBodyMessage(
+    UserAccount userAccount,
+    PlannedMeasurement plannedMeasurement,
+  ) {
+    String message = '';
+    message +=
+        '${userAccount.user.fullName} - ${translactions.common_measurement} ';
+    message += '${translactions.common_measurement_types_genitive(
+          plannedMeasurement.carePlan.activity.measurementType.name,
+        ).toLowerCase()} ';
+
+    if (plannedMeasurement.carePlan.isPeriodical) {
+      message += translactions.notification_periodical_frequency_from_to(
+        plannedMeasurement.carePlan.frequency,
+        plannedMeasurement.isLongPeriod
+            ? plannedMeasurement.whenStart.toDateFormatLong()
+            : plannedMeasurement.whenStart.toLocal().toTimeOfDay().toString(),
+        plannedMeasurement.isLongPeriod
+            ? plannedMeasurement.whenEnd.toDateFormatLong()
+            : plannedMeasurement.whenEnd.toLocal().toTimeOfDay().toString(),
+      );
+    } else {
+      if (plannedMeasurement.whenCode != null) {
+        message += translactions
+            .common_when_code(plannedMeasurement.whenCode!.name)
+            .toLowerCase();
+      }
+      message += translactions.common_at_time(
+        plannedMeasurement.whenStart.toTimeOfDay().toString(),
+      );
+    }
+
+    return message;
   }
 }

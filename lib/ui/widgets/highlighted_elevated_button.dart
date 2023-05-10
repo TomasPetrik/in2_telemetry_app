@@ -4,14 +4,14 @@ import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 
 class HighlightedElevatedButton extends StatelessWidget {
-  final VoidCallback? onPressed;
+  final VoidCallback onPressed;
   final String label;
   final Widget? icon;
   final ButtonType buttonType;
 
   const HighlightedElevatedButton({
     super.key,
-    this.onPressed,
+    required this.onPressed,
     required this.label,
     this.buttonType = ButtonType.primary,
     this.icon,

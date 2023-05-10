@@ -38,6 +38,6 @@ class OmronConnectionBlocEvent with _$OmronConnectionBlocEvent {
 
   factory OmronConnectionBlocEvent.foundDevice(
     BluetoothDevice device,
-    AdvertisementData? advertisementData,
+    AdvertisementData advertisementData,
   ) = _FoundDevice;
 }

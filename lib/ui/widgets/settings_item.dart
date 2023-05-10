@@ -8,20 +8,15 @@ class SettingsItem extends StatelessWidget {
     required this.label,
     this.subLabel,
     this.onTap,
-    this.icon,
-    this.iconWidget,
+    required this.iconWidget,
     this.hasNavigationIcon = true,
     this.showWarning,
-  }) : assert(
-          icon != null || iconWidget != null,
-          'Either icon or iconWidget should be used',
-        );
+  });
 
   final String label;
   final String? subLabel;
   final VoidCallback? onTap;
-  final IconData? icon;
-  final Widget? iconWidget;
+  final Widget iconWidget;
   final bool hasNavigationIcon;
   final bool? showWarning;
 
@@ -40,12 +35,7 @@ class SettingsItem extends StatelessWidget {
                 ),
                 height: 64,
                 width: 64,
-                child: icon != null
-                    ? Icon(
-                        icon,
-                        color: Theme.of(context).colorScheme.onSecondary,
-                      )
-                    : Center(child: iconWidget),
+                child: Center(child: iconWidget),
               ),
               if (showWarning == true)
                 Positioned(

@@ -24,13 +24,13 @@ class PendingResultsDbProvider extends BoxProvider<Measurement> {
     return [];
   }
 
-  List<Measurement>? getPerUser(String userId) {
+  List<Measurement> getPerUser(String userId) {
     if (box.isNotEmpty) {
       return box.values
           .where((measurement) => measurement.patientMuid == userId)
           .toList();
     }
-    return null;
+    return [];
   }
 
   Measurement? getAt(final int index) {
@@ -66,7 +66,6 @@ class PendingResultsDbProvider extends BoxProvider<Measurement> {
     final String userId,
   ) async {
     final userMeasurements = getPerUser(userId);
-    if (userMeasurements == null) return;
     for (final userMeasurement in userMeasurements) {
       await remove(userMeasurement);
     }

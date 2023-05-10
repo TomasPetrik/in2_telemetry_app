@@ -28,7 +28,7 @@ class OmronFlowRoute extends ApplicationRoute with PageBuilderMixin {
         withTransition: false,
         builder: (state) {
           final userId = state.queryParams['userId']!;
-          final deviceId = state.queryParams['deviceId']!;
+          final deviceId = state.queryParams['deviceId'];
           final measurementTypeName = state.queryParams['measurementType']!;
           final modelName = state.queryParams['modelName'];
           final deviceManufacturer = state.queryParams['deviceManufacturer'];
@@ -37,13 +37,23 @@ class OmronFlowRoute extends ApplicationRoute with PageBuilderMixin {
             (measurementType) => measurementType.name == measurementTypeName,
           );
 
-          final Device device = getIt<PairedDevicesDbProvider>().get(deviceId) ??
-                Constants.supportedDevices.firstWhere(
-                  (device) =>
-                      device.modelName == modelName &&
-                      device.deviceManufacturer == deviceManufacturer,
-                );
-          
+          assert(
+            deviceId != null ||
+                (modelName != null && deviceManufacturer != null),
+            'either deviceId or (modelName and deviceManufacturer) shoudn\'t be null',
+          );
+
+          final Device device;
+
+          if (deviceId != null) {
+            device = getIt<PairedDevicesDbProvider>().get(deviceId)!;
+          } else {
+            device = Constants.supportedDevices.firstWhere(
+              (device) =>
+                  device.modelName == modelName &&
+                  device.deviceManufacturer == deviceManufacturer,
+            );
+          }
 
           return OmronFlowScreen(
             userId: userId,

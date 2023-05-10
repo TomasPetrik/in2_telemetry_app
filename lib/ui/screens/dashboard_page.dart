@@ -12,7 +12,6 @@ import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/calendar_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/screens/navigation_screen.dart';
-import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/action_widget.dart';
 import 'package:scalesoft_app/ui/widgets/blured_user_app_bar.dart';
 import 'package:scalesoft_app/ui/widgets/measurement_header.dart';
@@ -66,7 +65,8 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                 builder: (context, state) {
                   if (state.selectedWhenPeriod == null ||
                       state.currentCarePlans == null ||
-                      state.measurements == null ||
+                      state.upcomingMeasurements == null ||
+                      state.allTodayMeasurements == null ||
                       state.results == null) {
                     return const SizedBox.shrink();
                   } else {
@@ -93,14 +93,10 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                             state.selectedWhenPeriod ==
                                 PlanWhenPeriod.next10)) ...{
                           SliverToBoxAdapter(
-                            child: Column(
-                              children: [
-                                Gaps.gap16,
-                                ActionWidget(
-                                  nextMeasurement: state.nextMeasurement,
-                                ),
-                                Gaps.gap26,
-                              ],
+                            child: ActionWidget(
+                              whenPeriod: state.selectedWhenPeriod!,
+                              upcomingMeasurements: state.upcomingMeasurements!,
+                              allTodayMeasurements: state.allTodayMeasurements!,
                             ),
                           ),
                         }
@@ -126,7 +122,8 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                                   } else if (selected?.showCalendar == true) {
                                     GoRouter.of(context).pushNamed(
                                       CalendarRoute.name,
-                                      extra: session.getAllCarePlans()
+                                      extra: session
+                                          .getAllCarePlans()
                                           .map((carePlan) => carePlan.id)
                                           .toList(),
                                     );
@@ -143,7 +140,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                               MeasurementsList(
                                 whenPeriod: state.selectedWhenPeriod!,
                                 carePlans: [...state.currentCarePlans!],
-                                measurements: state.measurements!,
+                                measurements: state.upcomingMeasurements!,
                                 nextMeasurement: state.nextMeasurement!,
                                 planWhenPeriod: state.selectedWhenPeriod!,
                                 results: state.results!,
@@ -155,7 +152,8 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                                       .enterMeasurementWithoutPlan) ...{
                                 PersonalMeasurementFooter(
                                   showInfo:
-                                      state.measurements?.isNotEmpty == true,
+                                      state.upcomingMeasurements?.isNotEmpty ==
+                                          true,
                                   onPressed: () async {
                                     MeasurementHelper.doMeasurement(
                                       context: context,
@@ -179,7 +177,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                                   MeasurementsList(
                                     whenPeriod: state.selectedWhenPeriod!,
                                     carePlans: [...state.currentCarePlans!],
-                                    measurements: state.measurements!,
+                                    measurements: state.upcomingMeasurements!,
                                     nextMeasurement: state.nextMeasurement!,
                                     planWhenPeriod: state.selectedWhenPeriod!,
                                     results: state.results!,
@@ -190,9 +188,9 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                                       sessionAccounts[0]
                                           .enterMeasurementWithoutPlan) ...{
                                     PersonalMeasurementFooter(
-                                      showInfo:
-                                          state.measurements?.isNotEmpty ==
-                                              true,
+                                      showInfo: state.upcomingMeasurements
+                                              ?.isNotEmpty ==
+                                          true,
                                       onPressed: () async {
                                         MeasurementHelper.doMeasurement(
                                           context: context,

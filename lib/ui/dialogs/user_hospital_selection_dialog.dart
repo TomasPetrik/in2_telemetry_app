@@ -11,10 +11,10 @@ import 'package:scalesoft_app/ui/widgets/settings_item.dart';
 class UserHospitalSelectionDialog extends StatelessWidget {
   const UserHospitalSelectionDialog({
     super.key,
-    this.supportMultiUser,
+    required this.supportMultiUser,
   });
 
-  final bool? supportMultiUser;
+  final bool supportMultiUser;
 
   @override
   Widget build(BuildContext context) {

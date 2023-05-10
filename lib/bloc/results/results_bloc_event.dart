@@ -12,8 +12,8 @@ class ResultsBlocEvent with _$ResultsBlocEvent {
   const factory ResultsBlocEvent.init({
     required final ResultsWhenPeriod whenPeriod,
     required final List<CarePlan> carePlans,
-    required final List<MeasurementResult> uncategorizedResults,
-    final List<Measurement>? pendingResults,
+    required final List<MeasurementResult> allServerResults,
+    required final List<Measurement> pendingResults,
   }) = _Init;
   const factory ResultsBlocEvent.whenPeriodChange(
     ResultsWhenPeriod whenPeriod,

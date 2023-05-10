@@ -45,7 +45,7 @@ class UserWarningItem extends StatelessWidget {
         title: translactions.sync_widget_sync_failed_title,
         description: userAccount.lastSyncAt != null
             ? translactions.sync_widget_sync_failed_desc(
-                userAccount.lastSyncAt!.toDateOrDay(context),
+                userAccount.lastSyncAt!.toDateOrDay().toLowerCase(),
                 userAccount.lastSyncAt!.toTimeOfDay().toString(),
               )
             : '',

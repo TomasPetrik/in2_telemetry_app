@@ -9,6 +9,7 @@ import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
+import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
@@ -22,7 +23,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
       _allCarePlans.clear();
       _allCarePlans.addAll(event.carePlans);
       _pendingResults.clear();
-      _pendingResults.addAll(event.pendingResults ?? []);
+      _pendingResults.addAll(event.pendingResults);
 
       final List<MeasurementResult> todayOfflineResults =
           MeasurementHelper.getOffilneResultsConverted(
@@ -45,7 +46,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
               offlineResults: todayOfflineResults,
             );
 
-      final measurements = event.carePlans.isEmpty
+      final upcomingMeasurements = event.carePlans.isEmpty
           ? null
           : CarePlanHelper.getMeasurements(
               event.carePlans,
@@ -53,12 +54,20 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
               todayOfflineResults,
             );
 
+      final allTodayMeasurements = Calendar.getMeasurementsOfDay(
+        carePlans: event.carePlans,
+        dayDt: DateTime.now().getTodayMidnight(),
+        offlineResults: todayOfflineResults,
+        all: true,
+      );
+
       emit(
         CarePlanBlocState(
           currentCarePlans: event.carePlans,
           selectedWhenPeriod: event.whenPeriod,
           nextMeasurement: nextMeasurement?.first,
-          measurements: measurements,
+          upcomingMeasurements: upcomingMeasurements,
+          allTodayMeasurements: allTodayMeasurements,
           results: todayOfflineResults,
           measurementType: null,
           allMeasurementCountsPerPeriod: allMeasurementCountsPerPeriod,
@@ -80,17 +89,25 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
         offlineResults: todayOfflineResults,
       );
 
-      final measurements = CarePlanHelper.getMeasurements(
+      final upcomingMeasurements = CarePlanHelper.getMeasurements(
         state.currentCarePlans!,
         event.whenPeriod,
         todayOfflineResults,
+      );
+
+      final allTodayMeasurements = Calendar.getMeasurementsOfDay(
+        carePlans: state.currentCarePlans!,
+        dayDt: DateTime.now().getTodayMidnight(),
+        offlineResults: todayOfflineResults,
+        all: true,
       );
 
       emit(
         state.copyWith(
           selectedWhenPeriod: event.whenPeriod,
           nextMeasurement: nextMeasurement.first,
-          measurements: measurements,
+          upcomingMeasurements: upcomingMeasurements,
+          allTodayMeasurements: allTodayMeasurements,
           results: todayOfflineResults,
         ),
       );
@@ -119,17 +136,25 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
         offlineResults: todayOfflineResults,
       );
 
-      final measurements = CarePlanHelper.getMeasurements(
+      final upcomingMeasurements = CarePlanHelper.getMeasurements(
         carePlans,
         state.selectedWhenPeriod!,
         todayOfflineResults,
+      );
+
+      final allTodayMeasurements = Calendar.getMeasurementsOfDay(
+        carePlans: carePlans,
+        dayDt: DateTime.now().getTodayMidnight(),
+        offlineResults: todayOfflineResults,
+        all: true,
       );
 
       emit(
         state.copyWith(
           currentCarePlans: carePlans,
           nextMeasurement: nextMeasurement.first,
-          measurements: measurements,
+          upcomingMeasurements: upcomingMeasurements,
+          allTodayMeasurements: allTodayMeasurements,
           measurementType: event.measurementType,
           results: todayOfflineResults,
         ),
@@ -162,17 +187,25 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
             offlineResults: todayOfflineResults,
           );
 
-          final measurements = CarePlanHelper.getMeasurements(
+          final upcomingMeasurements = CarePlanHelper.getMeasurements(
             carePlans,
             state.selectedWhenPeriod!,
             todayOfflineResults,
+          );
+
+          final allTodayMeasurements = Calendar.getMeasurementsOfDay(
+            carePlans: carePlans,
+            dayDt: DateTime.now().getTodayMidnight(),
+            offlineResults: todayOfflineResults,
+            all: true,
           );
 
           emit(
             state.copyWith(
               currentCarePlans: carePlans,
               nextMeasurement: nextMeasurement.first,
-              measurements: measurements,
+              upcomingMeasurements: upcomingMeasurements,
+              allTodayMeasurements: allTodayMeasurements,
               results: todayOfflineResults,
             ),
           );

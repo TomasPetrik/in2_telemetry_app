@@ -5,11 +5,11 @@ class ScaleSwitch extends StatefulWidget {
   const ScaleSwitch({
     super.key,
     required this.onChanged,
-    this.value,
+    required this.value,
   });
 
   final Function(bool turnedOn) onChanged;
-  final bool? value;
+  final bool value;
 
   @override
   State<ScaleSwitch> createState() => _ScaleSwitchState();
@@ -20,7 +20,7 @@ class _ScaleSwitchState extends State<ScaleSwitch> {
 
   @override
   void initState() {
-    value = widget.value ?? false;
+    value = widget.value;
     super.initState();
   }
 
