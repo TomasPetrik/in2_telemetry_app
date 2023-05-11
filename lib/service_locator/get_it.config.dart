@@ -164,6 +164,7 @@ _i1.GetIt init(
     gh<_i31.CarePlansRepository>(),
     gh<_i23.TimeSettingsRepository>(),
     gh<_i4.AppSettingsDbProvider>(),
+    gh<_i36.DeviceRepository>(),
   ));
   gh.factory<_i39.TokenInterceptor>(() => _i39.TokenInterceptor(
         gh<_i20.Session>(),

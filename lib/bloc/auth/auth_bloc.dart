@@ -143,6 +143,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             .toList(),
       );
 
+      await _syncService.loadDeviceModels(userAccount);
       await _syncService.loadWhenValues(userAccount);
       await _syncService.loadTimeSettings(userAccount);
       await _syncService.loadUserData(userAccount);

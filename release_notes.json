@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Updated readme file saying to use Flutter version 3.7.12 for compilation."
+    "text": "1. Implemented using aboutUrl as reference to open detail of hospital's device. Button is located at bottom of first screen in measurement flow."
   },
   {
     "language": "sk-SK",

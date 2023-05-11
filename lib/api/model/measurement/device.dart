@@ -31,6 +31,7 @@ class Device with _$Device {
     @JsonKey(ignore: false) @HiveField(15) bool? devIdIsName,
     @JsonKey(ignore: false) @HiveField(16) bool? wasPaired,
     @JsonKey(ignore: false) @HiveField(17) bool? isLendedDevice,
+    @JsonKey(ignore: false) @HiveField(18) String? aboutUrl,
   }) = _Device;
 
   factory Device.fromJson(Map<String, dynamic> json) => _$DeviceFromJson(json);

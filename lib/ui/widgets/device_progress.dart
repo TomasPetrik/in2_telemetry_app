@@ -6,6 +6,7 @@ import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/action_item.dart';
 import 'package:scalesoft_app/ui/widgets/device_progress_list.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DeviceProgress extends StatelessWidget {
   const DeviceProgress({
@@ -45,10 +46,20 @@ class DeviceProgress extends StatelessWidget {
           activeIndex: activeIndex,
         ),
         const SliverGap(Dimensions.padding60),
-        ActionItem(
-          label: translactions.find_device_screen_device_reference,
-          onTap: () {},
-        ),
+        if (device.aboutUrl != null) ...[
+          ActionItem(
+            label: translactions.find_device_screen_device_reference,
+            onTap: () async {
+              if (!await launchUrl(
+                Uri.parse(device.aboutUrl!),
+                mode: LaunchMode.externalApplication,
+              )) {
+                throw Exception('Could not launch ${device.aboutUrl}');
+              }
+            },
+          ),
+          const SliverGap(Dimensions.padding20),
+        ]
       ],
     );
   }

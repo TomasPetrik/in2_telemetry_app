@@ -12,6 +12,7 @@ import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/repositories/account_repository.dart';
 import 'package:scalesoft_app/repositories/care_plans_repository.dart';
+import 'package:scalesoft_app/repositories/device_repository.dart';
 import 'package:scalesoft_app/repositories/time_settings_repository.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
@@ -27,6 +28,7 @@ class SyncService {
   final CarePlansRepository _carePlansRepository;
   final TimeSettingsRepository _timeSettingsRepository;
   final AppSettingsDbProvider _appSettingsDbProvider;
+  final DeviceRepository _deviceRepository;
 
   SyncService(
     this._session,
@@ -36,6 +38,7 @@ class SyncService {
     this._carePlansRepository,
     this._timeSettingsRepository,
     this._appSettingsDbProvider,
+    this._deviceRepository,
   );
 
   void setUserPlans(
@@ -85,6 +88,23 @@ class SyncService {
     for (final UserAccount representedPerson
         in userAccount.representedPeople!) {
       representedPerson.timeSettingItems = timeSettingItems;
+    }
+  }
+
+  Future<void> loadDeviceModels(final UserAccount userAccount) async {
+    try {
+      final deviceModels = await _deviceRepository.getDeviceModels(
+        userAccount: userAccount,
+      );
+      userAccount.supportedDeviceModels = deviceModels;
+      for (final UserAccount representedPerson
+          in userAccount.representedPeople!) {
+        representedPerson.supportedDeviceModels = deviceModels;
+      }
+    } on Exception {
+      debugPrint(
+        'Couln\'t load device models for user ${userAccount.user.fullName}',
+      );
     }
   }
 

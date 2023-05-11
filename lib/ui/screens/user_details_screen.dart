@@ -201,16 +201,16 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                               translactions.user_detail_screen_remove_account,
                           buttonType: ButtonType.alert,
                           onPressed: () async {
-                            final confirmed =
-                                await showAccounRemovalConfirmation(
+                            showAccounRemovalConfirmation(
                               context: context,
                               accountName: userAccount.user.fullName,
-                            );
-
-                            if (confirmed == true) {
-                              getIt<AuthBloc>()
-                                  .add(LogoutUser(userAccount: userAccount));
-                            }
+                            ).then((confirmed) {
+                              if (confirmed == true) {
+                                GoRouter.of(context).pop();
+                                getIt<AuthBloc>()
+                                    .add(LogoutUser(userAccount: userAccount));
+                              }
+                            });
                           },
                         ),
                       ),

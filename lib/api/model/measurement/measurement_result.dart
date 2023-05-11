@@ -47,6 +47,7 @@ class MeasurementResult with _$MeasurementResult {
   String toString() => toJson().toString();
 
   bool get isLongPeriod =>
+      reqCount != null &&
       reqCount! > 1 &&
       measurementIntervalStart!
               .difference(measurementIntervalEnd!)
@@ -54,7 +55,8 @@ class MeasurementResult with _$MeasurementResult {
               .inHours >
           23;
 
-  bool get wasMeasured => currentCount! >= reqCount!;
+  bool get wasMeasured =>
+      currentCount != null && reqCount != null && (currentCount! >= reqCount!);
 }
 
 @freezed

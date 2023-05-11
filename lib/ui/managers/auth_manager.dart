@@ -59,9 +59,7 @@ class AuthManager extends StatelessWidget with BottomSheetMixin {
             userContentBloc
                 .add(OnUserAddedContentEvent(userAccount: userAccount)),
           },
-          inactiveUserRemoved: (userAccount) {
-            Navigator.of(context).pop();
-          },
+          inactiveUserRemoved: (userAccount) {},
           errorLoadData: () {
             Navigator.of(context).pop();
             showServerError(context);

@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scalesoft_app/api/model/auth_token.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
+import 'package:scalesoft_app/api/model/device_model.dart';
 import 'package:scalesoft_app/api/model/hospital.dart';
 import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
@@ -36,6 +37,7 @@ class UserAccount with _$UserAccount {
     @HiveField(13) List<Device>? assignedDevices,
     @HiveField(14) TemplateTimeSet? templateTimeSet,
     @HiveField(15) List<TimeSetting>? timeSettingItems,
+    @HiveField(16) List<DeviceModel>? supportedDeviceModels,
   }) = _UserAccount;
 
   factory UserAccount.fromJson(Map<String, dynamic> json) =>

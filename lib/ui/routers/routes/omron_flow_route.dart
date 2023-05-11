@@ -1,6 +1,9 @@
+import 'package:collection/collection.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/device_model.dart';
 import 'package:scalesoft_app/api/model/measurement/device.dart';
+import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/paired_devices_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
@@ -43,7 +46,7 @@ class OmronFlowRoute extends ApplicationRoute with PageBuilderMixin {
             'either deviceId or (modelName and deviceManufacturer) shoudn\'t be null',
           );
 
-          final Device device;
+          Device device;
 
           if (deviceId != null) {
             device = getIt<PairedDevicesDbProvider>().get(deviceId)!;
@@ -53,6 +56,18 @@ class OmronFlowRoute extends ApplicationRoute with PageBuilderMixin {
                   device.modelName == modelName &&
                   device.deviceManufacturer == deviceManufacturer,
             );
+          }
+
+          //also add device's reference
+          final user = getIt<AccountDbProvider>().get(userId)!;
+          final DeviceModel? deviceModel =
+              user.supportedDeviceModels?.firstWhereOrNull(
+            (deviceModel) =>
+                deviceModel.modelName == device.modelName &&
+                deviceModel.manufacturer == device.deviceManufacturer,
+          );
+          if (deviceModel != null) {
+            device = device.copyWith(aboutUrl: deviceModel.aboutUrl);
           }
 
           return OmronFlowScreen(
