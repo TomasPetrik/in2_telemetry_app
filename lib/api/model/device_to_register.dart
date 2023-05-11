@@ -9,7 +9,7 @@ class DeviceToRegister with _$DeviceToRegister {
   const DeviceToRegister._();
 
   @HiveType(typeId: 46, adapterName: 'DeviceToRegisterAdapter')
-  const factory DeviceToRegister({
+  factory DeviceToRegister({
     @HiveField(0) required int deviceModelId,
     @HiveField(1) String? assignedIdentifier,
     @HiveField(2) required String deviceIdentifier,

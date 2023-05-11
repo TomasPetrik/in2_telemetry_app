@@ -9,7 +9,7 @@ class ComposedDoubleValue with _$ComposedDoubleValue {
   const ComposedDoubleValue._();
 
   @HiveType(typeId: 31, adapterName: 'ComposedDoubleValueAdapter')
-  const factory ComposedDoubleValue({
+  factory ComposedDoubleValue({
     @HiveField(0) double? firstValue,
     @HiveField(1) double? secondValue,
   }) = _ComposedDoubleValue;

@@ -9,7 +9,7 @@ class BloodPressureValue with _$BloodPressureValue {
   const BloodPressureValue._();
 
   @HiveType(typeId: 32, adapterName: 'BloodPressureValueAdapter')
-  const factory BloodPressureValue({
+  factory BloodPressureValue({
     @HiveField(0) int? systolic,
     @HiveField(1) int? diastolic,
   }) = _ComposedIntValue;

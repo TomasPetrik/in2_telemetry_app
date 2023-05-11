@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Updated Flutter to 3.10,\n2. Fixed project compatibility for Flutter 3.10, 3. Replaced daylight by sunrise_sunset_calc for sunset / sunrise calculation."
+    "text": "1. Aligned gaps related with Flutter update to 3.10 ."
   },
   {
     "language": "sk-SK",

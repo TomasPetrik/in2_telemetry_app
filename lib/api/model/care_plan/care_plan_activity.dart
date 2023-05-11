@@ -7,7 +7,7 @@ part 'care_plan_activity.g.dart';
 @freezed
 class CarePlanActivity with _$CarePlanActivity {
   @HiveType(typeId: 11, adapterName: 'CarePlanActivityAdapter')
-  factory CarePlanActivity(
+  const factory CarePlanActivity(
     @HiveField(0) ActivityType activityType,
     @HiveField(1) MeasurementType measurementType,
     @HiveField(2) int? goalValue,

@@ -10,7 +10,7 @@ class ThemeModeLocal with _$ThemeModeLocal {
   const ThemeModeLocal._();
 
   @HiveType(typeId: 111, adapterName: 'ThemeModeLocalAdapter')
-  const factory ThemeModeLocal({
+  factory ThemeModeLocal({
     @HiveField(0) required int index,
   }) = _ThemeModeLocal;
 

@@ -2,11 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 
-class SearchBar extends StatefulWidget {
-  const SearchBar({
+class ScaleSearchBar extends StatefulWidget {
+  const ScaleSearchBar({
     super.key,
     required this.searchHint,
     required this.searchController,
@@ -20,10 +21,10 @@ class SearchBar extends StatefulWidget {
   final VoidCallback onBack;
 
   @override
-  State<SearchBar> createState() => _SearchBarState();
+  State<ScaleSearchBar> createState() => _ScaleSearchBarState();
 }
 
-class _SearchBarState extends State<SearchBar> {
+class _ScaleSearchBarState extends State<ScaleSearchBar> {
   final FocusNode _searchBoxNode = FocusNode();
 
   @override
@@ -57,9 +58,8 @@ class _SearchBarState extends State<SearchBar> {
           },
           child: Padding(
             padding: Paddings.horizontal16,
-            child: Icon(
-              Icons.arrow_back,
-              size: 20.0,
+            child: SvgPicture.asset(
+              'assets/icons/icon_back.svg',
               color: Theme.of(context).colorScheme.primary,
             ),
           ),

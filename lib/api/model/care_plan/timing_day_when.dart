@@ -6,7 +6,7 @@ part 'timing_day_when.g.dart';
 
 @unfreezed
 class TimingDayWhen with _$TimingDayWhen {
-  TimingDayWhen._();
+  const TimingDayWhen._();
 
   @HiveType(typeId: 17, adapterName: 'TimingDayWhenAdapter')
   factory TimingDayWhen(

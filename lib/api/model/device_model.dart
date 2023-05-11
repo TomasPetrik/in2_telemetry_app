@@ -9,7 +9,7 @@ class DeviceModel with _$DeviceModel {
   const DeviceModel._();
 
   @HiveType(typeId: 45, adapterName: 'DeviceModelAdapter')
-  const factory DeviceModel({
+  factory DeviceModel({
     @HiveField(0) required int id,
     @HiveField(1) String? manufacturer,
     @HiveField(2) String? modelName,

@@ -4,64 +4,57 @@
 // InjectableConfigGenerator
 // **************************************************************************
 
+// ignore_for_file: unnecessary_lambdas
+// ignore_for_file: lines_longer_than_80_chars
+// coverage:ignore-file
+
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:dio/dio.dart' as _i11;
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
-import 'package:scalesoft_app/api/client/account_api_client.dart' as _i25;
-import 'package:scalesoft_app/api/client/auth_api_client.dart' as _i28;
-import 'package:scalesoft_app/api/client/care_plan_api_client.dart' as _i30;
-import 'package:scalesoft_app/api/client/device_api_client.dart' as _i34;
-import 'package:scalesoft_app/api/client/time_settings_api_client.dart' as _i22;
-import 'package:scalesoft_app/api/interceptors/token_interceptor.dart' as _i39;
-import 'package:scalesoft_app/bloc/auth/auth_bloc.dart' as _i40;
-import 'package:scalesoft_app/bloc/calendar/calendar_bloc.dart' as _i29;
-import 'package:scalesoft_app/bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc.dart'
-    as _i41;
-import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart' as _i9;
-import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc.dart' as _i10;
-import 'package:scalesoft_app/bloc/chart_loader_bloc/chart_loader_bloc.dart'
-    as _i32;
-import 'package:scalesoft_app/bloc/daily_times_settings/times_settings_bloc.dart'
-    as _i24;
-import 'package:scalesoft_app/bloc/notifications/notifications_bloc.dart'
-    as _i16;
-import 'package:scalesoft_app/bloc/omron/omron_connection_bloc.dart' as _i43;
-import 'package:scalesoft_app/bloc/register_device/register_device_bloc.dart'
-    as _i37;
-import 'package:scalesoft_app/bloc/results/results_bloc.dart' as _i19;
-import 'package:scalesoft_app/bloc/settings/app_settings_bloc.dart' as _i27;
-import 'package:scalesoft_app/bloc/sync/sync_bloc.dart' as _i42;
-import 'package:scalesoft_app/bloc/user_content/content_bloc.dart' as _i33;
-import 'package:scalesoft_app/cubit/auth_web/auth_web_cubit.dart' as _i6;
-import 'package:scalesoft_app/cubit/calendar_footer/calendar_footer_cubit.dart'
-    as _i8;
-import 'package:scalesoft_app/cubit/device_management/device_management_cubit.dart'
-    as _i35;
-import 'package:scalesoft_app/cubit/hospital_search/hospital_search_cubit.dart'
-    as _i12;
-import 'package:scalesoft_app/providers/account_db_provider.dart' as _i3;
-import 'package:scalesoft_app/providers/calendar_evaluation_db_provider.dart'
-    as _i7;
-import 'package:scalesoft_app/providers/measurements_db_provider.dart' as _i15;
-import 'package:scalesoft_app/providers/paired_devices_db_provider.dart'
-    as _i17;
-import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart'
-    as _i18;
-import 'package:scalesoft_app/providers/session_db_provider.dart' as _i21;
-import 'package:scalesoft_app/providers/settings_db_provider.dart' as _i4;
-import 'package:scalesoft_app/repositories/account_repository.dart' as _i26;
-import 'package:scalesoft_app/repositories/care_plans_repository.dart' as _i31;
-import 'package:scalesoft_app/repositories/device_repository.dart' as _i36;
-import 'package:scalesoft_app/repositories/time_settings_repository.dart'
-    as _i23;
-import 'package:scalesoft_app/services/auth_service.dart' as _i5;
-import 'package:scalesoft_app/services/internet_service.dart' as _i13;
-import 'package:scalesoft_app/services/location_service.dart' as _i14;
-import 'package:scalesoft_app/services/sync_service.dart' as _i38;
-import 'package:scalesoft_app/storage/session.dart' as _i20;
 
+import '../api/client/account_api_client.dart' as _i25;
+import '../api/client/auth_api_client.dart' as _i28;
+import '../api/client/care_plan_api_client.dart' as _i30;
+import '../api/client/device_api_client.dart' as _i34;
+import '../api/client/time_settings_api_client.dart' as _i22;
 import '../api/dio_module.dart' as _i44;
+import '../api/interceptors/token_interceptor.dart' as _i39;
+import '../bloc/auth/auth_bloc.dart' as _i40;
+import '../bloc/calendar/calendar_bloc.dart' as _i29;
+import '../bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc.dart'
+    as _i41;
+import '../bloc/care_plan/care_plan_bloc.dart' as _i9;
+import '../bloc/chart_bloc/chart_bloc.dart' as _i10;
+import '../bloc/chart_loader_bloc/chart_loader_bloc.dart' as _i32;
+import '../bloc/daily_times_settings/times_settings_bloc.dart' as _i24;
+import '../bloc/notifications/notifications_bloc.dart' as _i16;
+import '../bloc/omron/omron_connection_bloc.dart' as _i43;
+import '../bloc/register_device/register_device_bloc.dart' as _i37;
+import '../bloc/results/results_bloc.dart' as _i19;
+import '../bloc/settings/app_settings_bloc.dart' as _i27;
+import '../bloc/sync/sync_bloc.dart' as _i42;
+import '../bloc/user_content/content_bloc.dart' as _i33;
+import '../cubit/auth_web/auth_web_cubit.dart' as _i6;
+import '../cubit/calendar_footer/calendar_footer_cubit.dart' as _i8;
+import '../cubit/device_management/device_management_cubit.dart' as _i35;
+import '../cubit/hospital_search/hospital_search_cubit.dart' as _i12;
+import '../providers/account_db_provider.dart' as _i3;
+import '../providers/calendar_evaluation_db_provider.dart' as _i7;
+import '../providers/measurements_db_provider.dart' as _i15;
+import '../providers/paired_devices_db_provider.dart' as _i17;
+import '../providers/pending_results_dbs_provider.dart' as _i18;
+import '../providers/session_db_provider.dart' as _i21;
+import '../providers/settings_db_provider.dart' as _i4;
+import '../repositories/account_repository.dart' as _i26;
+import '../repositories/care_plans_repository.dart' as _i31;
+import '../repositories/device_repository.dart' as _i36;
+import '../repositories/time_settings_repository.dart' as _i23;
+import '../services/auth_service.dart' as _i5;
+import '../services/internet_service.dart' as _i13;
+import '../services/location_service.dart' as _i14;
+import '../services/sync_service.dart' as _i38;
+import '../storage/session.dart' as _i20;
 
 // ignore_for_file: unnecessary_lambdas
 // ignore_for_file: lines_longer_than_80_chars

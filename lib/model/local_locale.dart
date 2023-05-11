@@ -11,7 +11,7 @@ class LocalLocale with _$LocalLocale {
   const LocalLocale._();
 
   @HiveType(typeId: 112, adapterName: 'LocalLocaleAdapter')
-  const factory LocalLocale({
+  factory LocalLocale({
     @HiveField(0) required String languageCode,
   }) = _LocalLocale;
 

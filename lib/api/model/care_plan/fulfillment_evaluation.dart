@@ -27,10 +27,16 @@ class FulfillmentEvaluationItem with _$FulfillmentEvaluationItem {
 
   @HiveType(typeId: 22, adapterName: 'FulfillmentEvaluationItemAdapter')
   factory FulfillmentEvaluationItem(
-    @JsonKey(fromJson: toLocalDate) @HiveField(0) DateTime start,
-    @JsonKey(fromJson: toLocalDate) @HiveField(1) DateTime end,
-    @HiveField(2) int requiredMeasurementCount,
-    @HiveField(3) int actualMeasurementCount,
+    @JsonKey(fromJson: toLocalDate)
+    @HiveField(0)
+        DateTime start,
+    @JsonKey(fromJson: toLocalDate)
+    @HiveField(1)
+        DateTime end,
+    @HiveField(2)
+        int requiredMeasurementCount,
+    @HiveField(3)
+        int actualMeasurementCount,
     @HiveField(4)
     @MeasurementTimesConverter()
         List<DateTime> actualMeasurementTimes,

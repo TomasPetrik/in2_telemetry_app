@@ -9,7 +9,7 @@ class AuthToken with _$AuthToken {
   const AuthToken._();
 
   @HiveType(typeId: 7, adapterName: 'AuthTokenAdapter')
-  factory AuthToken(
+  const factory AuthToken(
     @HiveField(0) String accessToken,
     @HiveField(1) String refreshToken,
     @HiveField(2) DateTime accessTokenExpires,
