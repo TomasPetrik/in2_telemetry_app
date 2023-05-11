@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 part 'care_plan_activity.freezed.dart';
 part 'care_plan_activity.g.dart';
+part 'care_plan_activity.hive.dart';
 
 @freezed
 class CarePlanActivity with _$CarePlanActivity {

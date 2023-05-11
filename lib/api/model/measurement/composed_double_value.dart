@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 part 'composed_double_value.freezed.dart';
 part 'composed_double_value.g.dart';
+part 'composed_double_value.hive.dart';
 
 @freezed
 class ComposedDoubleValue with _$ComposedDoubleValue {

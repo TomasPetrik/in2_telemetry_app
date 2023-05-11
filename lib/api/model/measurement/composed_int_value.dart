@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 part 'composed_int_value.freezed.dart';
 part 'composed_int_value.g.dart';
+part 'composed_int_value.hive.dart';
 
 @freezed
 class BloodPressureValue with _$BloodPressureValue {

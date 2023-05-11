@@ -3,6 +3,7 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   exclude:
     [
+      "**/*.hive.dart",
       "**/*.g.dart",
       "lib/localization/generated/**",
       "lib/service_locator/get_it.config.dart",

@@ -4,6 +4,7 @@ import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 part 'fulfillment_evaulation_aggregated.freezed.dart';
 part 'fulfillment_evaulation_aggregated.g.dart';
+part 'fulfillment_evaulation_aggregated.hive.dart';
 
 @freezed
 class FulfillmentEvaluationAggregated with _$FulfillmentEvaluationAggregated {

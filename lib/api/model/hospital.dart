@@ -4,6 +4,7 @@ import 'package:scalesoft_app/api/model/auth_data.dart';
 
 part 'hospital.freezed.dart';
 part 'hospital.g.dart';
+part 'hospital.hive.dart';
 
 @freezed
 class Hospital with _$Hospital {

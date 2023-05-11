@@ -12,6 +12,7 @@ import 'package:scalesoft_app/api/model/user.dart';
 
 part 'user_account.freezed.dart';
 part 'user_account.g.dart';
+part 'user_account.hive.dart';
 
 @unfreezed
 class UserAccount with _$UserAccount {

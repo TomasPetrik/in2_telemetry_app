@@ -52,4 +52,5 @@ app.*.map.json
 # Generated files
 *.g.dart
 *.freezed.dart
+*.hive.dart
 

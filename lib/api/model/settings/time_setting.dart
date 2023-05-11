@@ -4,6 +4,7 @@ import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
 
 part 'time_setting.freezed.dart';
 part 'time_setting.g.dart';
+part 'time_setting.hive.dart';
 
 @unfreezed
 class TimeSetting with _$TimeSetting {

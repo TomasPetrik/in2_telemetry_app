@@ -6,6 +6,7 @@ import 'package:scalesoft_app/api/model/measurement/source_device_info.dart';
 
 part 'measurement.freezed.dart';
 part 'measurement.g.dart';
+part 'measurement.hive.dart';
 
 @freezed
 class Measurement with _$Measurement {
@@ -22,7 +23,9 @@ class Measurement with _$Measurement {
     @HiveField(6) int? oxygenSaturation,
     @HiveField(7) int? respiratoryRate,
     @HiveField(8) String? patientMuid,
-    @JsonKey(includeToJson: false) @HiveField(9) MeasurementType? measurementType,
+    @JsonKey(includeToJson: false)
+    @HiveField(9)
+        MeasurementType? measurementType,
   }) = _ManualMeasurement;
 
   factory Measurement.fromJson(Map<String, dynamic> json) =>

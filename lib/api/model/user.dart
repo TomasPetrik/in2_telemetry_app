@@ -3,20 +3,21 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 part 'user.freezed.dart';
 part 'user.g.dart';
+part 'user.hive.dart';
 
 @freezed
 class User with _$User {
   const User._();
 
   @HiveType(typeId: 3, adapterName: 'UserAdapter')
-  const factory User({
-    @HiveField(1) required String muid,
-    @HiveField(2) required List<String> firstNames,
-    @HiveField(3) required List<String> lastNames,
+  factory User(
+    @HiveField(1) String muid,
+    @HiveField(2) List<String> firstNames,
+    @HiveField(3) List<String> lastNames,
     @HiveField(4) List<String>? phoneNumbers,
     @HiveField(5) List<String>? emailAddresses,
     @HiveField(6) List<User>? representedPeople,
-  }) = _User;
+  ) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

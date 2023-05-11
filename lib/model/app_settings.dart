@@ -5,6 +5,7 @@ import 'package:scalesoft_app/model/theme_mode_local.dart';
 
 part 'app_settings.freezed.dart';
 part 'app_settings.g.dart';
+part 'app_settings.hive.dart';
 
 @freezed
 class AppSettings with _$AppSettings {
@@ -19,4 +20,7 @@ class AppSettings with _$AppSettings {
     @HiveField(4) bool? notify10minBeforeMeasurement,
     @HiveField(5) bool? autosetAppearance,
   }) = _AppSettings;
+
+  factory AppSettings.fromJson(Map<String, dynamic> json) =>
+      _$AppSettingsFromJson(json);
 }

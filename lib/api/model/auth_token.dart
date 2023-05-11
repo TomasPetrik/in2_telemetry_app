@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 part 'auth_token.freezed.dart';
 part 'auth_token.g.dart';
+part 'auth_token.hive.dart';
 
 @freezed
 class AuthToken with _$AuthToken {

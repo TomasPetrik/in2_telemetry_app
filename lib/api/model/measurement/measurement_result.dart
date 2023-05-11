@@ -9,6 +9,7 @@ import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 part 'measurement_result.freezed.dart';
 part 'measurement_result.g.dart';
+part 'measurement_result.hive.dart';
 
 @unfreezed
 class MeasurementResult with _$MeasurementResult {
@@ -19,35 +20,21 @@ class MeasurementResult with _$MeasurementResult {
     @JsonKey(fromJson: toLocalDate)
     @HiveField(0)
         required DateTime measurementDateTime,
-    @HiveField(1)
-        double? value,
-    @HiveField(2)
-        ComposedDoubleValue? composedValue,
-    @HiveField(3)
-        Device? sourceDevice,
-    @HiveField(4)
-        bool? isVerified,
-    @JsonKey(name: 'type')
-    @HiveField(5)
-        MeasurementType? measurementType,
-    @JsonKey(includeToJson: false)
-    @HiveField(6)
-        WhenCode? whenCode,
+    @HiveField(1) double? value,
+    @HiveField(2) ComposedDoubleValue? composedValue,
+    @HiveField(3) Device? sourceDevice,
+    @HiveField(4) bool? isVerified,
+    @JsonKey(name: 'type') @HiveField(5) MeasurementType? measurementType,
+    @JsonKey(includeToJson: false) @HiveField(6) WhenCode? whenCode,
     @JsonKey(includeToJson: false)
     @HiveField(7)
         FulfillmentEvaluationItem? evaluationItem,
     @JsonKey(includeToJson: false)
     @HiveField(8)
         DateTime? measurementIntervalEnd,
-    @JsonKey(includeToJson: false)
-    @HiveField(9)
-        String? userId,
-    @JsonKey(includeToJson: false)
-    @HiveField(10)
-        int? reqCount,
-    @JsonKey(includeToJson: false)
-    @HiveField(11)
-        int? currentCount,
+    @JsonKey(includeToJson: false) @HiveField(9) String? userId,
+    @JsonKey(includeToJson: false) @HiveField(10) int? reqCount,
+    @JsonKey(includeToJson: false) @HiveField(11) int? currentCount,
     @JsonKey(includeToJson: false)
     @HiveField(12)
         DateTime? measurementIntervalStart,

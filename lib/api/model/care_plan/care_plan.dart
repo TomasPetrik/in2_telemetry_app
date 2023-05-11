@@ -13,6 +13,7 @@ import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 part 'care_plan.freezed.dart';
 part 'care_plan.g.dart';
+part 'care_plan.hive.dart';
 
 @unfreezed
 class CarePlan with _$CarePlan {

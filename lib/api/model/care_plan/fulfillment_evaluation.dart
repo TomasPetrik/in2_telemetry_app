@@ -4,6 +4,7 @@ import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 part 'fulfillment_evaluation.freezed.dart';
 part 'fulfillment_evaluation.g.dart';
+part 'fulfillment_evaluation.hive.dart';
 
 @freezed
 class FulfillmentEvaluation with _$FulfillmentEvaluation {
@@ -27,16 +28,10 @@ class FulfillmentEvaluationItem with _$FulfillmentEvaluationItem {
 
   @HiveType(typeId: 22, adapterName: 'FulfillmentEvaluationItemAdapter')
   factory FulfillmentEvaluationItem(
-    @JsonKey(fromJson: toLocalDate)
-    @HiveField(0)
-        DateTime start,
-    @JsonKey(fromJson: toLocalDate)
-    @HiveField(1)
-        DateTime end,
-    @HiveField(2)
-        int requiredMeasurementCount,
-    @HiveField(3)
-        int actualMeasurementCount,
+    @JsonKey(fromJson: toLocalDate) @HiveField(0) DateTime start,
+    @JsonKey(fromJson: toLocalDate) @HiveField(1) DateTime end,
+    @HiveField(2) int requiredMeasurementCount,
+    @HiveField(3) int actualMeasurementCount,
     @HiveField(4)
     @MeasurementTimesConverter()
         List<DateTime> actualMeasurementTimes,

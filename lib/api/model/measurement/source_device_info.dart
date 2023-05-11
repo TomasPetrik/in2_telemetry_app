@@ -4,6 +4,7 @@ import 'package:scalesoft_app/api/model/measurement/device.dart';
 
 part 'source_device_info.freezed.dart';
 part 'source_device_info.g.dart';
+part 'source_device_info.hive.dart';
 
 @freezed
 class SourceDeviceInfo with _$SourceDeviceInfo {
