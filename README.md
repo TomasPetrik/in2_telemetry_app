@@ -1,20 +1,19 @@
+
 # In2 Telemetry App
 
- 
+  
+
 ## Inicializácia projektu
 
-Projekt bol skompilovaný vo Flutter verzii 3.7.12. Preto sa treba uistit pomocou príkazu: 
-> `flutter --version`
+  
 
-, či daná verzia Flutteru má túto verziu. Ak je aktuálna verzia iná, spustite príkaz:
+Projekt bol skompilovaný v poslednej Flutter verzii 3.10 (stable channel). Tento channel je odporucane pouzivat cely cas z hladiska stability Flutteru.
 
-> flutter downgrade 3.7.12
- 
 ### Potrebné akcie pred spustením aplikácie
+
 
 V koreňovom adresári stačí spustiť súbor`./make.sh` ktorý pripravý projekt funkčného stavu pred spustením. Tento skript obsahuje nasledujúce príkazy:
 
-  
 
 1.  **flutter clean** - vymaže adresáre `build/` and `.dart_tool/`,
 
@@ -24,27 +23,33 @@ V koreňovom adresári stačí spustiť súbor`./make.sh` ktorý pripravý proje
 
 4.  **flutter gen-l10n** - vygenerovanie prekladov,
 
-5.  **dart run build_runner build --delete-conflicting-outputs** - vygenerovanie podporných auto-generujúcich sa súborov.
+5.  **dart run build_runner build --delete-conflicting-outputs** - vygenerovanie podporných auto-generujúcich sa súborov (freezed, json, hive objekty)
 
-  
+
 
 ### Spustenie aplikácie
 
-  
-
 V prípade používania VS Code IDE stačí prejsť do časti **Run and Debug**, vybrať konfiguráciu (debug mode, profile mode, release mode) a spustiť pomocou zeleného tlačidla PLAY.
 
-  
+
 
 Alebo spustenie pomocou príkazového riadku:
 
   
 
+  
+
 1. flutter run --debug,
+
+  
 
 2. flutter run --profile,
 
+  
+
 3. flutter run --release
+
+  
 
   
 
@@ -52,15 +57,25 @@ Alebo spustenie pomocou príkazového riadku:
 
   
 
+  
+
 ### Editácia prekladov
+
+  
 
 Po každej zmene prekladov v súbore `lib/l10n/intl_cs.arb` je potrebné pregenerovať preklady pomocou príkazu **flutter gen-l10n**.
 
   
 
+  
+
 ### Rozšírenie objektov o nové atribúty
 
-V prípade vytváraní nových objektov alebo existujúcich objektov, ktoré používajú nasledujúce anotácie `@freezed, @Freezed, @unfreezed, @injectable, @singleton, @lazySingleton, @module, @HiveType,` alebo anotácie atribútov objektovJ `@JsonKey, @HiveField` je potrebné pregenerovať automaticky generované súbori pomocou príkazu **dart run build_runner build --delete-conflicting-outputs**.
+  
+
+V prípade vytváraní nových objektov alebo existujúcich objektov, ktoré používajú nasledujúce anotácie `@freezed, @Freezed, @unfreezed, @injectable, @singleton, @lazySingleton, @module, @HiveType,` alebo anotácie atribútov objektov `@JsonKey, @HiveField` je potrebné pregenerovať automaticky generované súbori pomocou príkazu **dart run build_runner build --delete-conflicting-outputs**.
+
+  
 
   
 
@@ -68,7 +83,11 @@ V prípade vytváraní nových objektov alebo existujúcich objektov, ktoré pou
 
   
 
+  
+
 Po pridaní akejkoľvek novej knižnice do súboru `pubspec.yaml` nezabudnúť spustit jej načítanie pomocou **flutter pub get**.
+
+  
 
   
 
@@ -76,11 +95,17 @@ Po pridaní akejkoľvek novej knižnice do súboru `pubspec.yaml` nezabudnúť s
 
   
 
+  
+
 ### Základné parametre:
 
   
 
+  
+
 V súbore `lib/utils/constants.dart` sa nachádzajú nasledujúce parametre:
+
+  
 
 | Parametre | Význam | Prednastavená hodnota |
 |--|--|--|
@@ -93,10 +118,12 @@ V súbore `lib/utils/constants.dart` sa nachádzajú nasledujúce parametre:
 | redirectUrl | Týka sa prihlasovania OAuth2 | |
 
   
+
   
- 
 
 ### Manažment prostredí (nemocníc):
+
+  
 
   
 
@@ -104,7 +131,11 @@ V `lib/utils/constants.dart` je zoznam prostredí `hospitals` do ktorého sa mô
 
   
 
+  
+
 ### Manažment podporovaných zariadení:
+
+  
 
   
 
@@ -112,35 +143,65 @@ V lib`/utils/constants.dart` je zoznam podporovaných zariadení `supportedDevic
 
   
 
+  
+
 Atribúty zariadenia `Device`:
+
+  
 
   
 
 -  **localId** - identifikácia podporovaného zariadenia,
 
+  
+
 -  **modelName** - to ako sa bude zariadenie zobrazovat v zozname,
+
+  
 
 -  **bluetoothName** - filtrácia dostupných zariadení v okolí na základe tohto mena,
 
+  
+
 -  **deviceModel** - podľa tohto modelu sa v prekladoch definuje popis umiestnenia tlačítka,
+
+  
 
 -  **supportedMeasurementTypes** - pri merani sa určuje podpora zariadenia na základe uvedených podporovaných typov meraní,
 
+  
+
 -  **reqPairing** - ak zariadenie vyžaduje párovanie,
+
+  
 
 -  **askToActivateBt** - ak je potrebné na zariadení aktivovať Bluetooth režim pred meraním,
 
+  
+
 -  **askToConfirmMeasurement** - ak je po meraní potrebné na zariadení potvrdiť režim Bluetooth nato aby sa začala synchronizacia údajov,
+
+  
 
 -  **actionButtonType** - umiestnenie tlačídka (zobrazuje sa v manuály).
 
+  
+>  **Poznámka:** : Tento objekt Device ma aj dalsie atribúty, ktoré sa nastavia neskôr:
+>  -  **addedAt** - dátum a čas kedy sa zariadenie pridalo (slúži na odlíšenie pridaných zariadení rovnákeho modelu,
+>  -  **wasPaired** - ak bolo už predtým párované, nezobrazuj potrebu párovania pri procese merania,
+>  - **isLendedDevice** - ak bolo zariadenie zapozicane. Tato informacia sa získava z user->assignedDevices,
+>  - **aboutUrl** - referencia na informacie o zariadeni. Tato informacia sa získava z user->deviceModels->aboutUrl
   
 
 ### Manažment podporovaných meraní :
 
   
 
+  
+
 V lib`/utils/constants.dart` je zoznam podporovaných zariadení `supportedMeasurements` ktoré je možné neskôr podľa potreby editovať. Napríklad nastaviť minimá, maximá a ohraničenia manuálne zapísaných hodnôt.
+
+  
 
   
 
@@ -150,7 +211,11 @@ V lib`/utils/constants.dart` je zoznam podporovaných zariadení `supportedMeasu
 
   
 
+  
+
 ## Verziovanie aplikácie:
+
+  
 
   
 
@@ -158,11 +223,17 @@ V lib`/utils/constants.dart` je zoznam podporovaných zariadení `supportedMeasu
 
   
 
+  
+
 2. Zvýšenie verzie v súbore `pubspec.yaml` napr, version: **1.0.99+99**, pričom prvé trojčíslie popisuje číslo verzie, a posledné čislo za **+** je číslo zostavy,
 
   
 
+  
+
 3. Tieto zmeny sa aktualizujú v repozitári **(git commit a git push)**,
+
+  
 
   
 

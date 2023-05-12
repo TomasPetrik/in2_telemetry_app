@@ -52,9 +52,6 @@ class Device with _$Device {
     @HiveField(14)
         ActionButtonType? actionButtonType,
     @JsonKey(includeToJson: false)
-    @HiveField(15)
-        bool? devIdIsName,
-    @JsonKey(includeToJson: false)
     @HiveField(16)
         bool? wasPaired,
     @JsonKey(includeToJson: false)

@@ -34,24 +34,16 @@ class AuthWebScreen extends StatelessWidget {
             NavigationDelegate(
               onProgress: (int progress) {
                 // Update loading bar.
-                debugPrint('WW onProgress $progress');
               },
-              onPageStarted: (String url) {
-                debugPrint('WW onPageStarted');
-              },
+              onPageStarted: (String url) {},
               onPageFinished: (String url) {
-                debugPrint('WW onPageFinished');
                 cubit.loaded();
               },
-              onWebResourceError: (WebResourceError error) {
-                debugPrint('WW onWebResourceError ${error.toString()}');
-              },
+              onWebResourceError: (WebResourceError error) {},
               onNavigationRequest: (NavigationRequest request) {
                 return NavigationDecision.navigate;
               },
               onUrlChange: (UrlChange change) {
-                debugPrint('WW onUrlChange ${change.url}');
-
                 if (change.url != null) {
                   final authRespUri = Uri.parse(change.url!);
                   final authority = authRespUri.authority;

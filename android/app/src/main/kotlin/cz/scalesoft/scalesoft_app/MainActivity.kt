@@ -1,4 +1,4 @@
-package cz.scalesoft.scalesoft_app
+package cz.devscale.in2.telemetry
 
 import io.flutter.embedding.android.FlutterActivity
 
