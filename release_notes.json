@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Implemented using aboutUrl as reference to open detail of hospital's device. Button is located at bottom of first screen in measurement flow."
+    "text": "1. Updated project to be compatible with Flutter 3.10."
   },
   {
     "language": "sk-SK",
