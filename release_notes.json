@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Updated project to be compatible with Flutter 3.10."
+    "text": "1. Updated project to be compatible with Flutter 3.10 (second fix): (Fixed iOS - flutterinappwebview was replaced by webview_flutter because of \"Missing file libarclite_iphoneos.a Exception\" happening on iOS platform. \n2. Also handle auth-callback better so user doe not see any redirection callback on web anymore after 3rd party login."
   },
   {
     "language": "sk-SK",

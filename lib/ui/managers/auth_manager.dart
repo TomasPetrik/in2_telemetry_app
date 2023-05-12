@@ -44,8 +44,10 @@ class AuthManager extends StatelessWidget with BottomSheetMixin {
               },
             );
           },
-          authenticated: (credentials) {
+          handlingResponse: () {
             Navigator.of(context).pop();
+          },
+          authenticated: (credentials) {
             showDialog<void>(
               context: context,
               barrierDismissible: true,

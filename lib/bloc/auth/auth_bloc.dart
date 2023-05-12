@@ -81,6 +81,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     try {
+      emit(const AuthState.handlingResponse());
+
       final tokenResponse = await _grant!.handleAuthorizationResponse(
         event.authRespUri.queryParameters,
       );

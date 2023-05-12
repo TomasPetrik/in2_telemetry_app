@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:scalesoft_app/cubit/auth_web/auth_web_cubit.dart';
 import 'package:scalesoft_app/cubit/auth_web/auth_web_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/widgets/loading_indicator.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class AuthWebScreen extends StatelessWidget {
   AuthWebScreen({
@@ -20,8 +20,54 @@ class AuthWebScreen extends StatelessWidget {
   final Function onCancelled;
   final AuthWebCubit cubit = getIt<AuthWebCubit>();
 
+  final WebViewController controller = WebViewController();
+  final WebViewCookieManager cookieManager = WebViewCookieManager();
+
   @override
   Widget build(BuildContext context) {
+    cookieManager.clearCookies().then(
+      (value) {
+        controller
+          ..setJavaScriptMode(JavaScriptMode.unrestricted)
+          ..setBackgroundColor(const Color(0x00000000))
+          ..setNavigationDelegate(
+            NavigationDelegate(
+              onProgress: (int progress) {
+                // Update loading bar.
+                debugPrint('WW onProgress $progress');
+              },
+              onPageStarted: (String url) {
+                debugPrint('WW onPageStarted');
+              },
+              onPageFinished: (String url) {
+                debugPrint('WW onPageFinished');
+                cubit.loaded();
+              },
+              onWebResourceError: (WebResourceError error) {
+                debugPrint('WW onWebResourceError ${error.toString()}');
+              },
+              onNavigationRequest: (NavigationRequest request) {
+                return NavigationDecision.navigate;
+              },
+              onUrlChange: (UrlChange change) {
+                debugPrint('WW onUrlChange ${change.url}');
+
+                if (change.url != null) {
+                  final authRespUri = Uri.parse(change.url!);
+                  final authority = authRespUri.authority;
+                  final scheme = authRespUri.scheme;
+                  if (authority.startsWith('cz.scalesoft.tlm') ||
+                      scheme.startsWith('cz.scalesoft.tlm')) {
+                    onRedirect.call(authRespUri);
+                  }
+                }
+              },
+            ),
+          )
+          ..loadRequest(authUri);
+      },
+    );
+
     return WillPopScope(
       onWillPop: () async {
         return true;
@@ -30,34 +76,7 @@ class AuthWebScreen extends StatelessWidget {
         child: Stack(
           children: [
             Positioned.fill(
-              child: InAppWebView(
-                onLoadStart: (controller, url) {
-                  debugPrint('onLoad start');
-                },
-                onLoadStop: (controller, url) {
-                  debugPrint('onLoad stop');
-                  cubit.loaded();
-                },
-                initialUrlRequest: URLRequest(
-                  url: WebUri(authUri.toString()),
-                ),
-                initialSettings: InAppWebViewSettings(
-                  clearCache: true,
-                  cacheEnabled: false,
-                ),
-                onReceivedError: (controller, request, error) {
-                  if (request.url.uriValue
-                      .toString()
-                      .startsWith('cz.scalesoft.tlm')) {
-                    final authRespUri = request.url.uriValue;
-
-                    onRedirect.call(authRespUri);
-                  }
-                },
-                onConsoleMessage: (controller, consoleMessage) {
-                  debugPrint(consoleMessage.message);
-                },
-              ),
+              child: WebViewWidget(controller: controller),
             ),
             BlocBuilder<AuthWebCubit, AuthWebState>(
               bloc: cubit,

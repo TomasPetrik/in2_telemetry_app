@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -78,7 +77,6 @@ Future<void> _main({
 
   tz.initializeTimeZones();
   initializeGlobals(themeMode: themeMode, locale: locale);
-  WebView.debugLoggingSettings.enabled = false;
 
   runApp(const ScalesoftApp());
 

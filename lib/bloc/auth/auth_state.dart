@@ -7,6 +7,7 @@ part 'auth_state.freezed.dart';
 @freezed
 class AuthState with _$AuthState {
   const factory AuthState.authenticating() = _Authenticating;
+  const factory AuthState.handlingResponse() = _HandlingResponse;
   const factory AuthState.cancelled() = _Cancelled;
   const factory AuthState.authenticated({required Credentials credentials}) =
       _Authenticated;
