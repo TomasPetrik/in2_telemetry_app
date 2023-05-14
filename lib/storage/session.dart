@@ -31,7 +31,7 @@ class Session {
   Session(this._accountDbProvider, this._pendingResultsDbProvider);
 
   bool supportMultiUser() {
-    return _accountDbProvider.getRootAccounts().length > 1;
+    return _accountDbProvider.getAll().length > 1;
   }
 
   DateTime? getLastSyncAt() {
@@ -51,7 +51,7 @@ class Session {
 
   List<UserAccount> getSessionAccounts() {
     if (isMultiUser == true) {
-      return _accountDbProvider.getRootAccounts().toList();
+      return _accountDbProvider.getAll().toList();
     } else {
       return [if (userAccount != null) userAccount!];
     }

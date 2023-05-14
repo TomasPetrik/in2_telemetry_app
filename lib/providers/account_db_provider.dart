@@ -6,6 +6,7 @@ import 'package:scalesoft_app/api/model/auth_token.dart';
 import 'package:scalesoft_app/api/model/care_plan/author.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_version.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaulation_aggregated.dart';
 import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
@@ -36,6 +37,7 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
     Hive.registerAdapter(HospitalAdapter());
     Hive.registerAdapter(AuthDataAdapter());
     Hive.registerAdapter(CarePlanAdapter());
+    Hive.registerAdapter(CarePlanVersionAdapter());
     Hive.registerAdapter(CarePlanActivityAdapter());
     Hive.registerAdapter(AuthorAdapter());
     Hive.registerAdapter(ActivityTypeAdapter());

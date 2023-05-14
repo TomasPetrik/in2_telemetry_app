@@ -143,7 +143,7 @@ class Calendar {
 
     for (final carePlan in carePlans) {
       //add only if the measurement was not in results or in pending results
-      final todayRemainingMeasurements = carePlan.getTodayMeasurements2(
+      final todayRemainingMeasurements = carePlan.getTodayMeasurements(
         dateTime: DateTime.now(),
         offlineResults: offlineResults,
       );
@@ -228,7 +228,7 @@ class Calendar {
 
     //1. add today remaining measurements if exists
     for (final carePlan in carePlans) {
-      final todayRemainingMeasurements = carePlan.getTodayMeasurements2(
+      final todayRemainingMeasurements = carePlan.getTodayMeasurements(
         dateTime: DateTime.now(),
         offlineResults: offlineResults,
       );
@@ -290,7 +290,7 @@ class Calendar {
 
     //1. add today remaining measurements for plans which have been started but weren't finished until today midnight
     for (final carePlan in carePlans) {
-      final todayUpcomingMeasurements = carePlan.getTodayMeasurements2(
+      final todayUpcomingMeasurements = carePlan.getTodayMeasurements(
         dateTime: DateTime.now(),
         ignoreOngoing: true,
       );

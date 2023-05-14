@@ -1,9 +1,11 @@
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/care_plan_api_client.dart';
 import 'package:scalesoft_app/api/model/active_care_plans_response.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaulation_aggregated.dart';
+import 'package:scalesoft_app/api/model/care_plan_versions_response.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/model/user_account.dart';
@@ -32,6 +34,23 @@ class CarePlansRepository {
     for (final carePlan in resp.items) {
       carePlan.userId = userAccount.user.muid;
     }
+
+    return resp;
+  }
+
+  Future<CarePlanVersionsResponse> loadCarePlanVersions({
+    required UserAccount userAccount,
+    required CarePlan carePlan,
+    int start = 0,
+    int count = 100,
+  }) async {
+    session.token = userAccount.authToken;
+    final resp = await carePlanApiClient.loadCarePlanVersions(
+      userAccount.hospital!.authData.baseUrl,
+      carePlan.id,
+      start,
+      count,
+    );
 
     return resp;
   }

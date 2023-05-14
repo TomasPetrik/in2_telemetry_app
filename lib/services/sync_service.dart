@@ -41,10 +41,10 @@ class SyncService {
     this._deviceRepository,
   );
 
-  void setUserPlans(
+  Future<void> setUserPlans(
     final UserAccount userAccount,
     final List<CarePlan> newCarePlans,
-  ) {
+  ) async {
     for (final carePlan in newCarePlans) {
       carePlan.userId = userAccount.user.muid;
     }
@@ -64,6 +64,14 @@ class SyncService {
             newCarePlan.wasChanged = currentPlan.wasChanged;
           }
         }
+
+        //also load all versions for carePlan
+        final carePlanVersions =
+            await _carePlansRepository.loadCarePlanVersions(
+          userAccount: userAccount,
+          carePlan: newCarePlan,
+        );
+        newCarePlan.carePlanVersions = carePlanVersions.items;
       }
     }
 

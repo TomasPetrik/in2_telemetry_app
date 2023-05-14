@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scalesoft_app/api/model/care_plan/author.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_version.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaulation_aggregated.dart';
 import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
@@ -21,28 +22,46 @@ class CarePlan with _$CarePlan {
 
   @HiveType(typeId: 10, adapterName: 'CarePlanAdapter')
   factory CarePlan({
-    @HiveField(0) required int id,
-    @HiveField(1) String? targetUserMuid,
-    @HiveField(2) String? finishedByUserMuid,
-    @HiveField(3) required CarePlanActivity activity,
-    @HiveField(4) required int versionId,
-    @HiveField(5) required Author author,
+    @HiveField(0)
+        required int id,
+    @HiveField(1)
+        String? targetUserMuid,
+    @HiveField(2)
+        String? finishedByUserMuid,
+    @HiveField(3)
+        required CarePlanActivity activity,
+    @HiveField(4)
+        required int versionId,
+    @HiveField(5)
+        required Author author,
     @JsonKey(fromJson: toLocalDate)
     @HiveField(6)
         required DateTime scheduledStart,
     @JsonKey(fromJson: toLocalDateNullable)
     @HiveField(7)
         DateTime? scheduledEnd,
-    @HiveField(8) required int frequency,
-    @HiveField(9) required int period,
-    @HiveField(10) required TimeUnit periodUnit,
-    @HiveField(11) required List<WeekDay> weekDays,
-    @HiveField(12) required List<TimingDayWhen> timingDayWhen,
-    @HiveField(13) FulfillmentEvaluationAggregated? fullPlanEvaluation,
-    @HiveField(14) List<FulfillmentEvaluationItem>? serverEvaluationItems,
-    @HiveField(15) bool? wasChanged,
-    @HiveField(16) String? userId,
-    @HiveField(17) bool? wasExpired,
+    @HiveField(8)
+        required int frequency,
+    @HiveField(9)
+        required int period,
+    @HiveField(10)
+        required TimeUnit periodUnit,
+    @HiveField(11)
+        required List<WeekDay> weekDays,
+    @HiveField(12)
+        required List<TimingDayWhen> timingDayWhen,
+    @HiveField(13)
+        FulfillmentEvaluationAggregated? fullPlanEvaluation,
+    @HiveField(14)
+        List<FulfillmentEvaluationItem>? serverEvaluationItems,
+    @HiveField(15)
+        bool? wasChanged,
+    @HiveField(16)
+        String? userId,
+    @HiveField(17)
+        bool? wasExpired,
+    @HiveField(18)
+        List<CarePlanVersion>? carePlanVersions,
   }) = _CarePlan;
 
   factory CarePlan.fromJson(Map<String, dynamic> json) =>
@@ -110,21 +129,85 @@ class CarePlan with _$CarePlan {
     }
   }
 
+  Duration getDurationPeriod(final int period, final TimeUnit periodUnit) {
+    switch (periodUnit) {
+      case TimeUnit.hour:
+        return Duration(hours: period);
+      case TimeUnit.day:
+        return Duration(days: period);
+      //week, month, year shoudn't happen as it doesn't make any sense
+      case TimeUnit.week:
+        return Duration(days: period * 7);
+      case TimeUnit.month:
+        return Duration(days: period * 30);
+      case TimeUnit.year:
+        return Duration(days: period * 365);
+    }
+  }
+
+  List<CarePlanVersion> getCpVersions() {
+    final List<CarePlanVersion> sortedPlanVersions = [
+      if (carePlanVersions != null) ...carePlanVersions!
+    ]..sort(
+        (a, b) => a.activeFrom.compareTo(b.activeFrom),
+      );
+
+    final cpVersions = sortedPlanVersions.isNotEmpty
+        ? sortedPlanVersions
+        : [
+            CarePlanVersion(
+              versionId: versionId,
+              scheduledStart: scheduledStart,
+              frequency: frequency,
+              period: period,
+              periodUnit: periodUnit,
+              weekDays: weekDays,
+              timingDayWhen: timingDayWhen,
+              activeFrom: scheduledStart,
+              activeTo: scheduledEnd,
+            )
+          ];
+
+    return cpVersions;
+  }
+
   //get all periodical measurements include ongoing
   List<PlannedMeasurement> getPeriodicalMeasurementsOfDay({
     required DateTime dateTime,
+    required CarePlanVersion cpVersion,
   }) {
-    List<PlannedMeasurement> periodicalMeasurements = [];
+    final List<PlannedMeasurement> periodicalMeasurements = [];
     final startDayDt = dateTime.getStartDay();
     final endDayDt = dateTime.getEndDay();
 
     //we will start making periods from time when care plan starts
-    DateTime measurementStart = scheduledStart;
+    DateTime measurementStart = cpVersion.activeFrom;
+    int currentPeriod = cpVersion.period;
+    TimeUnit currentPeriodUnit = cpVersion.periodUnit;
+
     //we want to reach day when periodical measurement is ongoing
 
     bool wasAdded = false;
     while (true) {
-      final measurementEnd = measurementStart.add(getDurationPeriod());
+      final measurementEnd = measurementStart
+          .add(getDurationPeriod(currentPeriod, currentPeriodUnit));
+
+      // if current plan version already finished
+      if (cpVersion.activeTo?.isBefore(measurementEnd) == true) {
+        //try to find next plan version
+        final newPlanVersion = getCpVersions().firstWhereOrNull(
+          (cpVersion) => cpVersion.activeFrom.isAfter(measurementStart) == true,
+        );
+        //if exist then set
+        if (newPlanVersion != null) {
+          cpVersion = newPlanVersion;
+          currentPeriod = cpVersion.period;
+          currentPeriodUnit = cpVersion.periodUnit;
+        } else {
+          //otherwise end this loop to prevent deadlock
+          break;
+        }
+      }
 
       if (
           //take only measurements after scheduledStart and before scheduledEnd
@@ -172,88 +255,102 @@ class CarePlan with _$CarePlan {
       }
 
       //go on next start of period until this new period is in required day range
-      measurementStart = measurementStart.add(getDurationPeriod());
+
+      measurementStart = measurementEnd.copyWith();
     }
 
     return periodicalMeasurements;
   }
 
-  List<PlannedMeasurement> getTodayMeasurements2({
+  List<PlannedMeasurement> getTodayMeasurements({
     required DateTime dateTime,
     bool ignoreOngoing = false, //for notifications
     List<MeasurementResult>? offlineResults,
   }) {
     assert(dateTime.isToday(), 'This method supports only today');
-    List<PlannedMeasurement> plannedMeasurement = [];
+    final List<PlannedMeasurement> plannedMeasurement = [];
 
     final currentWeekDay = dateTime.toWeekDay();
+    final startOfDay = dateTime.getStartDay();
+    final endOfDay = dateTime.getEndDay();
 
-    //take only started plans
-    if (scheduledStart.isBefore(dateTime) &&
-        (weekDays.isEmpty || weekDays.contains(currentWeekDay))) {
-      //periodical measurements
-      if (isPeriodical) {
-        //get all ongoing periodical measurements
-        var todayPeriodicalMeasurements =
-            getPeriodicalMeasurementsOfDay(dateTime: dateTime);
+    final activeVersionsOfDay = getCpVersions()
+        .where((cpVersion) => cpVersion.isActiveInDates(startOfDay, endOfDay));
 
-        //first we need only upcomming measurements and ongoing measurements which haven't been finished yet
-        // (if we didn't filter them out before)
-        todayPeriodicalMeasurements = todayPeriodicalMeasurements
-            .where(
-              (pMeasurement) =>
-                  pMeasurement.whenStart.isAfter(dateTime) ||
-                  pMeasurement.whenEnd.isAfter(dateTime),
-            )
-            .toList();
-
-        //additionaly we may filter out all ongoing measurements even those which haven't been finished yet
-        //this is for notifications if is required
-        if (ignoreOngoing) {
-          todayPeriodicalMeasurements = todayPeriodicalMeasurements
-              .where(
-                (pMeasurement) => pMeasurement.whenStart.isAfter(dateTime),
-              )
-              .toList();
-        }
-
-        //in last step we have to set currentCounts of periodical measurements and
-        //filter out them if they have been fulfilled
-
-        //we don't want show already completed periodical measurements on dashboard
-
-        for (final pMeasurement in todayPeriodicalMeasurements) {
-          final fulfillmentEvaluation =
-              MeasurementHelper.getFulfillmentEvaluation(
-            pMeasurement,
-            offlineResults ?? [],
+    for (final cpVersion in activeVersionsOfDay) {
+      final scheduledStart = cpVersion.activeFrom;
+      final weekDays = cpVersion.weekDays;
+      final isPeriodical = cpVersion.isPeriodical;
+      //take only started plans
+      if (scheduledStart.isBefore(dateTime) &&
+          (weekDays.isEmpty || weekDays.contains(currentWeekDay))) {
+        //periodical measurements
+        if (isPeriodical) {
+          //get all ongoing periodical measurements
+          var todayPeriodicalMeasurements = getPeriodicalMeasurementsOfDay(
+            dateTime: dateTime,
+            cpVersion: cpVersion,
           );
 
-          pMeasurement.currentCount =
-              fulfillmentEvaluation.actualMeasurementCount;
-          pMeasurement.fulfillmentEvaluationItem = fulfillmentEvaluation;
+          //first we need only upcomming measurements and ongoing measurements which haven't been finished yet
+          // (if we didn't filter them out before)
+          todayPeriodicalMeasurements = todayPeriodicalMeasurements
+              .where(
+                (pMeasurement) =>
+                    pMeasurement.whenStart.isAfter(dateTime) ||
+                    pMeasurement.whenEnd.isAfter(dateTime),
+              )
+              .toList();
+
+          //additionaly we may filter out all ongoing measurements even those which haven't been finished yet
+          //this is for notifications if is required
+          if (ignoreOngoing) {
+            todayPeriodicalMeasurements = todayPeriodicalMeasurements
+                .where(
+                  (pMeasurement) => pMeasurement.whenStart.isAfter(dateTime),
+                )
+                .toList();
+          }
+
+          //in last step we have to set evaluation of periodical measurements and
+          //filter out them if they have been fulfilled
+          //so we don't want show already completed periodical measurements on dashboard
+
+          for (final pMeasurement in todayPeriodicalMeasurements) {
+            final fulfillmentEvaluation =
+                MeasurementHelper.getFulfillmentEvaluation(
+              pMeasurement,
+              offlineResults ?? [],
+            );
+
+            pMeasurement.currentCount =
+                fulfillmentEvaluation.actualMeasurementCount;
+            pMeasurement.fulfillmentEvaluationItem = fulfillmentEvaluation;
+          }
+
+          todayPeriodicalMeasurements =
+              todayPeriodicalMeasurements.where((pMeasurement) {
+            return pMeasurement.fulfillmentEvaluationItem!.wasMeasured() ==
+                false;
+          }).toList();
+
+          plannedMeasurement.addAll(todayPeriodicalMeasurements);
+        } else {
+          final regularMeasurements = getTodayRegularMeasurements(
+            dateTime: dateTime,
+            carePlanVersion: cpVersion,
+            offlineResults: offlineResults,
+            ignoreOngoing: ignoreOngoing,
+          );
+          plannedMeasurement.addAll(regularMeasurements);
         }
-
-        todayPeriodicalMeasurements =
-            todayPeriodicalMeasurements.where((pMeasurement) {
-          return pMeasurement.fulfillmentEvaluationItem!.wasMeasured() == false;
-        }).toList();
-
-        plannedMeasurement.addAll(todayPeriodicalMeasurements);
-      } else {
-        final regularMeasurements = getTodayRegularMeasurements(
-          dateTime: dateTime,
-          offlineResults: offlineResults,
-          ignoreOngoing: ignoreOngoing,
-        );
-        plannedMeasurement.addAll(regularMeasurements);
       }
     }
 
     return plannedMeasurement;
   }
 
-  List<PlannedMeasurement> getAllPlannedMeasurements({
+  List<PlannedMeasurement> getAllTodayPlannedMeasurements({
     required List<MeasurementResult> offlineResults,
   }) {
     final DateTime dtNow = DateTime.now();
@@ -291,49 +388,61 @@ class CarePlan with _$CarePlan {
   }) {
     List<PlannedMeasurement> plannedMeasurement = [];
     final currentWeekDay = dateTime.toWeekDay();
+    final startOfDay = dateTime.getStartDay();
+    final endOfDay = dateTime.getEndDay();
 
-    if ((weekDays.isEmpty || weekDays.contains(currentWeekDay))) {
-      //periodical measurements
-      if (isPeriodical) {
-        //get all ongoing periodical measurements
-        var periodicalMeasurements =
-            getPeriodicalMeasurementsOfDay(dateTime: dateTime);
+    final activeVersionsOfDay = getCpVersions()
+        .where((cpVersion) => cpVersion.isActiveInDates(startOfDay, endOfDay));
 
-        //in last step we have to set currentCounts of periodical measurements and
-        //filter out them if they have been fulfilled in previous days
+    for (final cpVersion in activeVersionsOfDay) {
+      final weekDays = cpVersion.weekDays;
+      final isPeriodical = cpVersion.isPeriodical;
 
-        //it can happen when we have long ongoing periodical measurement in future day
-        //but we don't want to show it on dashboard as it was fulfilled in previous days
-
-        for (final pMeasurement in periodicalMeasurements) {
-          final fulfillmentEvaluationItem =
-              MeasurementHelper.getFulfillmentEvaluation(
-            pMeasurement,
-            offlineResults ?? [],
+      if ((weekDays.isEmpty || weekDays.contains(currentWeekDay))) {
+        //periodical measurements
+        if (isPeriodical) {
+          //get all ongoing periodical measurements
+          var periodicalMeasurements = getPeriodicalMeasurementsOfDay(
+            dateTime: dateTime,
+            cpVersion: cpVersion,
           );
-          pMeasurement.currentCount =
-              fulfillmentEvaluationItem.actualMeasurementCount;
-          pMeasurement.fulfillmentEvaluationItem = fulfillmentEvaluationItem;
+
+          //in last step we have to set currentCounts of periodical measurements and
+          //filter out them if they have been fulfilled in previous days
+
+          //it can happen when we have long ongoing periodical measurement in future day
+          //but we don't want to show it on dashboard as it was fulfilled in previous days
+
+          for (final pMeasurement in periodicalMeasurements) {
+            final fulfillmentEvaluationItem =
+                MeasurementHelper.getFulfillmentEvaluation(
+              pMeasurement,
+              offlineResults ?? [],
+            );
+            pMeasurement.currentCount =
+                fulfillmentEvaluationItem.actualMeasurementCount;
+            pMeasurement.fulfillmentEvaluationItem = fulfillmentEvaluationItem;
+          }
+
+          periodicalMeasurements = periodicalMeasurements
+              .where(
+                (pMeasurement) =>
+                    all ||
+                    (pMeasurement.currentCount != null &&
+                        pMeasurement.currentCount! < pMeasurement.reqCount ==
+                            true),
+              )
+              .toList();
+
+          plannedMeasurement.addAll(periodicalMeasurements);
+        } else {
+          final regularMeasurements = getRegularMeasurementsOfDay(
+            dateTime: dateTime,
+            offlineResults: offlineResults,
+            all: all,
+          );
+          plannedMeasurement.addAll(regularMeasurements);
         }
-
-        periodicalMeasurements = periodicalMeasurements
-            .where(
-              (pMeasurement) =>
-                  all ||
-                  (pMeasurement.currentCount != null &&
-                      pMeasurement.currentCount! < pMeasurement.reqCount ==
-                          true),
-            )
-            .toList();
-
-        plannedMeasurement.addAll(periodicalMeasurements);
-      } else {
-        final regularMeasurements = getRegularMeasurementsOfDay(
-          dateTime: dateTime,
-          offlineResults: offlineResults,
-          all: all,
-        );
-        plannedMeasurement.addAll(regularMeasurements);
       }
     }
 
@@ -342,6 +451,7 @@ class CarePlan with _$CarePlan {
 
   List<PlannedMeasurement> getTodayRegularMeasurements({
     required DateTime dateTime,
+    required CarePlanVersion carePlanVersion,
     List<MeasurementResult>? offlineResults,
     bool ignoreOngoing = false, //for notifications
   }) {
@@ -349,6 +459,10 @@ class CarePlan with _$CarePlan {
     List<PlannedMeasurement> plannedMeasurement = [];
 
     final currentWeekDay = dateTime.toWeekDay();
+
+    final weekDays = carePlanVersion.weekDays;
+    final timingDayWhen = carePlanVersion.timingDayWhen;
+    final frequency = carePlanVersion.frequency;
 
     if ((weekDays.isEmpty || weekDays.contains(currentWeekDay))) {
       final nonPeriodicalMeasurements = timingDayWhen.where((currentTiming) {
@@ -411,75 +525,82 @@ class CarePlan with _$CarePlan {
     List<MeasurementResult>? offlineResults,
     bool all = false,
   }) {
-    List<PlannedMeasurement> plannedMeasurement = [];
+    final startOfDay = dateTime.getStartDay();
+    final endOfDay = dateTime.getEndDay();
+    final activeVersionsOfDay = getCpVersions()
+        .where((cpVersion) => cpVersion.isActiveInDates(startOfDay, endOfDay));
+
+    final List<PlannedMeasurement> plannedMeasurement = [];
 
     final currentWeekDay = dateTime.toWeekDay();
 
-    if ((weekDays.isEmpty || weekDays.contains(currentWeekDay))) {
-      final nonPeriodicalMeasurements = timingDayWhen.map((timingDayWhen) {
-        final measurementStartDt = timingDayWhen.start.ofExactDate(dateTime);
-        final measurementEndDt =
-            timingDayWhen.end.ofExactDate(dateTime).isBefore(measurementStartDt)
-                ? timingDayWhen.end
-                    .ofExactDate(dateTime)
-                    .add(const Duration(days: 1))
-                : timingDayWhen.end.ofExactDate(dateTime);
+    for (final cpVersion in activeVersionsOfDay) {
+      final weekDays = cpVersion.weekDays;
+      final timingDayWhen = cpVersion.timingDayWhen;
+      final frequency = cpVersion.frequency;
 
-        final plannedMeasurement = PlannedMeasurement(
-          userId: userId!,
-          whenStart: measurementStartDt,
-          whenEnd: measurementEndDt,
-          timingDayWhen: timingDayWhen,
-          carePlan: this,
-          reqCount: frequency,
-          whenCode: timingDayWhen.whenCode,
-        );
+      if ((weekDays.isEmpty || weekDays.contains(currentWeekDay))) {
+        //filter out measurements out of plan version
+        final activeTimings = timingDayWhen.where((tdw) {
+          final measurementStartDt = tdw.start.ofExactDate(dateTime);
 
-        final fulfillmentEvaluationItem =
-            MeasurementHelper.getFulfillmentEvaluation(
-          plannedMeasurement,
-          offlineResults ?? [],
-        );
-        plannedMeasurement.fulfillmentEvaluationItem =
-            fulfillmentEvaluationItem;
-        plannedMeasurement.currentCount =
-            fulfillmentEvaluationItem.actualMeasurementCount;
+          //get only measurements which were started before plan was finished
+          bool measurementStartedBeforePlanFinish =
+              cpVersion.activeTo == null ||
+                  measurementStartDt.isBefore(cpVersion.activeTo!);
 
-        return plannedMeasurement;
-      })
+          //and those which were started at same moment or after new plan was started
+          bool measurementStartedAfterPlanStarted =
+              measurementStartDt.isAtSameMomentAs(cpVersion.activeFrom) ||
+                  measurementStartDt.isAfter(cpVersion.activeFrom);
 
-          //filter out measurements out of plan
-          //filter out already measured
-          //it may happen only for measurements which were started day before and finish in next day
-          //but they were completed in that day before
-          .where((pMeasurement) {
-        return (pMeasurement.whenEnd.isAfter(scheduledStart) &&
-                (scheduledEnd == null ||
-                    pMeasurement.whenStart.isBefore(scheduledEnd!))) &&
-            (all ||
-                pMeasurement.fulfillmentEvaluationItem!.wasMeasured() == false);
-      }).toList();
+          return measurementStartedBeforePlanFinish &&
+              measurementStartedAfterPlanStarted;
+        });
 
-      plannedMeasurement.addAll(nonPeriodicalMeasurements);
+        final regularMeasurements = activeTimings.map((tdw) {
+          final measurementStartDt = tdw.start.ofExactDate(dateTime);
+          final measurementEndDt =
+              tdw.end.ofExactDate(dateTime).isBefore(measurementStartDt)
+                  ? tdw.end.ofExactDate(dateTime).add(const Duration(days: 1))
+                  : tdw.end.ofExactDate(dateTime);
+
+          final plannedMeasurement = PlannedMeasurement(
+            userId: userId!,
+            whenStart: measurementStartDt,
+            whenEnd: measurementEndDt,
+            timingDayWhen: tdw,
+            carePlan: this,
+            reqCount: frequency,
+            whenCode: tdw.whenCode,
+          );
+
+          final fulfillmentEvaluationItem =
+              MeasurementHelper.getFulfillmentEvaluation(
+            plannedMeasurement,
+            offlineResults ?? [],
+          );
+          plannedMeasurement.fulfillmentEvaluationItem =
+              fulfillmentEvaluationItem;
+          plannedMeasurement.currentCount =
+              fulfillmentEvaluationItem.actualMeasurementCount;
+
+          return plannedMeasurement;
+        })
+
+            //filter out already measured
+            //it may happen only for measurements which were started day before and finish in next day
+            //but they were completed in that day before
+            .where((pMeasurement) {
+          return (all ||
+              pMeasurement.fulfillmentEvaluationItem!.wasMeasured() == false);
+        }).toList();
+
+        plannedMeasurement.addAll(regularMeasurements);
+      }
     }
 
     return plannedMeasurement;
-  }
-
-  Duration getDurationPeriod() {
-    switch (periodUnit) {
-      case TimeUnit.hour:
-        return Duration(hours: period);
-      case TimeUnit.day:
-        return Duration(days: period);
-      //week, month, year shoudn't happen as it doesn't make any sense
-      case TimeUnit.week:
-        return Duration(days: period * 7);
-      case TimeUnit.month:
-        return Duration(days: period * 30);
-      case TimeUnit.year:
-        return Duration(days: period * 365);
-    }
   }
 
   bool hasMeasurementsToday() {

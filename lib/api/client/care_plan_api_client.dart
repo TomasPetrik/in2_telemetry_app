@@ -4,6 +4,7 @@ import 'package:retrofit/retrofit.dart';
 import 'package:scalesoft_app/api/model/active_care_plans_response.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaulation_aggregated.dart';
+import 'package:scalesoft_app/api/model/care_plan_versions_response.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/utils/constants.dart';
@@ -23,6 +24,16 @@ abstract class CarePlanApiClient {
     @Query('patientMuid') String patientMuid,
     @Query('start') int start,
     @Query('count') int count,
+  );
+
+  @GET(
+    '{apiUrl}/patient/me/care-plan/{carePlanId}/version?start={start}&count={count}',
+  )
+  Future<CarePlanVersionsResponse> loadCarePlanVersions(
+    @Path('apiUrl') String apiUrl,
+    @Path('carePlanId') int carePlanId,
+    @Path('start') int start,
+    @Path('count') int count,
   );
 
   @GET('{apiUrl}/patient/measurement')
