@@ -17,12 +17,10 @@
     "common_measurement": "Měření",
     "common_measure": "Měřit",
     "common_measure_now": "Měřit teď",
-    "common_manually": "Manuálně",
     "common_personal_measurement": "Vlastní měření",
     "common_personal_record": "Vlastní zápis hodnot",
     "common_show_calendar": "Zobrazit kalendář",
     "common_telemedicine": "Telemedicína",
-    "common_error_404": "Chyba servru",
     "common_log_in": "Přihlásit se",
     "common_save": "Uložit",
     "common_wrong_value": "Nesprávna hodnota",
@@ -35,7 +33,6 @@
     "common_to": "Do",
     "common_procedure": "Postup",
     "common_today": "Dnes",
-    "common_result": "Výsledek",
     "common_at_time": "v {atTime}",
     "@common_at_time": {
         "placeholders": {
@@ -97,7 +94,6 @@
     },
     "server_error_title": "Ooops!",
     "server_error_desc": "Zde je něco v nepořádku. Zkuste akci opakovat později.",
-    "not_found_screen_title": "Neznama obrazovka",
     "common_measurement_types": "{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} other{Jiný}}",
     "@common_measurement_types": {
         "description": "Measurement types",
@@ -130,7 +126,6 @@
     "tabs_measurement": "Měření",
     "tabs_results": "Výsledky",
     "tabs_more": "Více",
-    "configuration_screen_title": "Telemedicína",
     "configuration_screen_logged_accounts": "Přihlášené účty",
     "configuration_screen_add_account": "Přidat účet",
     "configuration_screen_settings": "Nastavení",
@@ -214,7 +209,6 @@
             }
         }
     },
-    "dialog_account_removal_confirmation_button_positive_label": "Odstranit účet",
     "user_details_screen_plan_active_from_date": "Platný od {fromDate}",
     "@user_details_screen_plan_active_from_date": {
         "placeholders": {
@@ -312,14 +306,6 @@
         }
     },
     "dashboard_screen_no_todays_measurements": "Dnes nemáte naplánované žádné měření.",
-    "measurement_dialog_title": "Měření {label}",
-    "@measurement_dialog_title": {
-        "placeholders": {
-            "label": {
-                "type": "String"
-            }
-        }
-    },
     "dashboard_screen_periodical_measurements": "Periodické měření",
     "measurement_dialog_device_desc": "{deviceModel, select, beurerBm77{Akční tlačítko je pod displejem} omronM7{Akční tlačítko je vedle displeje} other{Nedefinovano}}",
     "@measurement_dialog_device_desc": {
@@ -345,9 +331,6 @@
     "add_device_screen_title": "Přidat zařízení",
     "manual_measurement_screen_title": "Vlastní zápis hodnot",
     "manual_measurement_screen_type": "Typ",
-    "manual_measurement_screen_systolic": "Systolický",
-    "manual_measurement_screen_diasystolic": "Diastolický",
-    "manual_measurement_screen_pulse": "Puls",
     "manual_measurement_screen_measurement_time": "Čas odečtu",
     "common_measurement_units_names": "{measurementUnitName, select, systolic{Systolický} diastolic{Diastolický} temperature{Teplota} pulse{Puls} oxygenSaturation{Saturace kyslíku} respiratoryRate{Dechová frekvence} steps{Kroky} lat{Lat} lng{Lng} ews{Ews} other{Jiný}}",
     "@common_measurement_units_names": {
@@ -388,7 +371,6 @@
             }
         }
     },
-    "notification_widget_plan_changed_for_user_title": "Změna plánu",
     "notification_widget_plan_changed_for_user_desc": "Uživateli {name} byl upraven plán pro měření {measurementType}.",
     "@notification_widget_plan_changed_for_user_desc": {
         "placeholders": {
@@ -410,7 +392,6 @@
             }
         }
     },
-    "results_screen_no_results_at_period": "Pro {whenName} nejsou dostupné žádné výsledky.",
     "@results_screen_no_results_at": {
         "placeholders": {
             "whenName": {
@@ -480,7 +461,6 @@
     "notifications_screen_10_min_before_measurement": "10 minut před každým měřením",
     "find_device_screen_searching_device": "Hledání zařízení...",
     "find_device_screen_device_connected": "Zařízení připojeno",
-    "find_device_screen_device_paired": "Zařízení spárováno",
     "find_device_screen_sync_results": "Probíhá synchronizace výsledků...",
     "find_device_screen_pairing_device": "Probíhá párování zažízení...",
     "find_device_screen_step1_p": "Zapněte {deviceName} v režimu párování",

@@ -25,7 +25,7 @@ V koreňovom adresári stačí spustiť súbor`./make.sh` ktorý pripravý proje
 
 5.  **dart run build_runner build --delete-conflicting-outputs** - vygenerovanie podporných auto-generujúcich sa súborov (freezed, json, hive objekty)
 
-
+>  **Poznámka:** Je možné dodatočne sputiť príkaz **dart run lib/unused_keys_finder.dart** , ktorý vyhľadá preklady, ktoré sa nepoužívajú.
 
 ### Spustenie aplikácie
 

@@ -130,16 +130,6 @@ class I10n {
     );
   }
 
-  /// `Manuálně`
-  String get common_manually {
-    return Intl.message(
-      'Manuálně',
-      name: 'common_manually',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Vlastní měření`
   String get common_personal_measurement {
     return Intl.message(
@@ -175,16 +165,6 @@ class I10n {
     return Intl.message(
       'Telemedicína',
       name: 'common_telemedicine',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Chyba servru`
-  String get common_error_404 {
-    return Intl.message(
-      'Chyba servru',
-      name: 'common_error_404',
       desc: '',
       args: [],
     );
@@ -305,16 +285,6 @@ class I10n {
     return Intl.message(
       'Dnes',
       name: 'common_today',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Výsledek`
-  String get common_result {
-    return Intl.message(
-      'Výsledek',
-      name: 'common_result',
       desc: '',
       args: [],
     );
@@ -475,16 +445,6 @@ class I10n {
     );
   }
 
-  /// `Neznama obrazovka`
-  String get not_found_screen_title {
-    return Intl.message(
-      'Neznama obrazovka',
-      name: 'not_found_screen_title',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} other{Jiný}}`
   String common_measurement_types(Object measurementType) {
     return Intl.select(
@@ -598,16 +558,6 @@ class I10n {
     return Intl.message(
       'Více',
       name: 'tabs_more',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Telemedicína`
-  String get configuration_screen_title {
-    return Intl.message(
-      'Telemedicína',
-      name: 'configuration_screen_title',
       desc: '',
       args: [],
     );
@@ -1023,16 +973,6 @@ class I10n {
     );
   }
 
-  /// `Odstranit účet`
-  String get dialog_account_removal_confirmation_button_positive_label {
-    return Intl.message(
-      'Odstranit účet',
-      name: 'dialog_account_removal_confirmation_button_positive_label',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Platný od {fromDate}`
   String user_details_screen_plan_active_from_date(String fromDate) {
     return Intl.message(
@@ -1266,16 +1206,6 @@ class I10n {
     );
   }
 
-  /// `Měření {label}`
-  String measurement_dialog_title(String label) {
-    return Intl.message(
-      'Měření $label',
-      name: 'measurement_dialog_title',
-      desc: '',
-      args: [label],
-    );
-  }
-
   /// `Periodické měření`
   String get dashboard_screen_periodical_measurements {
     return Intl.message(
@@ -1396,36 +1326,6 @@ class I10n {
     return Intl.message(
       'Typ',
       name: 'manual_measurement_screen_type',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Systolický`
-  String get manual_measurement_screen_systolic {
-    return Intl.message(
-      'Systolický',
-      name: 'manual_measurement_screen_systolic',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Diastolický`
-  String get manual_measurement_screen_diasystolic {
-    return Intl.message(
-      'Diastolický',
-      name: 'manual_measurement_screen_diasystolic',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Puls`
-  String get manual_measurement_screen_pulse {
-    return Intl.message(
-      'Puls',
-      name: 'manual_measurement_screen_pulse',
       desc: '',
       args: [],
     );
@@ -1561,16 +1461,6 @@ class I10n {
     );
   }
 
-  /// `Změna plánu`
-  String get notification_widget_plan_changed_for_user_title {
-    return Intl.message(
-      'Změna plánu',
-      name: 'notification_widget_plan_changed_for_user_title',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Uživateli {name} byl upraven plán pro měření {measurementType}.`
   String notification_widget_plan_changed_for_user_desc(
       String name, String measurementType) {
@@ -1609,16 +1499,6 @@ class I10n {
       name: 'results_screen_no_results',
       desc: '',
       args: [name],
-    );
-  }
-
-  /// `Pro {whenName} nejsou dostupné žádné výsledky.`
-  String results_screen_no_results_at_period(Object whenName) {
-    return Intl.message(
-      'Pro $whenName nejsou dostupné žádné výsledky.',
-      name: 'results_screen_no_results_at_period',
-      desc: '',
-      args: [whenName],
     );
   }
 
@@ -1827,16 +1707,6 @@ class I10n {
     return Intl.message(
       'Zařízení připojeno',
       name: 'find_device_screen_device_connected',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Zařízení spárováno`
-  String get find_device_screen_device_paired {
-    return Intl.message(
-      'Zařízení spárováno',
-      name: 'find_device_screen_device_paired',
       desc: '',
       args: [],
     );

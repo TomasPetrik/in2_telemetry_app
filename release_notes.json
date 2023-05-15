@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Completed showing proper care plan fulfillments in history by care plan versions."
+    "text": "1. Removed unused localization keys from arb file by \"dart run lib/unused_keys_finder.dart\"."
   },
   {
     "language": "sk-SK",
