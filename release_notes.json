@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Fixed typo, \n 2. Fixed blank page (SCALESOFT-67)."
+    "text": "1. Fixed infinity loading calendar for represented person . (Wrong saving access token for represented people)."
   },
   {
     "language": "sk-SK",

@@ -111,6 +111,11 @@ class TokenInterceptor extends Interceptor {
     );
 
     userAccount.authToken = newToken;
+    if (userAccount.representedPeople != null) {
+      for (final representedPerson in userAccount.representedPeople!) {
+        representedPerson.authToken = newToken;
+      }
+    }
     await accountDbProvider.save(userAccount);
 
     return newToken;
