@@ -15,15 +15,15 @@ class PairedDevicesDbProvider extends BoxProvider<Device> {
   }
 
   Device? get(String deviceIdentifier) {
-    final foundDevice = box.get(deviceIdentifier);
+    final foundDevice = box.get(deviceIdentifier.toLowerCase());
     return foundDevice;
   }
 
   Future<void> add(Device device) async {
-    await box.put(device.deviceIdentifier!, device);
+    await box.put(device.deviceIdentifier!.toLowerCase(), device);
   }
 
   Future<void> remove(Device device) async {
-    await box.delete(device.deviceIdentifier);
+    await box.delete(device.deviceIdentifier!.toLowerCase());
   }
 }

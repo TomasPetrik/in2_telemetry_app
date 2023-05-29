@@ -272,7 +272,7 @@
             }
         }
     },
-    "dashboard_screen_measurements_left": "Zostávají {currentCount} ze {reqCount} měření",
+    "dashboard_screen_measurements_left": "Zůstávají {currentCount} ze {reqCount} měření",
     "@dashboard_screen_measurements_left": {
         "placeholders": {
             "currentCount": {

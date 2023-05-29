@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Removed unused localization keys from arb file by \"dart run lib/unused_keys_finder.dart\"."
+    "text": "1. Fixed typo, \n 2. Fixed blank page (SCALESOFT-67)."
   },
   {
     "language": "sk-SK",

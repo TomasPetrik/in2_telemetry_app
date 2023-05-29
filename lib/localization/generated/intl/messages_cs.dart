@@ -163,7 +163,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m18(fromTime, toTime) => "Začíná ${fromTime}\nKončí ${toTime}";
 
   static String m19(currentCount, reqCount) =>
-      "Zostávají ${currentCount} ze ${reqCount} měření";
+      "Zůstávají ${currentCount} ze ${reqCount} měření";
 
   static String m20(percentage) => "Dnešní plán byl splněn na ${percentage} %.";
 

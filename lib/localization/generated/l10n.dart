@@ -1136,10 +1136,10 @@ class I10n {
     );
   }
 
-  /// `Zostávají {currentCount} ze {reqCount} měření`
+  /// `Zůstávají {currentCount} ze {reqCount} měření`
   String dashboard_screen_measurements_left(int currentCount, int reqCount) {
     return Intl.message(
-      'Zostávají $currentCount ze $reqCount měření',
+      'Zůstávají $currentCount ze $reqCount měření',
       name: 'dashboard_screen_measurements_left',
       desc: '',
       args: [currentCount, reqCount],
