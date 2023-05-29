@@ -1186,10 +1186,10 @@ class I10n {
     );
   }
 
-  /// `Dnešní plán byl splněn na {percentage} %.`
+  /// `Dnešní plán byl splněn na {percentage}%.`
   String dashboard_screen_todays_plan_finished(int percentage) {
     return Intl.message(
-      'Dnešní plán byl splněn na $percentage %.',
+      'Dnešní plán byl splněn na $percentage%.',
       name: 'dashboard_screen_todays_plan_finished',
       desc: '',
       args: [percentage],

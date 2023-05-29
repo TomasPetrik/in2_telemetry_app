@@ -297,7 +297,7 @@
     },
     "dashboard_screen_no_more_measurements": "Dnes plánované měření skončilo.",
     "dashboard_screen_no_more_future_measurements": "Zadne dalsi planovane mereni.",
-    "dashboard_screen_todays_plan_finished": "Dnešní plán byl splněn na {percentage} %.",
+    "dashboard_screen_todays_plan_finished": "Dnešní plán byl splněn na {percentage}%.",
     "@dashboard_screen_todays_plan_finished": {
         "placeholders": {
             "percentage": {

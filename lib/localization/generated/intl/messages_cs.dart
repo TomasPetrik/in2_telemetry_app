@@ -165,7 +165,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m19(currentCount, reqCount) =>
       "Zůstávají ${currentCount} ze ${reqCount} měření";
 
-  static String m20(percentage) => "Dnešní plán byl splněn na ${percentage} %.";
+  static String m20(percentage) => "Dnešní plán byl splněn na ${percentage}%.";
 
   static String m21(date, time) => "Nejbližší měření je ${date} v ${time}.";
 

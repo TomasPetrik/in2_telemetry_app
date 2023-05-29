@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. Fixed infinity loading calendar for represented person . (Wrong saving access token for represented people)."
+    "text": "\"%\" is straight after value to prevent have \"%\" separated on new line."
   },
   {
     "language": "sk-SK",
