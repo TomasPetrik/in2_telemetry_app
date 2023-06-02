@@ -271,6 +271,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "common_addded_at_time": m4,
         "common_all_accounts":
             MessageLookupByLibrary.simpleMessage("Všechny účty"),
+        "common_app_name": MessageLookupByLibrary.simpleMessage("FONS Care"),
         "common_at_time": m5,
         "common_cancel": MessageLookupByLibrary.simpleMessage("Zrušit"),
         "common_close": MessageLookupByLibrary.simpleMessage("Zavřít"),
@@ -304,8 +305,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "common_save": MessageLookupByLibrary.simpleMessage("Uložit"),
         "common_show_calendar":
             MessageLookupByLibrary.simpleMessage("Zobrazit kalendář"),
-        "common_telemedicine":
-            MessageLookupByLibrary.simpleMessage("Telemedicína"),
         "common_to": MessageLookupByLibrary.simpleMessage("Do"),
         "common_today": MessageLookupByLibrary.simpleMessage("Dnes"),
         "common_understand": MessageLookupByLibrary.simpleMessage("Rozumím"),

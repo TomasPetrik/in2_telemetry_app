@@ -24,7 +24,7 @@
     </queries>
     
    <application
-        android:label="Telemedicina"
+        android:label="FONS Care"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         tools:replace="android:label">
