@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:scalesoft_app/config.dart';
 import 'package:scalesoft_app/cubit/hospital_search/hospital_search_cubit.dart';
 import 'package:scalesoft_app/cubit/hospital_search/hospital_search_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -9,7 +10,6 @@ import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/scale_search_bar.dart';
 import 'package:scalesoft_app/ui/widgets/settings_item.dart';
-import 'package:scalesoft_app/utils/constants.dart';
 
 class HospitalSelectionDialog extends StatelessWidget {
   const HospitalSelectionDialog({
@@ -25,7 +25,7 @@ class HospitalSelectionDialog extends StatelessWidget {
     searchController.addListener(() {
       cubit.search(
         criteria: searchController.text,
-        initialList: Constants.hospitals,
+        initialList: Config.value.hospitals,
       );
     });
 
@@ -57,7 +57,7 @@ class HospitalSelectionDialog extends StatelessWidget {
             bloc: cubit,
             builder: (context, state) {
               final list = state.when(
-                initial: () => Constants.hospitals,
+                initial: () => Config.value.hospitals,
                 result: ((hospitals) => hospitals.toList()),
               );
 

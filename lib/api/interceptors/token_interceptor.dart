@@ -7,6 +7,7 @@ import 'package:scalesoft_app/api/client/auth_api_client.dart';
 import 'package:scalesoft_app/api/model/auth_token.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
+import 'package:scalesoft_app/config.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
@@ -100,8 +101,8 @@ class TokenInterceptor extends Interceptor {
       tokenUrl,
       'refresh_token',
       refreshToken,
-      Constants.clientId,
-      Constants.clientSecret,
+      Config.value.clientId,
+      Config.value.clientSecret,
     );
 
     final newToken = AuthToken(
