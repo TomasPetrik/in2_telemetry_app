@@ -21,6 +21,7 @@ import 'package:scalesoft_app/ui/themes/scalesoft_colors_light.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
+import 'package:scalesoft_app/ui/widgets/image_widget.dart';
 import 'package:scalesoft_app/ui/widgets/settings_item.dart';
 
 class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
@@ -110,10 +111,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                                     ' ${hospital.value.length > 1 ? translactions.common_plus_n_others(hospital.value.length - 1) : ''}',
                                 iconWidget: Padding(
                                   padding: Paddings.all8,
-                                  child: SvgPicture.asset(
-                                    hospital.key.iconPath,
-                                    color: Theme.of(context).hintColor,
-                                  ),
+                                  child: ImageWidget(hospital.key.iconPath)
                                 ),
                                 iconBackground: ScaleColorsLight.content20,
                                 onTap: () {

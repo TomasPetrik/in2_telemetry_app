@@ -8,6 +8,7 @@ import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_colors_light.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
+import 'package:scalesoft_app/ui/widgets/image_widget.dart';
 import 'package:scalesoft_app/ui/widgets/scale_search_bar.dart';
 import 'package:scalesoft_app/ui/widgets/settings_item.dart';
 
@@ -73,10 +74,7 @@ class HospitalSelectionDialog extends StatelessWidget {
                       label: hospital.title,
                       iconWidget: Padding(
                         padding: Paddings.all8,
-                        child: SvgPicture.asset(
-                          hospital.iconPath,
-                          color: Theme.of(context).hintColor,
-                        ),
+                        child: ImageWidget(hospital.iconPath),
                       ),
                       onTap: () {
                         Navigator.of(context).pop(
