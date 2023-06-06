@@ -7,8 +7,50 @@ class StagingConfiguration extends BaseConfiguration {
   final List<Hospital> hospitals = [
     const Hospital(
       id: 0,
-      title: 'in2-win (but more staging)',
-      iconPath: 'assets/icons/icon_hospital_ikem.svg',
+      title: '[Test] Uherskohradišťská nemocnice',
+      iconPath: 'assets/icons/icon_hospital_uhn.png',
+      authData: AuthData(
+        baseUrl: 'https://portal-test.nemuh.cz/api-mobile/v1',
+        authUrl: 'https://portal-auth-test.nemuh.cz/connect/authorize',
+        tokenUrl: 'https://portal-auth-test.nemuh.cz/connect/token',
+      ),
+    ),
+    const Hospital(
+      id: 1,
+      title: '[Test] Kroměřížská nemocnice',
+      iconPath: 'assets/icons/icon_hospital_kmn.png',
+      authData: AuthData(
+        baseUrl: 'https://portal-test.nem-km.cz/api-mobile/v1',
+        authUrl: 'https://portal-test-auth.nem-km.cz/connect/authorize',
+        tokenUrl: 'https://portal-test-auth.nem-km.cz/connect/token',
+      ),
+    ),
+    const Hospital(
+      id: 2,
+      title: '[Test] Vsetínská nemocnice',
+      iconPath: 'assets/icons/icon_hospital_vsn.png',
+      authData: AuthData(
+        baseUrl: 'https://portal-test.nemocnice-vs.cz/api-mobile/v1',
+        authUrl: 'https://portal-test-auth.nemocnice-vs.cz/connect/authorize',
+        tokenUrl: 'https://portal-test-auth.nemocnice-vs.cz/connect/token',
+      ),
+    ),
+
+    // TODO: Add URLs and uncomment #IN2-8308
+    // const Hospital(
+    //   id: 3,
+    //   title: '[Test] Krajská nemocnice Tomáše Bati ve Zlíně',
+    //   iconPath: 'assets/icons/icon_hospital_kntb.svg',
+    //   authData: AuthData(
+    //     baseUrl: '???',
+    //     authUrl: '???',
+    //     tokenUrl: '???',
+    //   ),
+    // ),
+    const Hospital(
+      id: 4,
+      title: '[Test] in2-win',
+      iconPath: 'assets/icons/icon_hospital_user.svg',
       authData: AuthData(
         baseUrl: 'https://in2-win.devscale.cz/api-mobile/v1',
         authUrl: 'https://in2-win-auth.devscale.cz/connect/authorize',

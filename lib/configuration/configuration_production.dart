@@ -7,37 +7,47 @@ class ProductionConfiguration extends BaseConfiguration {
   final List<Hospital> hospitals = [
     const Hospital(
       id: 0,
-      title: 'in2-win',
-      iconPath: 'assets/icons/icon_hospital_ikem.svg',
+      title: 'Uherskohradišťská nemocnice',
+      iconPath: 'assets/icons/icon_hospital_uhn.png',
       authData: AuthData(
-        baseUrl: 'https://in2-win.devscale.cz/api-mobile/v1',
-        authUrl: 'https://in2-win-auth.devscale.cz/connect/authorize',
-        tokenUrl: 'https://in2-win-auth.devscale.cz/connect/token',
+        baseUrl: 'https://portal.nemuh.cz/api-mobile/v1',
+        authUrl: 'https://portal-auth.nemuh.cz/connect/authorize',
+        tokenUrl: 'https://portal-auth.nemuh.cz/connect/token',
       ),
     ),
     const Hospital(
       id: 1,
-      title: 'in2-test',
-      iconPath: 'assets/icons/icon_hospital_nahomolce.svg',
+      title: 'Kroměřížská nemocnice',
+      iconPath: 'assets/icons/icon_hospital_kmn.png',
       authData: AuthData(
-        baseUrl: 'https://in2-test.devscale.cz/api-mobile/v1',
-        authUrl: 'https://in2-test-auth.devscale.cz/connect/authorize',
-        tokenUrl: 'https://in2-test-auth.devscale.cz/connect/token',
+        baseUrl: 'https://portal.nem-km.cz/api-mobile/v1',
+        authUrl: 'https://portal-auth.nem-km.cz/connect/authorize',
+        tokenUrl: 'https://portal-auth.nem-km.cz/connect/token',
       ),
     ),
     const Hospital(
       id: 2,
-      title: 'in2',
-      iconPath: 'assets/icons/icon_hospital_user.svg',
+      title: 'Vsetínská nemocnice',
+      iconPath: 'assets/icons/icon_hospital_vsn.png',
       authData: AuthData(
-        baseUrl: 'https://in2.devscale.cz/api-mobile/v1',
-        authUrl: 'https://in2-auth.devscale.cz/connect/authorize',
-        tokenUrl: 'https://in2-auth.devscale.cz/connect/token',
+        baseUrl: 'https://portal.nemocnice-vs.cz/api-mobile/v1',
+        authUrl: 'https://portal-auth.nemocnice-vs.cz/connect/authorize',
+        tokenUrl: 'https://portal-auth.nemocnice-vs.cz/connect/token',
       ),
     ),
+    // TODO: Add URLs and uncomment #IN2-8308
+    // const Hospital(
+    //   id: 3,
+    //   title: 'Krajská nemocnice Tomáše Bati ve Zlíně',
+    //   iconPath: 'assets/icons/icon_hospital_kntb.svg',
+    //   authData: AuthData(
+    //     baseUrl: '???',
+    //     authUrl: '???',
+    //     tokenUrl: '???',
+    //   ),
+    // ),
   ];
 
   @override
-  // TODO: This should be different from staging
-  final String clientSecret = 'cqWFWo9zYQHFh38kS8VC';
+  final String clientSecret = 'urHw0u2395TVg7lfEhKe';
 }
