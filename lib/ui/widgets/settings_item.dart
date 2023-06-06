@@ -11,6 +11,7 @@ class SettingsItem extends StatelessWidget {
     required this.iconWidget,
     this.hasNavigationIcon = true,
     this.showWarning,
+    this.iconBackground,
   });
 
   final String label;
@@ -19,6 +20,7 @@ class SettingsItem extends StatelessWidget {
   final Widget iconWidget;
   final bool hasNavigationIcon;
   final bool? showWarning;
+  final Color? iconBackground;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,8 @@ class SettingsItem extends StatelessWidget {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: iconBackground ??
+                      Theme.of(context).colorScheme.secondary,
                   borderRadius: BorderRadii.radius8,
                 ),
                 height: 64,

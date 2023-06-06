@@ -60,6 +60,7 @@ dependencies:
   permission_handler: ^10.2.0
   collection: ^1.17.0
   pretty_dio_logger: ^1.2.0-beta-1
+  path: ^1.8.3
 
   # OAuth2
   oauth2: ^2.0.1

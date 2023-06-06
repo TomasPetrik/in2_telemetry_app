@@ -95,7 +95,7 @@ class NotificationsHelper {
     final scheduledTime = tz.TZDateTime.from(whenStart, tz.local);
     await notificationsPlugin.zonedSchedule(
       id,
-      translactions.common_telemedicine,
+      translactions.common_app_name,
       _getBodyMessage(userAccount, plannedMeasurement),
       scheduledTime,
       const NotificationDetails(

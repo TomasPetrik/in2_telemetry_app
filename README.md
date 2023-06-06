@@ -127,7 +127,7 @@ V súbore `lib/utils/constants.dart` sa nachádzajú nasledujúce parametre:
 
   
 
-V `lib/utils/constants.dart` je zoznam prostredí `hospitals` do ktorého sa môžu pridať / upraviť existujúce prostredia.
+V `lib/configuration/configuration_production.dart` a `lib/configuration/configuration_staging.dart` je zoznam prostredí `hospitals` do ktorého sa môžu pridať / upraviť existujúce prostredia.
 
   
 
@@ -238,3 +238,16 @@ V lib`/utils/constants.dart` je zoznam podporovaných zariadení `supportedMeasu
   
 
 4. V nástroji **Codemagic** sa spustí zostavenie novej verzie.
+
+
+
+## Staging verze aplikace
+Staging verze aplikace je téměř totožná s produkční, ale běží proti testovacím prostředím nemocnic (a IN2-Win).  
+Je možné mít zároveň nainstalovanou staging i produkční verzi aplikace - mají různé app ID a názvy.  
+Staging verzi lze kompilovat pouze pro android.
+
+Pro kompilaci staging verze se používá následující příkaz:  
+```shell
+flutter build apk --flavor staging -t lib/main_staging.dart
+```
+Výstupem je apk `build/app/outputs/flutter-apk/app-staging-release.apk`

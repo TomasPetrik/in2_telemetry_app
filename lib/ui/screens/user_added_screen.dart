@@ -13,6 +13,8 @@ import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 
+import '../widgets/image_widget.dart';
+
 class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
   const UserAddedScreen({
     super.key,
@@ -44,9 +46,8 @@ class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
                     borderRadius: BorderRadii.radius8,
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
-                  child: SvgPicture.asset(
+                  child: ImageWidget(
                     userAccount.hospital!.iconPath,
-                    color: Theme.of(context).colorScheme.tertiary,
                   ),
                 ),
                 Gaps.gap24,
