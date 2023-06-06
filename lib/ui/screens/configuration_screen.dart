@@ -17,6 +17,7 @@ import 'package:scalesoft_app/ui/routers/routes/hospital_detail_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/notification_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_detail_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
+import 'package:scalesoft_app/ui/themes/scalesoft_colors_light.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
@@ -114,6 +115,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                                     color: Theme.of(context).hintColor,
                                   ),
                                 ),
+                                iconBackground: ScaleColorsLight.content20,
                                 onTap: () {
                                   if (hospital.value.length == 1) {
                                     GoRouter.of(context).pushNamed(
