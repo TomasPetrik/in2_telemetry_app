@@ -11,8 +11,8 @@ class StagingConfiguration extends BaseConfiguration {
       iconPath: 'assets/icons/icon_hospital_uhn.png',
       authData: AuthData(
         baseUrl: 'https://portal-test.nemuh.cz/api-mobile/v1',
-        authUrl: 'https://portal-auth-test.nemuh.cz/connect/authorize',
-        tokenUrl: 'https://portal-auth-test.nemuh.cz/connect/token',
+        authUrl: 'https://portal-test-auth.nemuh.cz/connect/authorize',
+        tokenUrl: 'https://portal-test-auth.nemuh.cz/connect/token',
       ),
     ),
     const Hospital(
@@ -31,8 +31,8 @@ class StagingConfiguration extends BaseConfiguration {
       iconPath: 'assets/icons/icon_hospital_vsn.png',
       authData: AuthData(
         baseUrl: 'https://portal-test.nemocnice-vs.cz/api-mobile/v1',
-        authUrl: 'https://portal-test-auth.nemocnice-vs.cz/connect/authorize',
-        tokenUrl: 'https://portal-test-auth.nemocnice-vs.cz/connect/token',
+        authUrl: 'https://portal-auth-test.nemocnice-vs.cz/connect/authorize',
+        tokenUrl: 'https://portal-auth-test.nemocnice-vs.cz/connect/token',
       ),
     ),
 
