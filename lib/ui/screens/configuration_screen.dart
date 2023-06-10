@@ -7,8 +7,11 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
+import 'package:scalesoft_app/bloc/settings/app_settings_bloc.dart';
+import 'package:scalesoft_app/bloc/settings/app_settings_bloc_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
+import 'package:scalesoft_app/model/app_settings.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
@@ -191,17 +194,27 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                         },
                       ),
                       Gaps.gap24,
-                      SettingsItem(
-                        label:
-                            translactions.configuration_screen_appearance_label,
-                        subLabel: translactions
-                            .configuration_screen_appearance_sublabel,
-                        iconWidget: SvgPicture.asset(
-                          'assets/icons/icon_paint_roller.svg',
-                          color: Theme.of(context).colorScheme.onSecondary,
-                        ),
-                        onTap: () {
-                          GoRouter.of(context).pushNamed(AppearanceRoute.name);
+                      BlocBuilder<AppSettingsBloc, AppSettings>(
+                        bloc: getIt<AppSettingsBloc>()
+                          ..add(const AppSettingsBlocEvent.initSettings()),
+                        builder: (context, state) {
+                          return SettingsItem(
+                            label: translactions
+                                .configuration_screen_appearance_label,
+                            subLabel: state.autosetAppearance == true
+                                ? translactions
+                                    .configuration_screen_auto_appearance_sublabel
+                                : translactions
+                                    .configuration_screen_system_appearance_sublabel,
+                            iconWidget: SvgPicture.asset(
+                              'assets/icons/icon_paint_roller.svg',
+                              color: Theme.of(context).colorScheme.onSecondary,
+                            ),
+                            onTap: () {
+                              GoRouter.of(context)
+                                  .pushNamed(AppearanceRoute.name);
+                            },
+                          );
                         },
                       ),
                       FutureBuilder(

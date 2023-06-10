@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "\"%\" is straight after value to prevent have \"%\" separated on new line."
+    "text": "1. (3) Fixed send proper measurement-batch with modelName, deviceIdentifier and deviceManufacturer, \n2. (3) Fixed not showing paired devices for user who doesn't have persmission for metering with uknow devices,  \n3.  (19)  Fixed keep only portrait mode, \n4. (7)Fixed title in app bar, \n5. (6) Fixed red screen on calendar when click on future day, \n6. (18) Fixed limit make measurements only for blood pressure,  \n7. (13) Fixed showing correct state for auto appearance switch,  \n8. (22) Fixed showing correct state of appearance in settings menu item."
   },
   {
     "language": "sk-SK",

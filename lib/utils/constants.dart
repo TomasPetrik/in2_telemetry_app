@@ -165,6 +165,12 @@ class Constants {
     ),
   };
 
+  /* Supported measurement types */
+
+  static const Set<MeasurementType> supportedMeasurementTypes = {
+    MeasurementType.bloodPressure
+  };
+
   /* Supported Devices */
 
   static const List<Device> supportedDevices = [

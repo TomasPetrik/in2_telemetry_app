@@ -14,7 +14,7 @@ class FutureMeasurementsScreen extends StatelessWidget {
     required this.usersEvaluationsDay,
   }) : assert(
           usersEvaluationsDay.isNotEmpty,
-          'To show history page must be included at least one evaluation date !',
+          'To show future page must be included at least one evaluation day !',
         );
 
   final List<UserEvaluationDay> usersEvaluationsDay;
