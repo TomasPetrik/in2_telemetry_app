@@ -160,11 +160,11 @@ class I10n {
     );
   }
 
-  /// `Telemedicína`
-  String get common_telemedicine {
+  /// `FONS Care`
+  String get common_app_name {
     return Intl.message(
-      'Telemedicína',
-      name: 'common_telemedicine',
+      'FONS Care',
+      name: 'common_app_name',
       desc: '',
       args: [],
     );

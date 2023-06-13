@@ -7,6 +7,7 @@ import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
+import 'package:scalesoft_app/config.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/parsers/jwt_parser.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
@@ -54,8 +55,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     try {
       _grant = _authService.getAuthGrant(
-        Constants.clientId,
-        Constants.clientSecret,
+        Config.value.clientId,
+        Config.value.clientSecret,
         event.hospital.authData.authUrl,
         event.hospital.authData.tokenUrl,
       );
@@ -65,8 +66,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(
         AuthState.openAuthRequest(
           authUri: _grant!.getAuthorizationUrl(
-            Uri.parse(Constants.redirectUrl),
-            scopes: Constants.scopes,
+            Uri.parse(Config.value.redirectUrl),
+            scopes: Config.value.scopes,
             state: DateTime.now().toString(),
           ),
         ),
