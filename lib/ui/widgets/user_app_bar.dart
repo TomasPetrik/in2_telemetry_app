@@ -86,7 +86,9 @@ class UserAppBar extends StatelessWidget with BottomSheetMixin {
                       ),
                       Expanded(
                         child: Text(
-                          style: ScaleTextStyles.textAccent,
+                          style: ScaleTextStyles.textAccent.apply(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
                           session.isMultiUser == true
                               ? translactions.common_all_accounts
                               : sessionAccounts[0].hospital?.title ?? '',
@@ -100,7 +102,7 @@ class UserAppBar extends StatelessWidget with BottomSheetMixin {
                 Gaps.gap6,
                 Text(
                   style: ScaleTextStyles.label.apply(
-                    color: Theme.of(context).hintColor,
+                    color: Theme.of(context).colorScheme.onSecondary,
                   ),
                   session.isMultiUser == true
                       ? '${sessionAccounts.first.user.fullName}'

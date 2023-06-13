@@ -316,8 +316,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Přidat účet"),
         "configuration_screen_appearance_label":
             MessageLookupByLibrary.simpleMessage("Vzhled"),
-        "configuration_screen_appearance_sublabel":
-            MessageLookupByLibrary.simpleMessage("Téma dle systému"),
+        "configuration_screen_auto_appearance_sublabel":
+            MessageLookupByLibrary.simpleMessage("Automaticky"),
         "configuration_screen_auto_mode_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Světlý a tmavý režim se střídají dle západu a východu slunce."),
@@ -339,6 +339,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Dle plánu měření"),
         "configuration_screen_settings":
             MessageLookupByLibrary.simpleMessage("Nastavení"),
+        "configuration_screen_system_appearance_sublabel":
+            MessageLookupByLibrary.simpleMessage("Vzhled dle systému"),
         "daily_when_time_reset_confirmation_confirm":
             MessageLookupByLibrary.simpleMessage("Resetovat na výchozí"),
         "daily_when_time_reset_confirmation_info":

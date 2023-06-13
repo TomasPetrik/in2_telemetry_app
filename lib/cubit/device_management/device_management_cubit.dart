@@ -61,14 +61,18 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
       }
     }
 
-    final List<String> userDevicesIds = prioritisedDevices
+    final List<String> userAssignedDevicesIds = prioritisedDevices
         .map((dev) => dev.deviceIdentifier!.toLowerCase())
         .toList();
 
-    //2. Add others which are not matching with user devices
+    //2. Add others device which are not matching with user devices and user has also permission
+    //for measurements with unknow devices <canMeasureWithUnknowDevice>
     prioritisedDevices.addAll(
       allDevices.where(
-        (dev) => !userDevicesIds.contains(dev.deviceIdentifier?.toLowerCase()),
+        (dev) =>
+            userAccount.canMeasureWithUnknowDevice &&
+            !userAssignedDevicesIds
+                .contains(dev.deviceIdentifier?.toLowerCase()),
       ),
     );
 

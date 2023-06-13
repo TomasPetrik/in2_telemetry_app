@@ -623,11 +623,21 @@ class I10n {
     );
   }
 
-  /// `Téma dle systému`
-  String get configuration_screen_appearance_sublabel {
+  /// `Vzhled dle systému`
+  String get configuration_screen_system_appearance_sublabel {
     return Intl.message(
-      'Téma dle systému',
-      name: 'configuration_screen_appearance_sublabel',
+      'Vzhled dle systému',
+      name: 'configuration_screen_system_appearance_sublabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Automaticky`
+  String get configuration_screen_auto_appearance_sublabel {
+    return Intl.message(
+      'Automaticky',
+      name: 'configuration_screen_auto_appearance_sublabel',
       desc: '',
       args: [],
     );

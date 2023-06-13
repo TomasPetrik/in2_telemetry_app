@@ -251,7 +251,7 @@ class CalendarFulfillmentServiceBloc extends Bloc<
                 loading: false,
               ),
             );
-            return;
+            //return;
           }
 
           await populateMonth(calendarMonth, carePlans);

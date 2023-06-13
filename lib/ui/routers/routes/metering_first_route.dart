@@ -6,6 +6,7 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
 import 'package:scalesoft_app/ui/screens/metering_first_screen.dart';
 import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
+import 'package:scalesoft_app/utils/constants.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 class MeteringFirstRoute extends ApplicationRoute with PageBuilderMixin {
@@ -39,7 +40,7 @@ class MeteringFirstRoute extends ApplicationRoute with PageBuilderMixin {
           final supportedUserMeasurementTypes =
               CarePlanHelper.getMeasurementTypes(userAccount.carePlans!);
 
-          final allMeasurentTypes = MeasurementType.values.toSet();
+          const allMeasurentTypes = Constants.supportedMeasurementTypes;
 
           return MeteringFirstScreen(
             userId: userId,

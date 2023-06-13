@@ -46,24 +46,32 @@ class OmronFlowRoute extends ApplicationRoute with PageBuilderMixin {
             'either deviceId or (modelName and deviceManufacturer) shoudn\'t be null',
           );
 
-          Device device;
+          final user = getIt<AccountDbProvider>().get(userId)!;
+
+          Device? device;
 
           if (deviceId != null) {
-            device = getIt<PairedDevicesDbProvider>().get(deviceId)!;
-          } else {
+            //1. Search dev in stored paired devices
+            device = getIt<PairedDevicesDbProvider>().get(deviceId);
+          }
+
+          if (device == null) {
             device = Constants.supportedDevices.firstWhere(
               (device) =>
                   device.modelName == modelName &&
                   device.deviceManufacturer == deviceManufacturer,
             );
+
+            //2. if user has assigned devices, just add him his ID  to search this specific dev
+            device = device.copyWith(deviceIdentifier: deviceId);
           }
 
           //also add device's reference
-          final user = getIt<AccountDbProvider>().get(userId)!;
+
           final DeviceModel? deviceModel =
               user.supportedDeviceModels?.firstWhereOrNull(
             (deviceModel) =>
-                deviceModel.modelName == device.modelName &&
+                deviceModel.modelName == device!.modelName &&
                 deviceModel.manufacturer == device.deviceManufacturer,
           );
           if (deviceModel != null) {

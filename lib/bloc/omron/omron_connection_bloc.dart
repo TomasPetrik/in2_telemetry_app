@@ -18,6 +18,7 @@ import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/paired_devices_db_provider.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
+import 'package:scalesoft_app/utils/constants.dart';
 import 'package:scalesoft_app/utils/helpers/bt_connection_helper.dart';
 
 @injectable
@@ -97,15 +98,21 @@ class OmronConnectionBloc
         if (measurementResult.resultState == ResultState.success) {
           final measurementInfo = measurementResult.measurementInfo;
 
+          final supportedDev = Constants.supportedDevices.firstWhere(
+            (dev) => deviceInfo.advData!.localName
+                .toLowerCase()
+                .contains(dev.bluetoothName!.toLowerCase()),
+          );
+
           Measurement? measurement = Measurement(
             patientMuid: _userAccount.user.muid,
             measurementType: _measurementType,
             measurementDateTime: measurementResult.measurementDt,
             sourceDeviceWithMetadata: SourceDeviceInfo(
               sourceDevice: Device(
-                deviceIdentifier: blDevice.id.id,
-                modelName: deviceInfo.modelNumber,
-                deviceManufacturer: deviceInfo.manufacturerName,
+                deviceIdentifier: blDevice.name,
+                modelName: supportedDev.modelName,
+                deviceManufacturer: supportedDev.deviceManufacturer,
               ),
               batteryPercentage: deviceInfo.batteryInfo?.batteryLevel,
             ),

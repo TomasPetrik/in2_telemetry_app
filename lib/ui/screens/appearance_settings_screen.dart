@@ -37,62 +37,64 @@ class AppearanceSettingsScreen extends StatelessWidget {
                       child: BlocBuilder<AppSettingsBloc, AppSettings>(
                         bloc: settingsBloc,
                         builder: (context, state) {
-                          return Column(
-                            children: [
-                              SwitchRow.titleAndLabel(
-                                title: translactions
-                                    .configuration_screen_auto_mode_title,
-                                label: translactions
-                                    .configuration_screen_auto_mode_desc,
-                                defaultValue:
-                                    settingsBloc.state.autosetAppearance ==
-                                        true,
-                                onChanged: (turnedOn) {
-                                  settingsBloc.add(
-                                    AppSettingsBlocEvent.setAutoAppearance(
-                                      turnedOn,
-                                    ),
-                                  );
-                                },
-                              ),
-                              state.autosetAppearance == true
-                                  ? const SizedBox.shrink()
-                                  : Column(
-                                      children: [
-                                        Gaps.gap24,
-                                        AppearanceItem(
-                                          itemType: AppearanceItemType.light,
-                                          isSelected: settingsBloc.state
-                                                  .themeModeLocal.themeMode ==
-                                              ThemeMode.light,
-                                          onSelected: () {
-                                            settingsBloc.add(
-                                              const AppSettingsBlocEvent
-                                                  .themeChanged(
+                          if (state.autosetAppearance == null) {
+                            return const SizedBox.shrink();
+                          } else {
+                            return Column(
+                              children: [
+                                SwitchRow.titleAndLabel(
+                                  title: translactions
+                                      .configuration_screen_auto_mode_title,
+                                  label: translactions
+                                      .configuration_screen_auto_mode_desc,
+                                  defaultValue: state.autosetAppearance == true,
+                                  onChanged: (turnedOn) {
+                                    settingsBloc.add(
+                                      AppSettingsBlocEvent.setAutoAppearance(
+                                        turnedOn,
+                                      ),
+                                    );
+                                  },
+                                ),
+                                state.autosetAppearance == true
+                                    ? const SizedBox.shrink()
+                                    : Column(
+                                        children: [
+                                          Gaps.gap24,
+                                          AppearanceItem(
+                                            itemType: AppearanceItemType.light,
+                                            isSelected: settingsBloc.state
+                                                    .themeModeLocal.themeMode ==
                                                 ThemeMode.light,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                        Gaps.gap24,
-                                        AppearanceItem(
-                                          itemType: AppearanceItemType.dark,
-                                          isSelected: settingsBloc.state
-                                                  .themeModeLocal.themeMode ==
-                                              ThemeMode.dark,
-                                          onSelected: () {
-                                            settingsBloc.add(
-                                              const AppSettingsBlocEvent
-                                                  .themeChanged(
+                                            onSelected: () {
+                                              settingsBloc.add(
+                                                const AppSettingsBlocEvent
+                                                    .themeChanged(
+                                                  ThemeMode.light,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          Gaps.gap24,
+                                          AppearanceItem(
+                                            itemType: AppearanceItemType.dark,
+                                            isSelected: settingsBloc.state
+                                                    .themeModeLocal.themeMode ==
                                                 ThemeMode.dark,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                            ],
-                          );
+                                            onSelected: () {
+                                              settingsBloc.add(
+                                                const AppSettingsBlocEvent
+                                                    .themeChanged(
+                                                  ThemeMode.dark,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                              ],
+                            );
+                          }
                         },
                       ),
                     ),

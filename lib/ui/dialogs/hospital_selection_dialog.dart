@@ -38,76 +38,78 @@ class HospitalSelectionDialog extends StatelessWidget {
           topRight: Radius.circular(RadiusSize.radius16),
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Gaps.gap34,
-          Padding(
-            padding: Paddings.horizontal16,
-            child: ScaleSearchBar(
-              searchHint: translactions.hospital_selector_search_for_account,
-              searchController: searchController,
-              onBack: () {
-                Navigator.of(context).pop();
-              },
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Gaps.gap34,
+            Padding(
+              padding: Paddings.horizontal16,
+              child: ScaleSearchBar(
+                searchHint: translactions.hospital_selector_search_for_account,
+                searchController: searchController,
+                onBack: () {
+                  Navigator.of(context).pop();
+                },
+              ),
             ),
-          ),
-          Gaps.gap24,
-          BlocBuilder<HospitalSearchCubit, HospitalSearchState>(
-            bloc: cubit,
-            builder: (context, state) {
-              final list = state.when(
-                initial: () => Config.value.hospitals,
-                result: ((hospitals) => hospitals.toList()),
-              );
+            Gaps.gap24,
+            BlocBuilder<HospitalSearchCubit, HospitalSearchState>(
+              bloc: cubit,
+              builder: (context, state) {
+                final list = state.when(
+                  initial: () => Config.value.hospitals,
+                  result: ((hospitals) => hospitals.toList()),
+                );
 
-              return ListView.separated(
-                padding: EdgeInsets.zero,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  final hospital = list[index];
-                  return Padding(
-                    padding: Paddings.horizontal16,
-                    child: SettingsItem(
-                      iconBackground: ScaleColorsLight.content20,
-                      label: hospital.title,
-                      iconWidget: Padding(
-                        padding: Paddings.all8,
-                        child: ImageWidget(hospital.iconPath),
+                return ListView.separated(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    final hospital = list[index];
+                    return Padding(
+                      padding: Paddings.horizontal16,
+                      child: SettingsItem(
+                        iconBackground: ScaleColorsLight.content20,
+                        label: hospital.title,
+                        iconWidget: Padding(
+                          padding: Paddings.all8,
+                          child: ImageWidget(hospital.iconPath),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pop(
+                            UserSelection(
+                              action: SwitchUserAction.addUserAccount,
+                              selectedHospital: hospital,
+                            ),
+                          );
+                        },
+                        hasNavigationIcon: false,
                       ),
-                      onTap: () {
-                        Navigator.of(context).pop(
-                          UserSelection(
-                            action: SwitchUserAction.addUserAccount,
-                            selectedHospital: hospital,
-                          ),
-                        );
-                      },
-                      hasNavigationIcon: false,
-                    ),
-                  );
-                },
-                separatorBuilder: (_, __) {
-                  return Gaps.gap24;
-                },
-                itemCount: list.length,
-              );
-            },
-          ),
-          Gaps.gap24,
-          Padding(
-            padding: Paddings.horizontal16,
-            child: HighlightedElevatedButton(
-              label: translactions.common_close,
-              buttonType: ButtonType.secondary,
-              onPressed: () {
-                Navigator.of(context).pop();
+                    );
+                  },
+                  separatorBuilder: (_, __) {
+                    return Gaps.gap24;
+                  },
+                  itemCount: list.length,
+                );
               },
             ),
-          ),
-          Gaps.gap48,
-        ],
+            Gaps.gap24,
+            Padding(
+              padding: Paddings.horizontal16,
+              child: HighlightedElevatedButton(
+                label: translactions.common_close,
+                buttonType: ButtonType.secondary,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+            Gaps.gap48,
+          ],
+        ),
       ),
     );
   }
