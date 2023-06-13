@@ -51,7 +51,9 @@ class _WhenCodeSetState extends State<WhenCodeSet> with BottomSheetMixin {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '${whenCode != null ? translactions.common_when_code(whenCode!.name) : ''} ${translactions.common_from.toLowerCase()}',
+          whenCode != null
+              ? '${translactions.common_when_code(whenCode!.name)} ${translactions.common_from.toLowerCase()}'
+              : translactions.common_to.toLowerCase(),
           style: ScaleTextStyles.text.apply(
             color: Theme.of(context).colorScheme.onPrimary,
           ),

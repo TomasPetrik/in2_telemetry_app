@@ -3,9 +3,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
+import 'package:scalesoft_app/ui/themes/scalesoft_colors_light.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
+import 'package:scalesoft_app/ui/widgets/image_widget.dart';
 import 'package:scalesoft_app/ui/widgets/settings_item.dart';
 
 class UserHospitalSelectionDialog extends StatelessWidget {
@@ -99,15 +101,13 @@ class UserHospitalSelectionDialog extends StatelessWidget {
                 return Padding(
                   padding: Paddings.horizontal16,
                   child: SettingsItem(
+                    iconBackground: ScaleColorsLight.content20,
                     label: hospital.key.title,
                     subLabel: '${hospital.value[0].user.fullName}'
                         ' ${hospital.value.length > 1 ? translactions.common_plus_n_others(hospital.value.length - 1) : ''}',
                     iconWidget: Padding(
                       padding: Paddings.all8,
-                      child: SvgPicture.asset(
-                        hospital.key.iconPath,
-                        color: Theme.of(context).hintColor,
-                      ),
+                      child: ImageWidget(hospital.key.iconPath),
                     ),
                     onTap: () {
                       if (hospital.value.length == 1) {

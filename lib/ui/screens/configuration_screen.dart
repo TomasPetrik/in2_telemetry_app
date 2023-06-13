@@ -20,9 +20,11 @@ import 'package:scalesoft_app/ui/routers/routes/hospital_detail_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/notification_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_detail_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
+import 'package:scalesoft_app/ui/themes/scalesoft_colors_light.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
+import 'package:scalesoft_app/ui/widgets/image_widget.dart';
 import 'package:scalesoft_app/ui/widgets/settings_item.dart';
 
 class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
@@ -112,11 +114,9 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                                     ' ${hospital.value.length > 1 ? translactions.common_plus_n_others(hospital.value.length - 1) : ''}',
                                 iconWidget: Padding(
                                   padding: Paddings.all8,
-                                  child: SvgPicture.asset(
-                                    hospital.key.iconPath,
-                                    color: Theme.of(context).hintColor,
-                                  ),
+                                  child: ImageWidget(hospital.key.iconPath)
                                 ),
+                                iconBackground: ScaleColorsLight.content20,
                                 onTap: () {
                                   if (hospital.value.length == 1) {
                                     GoRouter.of(context).pushNamed(
@@ -252,7 +252,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                 left: 0,
                 right: 0,
                 child: BluredScaleAppBar(
-                  title: translactions.common_telemedicine,
+                  title: translactions.common_app_name,
                 ),
               ),
             ],
