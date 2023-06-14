@@ -472,9 +472,9 @@
             }
         }
     },
-    "find_device_screen_step2_p": "Počkejte, až vás zařízení vyzve ke párování",
+    "find_device_screen_step2_p": "Počkejte, až vás zařízení vyzve k párování",
     "find_device_screen_step3_p": "Párování zařízení",
-    "find_device_screen_step4_p": "Spusťte na zařízení měření pomocou {actionButtonLabel} a počkejte na konec měření",
+    "find_device_screen_step4_p": "Spusťte na zařízení měření pomocí {actionButtonLabel} a počkejte na konec měření",
     "@find_device_screen_step4_p": {
         "placeholders": {
             "actionButtonLabel": {
@@ -491,7 +491,7 @@
             }
         }
     },
-    "find_device_screen_step2": "Spusťte na zařízení měření pomocou {actionButtonLabel} a počkejte na konec měření",
+    "find_device_screen_step2": "Spusťte na zařízení měření pomocí {actionButtonLabel} a počkejte na konec měření",
     "@find_device_screen_step2": {
         "placeholders": {
             "actionButtonLabel": {

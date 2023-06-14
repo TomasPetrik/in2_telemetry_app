@@ -1752,10 +1752,10 @@ class I10n {
     );
   }
 
-  /// `Počkejte, až vás zařízení vyzve ke párování`
+  /// `Počkejte, až vás zařízení vyzve k párování`
   String get find_device_screen_step2_p {
     return Intl.message(
-      'Počkejte, až vás zařízení vyzve ke párování',
+      'Počkejte, až vás zařízení vyzve k párování',
       name: 'find_device_screen_step2_p',
       desc: '',
       args: [],
@@ -1772,10 +1772,10 @@ class I10n {
     );
   }
 
-  /// `Spusťte na zařízení měření pomocou {actionButtonLabel} a počkejte na konec měření`
+  /// `Spusťte na zařízení měření pomocí {actionButtonLabel} a počkejte na konec měření`
   String find_device_screen_step4_p(String actionButtonLabel) {
     return Intl.message(
-      'Spusťte na zařízení měření pomocou $actionButtonLabel a počkejte na konec měření',
+      'Spusťte na zařízení měření pomocí $actionButtonLabel a počkejte na konec měření',
       name: 'find_device_screen_step4_p',
       desc: '',
       args: [actionButtonLabel],
@@ -1802,10 +1802,10 @@ class I10n {
     );
   }
 
-  /// `Spusťte na zařízení měření pomocou {actionButtonLabel} a počkejte na konec měření`
+  /// `Spusťte na zařízení měření pomocí {actionButtonLabel} a počkejte na konec měření`
   String find_device_screen_step2(String actionButtonLabel) {
     return Intl.message(
-      'Spusťte na zařízení měření pomocou $actionButtonLabel a počkejte na konec měření',
+      'Spusťte na zařízení měření pomocí $actionButtonLabel a počkejte na konec měření',
       name: 'find_device_screen_step2',
       desc: '',
       args: [actionButtonLabel],

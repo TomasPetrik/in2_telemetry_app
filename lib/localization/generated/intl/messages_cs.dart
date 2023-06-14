@@ -126,9 +126,9 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m14(count) => "+ ${count} další";
 
   static String m15(whenCode) => "${Intl.select(whenCode, {
-            'morning': 'Ráno',
-            'earlyMorning': 'Brzké ráno',
-            'lateMorning': 'Pozdní ráno',
+            'morning': 'Ráno nebo dopoledne',
+            'earlyMorning': 'Ráno',
+            'lateMorning': 'Dopoledne',
             'noon': 'Poledne',
             'afternoon': 'Odpoledne',
             'earlyAfternoon': 'Brzké odpoledne',
@@ -149,13 +149,13 @@ class MessageLookup extends MessageLookupByLibrary {
             'afterBreakfast': 'Po snídani',
             'afterLunch': 'Po obědě',
             'afterDinner': 'Po večeři',
-            'other': 'Nedefinovano',
+            'other': 'Nedefinováno',
           })}";
 
   static String m16(whenDayName) => "${Intl.select(whenDayName, {
-            'today': 'dnešek',
-            'yesterday': 'včerejšek',
-            'other': 'zvolené období',
+            'today': 'Dnes',
+            'yesterday': 'Včera',
+            'other': 'Zvolené období',
           })}";
 
   static String m17(fromTime, toTime) => "Interval ${fromTime} - ${toTime}";
@@ -178,10 +178,10 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m24(deviceName) => "Zapněte ${deviceName} v režimu párování";
 
   static String m25(actionButtonLabel) =>
-      "Spusťte na zařízení měření pomocou ${actionButtonLabel} a počkejte na konec měření";
+      "Spusťte na zařízení měření pomocí ${actionButtonLabel} a počkejte na konec měření";
 
   static String m26(actionButtonLabel) =>
-      "Spusťte na zařízení měření pomocou ${actionButtonLabel} a počkejte na konec měření";
+      "Spusťte na zařízení měření pomocí ${actionButtonLabel} a počkejte na konec měření";
 
   static String m27(deviceModel) => "${Intl.select(deviceModel, {
             'beurerBm77': 'Akční tlačítko je pod displejem',
@@ -405,7 +405,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "find_device_screen_step1_p": m24,
         "find_device_screen_step2": m25,
         "find_device_screen_step2_p": MessageLookupByLibrary.simpleMessage(
-            "Počkejte, až vás zařízení vyzve ke párování"),
+            "Počkejte, až vás zařízení vyzve k párování"),
         "find_device_screen_step3": MessageLookupByLibrary.simpleMessage(
             "Po odmeření stlačte opět akční tlačitko"),
         "find_device_screen_step3_p":
