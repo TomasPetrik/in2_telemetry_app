@@ -211,7 +211,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                                 ),
                               )
                               .toList()
-                        else ...[
+                        else if (userAccount.canMeasureWithUnknowDevice) ...[
                           Gaps.gap24,
                           Center(
                             child: SvgPicture.asset(
@@ -226,6 +226,29 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                               child: Text(
                                 translactions
                                     .metering_screen_no_added_device_yet,
+                                style: ScaleTextStyles.text.apply(
+                                  color:
+                                      Theme.of(context).colorScheme.onSecondary,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ] else ...[
+                          Gaps.gap24,
+                          Center(
+                            child: SvgPicture.asset(
+                              'assets/icons/icon_triangle_exclamation_big.svg',
+                              color: Theme.of(context).colorScheme.tertiary,
+                            ),
+                          ),
+                          Gaps.gap24,
+                          Padding(
+                            padding: Paddings.horizontal48,
+                            child: Center(
+                              child: Text(
+                                translactions
+                                    .metering_screen_no_eligible_to_measure_with_uknow_device,
                                 style: ScaleTextStyles.text.apply(
                                   color:
                                       Theme.of(context).colorScheme.onSecondary,

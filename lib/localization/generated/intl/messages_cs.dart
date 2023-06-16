@@ -465,6 +465,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Odstranit zařízení"),
         "metering_screen_no_added_device_yet": MessageLookupByLibrary.simpleMessage(
             "Před prvním měřením je potřeba spárovat aplikaci s odpovídajícím zařízením."),
+        "metering_screen_no_eligible_to_measure_with_uknow_device":
+            MessageLookupByLibrary.simpleMessage(
+                "Na měření bez zapůjčeného přístroje nemáte oprávnění"),
         "notification_periodical_frequency_from_to": m31,
         "notification_widget_plan_changed_desc": m32,
         "notification_widget_plan_changed_for_user_desc": m33,

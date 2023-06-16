@@ -124,6 +124,7 @@ class OmronConnectionBloc
                 systolic: measurementInfo?.systolic,
                 diastolic: measurementInfo?.diastolic,
               ),
+              heartRate: measurementInfo?.pulseRate,
             );
           } else if (_measurementType == MeasurementType.heartRate) {
             measurement =
@@ -212,19 +213,7 @@ class OmronConnectionBloc
           }
         },
         checkDeviceAvailability: () async {
-          List<BluetoothDevice> devices = await _flutterBlue.connectedDevices;
-
-          if (devices.isNotEmpty) {
-            final device = devices[0];
-            final BluetoothDeviceState deviceState = await device.state.first;
-            if (deviceState == BluetoothDeviceState.connected) {
-              add(OmronConnectionBlocEvent.verifyDevice(device, null));
-            } else {
-              add(OmronConnectionBlocEvent.connectToDevice(device, null));
-            }
-          } else {
-            add(const OmronConnectionBlocEvent.searchDevice());
-          }
+          add(const OmronConnectionBlocEvent.searchDevice());
         },
         searchDevice: () async {
           emit(const OmronConnectionState.searching());

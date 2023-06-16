@@ -1281,6 +1281,16 @@ class I10n {
     );
   }
 
+  /// `Na měření bez zapůjčeného přístroje nemáte oprávnění`
+  String get metering_screen_no_eligible_to_measure_with_uknow_device {
+    return Intl.message(
+      'Na měření bez zapůjčeného přístroje nemáte oprávnění',
+      name: 'metering_screen_no_eligible_to_measure_with_uknow_device',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Odstranit zařízení`
   String get metering_screen_device_removal_title {
     return Intl.message(

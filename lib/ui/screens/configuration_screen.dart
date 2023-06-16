@@ -114,7 +114,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                                     ' ${hospital.value.length > 1 ? translactions.common_plus_n_others(hospital.value.length - 1) : ''}',
                                 iconWidget: Padding(
                                   padding: Paddings.all8,
-                                  child: ImageWidget(hospital.key.iconPath)
+                                  child: ImageWidget(hospital.key.iconPath),
                                 ),
                                 iconBackground: ScaleColorsLight.content20,
                                 onTap: () {
