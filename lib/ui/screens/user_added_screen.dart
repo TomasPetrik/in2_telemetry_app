@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
@@ -12,8 +11,7 @@ import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
-
-import '../widgets/image_widget.dart';
+import 'package:scalesoft_app/ui/widgets/image_widget.dart';
 
 class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
   const UserAddedScreen({

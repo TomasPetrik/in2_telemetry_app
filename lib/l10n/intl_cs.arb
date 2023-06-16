@@ -326,6 +326,7 @@
     },
     "metering_screen_add_device": "Přidat zařízení",
     "metering_screen_no_added_device_yet": "Před prvním měřením je potřeba spárovat aplikaci s odpovídajícím zařízením.",
+    "metering_screen_no_eligible_to_measure_with_uknow_device": "Na měření bez zapůjčeného přístroje nemáte oprávnění",
     "metering_screen_device_removal_title": "Odstranit zařízení",
     "metering_screen_device_removal_button_confirm": "Odstranit zařízení",
     "metering_screen_device_removal_message": "Zařízení bude odstraněno. Pro opětovné používání ho budete muset znovu spárovat s aplikací.",
