@@ -103,6 +103,8 @@ class NotificationsHelper {
           'scalesoft_android',
           'scalesoft_android_channel',
           channelDescription: 'scalesoft_android_channel_description',
+          color: Color.fromARGB(255, 33, 100, 123),
+          icon: "ic_notification_foreground",
         ),
       ),
       uiLocalNotificationDateInterpretation:
