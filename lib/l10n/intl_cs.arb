@@ -347,6 +347,7 @@
             "measurementType": {}
         }
     },
+    "common_heart_rate_unit": "tepů/min",
     "sync_widget_sync_in_progress": "Probíhá synchronizace...",
     "sync_widget_synced": "Synchronizováno",
     "sync_widget_sync_failed_title": "Synchronizace se nepovedla",

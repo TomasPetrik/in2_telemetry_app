@@ -75,7 +75,7 @@ class SyncedResult extends StatelessWidget {
         case MeasurementType.heartRate:
           final hearthRate =
               hwMeasurementResult.measurementInfo?.pulseRate ?? 'N/A';
-          return '$hearthRate TG';
+          return '$hearthRate ${translactions.common_heart_rate_unit}';
 
         default:
           return null;

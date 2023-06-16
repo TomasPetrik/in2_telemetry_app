@@ -126,9 +126,9 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m14(count) => "+ ${count} další";
 
   static String m15(whenCode) => "${Intl.select(whenCode, {
-            'morning': 'Ráno nebo dopoledne',
-            'earlyMorning': 'Ráno',
-            'lateMorning': 'Dopoledne',
+            'morning': 'Ráno',
+            'earlyMorning': 'Brzké ráno',
+            'lateMorning': 'Pozdní ráno',
             'noon': 'Poledne',
             'afternoon': 'Odpoledne',
             'earlyAfternoon': 'Brzké odpoledne',
@@ -149,13 +149,13 @@ class MessageLookup extends MessageLookupByLibrary {
             'afterBreakfast': 'Po snídani',
             'afterLunch': 'Po obědě',
             'afterDinner': 'Po večeři',
-            'other': 'Nedefinováno',
+            'other': 'Nedefinovano',
           })}";
 
   static String m16(whenDayName) => "${Intl.select(whenDayName, {
-            'today': 'Dnes',
-            'yesterday': 'Včera',
-            'other': 'Zvolené období',
+            'today': 'dnešek',
+            'yesterday': 'včerejšek',
+            'other': 'zvolené období',
           })}";
 
   static String m17(fromTime, toTime) => "Interval ${fromTime} - ${toTime}";
@@ -280,6 +280,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "common_do_sync":
             MessageLookupByLibrary.simpleMessage("Synchronizovat"),
         "common_from": MessageLookupByLibrary.simpleMessage("Od"),
+        "common_heart_rate_unit":
+            MessageLookupByLibrary.simpleMessage("tepů/min"),
         "common_log_in": MessageLookupByLibrary.simpleMessage("Přihlásit se"),
         "common_measure": MessageLookupByLibrary.simpleMessage("Měřit"),
         "common_measure_now": MessageLookupByLibrary.simpleMessage("Měřit teď"),

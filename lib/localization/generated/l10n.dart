@@ -1391,6 +1391,16 @@ class I10n {
     );
   }
 
+  /// `tepů/min`
+  String get common_heart_rate_unit {
+    return Intl.message(
+      'tepů/min',
+      name: 'common_heart_rate_unit',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Probíhá synchronizace...`
   String get sync_widget_sync_in_progress {
     return Intl.message(
