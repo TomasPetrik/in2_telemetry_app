@@ -27,7 +27,8 @@ class OnboardingItemDesc extends StatelessWidget {
           Expanded(
             child: Text(
               desc,
-              style: ScaleTextStyles.textAccent,
+              style: ScaleTextStyles.textAccent
+                  .apply(color: Theme.of(context).colorScheme.onPrimary),
             ),
           ),
         ],

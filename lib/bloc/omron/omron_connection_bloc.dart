@@ -104,13 +104,18 @@ class OmronConnectionBloc
                 .contains(dev.bluetoothName!.toLowerCase()),
           );
 
+          var devId = blDevice.name;
+          if (supportedDev.deviceModelType == DeviceModelType.omronM7) {
+            devId = devId.split('_').last;
+          }
+
           Measurement? measurement = Measurement(
             patientMuid: _userAccount.user.muid,
             measurementType: _measurementType,
             measurementDateTime: measurementResult.measurementDt,
             sourceDeviceWithMetadata: SourceDeviceInfo(
               sourceDevice: Device(
-                deviceIdentifier: blDevice.name,
+                deviceIdentifier: devId,
                 modelName: supportedDev.modelName,
                 deviceManufacturer: supportedDev.deviceManufacturer,
               ),
@@ -256,8 +261,8 @@ class OmronConnectionBloc
           if (pairedDevice != null) {
             //updating device containing mac address to do syncing in future (no pairing anymore)
             _device = pairedDevice;
-            //straight after pairing process, device should turn off bluetooth,
-            //so we can start search for device again after metering
+            //straight after pairing process, device should be turned off,
+            //then we can start search for device again in metering mode
             await Future.delayed(const Duration(seconds: 5));
             final foundDevice = await BtConnectionHelper.searchDevice(
               serviceUuid: bloodPressureServiceUuid,

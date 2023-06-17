@@ -28,6 +28,7 @@ class AppSettingsBloc extends Bloc<AppSettingsBlocEvent, AppSettings> {
                 localLocale: buildConfig.locale.toLocal(),
                 enabledNotifications: true,
                 notifyAtStartOfMeasurement: true,
+                autosetAppearance: false,
               ),
         ) {
     on<AppSettingsBlocEvent>(
@@ -108,6 +109,7 @@ class AppSettingsBloc extends Bloc<AppSettingsBlocEvent, AppSettings> {
           localLocale: buildConfig.locale.toLocal(),
           enabledNotifications: true,
           notifyAtStartOfMeasurement: true,
+          autosetAppearance: false,
         );
 
     return appSettings;

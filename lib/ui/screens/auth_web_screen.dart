@@ -48,9 +48,14 @@ class AuthWebScreen extends StatelessWidget {
                   final authRespUri = Uri.parse(change.url!);
                   final authority = authRespUri.authority;
                   final scheme = authRespUri.scheme;
+                  final queryParameters = authRespUri.queryParameters;
                   if (authority.startsWith('cz.scalesoft.tlm') ||
                       scheme.startsWith('cz.scalesoft.tlm')) {
-                    onRedirect.call(authRespUri);
+                    if (queryParameters.containsKey('code')) {
+                      onRedirect.call(authRespUri);
+                    } else {
+                      onCancelled();
+                    }
                   }
                 }
               },

@@ -8,7 +8,8 @@ import 'package:scalesoft_app/utils/constants.dart';
 
 class RegisterDeviceDetailRoute extends ApplicationRoute with PageBuilderMixin {
   static const name = 'register-device-detail';
-  static const path = '/register-device-detail/:userId/:localId/:deviceIdentifier';
+  static const path =
+      '/register-device-detail/:userId/:localId/:deviceIdentifier';
 
   RegisterDeviceDetailRoute({
     required super.navigator,

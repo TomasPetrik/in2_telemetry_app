@@ -171,6 +171,7 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
         localLocale: buildConfig.locale.toLocal(),
         enabledNotifications: true,
         notifyAtStartOfMeasurement: true,
+        autosetAppearance: false,
       );
       settingsDbProvider.write(appSettings);
     }
