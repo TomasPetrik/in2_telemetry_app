@@ -1,7 +1,7 @@
 [
   {
     "language": "cs-CZ",
-    "text": "1. (2) Fixed communication with BP devices even when some other BT devices are already connected, \n 2. (10) Fixed case when user does not have a permission to measure with uknow device but he also doesnt have assigned any device upon him in the same time, \n 3. Fixed sending heartRate together with bloodPressure when do blood pressure measurement."
+    "text": ""
   },
   {
     "language": "sk-SK",
