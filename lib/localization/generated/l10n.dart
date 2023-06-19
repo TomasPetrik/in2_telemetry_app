@@ -190,10 +190,10 @@ class I10n {
     );
   }
 
-  /// `Nesprávna hodnota`
+  /// `Nesprávná hodnota`
   String get common_wrong_value {
     return Intl.message(
-      'Nesprávna hodnota',
+      'Nesprávná hodnota',
       name: 'common_wrong_value',
       desc: '',
       args: [],
@@ -466,7 +466,7 @@ class I10n {
     );
   }
 
-  /// `{measurementType, select, temperature{Teploty} bloodPressure{Krevního tlaku} oxygenSaturation{Saturace kyslíku} steps{Krokov} globalPosition{Pozice} heartRate{Srdečního tepu} ews{Ews} respiratoryRate{Dechovej frekvence} other{Jiný}}`
+  /// `{measurementType, select, temperature{Teploty} bloodPressure{Krevního tlaku} oxygenSaturation{Saturace kyslíku} steps{Kroků} globalPosition{Pozice} heartRate{Srdečního tepu} ews{Ews} respiratoryRate{Dechové frekvence} other{Jiný}}`
   String common_measurement_types_genitive(Object measurementType) {
     return Intl.select(
       measurementType,
@@ -474,11 +474,11 @@ class I10n {
         'temperature': 'Teploty',
         'bloodPressure': 'Krevního tlaku',
         'oxygenSaturation': 'Saturace kyslíku',
-        'steps': 'Krokov',
+        'steps': 'Kroků',
         'globalPosition': 'Pozice',
         'heartRate': 'Srdečního tepu',
         'ews': 'Ews',
-        'respiratoryRate': 'Dechovej frekvence',
+        'respiratoryRate': 'Dechové frekvence',
         'other': 'Jiný',
       },
       name: 'common_measurement_types_genitive',
@@ -487,14 +487,14 @@ class I10n {
     );
   }
 
-  /// `{whenCode, select, morning{Ráno} earlyMorning{Brzké ráno} lateMorning{Pozdní ráno} noon{Poledne} afternoon{Odpoledne} earlyAfternoon{Brzké odpoledne} lateAfternoon{Pozdní odpoledne} evening{Večer} earlyEvening{Brzký večer} lateEvening{Pozdní večer} night{Noc} afterSleep{Po spánku} beforeSleep{Před spánkem} afterWaking{Po probuzení} atBreakfast{Se snídaní} atLunch{S obědem} atDinner{S večeří} beforeBreakfast{Před snídaní} beforeLunch{Před obědem} beforeDinner{Před večeří} afterBreakfast{Po snídani} afterLunch{Po obědě} afterDinner{Po večeři} other{Nedefinovano}}`
+  /// `{whenCode, select, morning{Ráno nebo dopoledne} earlyMorning{Ráno} lateMorning{Dopoledne} noon{Poledne} afternoon{Odpoledne} earlyAfternoon{Brzké odpoledne} lateAfternoon{Pozdní odpoledne} evening{Večer} earlyEvening{Brzký večer} lateEvening{Pozdní večer} night{Noc} afterSleep{Po spánku} beforeSleep{Před spánkem} afterWaking{Po probuzení} atBreakfast{Se snídaní} atLunch{S obědem} atDinner{S večeří} beforeBreakfast{Před snídaní} beforeLunch{Před obědem} beforeDinner{Před večeří} afterBreakfast{Po snídani} afterLunch{Po obědě} afterDinner{Po večeři} other{Nedefinováno}}`
   String common_when_code(Object whenCode) {
     return Intl.select(
       whenCode,
       {
-        'morning': 'Ráno',
-        'earlyMorning': 'Brzké ráno',
-        'lateMorning': 'Pozdní ráno',
+        'morning': 'Ráno nebo dopoledne',
+        'earlyMorning': 'Ráno',
+        'lateMorning': 'Dopoledne',
         'noon': 'Poledne',
         'afternoon': 'Odpoledne',
         'earlyAfternoon': 'Brzké odpoledne',
@@ -515,7 +515,7 @@ class I10n {
         'afterBreakfast': 'Po snídani',
         'afterLunch': 'Po obědě',
         'afterDinner': 'Po večeři',
-        'other': 'Nedefinovano',
+        'other': 'Nedefinováno',
       },
       name: 'common_when_code',
       desc: 'When codes',
@@ -883,10 +883,10 @@ class I10n {
     );
   }
 
-  /// `Přihlašte se přes 2-faktorové ověření`
+  /// `Přihlaste se přes dvoufaktorové ověření`
   String get onboarding_add_account_screen_add_account_text2 {
     return Intl.message(
-      'Přihlašte se přes 2-faktorové ověření',
+      'Přihlaste se přes dvoufaktorové ověření',
       name: 'onboarding_add_account_screen_add_account_text2',
       desc: '',
       args: [],
@@ -1105,10 +1105,10 @@ class I10n {
     );
   }
 
-  /// `Není nastaven žaden plán a historie měření neobsahuje žádná data.`
+  /// `Není nastaven žádný plán a historie měření neobsahuje žádná data.`
   String get dashboard_screen_any_user_plan {
     return Intl.message(
-      'Není nastaven žaden plán a historie měření neobsahuje žádná data.',
+      'Není nastaven žádný plán a historie měření neobsahuje žádná data.',
       name: 'dashboard_screen_any_user_plan',
       desc: '',
       args: [],
@@ -1146,10 +1146,10 @@ class I10n {
     );
   }
 
-  /// `Zůstávají {currentCount} ze {reqCount} měření`
+  /// `Zbývá {currentCount} z {reqCount} měření`
   String dashboard_screen_measurements_left(int currentCount, int reqCount) {
     return Intl.message(
-      'Zůstávají $currentCount ze $reqCount měření',
+      'Zbývá $currentCount z $reqCount měření',
       name: 'dashboard_screen_measurements_left',
       desc: '',
       args: [currentCount, reqCount],
@@ -1186,10 +1186,10 @@ class I10n {
     );
   }
 
-  /// `Zadne dalsi planovane mereni.`
+  /// `Žádné další plánované měření.`
   String get dashboard_screen_no_more_future_measurements {
     return Intl.message(
-      'Zadne dalsi planovane mereni.',
+      'Žádné další plánované měření.',
       name: 'dashboard_screen_no_more_future_measurements',
       desc: '',
       args: [],
@@ -1226,14 +1226,14 @@ class I10n {
     );
   }
 
-  /// `{deviceModel, select, beurerBm77{Akční tlačítko je pod displejem} omronM7{Akční tlačítko je vedle displeje} other{Nedefinovano}}`
+  /// `{deviceModel, select, beurerBm77{Akční tlačítko je pod displejem} omronM7{Akční tlačítko je vedle displeje} other{Nedefinováno}}`
   String measurement_dialog_device_desc(Object deviceModel) {
     return Intl.select(
       deviceModel,
       {
         'beurerBm77': 'Akční tlačítko je pod displejem',
         'omronM7': 'Akční tlačítko je vedle displeje',
-        'other': 'Nedefinovano',
+        'other': 'Nedefinováno',
       },
       name: 'measurement_dialog_device_desc',
       desc: 'Device model',
@@ -1542,10 +1542,10 @@ class I10n {
     );
   }
 
-  /// `{currentCount} ze {reqCount} měření`
+  /// `{currentCount} z {reqCount} měření`
   String results_screen_measurements_completed(int currentCount, int reqCount) {
     return Intl.message(
-      '$currentCount ze $reqCount měření',
+      '$currentCount z $reqCount měření',
       name: 'results_screen_measurements_completed',
       desc: '',
       args: [currentCount, reqCount],
@@ -1752,10 +1752,10 @@ class I10n {
     );
   }
 
-  /// `Probíhá párování zažízení...`
+  /// `Probíhá párování zařízení...`
   String get find_device_screen_pairing_device {
     return Intl.message(
-      'Probíhá párování zažízení...',
+      'Probíhá párování zařízení...',
       name: 'find_device_screen_pairing_device',
       desc: '',
       args: [],
@@ -1832,10 +1832,10 @@ class I10n {
     );
   }
 
-  /// `Po odmeření stlačte opět akční tlačitko`
+  /// `Po meření stiskněte opět akční tlačítko`
   String get find_device_screen_step3 {
     return Intl.message(
-      'Po odmeření stlačte opět akční tlačitko',
+      'Po meření stiskněte opět akční tlačítko',
       name: 'find_device_screen_step3',
       desc: '',
       args: [],
@@ -1892,10 +1892,10 @@ class I10n {
     );
   }
 
-  /// `Bluetooth zakázan `
+  /// `Bluetooth zakázán `
   String get find_device_screen_not_granted_bt_title {
     return Intl.message(
-      'Bluetooth zakázan ',
+      'Bluetooth zakázán ',
       name: 'find_device_screen_not_granted_bt_title',
       desc: '',
       args: [],
@@ -2122,20 +2122,20 @@ class I10n {
     );
   }
 
-  /// `Ooops!`
+  /// `Chyba`
   String get register_device_detail_registration_fail_title {
     return Intl.message(
-      'Ooops!',
+      'Chyba',
       name: 'register_device_detail_registration_fail_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `Zařízení s MAC adresou {macAddress} již existuje.`
+  /// `Zařízení s technickým identifikátorem {macAddress} již existuje.`
   String register_device_detail_registration_fail_message(String macAddress) {
     return Intl.message(
-      'Zařízení s MAC adresou $macAddress již existuje.',
+      'Zařízení s technickým identifikátorem $macAddress již existuje.',
       name: 'register_device_detail_registration_fail_message',
       desc: '',
       args: [macAddress],
