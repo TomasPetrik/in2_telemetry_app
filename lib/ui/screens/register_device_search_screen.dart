@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_event.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/ui/routers/routes/register_device_detail_route.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
@@ -47,7 +45,7 @@ class _RegisterDeviceSearchScreenState
           children: [
             BlocBuilder<RegisterDeviceBloc, RegisterDeviceBlocState>(
               bloc: registerDeviceBloc
-                ..add(const RegisterDeviceBlocEvent.init()),
+                ..add(RegisterDeviceBlocEvent.init(context)),
               builder: (context, state) {
                 final header = state.whenOrNull(
                   disabledBt: () => WarningItem(
@@ -145,13 +143,15 @@ class _RegisterDeviceSearchScreenState
                             final foundDev = btDevices[index];
                             return InkWell(
                               onTap: () {
-                                GoRouter.of(context).replaceNamed(
-                                  RegisterDeviceDetailRoute.name,
-                                  params: {
-                                    'userId': widget.userId,
-                                    'localId': '${foundDev.localId!}',
-                                    'deviceIdentifier': foundDev.deviceIdentifier!,
-                                  },
+                                registerDeviceBloc.add(
+                                  RegisterDeviceBlocEvent.openDeviceDetail(
+                                    params: {
+                                      'userId': widget.userId,
+                                      'localId': '${foundDev.localId!}',
+                                      'deviceIdentifier':
+                                          foundDev.deviceIdentifier!,
+                                    },
+                                  ),
                                 );
                               },
                               child: Padding(

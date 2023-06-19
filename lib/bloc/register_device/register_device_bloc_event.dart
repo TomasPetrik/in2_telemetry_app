@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scalesoft_app/api/model/measurement/device.dart';
@@ -7,7 +8,7 @@ part 'register_device_bloc_event.freezed.dart';
 
 @freezed
 class RegisterDeviceBlocEvent with _$RegisterDeviceBlocEvent {
-  const factory RegisterDeviceBlocEvent.init() = _Init;
+  const factory RegisterDeviceBlocEvent.init(BuildContext context) = _Init;
   const factory RegisterDeviceBlocEvent.newBtState(BluetoothState newBtState) =
       _NewBtState;
 
@@ -18,10 +19,13 @@ class RegisterDeviceBlocEvent with _$RegisterDeviceBlocEvent {
     List<Device> foundDevices,
   ) = _NotifyAboutNewDevices;
 
+  const factory RegisterDeviceBlocEvent.openDeviceDetail({
+    required Map<String, String> params,
+  }) = _OpenDeviceDetail;
+
   const factory RegisterDeviceBlocEvent.registerDevice(
     UserAccount userAccount,
     Device device,
-    String deviceLabel,
     String assignedIdentifier,
   ) = _RegisterDevice;
 }

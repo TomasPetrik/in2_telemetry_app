@@ -511,21 +511,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "register_device_detail_registration_fail_message": m35,
         "register_device_detail_registration_fail_title":
             MessageLookupByLibrary.simpleMessage("Ooops!"),
+        "register_device_detail_screen_assigned_id":
+            MessageLookupByLibrary.simpleMessage("Označení"),
+        "register_device_detail_screen_assigned_id_hint":
+            MessageLookupByLibrary.simpleMessage(
+                "Například zařízení v kuchyni"),
         "register_device_detail_screen_button_register":
             MessageLookupByLibrary.simpleMessage("Registrovat"),
         "register_device_detail_screen_device":
             MessageLookupByLibrary.simpleMessage("Zařízení"),
         "register_device_detail_screen_identificator":
             MessageLookupByLibrary.simpleMessage("Technický Identifikátor"),
-        "register_device_detail_screen_identificator_hint":
-            MessageLookupByLibrary.simpleMessage("Například sériové číslo"),
-        "register_device_detail_screen_label":
-            MessageLookupByLibrary.simpleMessage("Označení"),
-        "register_device_detail_screen_label_hint":
-            MessageLookupByLibrary.simpleMessage(
-                "Například zařízení v kuchyni"),
-        "register_device_detail_screen_mac_address":
-            MessageLookupByLibrary.simpleMessage("MAC adresa"),
         "register_device_detail_screen_not_filled_field":
             MessageLookupByLibrary.simpleMessage("Nevyplněné pole"),
         "register_device_detail_screen_title":

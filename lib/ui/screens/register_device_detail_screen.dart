@@ -32,8 +32,7 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
   final UserAccount userAccount;
   final Device device;
   final RegisterDeviceBloc registerDeviceBloc = getIt<RegisterDeviceBloc>();
-  final TextEditingController deviceLabelController = TextEditingController();
-  final TextEditingController deviceOwnIdentifierController =
+  final TextEditingController assignedidentifierController =
       TextEditingController();
 
   @override
@@ -86,7 +85,8 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
                       ),
                       const Gap(Dimensions.padding24),
                       Text(
-                        translactions.register_device_detail_screen_mac_address,
+                        translactions
+                            .register_device_detail_screen_identificator,
                         style: ScaleTextStyles.text.apply(
                           color: Theme.of(context)
                               .colorScheme
@@ -104,7 +104,7 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
                       ),
                       const Gap(Dimensions.padding24),
                       Text(
-                        translactions.register_device_detail_screen_label,
+                        translactions.register_device_detail_screen_assigned_id,
                         style: ScaleTextStyles.text.apply(
                           color: Theme.of(context)
                               .colorScheme
@@ -115,34 +115,9 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
                       const Gap(Dimensions.padding8),
                       ScaleTextFormField(
                         textFormKey: registerDevGlobalKeys[0],
-                        controller: deviceLabelController,
+                        controller: assignedidentifierController,
                         hintText: translactions
-                            .register_device_detail_screen_label_hint,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return translactions
-                                .register_device_detail_screen_not_filled_field;
-                          }
-                          return null;
-                        },
-                      ),
-                      const Gap(Dimensions.padding24),
-                      Text(
-                        translactions
-                            .register_device_detail_screen_identificator,
-                        style: ScaleTextStyles.text.apply(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onPrimary
-                              .withOpacity(0.48),
-                        ),
-                      ),
-                      const Gap(Dimensions.padding8),
-                      ScaleTextFormField(
-                        textFormKey: registerDevGlobalKeys[1],
-                        controller: deviceOwnIdentifierController,
-                        hintText: translactions
-                            .register_device_detail_screen_identificator_hint,
+                            .register_device_detail_screen_assigned_id_hint,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return translactions
@@ -163,8 +138,7 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
                               RegisterDeviceBlocEvent.registerDevice(
                                 userAccount,
                                 device,
-                                deviceLabelController.text,
-                                deviceOwnIdentifierController.text,
+                                assignedidentifierController.text,
                               ),
                             );
                           }

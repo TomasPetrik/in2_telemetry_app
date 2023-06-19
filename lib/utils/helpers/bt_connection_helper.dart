@@ -25,6 +25,26 @@ class DeviceSearchResult {
 }
 
 class BtConnectionHelper {
+  static bool matchDeviceId(Device device, String localName) {
+    final supportedDev = Constants.supportedDevices.firstWhere(
+      (dev) {
+        return localName
+            .toLowerCase()
+            .contains(dev.bluetoothName!.toLowerCase());
+      },
+    );
+
+    var deviceId = device.deviceIdentifier;
+    var searchDevId = localName;
+
+    if (supportedDev.deviceModelType == DeviceModelType.omronM7) {
+      searchDevId = searchDevId.split('_').last;
+      deviceId = deviceId?.split('_').last;
+    }
+
+    return deviceId == searchDevId;
+  }
+
   static Future<DeviceSearchResult?> searchDevice({
     required String serviceUuid,
     required Device device,
@@ -53,14 +73,14 @@ class BtConnectionHelper {
                 .toLowerCase()
                 .contains(device.bluetoothName!.toLowerCase()) &&
             (device.deviceIdentifier == null ||
-                device.deviceIdentifier?.toLowerCase() ==
-                    scanResult.advertisementData.localName
-                        .toString()
-                        .toLowerCase())) {
+                matchDeviceId(
+                  device,
+                  scanResult.advertisementData.localName,
+                ))) {
           debugPrint('found device');
-          //debugPrint('found device at ${scanResult.timeStamp}');
 
           await flutterBlue.stopScan();
+
           return DeviceSearchResult(
             scanResult.device,
             scanResult.advertisementData,
@@ -152,15 +172,21 @@ class BtConnectionHelper {
     String advertisementName,
     BluetoothDevice btDevice,
   ) {
-    final supportedDev = Constants.supportedDevices
-        .firstWhere(
-          (dev) => advertisementName
-              .toLowerCase()
-              .contains(dev.bluetoothName!.toLowerCase()),
-        )
-        .copyWith(deviceIdentifier: advertisementName);
+    final supportedDev = Constants.supportedDevices.firstWhere(
+      (dev) {
+        return advertisementName
+            .toLowerCase()
+            .contains(dev.bluetoothName!.toLowerCase());
+      },
+    );
 
-    return supportedDev;
+    var preferedIdName = advertisementName;
+
+    if (supportedDev.deviceModelType == DeviceModelType.omronM7) {
+      preferedIdName = advertisementName.split('_').last;
+    }
+
+    return supportedDev.copyWith(deviceIdentifier: preferedIdName);
   }
 
   static Future<DeviceInfo?> requestDeviceInfo(BluetoothDevice device) async {

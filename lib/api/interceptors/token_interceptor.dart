@@ -8,6 +8,7 @@ import 'package:scalesoft_app/api/model/auth_token.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/config.dart';
+import 'package:scalesoft_app/parsers/jwt_parser.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
@@ -111,10 +112,15 @@ class TokenInterceptor extends Interceptor {
       DateTime.now().add(const Duration(seconds: 3600)),
     );
 
+    final newUserPermissions =
+        JwtParser(jwtToken: newToken.accessToken).getUserPermissions();
+
     userAccount.authToken = newToken;
+    userAccount.userPermissions = newUserPermissions;
     if (userAccount.representedPeople != null) {
       for (final representedPerson in userAccount.representedPeople!) {
         representedPerson.authToken = newToken;
+        representedPerson.userPermissions = newUserPermissions;
       }
     }
     await accountDbProvider.save(userAccount);

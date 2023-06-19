@@ -2062,31 +2062,21 @@ class I10n {
     );
   }
 
-  /// `MAC adresa`
-  String get register_device_detail_screen_mac_address {
-    return Intl.message(
-      'MAC adresa',
-      name: 'register_device_detail_screen_mac_address',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Označení`
-  String get register_device_detail_screen_label {
+  String get register_device_detail_screen_assigned_id {
     return Intl.message(
       'Označení',
-      name: 'register_device_detail_screen_label',
+      name: 'register_device_detail_screen_assigned_id',
       desc: '',
       args: [],
     );
   }
 
   /// `Například zařízení v kuchyni`
-  String get register_device_detail_screen_label_hint {
+  String get register_device_detail_screen_assigned_id_hint {
     return Intl.message(
       'Například zařízení v kuchyni',
-      name: 'register_device_detail_screen_label_hint',
+      name: 'register_device_detail_screen_assigned_id_hint',
       desc: '',
       args: [],
     );
@@ -2097,16 +2087,6 @@ class I10n {
     return Intl.message(
       'Technický Identifikátor',
       name: 'register_device_detail_screen_identificator',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Například sériové číslo`
-  String get register_device_detail_screen_identificator_hint {
-    return Intl.message(
-      'Například sériové číslo',
-      name: 'register_device_detail_screen_identificator_hint',
       desc: '',
       args: [],
     );
