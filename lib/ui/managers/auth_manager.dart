@@ -40,6 +40,9 @@ class AuthManager extends StatelessWidget with BottomSheetMixin {
                   onCancelled: () {
                     authBloc.add(const CancelAuth());
                   },
+                  onLoadingError: () {
+                    authBloc.add(const ErrorLoadDataEvent());
+                  },
                 );
               },
             );

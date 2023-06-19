@@ -10,6 +10,7 @@ import 'package:scalesoft_app/ui/widgets/info_placeholder.dart';
 import 'package:scalesoft_app/ui/widgets/personal_measurement_footer.dart';
 import 'package:scalesoft_app/utils/constants.dart';
 import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 class NoPlansPlaceholder extends StatelessWidget with BottomSheetMixin {
   const NoPlansPlaceholder({
@@ -27,8 +28,8 @@ class NoPlansPlaceholder extends StatelessWidget with BottomSheetMixin {
   Widget build(BuildContext context) {
     final topGap = MediaQuery.of(context).viewPadding.top;
 
-    return CustomScrollView(
-      slivers: [
+    return MultiSliver(
+      children: [
         SliverGap(topGap + Dimensions.twoLinedBarHeight),
         SliverPadding(
           padding: Paddings.horizontal64,

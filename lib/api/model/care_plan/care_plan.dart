@@ -22,46 +22,29 @@ class CarePlan with _$CarePlan {
 
   @HiveType(typeId: 10, adapterName: 'CarePlanAdapter')
   factory CarePlan({
-    @HiveField(0)
-        required int id,
-    @HiveField(1)
-        String? targetUserMuid,
-    @HiveField(2)
-        String? finishedByUserMuid,
-    @HiveField(3)
-        required CarePlanActivity activity,
-    @HiveField(4)
-        required int versionId,
-    @HiveField(5)
-        required Author author,
+    @HiveField(0) required int id,
+    @HiveField(1) String? targetUserMuid,
+    @HiveField(2) String? finishedByUserMuid,
+    @HiveField(3) required CarePlanActivity activity,
+    @HiveField(4) required int versionId,
+    @HiveField(5) required Author author,
     @JsonKey(fromJson: toLocalDate)
     @HiveField(6)
-        required DateTime scheduledStart,
+    required DateTime scheduledStart,
     @JsonKey(fromJson: toLocalDateNullable)
     @HiveField(7)
-        DateTime? scheduledEnd,
-    @HiveField(8)
-        required int frequency,
-    @HiveField(9)
-        required int period,
-    @HiveField(10)
-        required TimeUnit periodUnit,
-    @HiveField(11)
-        required List<WeekDay> weekDays,
-    @HiveField(12)
-        required List<TimingDayWhen> timingDayWhen,
-    @HiveField(13)
-        FulfillmentEvaluationAggregated? fullPlanEvaluation,
-    @HiveField(14)
-        List<FulfillmentEvaluationItem>? serverEvaluationItems,
-    @HiveField(15)
-        bool? wasChanged,
-    @HiveField(16)
-        String? userId,
-    @HiveField(17)
-        bool? wasExpired,
-    @HiveField(18)
-        List<CarePlanVersion>? carePlanVersions,
+    DateTime? scheduledEnd,
+    @HiveField(8) required int frequency,
+    @HiveField(9) required int period,
+    @HiveField(10) required TimeUnit periodUnit,
+    @HiveField(11) required List<WeekDay> weekDays,
+    @HiveField(12) required List<TimingDayWhen> timingDayWhen,
+    @HiveField(13) FulfillmentEvaluationAggregated? fullPlanEvaluation,
+    @HiveField(14) List<FulfillmentEvaluationItem>? serverEvaluationItems,
+    @HiveField(15) bool? wasChanged,
+    @HiveField(16) String? userId,
+    @HiveField(17) bool? wasExpired,
+    @HiveField(18) List<CarePlanVersion>? carePlanVersions,
   }) = _CarePlan;
 
   factory CarePlan.fromJson(Map<String, dynamic> json) =>
@@ -143,6 +126,24 @@ class CarePlan with _$CarePlan {
       case TimeUnit.year:
         return Duration(days: period * 365);
     }
+  }
+
+  List<CarePlanVersion> getCpVersionsOfExactType() {
+    final cpVersions = getCpVersions();
+
+    final lastVersion = cpVersions.last;
+
+    final periodicalLastVersion =
+        cpVersions.lastWhereOrNull((cpVersion) => cpVersion.isPeriodical);
+    final nonPeriodicalLastVersion =
+        cpVersions.lastWhereOrNull((cpVersion) => !cpVersion.isPeriodical);
+
+    final List<CarePlanVersion> cpVersions2 = [
+      if (periodicalLastVersion != null) periodicalLastVersion,
+      if (nonPeriodicalLastVersion != null) nonPeriodicalLastVersion
+    ];
+
+    return [lastVersion];
   }
 
   List<CarePlanVersion> getCpVersions() {
@@ -274,7 +275,7 @@ class CarePlan with _$CarePlan {
     final startOfDay = dateTime.getStartDay();
     final endOfDay = dateTime.getEndDay();
 
-    final activeVersionsOfDay = getCpVersions()
+    final activeVersionsOfDay = getCpVersionsOfExactType()
         .where((cpVersion) => cpVersion.isActiveInDates(startOfDay, endOfDay));
 
     for (final cpVersion in activeVersionsOfDay) {
@@ -543,16 +544,17 @@ class CarePlan with _$CarePlan {
         //filter out measurements out of plan version
         final activeTimings = timingDayWhen.where((tdw) {
           final measurementStartDt = tdw.start.ofExactDate(dateTime);
+          final measurementEndDt = tdw.end.ofExactDate(dateTime);
 
           //get only measurements which were started before plan was finished
           bool measurementStartedBeforePlanFinish =
               cpVersion.activeTo == null ||
                   measurementStartDt.isBefore(cpVersion.activeTo!);
 
-          //and those which were started at same moment or after new plan was started
+          //and those which were started at same moment or after plan was started
           bool measurementStartedAfterPlanStarted =
               measurementStartDt.isAtSameMomentAs(cpVersion.activeFrom) ||
-                  measurementStartDt.isAfter(cpVersion.activeFrom);
+                  measurementEndDt.isAfter(cpVersion.activeFrom);
 
           return measurementStartedBeforePlanFinish &&
               measurementStartedAfterPlanStarted;
