@@ -3,4 +3,8 @@ extension StringParse on String {
     final usingDots = replaceAll(',', '.');
     return double.parse(usingDots);
   }
+
+  String capitalize() {
+    return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
+  }
 }

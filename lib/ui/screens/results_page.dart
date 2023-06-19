@@ -61,141 +61,136 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
 
         return Stack(
           children: [
-            if (allCarePlans.isEmpty)
-              NoPlansPlaceholder(
-                userAccount:
-                    session.isMultiUser != true ? sessionAccounts[0] : null,
-                enterMeasurementWithoutPlan: false,
-                supportedMeasurementTypes: supportedMeasurementTypes,
-              )
-            else
-              BlocBuilder<ResultsBloc, ResultsBlocState>(
-                bloc: resultsBloc,
-                builder: (context, state) {
-                  Future<void> openWhenSelector() async {
-                    showResultsWhenSelector(
-                      context,
-                      state.selectedWhenPeriod,
-                      state.plansEvaluationPerPeriod ?? {},
-                    ).then((selected) {
-                      if (selected?.selectedPeriod != null) {
+            BlocBuilder<ResultsBloc, ResultsBlocState>(
+              bloc: resultsBloc,
+              builder: (context, state) {
+                Future<void> openWhenSelector() async {
+                  showResultsWhenSelector(
+                    context,
+                    state.selectedWhenPeriod,
+                    state.plansEvaluationPerPeriod ?? {},
+                  ).then((selected) {
+                    if (selected?.selectedPeriod != null) {
+                      resultsBloc.add(
+                        ResultsBlocEvent.whenPeriodChange(
+                          selected!.selectedPeriod!,
+                        ),
+                      );
+                    } else if (selected?.showCalendar == true) {
+                      GoRouter.of(context).pushNamed(
+                        CalendarRoute.name,
+                        extra: session
+                            .getAllCarePlans()
+                            .map((carePlan) => carePlan.id)
+                            .toList(),
+                      );
+                    }
+                  });
+                }
+
+                if (state.selectedWhenPeriod == null ||
+                    state.currentCarePlans == null) {
+                  return const SizedBox.shrink();
+                } else {
+                  return NavigationScreen(
+                    onTabSelected: (tabIndex) {
+                      if (tabIndex == 0) {
                         resultsBloc.add(
-                          ResultsBlocEvent.whenPeriodChange(
-                            selected!.selectedPeriod!,
+                          const ResultsBlocEvent.curentPlansChange(
+                            null,
                           ),
                         );
-                      } else if (selected?.showCalendar == true) {
-                        GoRouter.of(context).pushNamed(
-                          CalendarRoute.name,
-                          extra: session
-                              .getAllCarePlans()
-                              .map((carePlan) => carePlan.id)
-                              .toList(),
+                      } else {
+                        resultsBloc.add(
+                          ResultsBlocEvent.curentPlansChange(
+                            supportedMeasurementTypes.toList()[tabIndex - 1],
+                          ),
                         );
                       }
-                    });
-                  }
-
-                  if (state.selectedWhenPeriod == null ||
-                      state.currentCarePlans == null ||
-                      state.results == null) {
-                    return const SizedBox.shrink();
-                  } else {
-                    return NavigationScreen(
-                      onTabSelected: (tabIndex) {
-                        if (tabIndex == 0) {
-                          resultsBloc.add(
-                            const ResultsBlocEvent.curentPlansChange(
-                              null,
-                            ),
-                          );
-                        } else {
-                          resultsBloc.add(
-                            ResultsBlocEvent.curentPlansChange(
-                              supportedMeasurementTypes.toList()[tabIndex - 1],
-                            ),
-                          );
-                        }
-                      },
-                      onRefresh: () async {
-                        syncBloc.add(const SyncEvent.syncAll());
-                      },
-                      topSlivers: [
-                        SyncWidget(
-                          syncState: syncState,
-                        ),
-                        session.isMultiUser == true
-                            ? UsersProfilesEvaluationHeader(
-                                userAccounts: session.getSessionAccounts(),
-                                whenPeriod: state.selectedWhenPeriod!,
-                                openWhenSelector: openWhenSelector,
-                              )
-                            : CarePlansEvaluationHeader(
-                                carePlans: CarePlanHelper
-                                    .getCarePlansContainingMeasurements(
-                                  allCarePlans: allCarePlans,
-                                  whenPeriod: state.selectedWhenPeriod!,
-                                ),
-                                whenPeriod: state.selectedWhenPeriod!,
-                                openWhenSelector: openWhenSelector,
-                              ),
-                      ],
-                      navigationHeader: Row(
-                        children: [
-                          Text(
-                            translactions.results_screen_results_title,
-                            style: ScaleTextStyles.textAccent.apply(
-                              color: Theme.of(context).colorScheme.onSecondary,
-                            ),
-                          ),
-                        ],
-                      ),
-                      tabs: [
-                        if (supportedMeasurementTypes.length > 1) ...{
-                          NavigationTabBarItem(
-                            label: translactions.dashboard_screen_all,
-                            slivers: [
-                              ResultsList(
-                                dayDt: state.selectedWhenPeriod ==
-                                        ResultsWhenPeriod.today
-                                    ? DateTime.now().getTodayMidnight()
-                                    : DateTime.now().getYesterdayMidnight(),
-                                isMultiUser:
-                                    getIt<Session>().isMultiUser == true,
-                                mResults: state.results!,
-                                canOpenChart: true,
-                              ),
-                            ],
-                            bottomSlivers: [],
-                          ),
-                        },
-                        ...supportedMeasurementTypes
-                            .map(
-                              (measurementType) => NavigationTabBarItem(
-                                label: translactions.common_measurement_types(
-                                  measurementType.name,
-                                ),
-                                slivers: [
-                                  ResultsList(
-                                    dayDt: state.selectedWhenPeriod ==
-                                            ResultsWhenPeriod.today
-                                        ? DateTime.now().getTodayMidnight()
-                                        : DateTime.now().getYesterdayMidnight(),
-                                    isMultiUser:
-                                        getIt<Session>().isMultiUser == true,
-                                    mResults: state.results!,
-                                    canOpenChart: true,
-                                  ),
-                                ],
-                                bottomSlivers: [],
-                              ),
+                    },
+                    onRefresh: () async {
+                      syncBloc.add(const SyncEvent.syncAll());
+                    },
+                    syncWidget: SyncWidget(syncState: syncState),
+                    topSlivers: [
+                      session.isMultiUser == true
+                          ? UsersProfilesEvaluationHeader(
+                              userAccounts: session.getSessionAccounts(),
+                              whenPeriod: state.selectedWhenPeriod!,
+                              openWhenSelector: openWhenSelector,
                             )
-                            .toList(),
+                          : CarePlansEvaluationHeader(
+                              carePlans: CarePlanHelper
+                                  .getCarePlansContainingMeasurements(
+                                allCarePlans: allCarePlans,
+                                whenPeriod: state.selectedWhenPeriod!,
+                              ),
+                              whenPeriod: state.selectedWhenPeriod!,
+                              openWhenSelector: openWhenSelector,
+                            ),
+                    ],
+                    noContentWidget: NoPlansPlaceholder(
+                      userAccount: session.isMultiUser != true
+                          ? sessionAccounts[0]
+                          : null,
+                      enterMeasurementWithoutPlan: false,
+                      supportedMeasurementTypes: supportedMeasurementTypes,
+                    ),
+                    navigationHeader: Row(
+                      children: [
+                        Text(
+                          translactions.results_screen_results_title,
+                          style: ScaleTextStyles.textAccent.apply(
+                            color: Theme.of(context).colorScheme.onSecondary,
+                          ),
+                        ),
                       ],
-                    );
-                  }
-                },
-              ),
+                    ),
+                    tabs: [
+                      if (supportedMeasurementTypes.length > 1) ...{
+                        NavigationTabBarItem(
+                          label: translactions.dashboard_screen_all,
+                          slivers: [
+                            ResultsList(
+                              dayDt: state.selectedWhenPeriod ==
+                                      ResultsWhenPeriod.today
+                                  ? DateTime.now().getTodayMidnight()
+                                  : DateTime.now().getYesterdayMidnight(),
+                              isMultiUser: getIt<Session>().isMultiUser == true,
+                              mResults: state.results!,
+                              canOpenChart: true,
+                            ),
+                          ],
+                          bottomSlivers: [],
+                        ),
+                      },
+                      ...supportedMeasurementTypes
+                          .map(
+                            (measurementType) => NavigationTabBarItem(
+                              label: translactions.common_measurement_types(
+                                measurementType.name,
+                              ),
+                              slivers: [
+                                ResultsList(
+                                  dayDt: state.selectedWhenPeriod ==
+                                          ResultsWhenPeriod.today
+                                      ? DateTime.now().getTodayMidnight()
+                                      : DateTime.now().getYesterdayMidnight(),
+                                  isMultiUser:
+                                      getIt<Session>().isMultiUser == true,
+                                  mResults: state.results!,
+                                  canOpenChart: true,
+                                ),
+                              ],
+                              bottomSlivers: [],
+                            ),
+                          )
+                          .toList(),
+                    ],
+                  );
+                }
+              },
+            ),
             const Positioned(
               top: 0,
               left: 0,

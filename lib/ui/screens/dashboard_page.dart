@@ -51,169 +51,168 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
           );
         return Stack(
           children: [
-            if (allCarePlans.isEmpty)
-              NoPlansPlaceholder(
-                userAccount:
-                    session.isMultiUser != true ? sessionAccounts[0] : null,
-                enterMeasurementWithoutPlan: session.isMultiUser != true &&
-                    sessionAccounts[0].enterMeasurementWithoutPlan,
-                supportedMeasurementTypes: supportedMeasurementTypes,
-              )
-            else
-              BlocBuilder<CarePlanBloc, CarePlanBlocState>(
-                bloc: carePlanBloc,
-                builder: (context, state) {
-                  if (state.selectedWhenPeriod == null ||
-                      state.currentCarePlans == null ||
-                      state.upcomingMeasurements == null ||
-                      state.allTodayMeasurements == null ||
-                      state.results == null) {
-                    return const SizedBox.shrink();
-                  } else {
-                    return NavigationScreen(
-                      onTabSelected: (tabIndex) {
-                        if (tabIndex == 0) {
-                          carePlanBloc.add(
-                            const CurrentPlansChangeEvent(null),
-                          );
-                        } else {
-                          carePlanBloc.add(
-                            CurrentPlansChangeEvent(
-                              supportedMeasurementTypes.toList()[tabIndex - 1],
-                            ),
-                          );
-                        }
-                      },
-                      onRefresh: () async {
-                        syncBloc.add(const SyncEvent.syncAll());
-                      },
-                      topSlivers: [
-                        SyncWidget(syncState: syncState),
-                        if ((state.selectedWhenPeriod == PlanWhenPeriod.today ||
-                            state.selectedWhenPeriod ==
-                                PlanWhenPeriod.next10)) ...{
-                          SliverToBoxAdapter(
-                            child: ActionWidget(
-                              whenPeriod: state.selectedWhenPeriod!,
-                              upcomingMeasurements: state.upcomingMeasurements!,
-                              allTodayMeasurements: state.allTodayMeasurements!,
-                            ),
+            BlocBuilder<CarePlanBloc, CarePlanBlocState>(
+              bloc: carePlanBloc,
+              builder: (context, state) {
+                if (state.selectedWhenPeriod == null ||
+                    state.currentCarePlans == null ||
+                    state.allTodayMeasurements == null ||
+                    state.results == null) {
+                  return const SizedBox.shrink();
+                } else {
+                  return NavigationScreen(
+                    onTabSelected: (tabIndex) {
+                      if (tabIndex == 0) {
+                        carePlanBloc.add(
+                          const CurrentPlansChangeEvent(null),
+                        );
+                      } else {
+                        carePlanBloc.add(
+                          CurrentPlansChangeEvent(
+                            supportedMeasurementTypes.toList()[tabIndex - 1],
                           ),
-                        }
-                      ],
-                      navigationHeader: state
-                                  .allMeasurementCountsPerPeriod?.isNotEmpty ==
-                              true
-                          ? PlannedMeasurementHeader(
-                              whenPeriod: state.selectedWhenPeriod ??
-                                  PlanWhenPeriod.today,
-                              openTimeSelector: () async {
-                                await showPlannedMeasurementsSelector(
-                                  context,
-                                  state.selectedWhenPeriod,
-                                  state.allMeasurementCountsPerPeriod!,
-                                ).then((selected) {
-                                  if (selected?.selectedPeriod != null) {
-                                    carePlanBloc.add(
-                                      TimePeriodChangeEvent(
-                                        selected!.selectedPeriod!,
-                                      ),
-                                    );
-                                  } else if (selected?.showCalendar == true) {
-                                    GoRouter.of(context).pushNamed(
-                                      CalendarRoute.name,
-                                      extra: session
-                                          .getAllCarePlans()
-                                          .map((carePlan) => carePlan.id)
-                                          .toList(),
-                                    );
-                                  }
-                                });
-                              },
-                            )
+                        );
+                      }
+                    },
+                    onRefresh: () async {
+                      syncBloc.add(const SyncEvent.syncAll());
+                    },
+                    syncWidget: SyncWidget(syncState: syncState),
+                    topSlivers: [
+                      if ((state.selectedWhenPeriod == PlanWhenPeriod.today ||
+                          state.selectedWhenPeriod ==
+                              PlanWhenPeriod.next10)) ...{
+                        SliverToBoxAdapter(
+                          child: ActionWidget(
+                            whenPeriod: state.selectedWhenPeriod!,
+                            upcomingMeasurements:
+                                state.upcomingMeasurements ?? [],
+                            allTodayMeasurements: state.allTodayMeasurements!,
+                          ),
+                        ),
+                      }
+                    ],
+                    noContentWidget: NoPlansPlaceholder(
+                      userAccount: session.isMultiUser != true
+                          ? sessionAccounts[0]
                           : null,
-                      tabs: [
-                        if (supportedMeasurementTypes.length > 1) ...{
-                          NavigationTabBarItem(
-                            label: translactions.dashboard_screen_all,
-                            slivers: [
-                              MeasurementsList(
-                                whenPeriod: state.selectedWhenPeriod!,
-                                carePlans: [...state.currentCarePlans!],
-                                measurements: state.upcomingMeasurements!,
-                                nextMeasurement: state.nextMeasurement!,
-                                planWhenPeriod: state.selectedWhenPeriod!,
-                                results: state.results!,
+                      enterMeasurementWithoutPlan:
+                          session.isMultiUser != true &&
+                              sessionAccounts[0].enterMeasurementWithoutPlan,
+                      supportedMeasurementTypes: supportedMeasurementTypes,
+                    ),
+                    navigationHeader:
+                        state.allMeasurementCountsPerPeriod?.isNotEmpty == true
+                            ? PlannedMeasurementHeader(
+                                whenPeriod: state.selectedWhenPeriod ??
+                                    PlanWhenPeriod.today,
+                                openTimeSelector: () async {
+                                  await showPlannedMeasurementsSelector(
+                                    context,
+                                    state.selectedWhenPeriod,
+                                    state.allMeasurementCountsPerPeriod!,
+                                  ).then((selected) {
+                                    if (selected?.selectedPeriod != null) {
+                                      carePlanBloc.add(
+                                        TimePeriodChangeEvent(
+                                          selected!.selectedPeriod!,
+                                        ),
+                                      );
+                                    } else if (selected?.showCalendar == true) {
+                                      GoRouter.of(context).pushNamed(
+                                        CalendarRoute.name,
+                                        extra: session
+                                            .getAllCarePlans()
+                                            .map((carePlan) => carePlan.id)
+                                            .toList(),
+                                      );
+                                    }
+                                  });
+                                },
+                              )
+                            : null,
+                    tabs: [
+                      if (supportedMeasurementTypes.length > 1) ...{
+                        NavigationTabBarItem(
+                          label: translactions.dashboard_screen_all,
+                          slivers: [
+                            MeasurementsList(
+                              whenPeriod: state.selectedWhenPeriod!,
+                              carePlans: [...state.currentCarePlans!],
+                              measurements: state.upcomingMeasurements!,
+                              nextMeasurement: state.nextMeasurement!,
+                              planWhenPeriod: state.selectedWhenPeriod!,
+                              results: state.results!,
+                            ),
+                          ],
+                          bottomSlivers: [
+                            if (session.isMultiUser != true &&
+                                sessionAccounts[0]
+                                    .enterMeasurementWithoutPlan) ...{
+                              PersonalMeasurementFooter(
+                                showInfo:
+                                    state.upcomingMeasurements?.isNotEmpty ==
+                                        true,
+                                onPressed: () async {
+                                  MeasurementHelper.doMeasurement(
+                                    context: context,
+                                    userId: sessionAccounts[0].user.muid,
+                                    allMeasurementTypes:
+                                        supportedMeasurementTypes,
+                                  );
+                                },
                               ),
-                            ],
-                            bottomSlivers: [
-                              if (session.isMultiUser != true &&
-                                  sessionAccounts[0]
-                                      .enterMeasurementWithoutPlan) ...{
-                                PersonalMeasurementFooter(
-                                  showInfo:
-                                      state.upcomingMeasurements?.isNotEmpty ==
-                                          true,
-                                  onPressed: () async {
-                                    MeasurementHelper.doMeasurement(
-                                      context: context,
-                                      userId: sessionAccounts[0].user.muid,
-                                      allMeasurementTypes:
-                                          supportedMeasurementTypes,
-                                    );
-                                  },
+                            },
+                          ],
+                        ),
+                      },
+                      ...supportedMeasurementTypes
+                          .map(
+                            (measurementType) => NavigationTabBarItem(
+                              label: translactions.common_measurement_types(
+                                measurementType.name,
+                              ),
+                              slivers: [
+                                MeasurementsList(
+                                  whenPeriod: state.selectedWhenPeriod!,
+                                  carePlans: [...state.currentCarePlans!],
+                                  measurements: state.upcomingMeasurements!,
+                                  nextMeasurement: state.nextMeasurement!,
+                                  planWhenPeriod: state.selectedWhenPeriod!,
+                                  results: state.results!,
                                 ),
-                              },
-                            ],
-                          ),
-                        },
-                        ...supportedMeasurementTypes
-                            .map(
-                              (measurementType) => NavigationTabBarItem(
-                                label: translactions.common_measurement_types(
-                                  measurementType.name,
-                                ),
-                                slivers: [
-                                  MeasurementsList(
-                                    whenPeriod: state.selectedWhenPeriod!,
-                                    carePlans: [...state.currentCarePlans!],
-                                    measurements: state.upcomingMeasurements!,
-                                    nextMeasurement: state.nextMeasurement!,
-                                    planWhenPeriod: state.selectedWhenPeriod!,
-                                    results: state.results!,
+                              ],
+                              bottomSlivers: [
+                                if (session.isMultiUser != true &&
+                                    sessionAccounts[0]
+                                        .enterMeasurementWithoutPlan) ...{
+                                  PersonalMeasurementFooter(
+                                    showInfo: state
+                                            .upcomingMeasurements?.isNotEmpty ==
+                                        true,
+                                    onPressed: () async {
+                                      MeasurementHelper.doMeasurement(
+                                        context: context,
+                                        userId: sessionAccounts[0].user.muid,
+                                        selectedMeasurementType: state
+                                            .currentCarePlans![0]
+                                            .activity
+                                            .measurementType,
+                                        allMeasurementTypes:
+                                            supportedMeasurementTypes,
+                                      );
+                                    },
                                   ),
-                                ],
-                                bottomSlivers: [
-                                  if (session.isMultiUser != true &&
-                                      sessionAccounts[0]
-                                          .enterMeasurementWithoutPlan) ...{
-                                    PersonalMeasurementFooter(
-                                      showInfo: state.upcomingMeasurements
-                                              ?.isNotEmpty ==
-                                          true,
-                                      onPressed: () async {
-                                        MeasurementHelper.doMeasurement(
-                                          context: context,
-                                          userId: sessionAccounts[0].user.muid,
-                                          selectedMeasurementType: state
-                                              .currentCarePlans![0]
-                                              .activity
-                                              .measurementType,
-                                          allMeasurementTypes:
-                                              supportedMeasurementTypes,
-                                        );
-                                      },
-                                    ),
-                                  },
-                                ],
-                              ),
-                            )
-                            .toList(),
-                      ],
-                    );
-                  }
-                },
-              ),
+                                },
+                              ],
+                            ),
+                          )
+                          .toList(),
+                    ],
+                  );
+                }
+              },
+            ),
             const Positioned(
               top: 0,
               left: 0,

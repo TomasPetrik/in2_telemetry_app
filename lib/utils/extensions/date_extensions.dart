@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart' as tdw;
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/utils/extensions/string_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 extension DateParse on DateTime {
@@ -118,10 +119,10 @@ extension DateParse on DateTime {
     final difference = daysBetween(currentDt, this);
 
     if (difference == -1) {
-      return translactions.common_when_day_name(WhenPeriod.yesterday.name);
+      return translactions.common_when_day_name(WhenPeriod.yesterday.name).capitalize();
     }
     if (difference == 0) {
-      return translactions.common_when_day_name(WhenPeriod.today.name);
+      return translactions.common_when_day_name(WhenPeriod.today.name).capitalize();
     } else {
       return toRegularDate();
     }

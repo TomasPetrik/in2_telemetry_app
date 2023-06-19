@@ -12,12 +12,14 @@ class AuthWebScreen extends StatelessWidget {
     required this.authUri,
     required this.onRedirect,
     required this.onCancelled,
+    required this.onLoadingError,
   });
 
   final Uri authUri;
   final Function(Uri) onRedirect;
 
   final Function onCancelled;
+  final Function onLoadingError;
   final AuthWebCubit cubit = getIt<AuthWebCubit>();
 
   final WebViewController controller = WebViewController();
@@ -39,7 +41,9 @@ class AuthWebScreen extends StatelessWidget {
               onPageFinished: (String url) {
                 cubit.loaded();
               },
-              onWebResourceError: (WebResourceError error) {},
+              onWebResourceError: (WebResourceError error) {
+                onLoadingError();
+              },
               onNavigationRequest: (NavigationRequest request) {
                 return NavigationDecision.navigate;
               },

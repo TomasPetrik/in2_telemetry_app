@@ -22,22 +22,26 @@ class NavigationTabBarItem {
 }
 
 class NavigationScreen extends StatefulWidget {
-  NavigationScreen({
+  const NavigationScreen({
     Key? key,
     required this.tabs,
+    this.syncWidget,
     this.topSlivers = const [],
     this.currentTab = 0,
     this.navigationHeader,
+    this.noContentWidget,
     this.onTabSelected,
     this.onRefresh,
-  })  : assert(tabs.isNotEmpty),
-        assert(currentTab < tabs.length),
+  }) : //assert(tabs.isNotEmpty),
+        //assert(currentTab < tabs.length),
         super(key: key);
 
   final List<NavigationTabBarItem> tabs;
+  final Widget? syncWidget;
   final List<Widget> topSlivers;
   final int currentTab;
   final Widget? navigationHeader;
+  final Widget? noContentWidget;
   final Function(int tabIndex)? onTabSelected;
 
   final Future<void> Function()? onRefresh;
@@ -112,11 +116,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
                 physics: const BouncingScrollPhysics(),
                 controller: scrollController,
                 slivers: [
-                  /*
-                    SliverGap(
-                      topGap + Constants.twoLinedBarHeight,
-                    ),
-                    */
                   SliverPersistentHeader(
                     pinned: true,
                     delegate: FixedHeightItemDelegate(
@@ -124,66 +123,72 @@ class _NavigationScreenState extends State<NavigationScreen> {
                       fixedHeight: topGap + Dimensions.twoLinedBarHeight,
                     ),
                   ),
-                  ...widget.topSlivers,
-                  SliverPersistentHeader(
-                    pinned: true,
-                    delegate: FixedHeightItemDelegate(
-                      child: Stack(
-                        children: [
-                          Positioned.fill(
-                            child: ClipRRect(
-                              child: BackdropFilter(
-                                filter:
-                                    ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                                child: Container(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .background
-                                      .withOpacity(0.8),
+                  if (widget.syncWidget != null) widget.syncWidget!,
+                  if (widget.tabs.isEmpty)
+                    widget.noContentWidget!
+                  else ...[
+                    ...widget.topSlivers,
+                    SliverPersistentHeader(
+                      pinned: true,
+                      delegate: FixedHeightItemDelegate(
+                        child: Stack(
+                          children: [
+                            Positioned.fill(
+                              child: ClipRRect(
+                                child: BackdropFilter(
+                                  filter:
+                                      ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                  child: Container(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .background
+                                        .withOpacity(0.8),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (widget.navigationHeader != null) ...[
-                                Gaps.gap16,
-                                Padding(
-                                  padding: Paddings.horizontal16,
-                                  child: widget.navigationHeader!,
-                                ),
-                              ],
-                              if (widget.tabs.isNotEmpty) ...[
-                                Gaps.gap26,
-                                Padding(
-                                  padding: Paddings.horizontal16,
-                                  child: NavigationTabBar(
-                                    tabs: widget.tabs,
-                                    onTabChanged: (
-                                      int newTabIndex,
-                                      int previousTabIndex,
-                                    ) {
-                                      onTabTap(
-                                        newTabIndex,
-                                        previousTabIndex,
-                                      );
-                                    },
-                                    currentTab: currentTab,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (widget.navigationHeader != null) ...[
+                                  Gaps.gap16,
+                                  Padding(
+                                    padding: Paddings.horizontal16,
+                                    child: widget.navigationHeader!,
                                   ),
-                                ),
+                                ],
+                                if (widget.tabs.isNotEmpty) ...[
+                                  Gaps.gap26,
+                                  Padding(
+                                    padding: Paddings.horizontal16,
+                                    child: NavigationTabBar(
+                                      tabs: widget.tabs,
+                                      onTabChanged: (
+                                        int newTabIndex,
+                                        int previousTabIndex,
+                                      ) {
+                                        onTabTap(
+                                          newTabIndex,
+                                          previousTabIndex,
+                                        );
+                                      },
+                                      currentTab: currentTab,
+                                    ),
+                                  ),
+                                ],
+                                Gaps.gap24,
                               ],
-                              Gaps.gap24,
-                            ],
-                          ),
-                        ],
+                            ),
+                          ],
+                        ),
+                        fixedHeight: getFixedHeaderHeight(),
                       ),
-                      fixedHeight: getFixedHeaderHeight(),
                     ),
-                  ),
-                  ...widget.tabs[currentTab].slivers,
-                  if (widget.tabs[currentTab].bottomSlivers.isNotEmpty == true)
-                    ...widget.tabs[currentTab].bottomSlivers,
+                    ...widget.tabs[currentTab].slivers,
+                    if (widget.tabs[currentTab].bottomSlivers.isNotEmpty ==
+                        true)
+                      ...widget.tabs[currentTab].bottomSlivers,
+                  ],
                   const SliverFillRemaining(
                     hasScrollBody: false,
                     child: SizedBox.shrink(),
