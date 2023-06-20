@@ -350,7 +350,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Upravovat denní doby můžete jenom ty, kterým tuto možnost přiřadil Váš lékař."),
         "daily_when_time_reset_confirmation_title":
             MessageLookupByLibrary.simpleMessage("Denní doby"),
-        "dashboard_screen_all": MessageLookupByLibrary.simpleMessage("Všechna"),
+        "dashboard_screen_all": MessageLookupByLibrary.simpleMessage("Vše"),
         "dashboard_screen_any_user_plan": MessageLookupByLibrary.simpleMessage(
             "Není nastaven žádný plán a historie měření neobsahuje žádná data."),
         "dashboard_screen_manual_measurement_info":

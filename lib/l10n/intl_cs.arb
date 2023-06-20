@@ -250,7 +250,7 @@
     "care_plan_detail_daily_times": "Denní doby",
     "dashboard_screen_no_user_plan": "Uživatel nemá nastaven plán a historie měření neobsahuje žádná data.",
     "dashboard_screen_any_user_plan": "Není nastaven žádný plán a historie měření neobsahuje žádná data.",
-    "dashboard_screen_all": "Všechna",
+    "dashboard_screen_all": "Vše",
     "dashboard_screen_measurement_interval": "Interval {fromTime} - {toTime}",
     "@dashboard_screen_measurement_interval": {
         "placeholders": {

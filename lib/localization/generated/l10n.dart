@@ -1115,10 +1115,10 @@ class I10n {
     );
   }
 
-  /// `Všechna`
+  /// `Vše`
   String get dashboard_screen_all {
     return Intl.message(
-      'Všechna',
+      'Vše',
       name: 'dashboard_screen_all',
       desc: '',
       args: [],
