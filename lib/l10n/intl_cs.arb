@@ -23,7 +23,7 @@
     "common_app_name": "FONS Care",
     "common_log_in": "Přihlásit se",
     "common_save": "Uložit",
-    "common_wrong_value": "Nesprávna hodnota",
+    "common_wrong_value": "Nesprávná hodnota",
     "common_not_measured": "Nenaměřeno",
     "common_do_sync": "Synchronizovat",
     "common_all_accounts": "Všechny účty",
@@ -101,14 +101,14 @@
             "measurementType": {}
         }
     },
-    "common_measurement_types_genitive": "{measurementType, select, temperature{Teploty} bloodPressure{Krevního tlaku} oxygenSaturation{Saturace kyslíku} steps{Krokov} globalPosition{Pozice} heartRate{Srdečního tepu} ews{Ews} respiratoryRate{Dechovej frekvence} other{Jiný}}",
+    "common_measurement_types_genitive": "{measurementType, select, temperature{Teploty} bloodPressure{Krevního tlaku} oxygenSaturation{Saturace kyslíku} steps{Kroků} globalPosition{Pozice} heartRate{Srdečního tepu} ews{Ews} respiratoryRate{Dechové frekvence} other{Jiný}}",
     "@common_measurement_types_genitive": {
         "description": "Measurement types",
         "placeholders": {
             "measurementType": {}
         }
     },
-    "common_when_code": "{whenCode, select, morning{Ráno} earlyMorning{Brzké ráno} lateMorning{Pozdní ráno} noon{Poledne} afternoon{Odpoledne} earlyAfternoon{Brzké odpoledne} lateAfternoon{Pozdní odpoledne} evening{Večer} earlyEvening{Brzký večer} lateEvening{Pozdní večer} night{Noc} afterSleep{Po spánku} beforeSleep{Před spánkem} afterWaking{Po probuzení} atBreakfast{Se snídaní} atLunch{S obědem} atDinner{S večeří} beforeBreakfast{Před snídaní} beforeLunch{Před obědem} beforeDinner{Před večeří} afterBreakfast{Po snídani} afterLunch{Po obědě} afterDinner{Po večeři} other{Nedefinovano}}",
+    "common_when_code": "{whenCode, select, morning{Ráno nebo dopoledne} earlyMorning{Ráno} lateMorning{Dopoledne} noon{Poledne} afternoon{Odpoledne} earlyAfternoon{Brzké odpoledne} lateAfternoon{Pozdní odpoledne} evening{Večer} earlyEvening{Brzký večer} lateEvening{Pozdní večer} night{Noc} afterSleep{Po spánku} beforeSleep{Před spánkem} afterWaking{Po probuzení} atBreakfast{Se snídaní} atLunch{S obědem} atDinner{S večeří} beforeBreakfast{Před snídaní} beforeLunch{Před obědem} beforeDinner{Před večeří} afterBreakfast{Po snídani} afterLunch{Po obědě} afterDinner{Po večeři} other{Nedefinováno}}",
     "@common_when_code": {
         "description": "When codes",
         "placeholders": {
@@ -186,7 +186,7 @@
     "onboarding_add_account_screen_add_account_title": "Přidat účet",
     "onboarding_add_account_screen_add_account_subtitle": "Pro používání aplikace musíte mít\naktivní alespoň jeden účet.",
     "onboarding_add_account_screen_add_account_text1": "Vyhledejte místo kde jste evidován",
-    "onboarding_add_account_screen_add_account_text2": "Přihlašte se přes 2-faktorové ověření",
+    "onboarding_add_account_screen_add_account_text2": "Přihlaste se přes dvoufaktorové ověření",
     "onboarding_add_account_screen_add_account_text3": "Můžete se začít měřit",
     "onboarding_add_account_screen_add_account_button": "Přidat účet",
     "onboarding_add_account_screen_add_account_how_it_works_button": "Jak to funguje?",
@@ -249,7 +249,7 @@
     "care_plan_detail_screen_measurement": "Měření",
     "care_plan_detail_daily_times": "Denní doby",
     "dashboard_screen_no_user_plan": "Uživatel nemá nastaven plán a historie měření neobsahuje žádná data.",
-    "dashboard_screen_any_user_plan": "Není nastaven žaden plán a historie měření neobsahuje žádná data.",
+    "dashboard_screen_any_user_plan": "Není nastaven žádný plán a historie měření neobsahuje žádná data.",
     "dashboard_screen_all": "Všechna",
     "dashboard_screen_measurement_interval": "Interval {fromTime} - {toTime}",
     "@dashboard_screen_measurement_interval": {
@@ -273,7 +273,7 @@
             }
         }
     },
-    "dashboard_screen_measurements_left": "Zůstávají {currentCount} ze {reqCount} měření",
+    "dashboard_screen_measurements_left": "Zbývá {currentCount} z {reqCount} měření",
     "@dashboard_screen_measurements_left": {
         "placeholders": {
             "currentCount": {
@@ -297,7 +297,7 @@
         }
     },
     "dashboard_screen_no_more_measurements": "Dnes plánované měření skončilo.",
-    "dashboard_screen_no_more_future_measurements": "Zadne dalsi planovane mereni.",
+    "dashboard_screen_no_more_future_measurements": "Žádné další plánované měření.",
     "dashboard_screen_todays_plan_finished": "Dnešní plán byl splněn na {percentage}%.",
     "@dashboard_screen_todays_plan_finished": {
         "placeholders": {
@@ -308,7 +308,7 @@
     },
     "dashboard_screen_no_todays_measurements": "Dnes nemáte naplánované žádné měření.",
     "dashboard_screen_periodical_measurements": "Periodické měření",
-    "measurement_dialog_device_desc": "{deviceModel, select, beurerBm77{Akční tlačítko je pod displejem} omronM7{Akční tlačítko je vedle displeje} other{Nedefinovano}}",
+    "measurement_dialog_device_desc": "{deviceModel, select, beurerBm77{Akční tlačítko je pod displejem} omronM7{Akční tlačítko je vedle displeje} other{Nedefinováno}}",
     "@measurement_dialog_device_desc": {
         "description": "Device model",
         "placeholders": {
@@ -348,6 +348,7 @@
             "measurementType": {}
         }
     },
+    "common_heart_rate_unit": "tepů/min",
     "sync_widget_sync_in_progress": "Probíhá synchronizace...",
     "sync_widget_synced": "Synchronizováno",
     "sync_widget_sync_failed_title": "Synchronizace se nepovedla",
@@ -409,7 +410,7 @@
             }
         }
     },
-    "results_screen_measurements_completed": "{currentCount} ze {reqCount} měření",
+    "results_screen_measurements_completed": "{currentCount} z {reqCount} měření",
     "@results_screen_measurements_completed": {
         "placeholders": {
             "currentCount": {
@@ -464,7 +465,7 @@
     "find_device_screen_searching_device": "Hledání zařízení...",
     "find_device_screen_device_connected": "Zařízení připojeno",
     "find_device_screen_sync_results": "Probíhá synchronizace výsledků...",
-    "find_device_screen_pairing_device": "Probíhá párování zažízení...",
+    "find_device_screen_pairing_device": "Probíhá párování zařízení...",
     "find_device_screen_step1_p": "Zapněte {deviceName} v režimu párování",
     "@find_device_screen_step1_p": {
         "placeholders": {
@@ -473,9 +474,9 @@
             }
         }
     },
-    "find_device_screen_step2_p": "Počkejte, až vás zařízení vyzve ke párování",
+    "find_device_screen_step2_p": "Počkejte, až vás zařízení vyzve k párování",
     "find_device_screen_step3_p": "Párování zařízení",
-    "find_device_screen_step4_p": "Spusťte na zařízení měření pomocou {actionButtonLabel} a počkejte na konec měření",
+    "find_device_screen_step4_p": "Spusťte na zařízení měření pomocí {actionButtonLabel} a počkejte na konec měření",
     "@find_device_screen_step4_p": {
         "placeholders": {
             "actionButtonLabel": {
@@ -492,7 +493,7 @@
             }
         }
     },
-    "find_device_screen_step2": "Spusťte na zařízení měření pomocou {actionButtonLabel} a počkejte na konec měření",
+    "find_device_screen_step2": "Spusťte na zařízení měření pomocí {actionButtonLabel} a počkejte na konec měření",
     "@find_device_screen_step2": {
         "placeholders": {
             "actionButtonLabel": {
@@ -500,13 +501,13 @@
             }
         }
     },
-    "find_device_screen_step3": "Po odmeření stlačte opět akční tlačitko",
+    "find_device_screen_step3": "Po meření stiskněte opět akční tlačítko",
     "find_device_screen_step4": "Počkejte na synchronizaci výsledků",
     "find_device_screen_device_reference": "Stránky nemocnice o zařízení",
     "find_device_screen_disabled_bt_title": "Bluetooth je vypnutý",
     "find_device_screen_disabled_bt_desc": "Pro spojení s přístrojem je potřeba mít Bluetooth zapnutý.",
     "find_device_screen_disabled_bt_btn_settings": "Nastavení",
-    "find_device_screen_not_granted_bt_title": "Bluetooth zakázan ",
+    "find_device_screen_not_granted_bt_title": "Bluetooth zakázán ",
     "find_device_screen_not_granted_bt_desc": "Aplikace vyžaduje povolení používat Bluetooth pro komunikaci se zařízeními.",
     "find_device_screen_not_granted_bt_btn_settings": "Povolit",
     "measurement_summary_screen_success_title": "Měření bylo úspěšně dokončeno",
@@ -539,8 +540,8 @@
     "register_device_detail_screen_button_register": "Registrovat",
     "register_device_detail_screen_not_filled_field": "Nevyplněné pole",
     "register_device_success_screen_desc": "Zařízení bylo úspěšně registrováno.",
-    "register_device_detail_registration_fail_title": "Ooops!",
-    "register_device_detail_registration_fail_message": "Zařízení s MAC adresou {macAddress} již existuje.",
+    "register_device_detail_registration_fail_title": "Chyba",
+    "register_device_detail_registration_fail_message": "Zařízení s technickým identifikátorem {macAddress} již existuje.",
     "@register_device_detail_registration_fail_message": {
         "placeholders": {
             "macAddress": {

@@ -78,15 +78,16 @@ class OnboardingScreen extends StatelessWidget with BottomSheetMixin {
                         }
                       },
                     ),
-                    Gaps.gap24,
-                    HighlightedElevatedButton(
-                      label: translactions
-                          .onboarding_add_account_screen_add_account_how_it_works_button,
-                      buttonType: ButtonType.secondary,
-                      onPressed: () async {
-                        GoRouter.of(context).pushNamed(HowItWorksRoute.name);
-                      },
-                    ),
+                    // Disabled until lorem ipsum text is replaced #IN2-8344
+                    // Gaps.gap24,
+                    // HighlightedElevatedButton(
+                    //   label: translactions
+                    //       .onboarding_add_account_screen_add_account_how_it_works_button,
+                    //   buttonType: ButtonType.secondary,
+                    //   onPressed: () async {
+                    //     GoRouter.of(context).pushNamed(HowItWorksRoute.name);
+                    //   },
+                    // ),
                   ],
                 ),
               ),

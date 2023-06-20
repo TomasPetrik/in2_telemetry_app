@@ -124,20 +124,12 @@ class OmronConnectionBloc
               ),
               batteryPercentage: deviceInfo.batteryInfo?.batteryLevel,
             ),
+            bloodPressure: BloodPressureValue(
+              systolic: measurementInfo?.systolic,
+              diastolic: measurementInfo?.diastolic,
+            ),
+            heartRate: measurementInfo?.pulseRate,
           );
-
-          if (_measurementType == MeasurementType.bloodPressure) {
-            measurement = measurement.copyWith(
-              bloodPressure: BloodPressureValue(
-                systolic: measurementInfo?.systolic,
-                diastolic: measurementInfo?.diastolic,
-              ),
-              heartRate: measurementInfo?.pulseRate,
-            );
-          } else if (_measurementType == MeasurementType.heartRate) {
-            measurement =
-                measurement.copyWith(heartRate: measurementInfo?.pulseRate);
-          }
 
           await _pendingResultsDbProvider.save(measurement);
           _syncBloc.add(const SyncEvent.syncResults());
