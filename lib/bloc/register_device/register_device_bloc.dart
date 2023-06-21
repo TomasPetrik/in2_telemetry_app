@@ -85,6 +85,7 @@ class RegisterDeviceBloc
         registerDevice: (userAccount, device, assignedIdentifier) async {
           try {
             //1. Load device models for lookup what's the device id
+            emit(const RegisterDeviceBlocState.registering());
 
             final deviceModels = await _deviceRepository.getDeviceModels(
               userAccount: userAccount,

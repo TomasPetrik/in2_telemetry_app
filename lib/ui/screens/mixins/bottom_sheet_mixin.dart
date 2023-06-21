@@ -87,6 +87,21 @@ mixin BottomSheetMixin {
     return result;
   }
 
+  Future<bool?> showNotificationsSettings({
+    required final BuildContext context,
+  }) async {
+    final result = await showModalBottomSheet<bool?>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return BottomDialog.openNotificationSettings(context: context);
+      },
+    );
+    return result;
+  }
+
   Future<bool?> showDeviceRemovalConfirmation({
     required final BuildContext context,
   }) async {

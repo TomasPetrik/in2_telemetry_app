@@ -963,6 +963,36 @@ class I10n {
     );
   }
 
+  /// `Povolení notifikací`
+  String get dialog_req_notifications_title {
+    return Intl.message(
+      'Povolení notifikací',
+      name: 'dialog_req_notifications_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aplikace si vyžaduje povolení notifikací pokud chcete dostávat upozornení.`
+  String get dialog_req_notifications_description {
+    return Intl.message(
+      'Aplikace si vyžaduje povolení notifikací pokud chcete dostávat upozornení.',
+      name: 'dialog_req_notifications_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prejít do nastavení`
+  String get dialog_req_notifications_go_to_settings {
+    return Intl.message(
+      'Prejít do nastavení',
+      name: 'dialog_req_notifications_go_to_settings',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Odstranit účet`
   String get dialog_account_removal_confirmation_title {
     return Intl.message(
@@ -1727,6 +1757,16 @@ class I10n {
     return Intl.message(
       'Hledání zařízení...',
       name: 'find_device_screen_searching_device',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Čekáme až se změříte...`
+  String get find_device_screen_waiting_on_measurement {
+    return Intl.message(
+      'Čekáme až se změříte...',
+      name: 'find_device_screen_waiting_on_measurement',
       desc: '',
       args: [],
     );

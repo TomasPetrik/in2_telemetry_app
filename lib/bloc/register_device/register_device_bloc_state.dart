@@ -12,6 +12,7 @@ class RegisterDeviceBlocState with _$RegisterDeviceBlocState {
   const factory RegisterDeviceBlocState.searching({
     List<Device>? devices,
   }) = _Searching;
+  const factory RegisterDeviceBlocState.registering() = _Registering;
 
   const factory RegisterDeviceBlocState.deviceRegistered() = _DeviceRegistered;
   const factory RegisterDeviceBlocState.deviceAlreadyRegistered(Key key) =

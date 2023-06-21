@@ -379,6 +379,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "dialog_account_removal_confirmation_description": m22,
         "dialog_account_removal_confirmation_title":
             MessageLookupByLibrary.simpleMessage("Odstranit účet"),
+        "dialog_req_notifications_description":
+            MessageLookupByLibrary.simpleMessage(
+                "Aplikace si vyžaduje povolení notifikací pokud chcete dostávat upozornení."),
+        "dialog_req_notifications_go_to_settings":
+            MessageLookupByLibrary.simpleMessage("Prejít do nastavení"),
+        "dialog_req_notifications_title":
+            MessageLookupByLibrary.simpleMessage("Povolení notifikací"),
         "find_device_screen_device_connected":
             MessageLookupByLibrary.simpleMessage("Zařízení připojeno"),
         "find_device_screen_device_reference":
@@ -419,6 +426,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Počkejte na synchronizaci výsledků"),
         "find_device_screen_sync_results": MessageLookupByLibrary.simpleMessage(
             "Probíhá synchronizace výsledků..."),
+        "find_device_screen_waiting_on_measurement":
+            MessageLookupByLibrary.simpleMessage("Čekáme až se změříte..."),
         "hospital_selection_dialog_measurement_for":
             MessageLookupByLibrary.simpleMessage("Měření pro"),
         "hospital_selector_search_for_account":
