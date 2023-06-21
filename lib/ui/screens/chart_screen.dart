@@ -76,6 +76,7 @@ class _ChartScreenState extends State<ChartScreen> {
             ChartBlocEvent.init(
               context,
               initDt,
+              userAccount,
               carePlans,
               Theme.of(context).colorScheme.tertiary,
             ),

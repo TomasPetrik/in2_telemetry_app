@@ -46,13 +46,11 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
               offlineResults: todayOfflineResults,
             );
 
-      final upcomingMeasurements = event.carePlans.isEmpty
-          ? null
-          : CarePlanHelper.getMeasurements(
-              event.carePlans,
-              event.whenPeriod,
-              todayOfflineResults,
-            );
+      final upcomingMeasurements = CarePlanHelper.getMeasurements(
+        event.carePlans,
+        event.whenPeriod,
+        todayOfflineResults,
+      );
 
       final allTodayMeasurements = Calendar.getMeasurementsOfDay(
         carePlans: event.carePlans,
@@ -61,8 +59,11 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
         all: true,
       );
 
+      final timestamp = DateTime.now().microsecondsSinceEpoch;
+
       emit(
         CarePlanBlocState(
+          timestamp: timestamp,
           currentCarePlans: event.carePlans,
           selectedWhenPeriod: event.whenPeriod,
           nextMeasurement: nextMeasurement?.first,

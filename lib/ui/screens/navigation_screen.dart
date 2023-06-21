@@ -23,7 +23,7 @@ class NavigationTabBarItem {
 
 class NavigationScreen extends StatefulWidget {
   const NavigationScreen({
-    Key? key,
+    super.key,
     required this.tabs,
     this.syncWidget,
     this.topSlivers = const [],
@@ -32,9 +32,8 @@ class NavigationScreen extends StatefulWidget {
     this.noContentWidget,
     this.onTabSelected,
     this.onRefresh,
-  }) : //assert(tabs.isNotEmpty),
-        //assert(currentTab < tabs.length),
-        super(key: key);
+  }); //assert(tabs.isNotEmpty),
+  //assert(currentTab < tabs.length)
 
   final List<NavigationTabBarItem> tabs;
   final Widget? syncWidget;
@@ -124,7 +123,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                     ),
                   ),
                   if (widget.syncWidget != null) widget.syncWidget!,
-                  if (widget.tabs.isEmpty)
+                  if (widget.noContentWidget != null)
                     widget.noContentWidget!
                   else ...[
                     ...widget.topSlivers,

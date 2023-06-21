@@ -1562,6 +1562,26 @@ class I10n {
     );
   }
 
+  /// `Na zobrazení údajů nemáte potřebné oprávnění`
+  String get results_screen_no_permission_to_see_results {
+    return Intl.message(
+      'Na zobrazení údajů nemáte potřebné oprávnění',
+      name: 'results_screen_no_permission_to_see_results',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Historie měření neobsahuje žádná data.`
+  String get results_screen_no_historic_data {
+    return Intl.message(
+      'Historie měření neobsahuje žádná data.',
+      name: 'results_screen_no_historic_data',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `{label} nebylo plánované žádné měření`
   String results_screen_no_results_in_plans(String label) {
     return Intl.message(

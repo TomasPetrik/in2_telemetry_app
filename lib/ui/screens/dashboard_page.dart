@@ -29,38 +29,41 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
   Widget build(BuildContext context) {
     final syncBloc = getIt<SyncBloc>();
 
-    return BlocBuilder<SyncBloc, SyncState>(
-      buildWhen: (previous, current) => previous != current,
-      bloc: syncBloc..add(const SyncEvent.init()),
-      builder: (context, syncState) {
-        final session = getIt<Session>();
-        final sessionAccounts = session.getSessionAccounts();
-        final allCarePlans = session.getActiveCarePlans();
-        final allPendingResults = session.getPendingResults();
+    final carePlanBloc = getIt<CarePlanBloc>();
+    final session = getIt<Session>();
+    final sessionAccounts = session.getSessionAccounts();
+    final allCarePlans = session.getActiveCarePlans();
+    final allPendingResults = session.getPendingResults();
 
-        final supportedMeasurementTypes =
-            CarePlanHelper.getMeasurementTypes(allCarePlans);
+    carePlanBloc.add(
+      CarePlanInitializeEvent(
+        carePlans: allCarePlans,
+        whenPeriod: PlanWhenPeriod.today,
+        pendingResults: allPendingResults,
+      ),
+    );
 
-        final carePlanBloc = getIt<CarePlanBloc>()
-          ..add(
-            CarePlanInitializeEvent(
-              carePlans: allCarePlans,
-              whenPeriod: PlanWhenPeriod.today,
-              pendingResults: allPendingResults,
-            ),
-          );
-        return Stack(
-          children: [
-            BlocBuilder<CarePlanBloc, CarePlanBlocState>(
-              bloc: carePlanBloc,
-              builder: (context, state) {
+    return Stack(
+      children: [
+        BlocBuilder<CarePlanBloc, CarePlanBlocState>(
+          bloc: carePlanBloc,
+          builder: (context, state) {
+            return BlocBuilder<SyncBloc, SyncState>(
+              buildWhen: (previous, current) => previous != current,
+              bloc: syncBloc..add(const SyncEvent.init()),
+              builder: (context, syncState) {
                 if (state.selectedWhenPeriod == null ||
                     state.currentCarePlans == null ||
                     state.allTodayMeasurements == null ||
                     state.results == null) {
                   return const SizedBox.shrink();
                 } else {
+                  final allCarePlans = session.getActiveCarePlans();
+                  final supportedMeasurementTypes =
+                      CarePlanHelper.getMeasurementTypes(allCarePlans);
+
                   return NavigationScreen(
+                    key: ValueKey(state.timestamp),
                     onTabSelected: (tabIndex) {
                       if (tabIndex == 0) {
                         carePlanBloc.add(
@@ -92,15 +95,19 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                         ),
                       }
                     ],
-                    noContentWidget: NoPlansPlaceholder(
-                      userAccount: session.isMultiUser != true
-                          ? sessionAccounts[0]
-                          : null,
-                      enterMeasurementWithoutPlan:
-                          session.isMultiUser != true &&
-                              sessionAccounts[0].enterMeasurementWithoutPlan,
-                      supportedMeasurementTypes: supportedMeasurementTypes,
-                    ),
+                    noContentWidget: allCarePlans.isEmpty
+                        ? NoContentPlaceholder(
+                            userAccount: session.isMultiUser != true
+                                ? sessionAccounts[0]
+                                : null,
+                            enterMeasurementWithoutPlan: session.isMultiUser !=
+                                    true &&
+                                sessionAccounts[0].enterMeasurementWithoutPlan,
+                            supportedMeasurementTypes:
+                                supportedMeasurementTypes,
+                            noContentType: NoContentType.noPlans,
+                          )
+                        : null,
                     navigationHeader:
                         state.allMeasurementCountsPerPeriod?.isNotEmpty == true
                             ? PlannedMeasurementHeader(
@@ -136,14 +143,15 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                         NavigationTabBarItem(
                           label: translactions.dashboard_screen_all,
                           slivers: [
-                            MeasurementsList(
-                              whenPeriod: state.selectedWhenPeriod!,
-                              carePlans: [...state.currentCarePlans!],
-                              measurements: state.upcomingMeasurements!,
-                              nextMeasurement: state.nextMeasurement!,
-                              planWhenPeriod: state.selectedWhenPeriod!,
-                              results: state.results!,
-                            ),
+                            if (state.nextMeasurement != null)
+                              MeasurementsList(
+                                whenPeriod: state.selectedWhenPeriod!,
+                                carePlans: [...state.currentCarePlans!],
+                                measurements: state.upcomingMeasurements!,
+                                nextMeasurement: state.nextMeasurement!,
+                                planWhenPeriod: state.selectedWhenPeriod!,
+                                results: state.results!,
+                              ),
                           ],
                           bottomSlivers: [
                             if (session.isMultiUser != true &&
@@ -173,14 +181,15 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                                 measurementType.name,
                               ),
                               slivers: [
-                                MeasurementsList(
-                                  whenPeriod: state.selectedWhenPeriod!,
-                                  carePlans: [...state.currentCarePlans!],
-                                  measurements: state.upcomingMeasurements!,
-                                  nextMeasurement: state.nextMeasurement!,
-                                  planWhenPeriod: state.selectedWhenPeriod!,
-                                  results: state.results!,
-                                ),
+                                if (state.nextMeasurement != null)
+                                  MeasurementsList(
+                                    whenPeriod: state.selectedWhenPeriod!,
+                                    carePlans: [...state.currentCarePlans!],
+                                    measurements: state.upcomingMeasurements!,
+                                    nextMeasurement: state.nextMeasurement!,
+                                    planWhenPeriod: state.selectedWhenPeriod!,
+                                    results: state.results!,
+                                  ),
                               ],
                               bottomSlivers: [
                                 if (session.isMultiUser != true &&
@@ -212,16 +221,16 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                   );
                 }
               },
-            ),
-            const Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: BluredUserAppBar(),
-            ),
-          ],
-        );
-      },
+            );
+          },
+        ),
+        const Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: BluredUserAppBar(),
+        ),
+      ],
     );
   }
 }

@@ -177,6 +177,7 @@ mixin BottomSheetMixin {
     final BuildContext context,
     final ResultsWhenPeriod? whenPeriod,
     final Map<ResultsWhenPeriod, int?> fulfillmentPlan,
+    final bool canShowCalendar,
   ) async {
     final selected = await showModalBottomSheet<ResultPeriodSelection>(
       context: context,
@@ -187,6 +188,7 @@ mixin BottomSheetMixin {
         return ResultsTimeDialog(
           whenPeriod: whenPeriod ?? ResultsWhenPeriod.today,
           fulfillmentPlan: fulfillmentPlan,
+          canShowCalendar: canShowCalendar,
         );
       },
     );

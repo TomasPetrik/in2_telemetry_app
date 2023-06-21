@@ -46,9 +46,6 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
               [...prevResults, ...userAccount.measurementResults ?? []],
         );
 
-        final supportedMeasurementTypes =
-            CarePlanHelper.getMeasurementTypes(allCarePlans);
-
         final resultsBloc = getIt<ResultsBloc>()
           ..add(
             ResultsBlocEvent.init(
@@ -69,6 +66,10 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                     context,
                     state.selectedWhenPeriod,
                     state.plansEvaluationPerPeriod ?? {},
+                    sessionAccounts.any(
+                      (userAccount) =>
+                          userAccount.carePlans?.isNotEmpty == true,
+                    ),
                   ).then((selected) {
                     if (selected?.selectedPeriod != null) {
                       resultsBloc.add(
@@ -88,10 +89,16 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                   });
                 }
 
-                if (state.selectedWhenPeriod == null ||
+                if (state.results == null ||
+                    state.selectedWhenPeriod == null ||
                     state.currentCarePlans == null) {
                   return const SizedBox.shrink();
                 } else {
+                  final supportedMeasurementTypes =
+                      CarePlanHelper.getMeasurementTypesByResults(
+                    state.results!,
+                  );
+
                   return NavigationScreen(
                     onTabSelected: (tabIndex) {
                       if (tabIndex == 0) {
@@ -129,13 +136,20 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                               openWhenSelector: openWhenSelector,
                             ),
                     ],
-                    noContentWidget: NoPlansPlaceholder(
-                      userAccount: session.isMultiUser != true
-                          ? sessionAccounts[0]
-                          : null,
-                      enterMeasurementWithoutPlan: false,
-                      supportedMeasurementTypes: supportedMeasurementTypes,
-                    ),
+                    noContentWidget: supportedMeasurementTypes.isEmpty
+                        ? NoContentPlaceholder(
+                            userAccount: session.isMultiUser != true
+                                ? sessionAccounts[0]
+                                : null,
+                            enterMeasurementWithoutPlan: false,
+                            supportedMeasurementTypes:
+                                supportedMeasurementTypes,
+                            noContentType: session.isMultiUser != true &&
+                                    !sessionAccounts[0].viewOwnMeasurementData
+                                ? NoContentType.notAllowedSeeOwnMeasurements
+                                : NoContentType.noHistoricalData,
+                          )
+                        : null,
                     navigationHeader: Row(
                       children: [
                         Text(

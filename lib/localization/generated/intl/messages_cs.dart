@@ -556,6 +556,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage(
                 "Plán nevyžadoval žádné měření"),
         "results_screen_measurements_completed": m38,
+        "results_screen_no_historic_data": MessageLookupByLibrary.simpleMessage(
+            "Historie měření neobsahuje žádná data."),
+        "results_screen_no_permission_to_see_results":
+            MessageLookupByLibrary.simpleMessage(
+                "Na zobrazení údajů nemáte potřebné oprávnění"),
         "results_screen_no_results": m39,
         "results_screen_no_results_in_plans": m40,
         "results_screen_results_title":

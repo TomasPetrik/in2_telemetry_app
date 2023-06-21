@@ -11,10 +11,12 @@ class ResultsTimeDialog extends StatelessWidget {
     super.key,
     required this.whenPeriod,
     required this.fulfillmentPlan,
+    required this.canShowCalendar,
   });
 
   final ResultsWhenPeriod whenPeriod;
   final Map<ResultsWhenPeriod, int?> fulfillmentPlan;
+  final bool canShowCalendar;
 
   @override
   Widget build(BuildContext context) {
@@ -59,17 +61,19 @@ class ResultsTimeDialog extends StatelessWidget {
               );
             },
           ).toList(),
-          Gaps.gap24,
-          Padding(
-            padding: Paddings.horizontal16,
-            child: HighlightedElevatedButton(
-              label: translactions.common_show_calendar,
-              onPressed: () {
-                Navigator.of(context)
-                    .pop(ResultPeriodSelection(showCalendar: true));
-              },
+          if (canShowCalendar) ...[
+            Gaps.gap24,
+            Padding(
+              padding: Paddings.horizontal16,
+              child: HighlightedElevatedButton(
+                label: translactions.common_show_calendar,
+                onPressed: () {
+                  Navigator.of(context)
+                      .pop(ResultPeriodSelection(showCalendar: true));
+                },
+              ),
             ),
-          ),
+          ],
           Gaps.gap24,
           Padding(
             padding: Paddings.horizontal16,

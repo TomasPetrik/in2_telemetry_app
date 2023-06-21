@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scalesoft_app/cubit/auth_web/auth_web_cubit.dart';
@@ -85,15 +83,9 @@ class AuthWebScreen extends StatelessWidget {
         resizeToAvoidBottomInset: true,
         body: SafeArea(
           child: Stack(
-            fit: StackFit.expand,
             children: [
               WebViewWidget(
                 controller: controller,
-                gestureRecognizers: {}..add(
-                    const Factory<DragGestureRecognizer>(
-                      VerticalDragGestureRecognizer.new,
-                    ),
-                  ),
               ),
               BlocBuilder<AuthWebCubit, AuthWebState>(
                 bloc: cubit,
