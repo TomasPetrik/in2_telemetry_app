@@ -7,6 +7,7 @@ import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc_event.dart';
 import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc_state.dart';
+import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/utils/helpers/calendar_helper.dart';
 
 @injectable
@@ -15,11 +16,18 @@ class ChartBloc extends Bloc<ChartBlocEvent, ChartBlocState> {
   late final BuildContext context;
 
   ChartBloc() : super(const ChartBlocState()) {
-    DateTime getVeryFirstmodelfCarePlans(List<CarePlan> carePlans) {
-      return carePlans
-          .map((carePlan) => carePlan.scheduledStart)
-          .sorted((a, b) => b.compareTo(a))
-          .first;
+    DateTime getVeryFirstmodelfCarePlans(
+      List<CarePlan> carePlans,
+      UserAccount userAccount,
+    ) {
+      if (carePlans.isNotEmpty) {
+        return carePlans
+            .map((carePlan) => carePlan.scheduledStart)
+            .sorted((a, b) => b.compareTo(a))
+            .first;
+      } else {
+        return userAccount.measurementResults!.first.measurementDateTime;
+      }
     }
 
     Future<List<DrawableRoot>> loadSvgDrawables(Color color) async {
@@ -40,10 +48,11 @@ class ChartBloc extends Bloc<ChartBlocEvent, ChartBlocState> {
 
     on<ChartBlocEvent>((event, emit) async {
       await event.when(
-        init: (context, initDate, carePlans, color) async {
+        init: (context, initDate, userAccount, carePlans, color) async {
           this.context = context;
 
-          final fromMonthDate = getVeryFirstmodelfCarePlans(carePlans);
+          final fromMonthDate =
+              getVeryFirstmodelfCarePlans(carePlans, userAccount);
           final toMonthDate =
               CalendarHelper.getDateByMonthsOffset(DateTime.now(), 0);
 

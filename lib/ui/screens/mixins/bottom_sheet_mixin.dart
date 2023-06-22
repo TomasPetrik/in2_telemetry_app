@@ -87,6 +87,21 @@ mixin BottomSheetMixin {
     return result;
   }
 
+  Future<bool?> showNotificationsSettings({
+    required final BuildContext context,
+  }) async {
+    final result = await showModalBottomSheet<bool?>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return BottomDialog.openNotificationSettings(context: context);
+      },
+    );
+    return result;
+  }
+
   Future<bool?> showDeviceRemovalConfirmation({
     required final BuildContext context,
   }) async {
@@ -162,6 +177,7 @@ mixin BottomSheetMixin {
     final BuildContext context,
     final ResultsWhenPeriod? whenPeriod,
     final Map<ResultsWhenPeriod, int?> fulfillmentPlan,
+    final bool canShowCalendar,
   ) async {
     final selected = await showModalBottomSheet<ResultPeriodSelection>(
       context: context,
@@ -172,6 +188,7 @@ mixin BottomSheetMixin {
         return ResultsTimeDialog(
           whenPeriod: whenPeriod ?? ResultsWhenPeriod.today,
           fulfillmentPlan: fulfillmentPlan,
+          canShowCalendar: canShowCalendar,
         );
       },
     );

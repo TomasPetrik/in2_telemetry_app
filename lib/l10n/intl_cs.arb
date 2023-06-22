@@ -201,6 +201,9 @@
     },
     "onboarding_account_added_screen_continue_to_app": "Pokračovat do aplikace",
     "onboarding_account_added_screen_add_other_account": "Přidat další účet",
+    "dialog_req_notifications_title": "Povolení notifikací",
+    "dialog_req_notifications_description": "Aplikace si vyžaduje povolení notifikací pokud chcete dostávat upozornení.",
+    "dialog_req_notifications_go_to_settings": "Prejít do nastavení",
     "dialog_account_removal_confirmation_title": "Odstranit účet",
     "dialog_account_removal_confirmation_description": "Všechna data účtu {accountName}\nbudou z aplikace nevratně\nodstraněna.",
     "@dialog_account_removal_confirmation_description": {
@@ -388,6 +391,8 @@
     "device_selector_unsupported_devices": "Pro tento typ měření není podporováno žádné zařízení. Hodnoty odečtěte z manuálního měření.",
     "results_screen_results_title": "Výsledky",
     "results_screen_no_results": "Je nám líto, ale výsledky pro účet {name} nejsou dostupné.",
+    "results_screen_no_permission_to_see_results": "Na zobrazení údajů nemáte potřebné oprávnění",
+    "results_screen_no_historic_data": "Historie měření neobsahuje žádná data.",
     "@results_screen_no_results": {
         "placeholders": {
             "name": {
@@ -463,6 +468,7 @@
     "notifications_screen_at_start_of_measurement": "V čase začátku měření",
     "notifications_screen_10_min_before_measurement": "10 minut před každým měřením",
     "find_device_screen_searching_device": "Hledání zařízení...",
+    "find_device_screen_waiting_on_measurement": "Čekáme až se změříte...",
     "find_device_screen_device_connected": "Zařízení připojeno",
     "find_device_screen_sync_results": "Probíhá synchronizace výsledků...",
     "find_device_screen_pairing_device": "Probíhá párování zařízení...",

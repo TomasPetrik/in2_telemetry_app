@@ -139,8 +139,11 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                     init: () {
                       return DeviceProgress(
                         header: ProcessItem(
-                          label:
-                              translactions.find_device_screen_searching_device,
+                          label: reqModelPairing
+                              ? translactions
+                                  .find_device_screen_searching_device
+                              : translactions
+                                  .find_device_screen_waiting_on_measurement,
                           processType: ProcessType.inProgress,
                         ),
                         device: device,
@@ -151,8 +154,11 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                     searching: () {
                       return DeviceProgress(
                         header: ProcessItem(
-                          label:
-                              translactions.find_device_screen_searching_device,
+                          label: reqModelPairing
+                              ? translactions
+                                  .find_device_screen_searching_device
+                              : translactions
+                                  .find_device_screen_waiting_on_measurement,
                           processType: ProcessType.inProgress,
                         ),
                         device: device,
@@ -196,8 +202,8 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                     paired: (deviceInfo) {
                       return DeviceProgress(
                         header: ProcessItem(
-                          label:
-                              translactions.find_device_screen_searching_device,
+                          label: translactions
+                              .find_device_screen_waiting_on_measurement,
                           processType: ProcessType.inProgress,
                         ),
                         device: device,

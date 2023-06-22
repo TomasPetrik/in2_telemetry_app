@@ -12,17 +12,30 @@ import 'package:scalesoft_app/utils/constants.dart';
 import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-class NoPlansPlaceholder extends StatelessWidget with BottomSheetMixin {
-  const NoPlansPlaceholder({
+class NoContentPlaceholder extends StatelessWidget with BottomSheetMixin {
+  const NoContentPlaceholder({
     super.key,
     required this.userAccount,
     required this.enterMeasurementWithoutPlan,
     required this.supportedMeasurementTypes,
+    required this.noContentType,
   });
 
   final UserAccount? userAccount;
   final bool enterMeasurementWithoutPlan;
   final Set<MeasurementType> supportedMeasurementTypes;
+  final NoContentType noContentType;
+
+  String _getLabelByType() {
+    switch (noContentType) {
+      case NoContentType.notAllowedSeeOwnMeasurements:
+        return translactions.results_screen_no_permission_to_see_results;
+      case NoContentType.noHistoricalData:
+        return translactions.results_screen_no_historic_data;
+      case NoContentType.noPlans:
+        return translactions.dashboard_screen_any_user_plan;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,9 +51,7 @@ class NoPlansPlaceholder extends StatelessWidget with BottomSheetMixin {
               'assets/icons/icon_wave_pulse_big.svg',
               color: Theme.of(context).colorScheme.tertiary,
             ),
-            label: userAccount != null
-                ? translactions.dashboard_screen_no_user_plan
-                : translactions.dashboard_screen_any_user_plan,
+            label: _getLabelByType(),
           ),
         ),
         if (enterMeasurementWithoutPlan) ...{
@@ -60,4 +71,10 @@ class NoPlansPlaceholder extends StatelessWidget with BottomSheetMixin {
       ],
     );
   }
+}
+
+enum NoContentType {
+  notAllowedSeeOwnMeasurements,
+  noHistoricalData,
+  noPlans,
 }

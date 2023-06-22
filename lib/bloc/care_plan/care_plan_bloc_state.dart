@@ -11,6 +11,7 @@ class CarePlanBlocState with _$CarePlanBlocState {
   const CarePlanBlocState._();
 
   factory CarePlanBlocState({
+    int? timestamp,
     PlanWhenPeriod? selectedWhenPeriod,
     List<CarePlan>? currentCarePlans,
     PlannedMeasurement? nextMeasurement,

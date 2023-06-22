@@ -46,6 +46,19 @@ class CarePlanHelper {
     return measurementTypes;
   }
 
+  static Set<MeasurementType> getMeasurementTypesByResults(List<MeasurementResult> results) {
+    final measurementTypes = <MeasurementType>{};
+    results
+        .where(
+          (result) => measurementTypes.add(result.measurementType!),
+        )
+        .toList();
+
+    return measurementTypes;
+  }
+
+  
+
   static Map<PlanWhenPeriod, int> getPossibleWhenPeriods(
     final List<CarePlan> carePlans,
     final List<MeasurementResult> offlineResults,

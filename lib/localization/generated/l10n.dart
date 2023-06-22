@@ -963,6 +963,36 @@ class I10n {
     );
   }
 
+  /// `Povolení notifikací`
+  String get dialog_req_notifications_title {
+    return Intl.message(
+      'Povolení notifikací',
+      name: 'dialog_req_notifications_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aplikace si vyžaduje povolení notifikací pokud chcete dostávat upozornení.`
+  String get dialog_req_notifications_description {
+    return Intl.message(
+      'Aplikace si vyžaduje povolení notifikací pokud chcete dostávat upozornení.',
+      name: 'dialog_req_notifications_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prejít do nastavení`
+  String get dialog_req_notifications_go_to_settings {
+    return Intl.message(
+      'Prejít do nastavení',
+      name: 'dialog_req_notifications_go_to_settings',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Odstranit účet`
   String get dialog_account_removal_confirmation_title {
     return Intl.message(
@@ -1532,6 +1562,26 @@ class I10n {
     );
   }
 
+  /// `Na zobrazení údajů nemáte potřebné oprávnění`
+  String get results_screen_no_permission_to_see_results {
+    return Intl.message(
+      'Na zobrazení údajů nemáte potřebné oprávnění',
+      name: 'results_screen_no_permission_to_see_results',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Historie měření neobsahuje žádná data.`
+  String get results_screen_no_historic_data {
+    return Intl.message(
+      'Historie měření neobsahuje žádná data.',
+      name: 'results_screen_no_historic_data',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `{label} nebylo plánované žádné měření`
   String results_screen_no_results_in_plans(String label) {
     return Intl.message(
@@ -1727,6 +1777,16 @@ class I10n {
     return Intl.message(
       'Hledání zařízení...',
       name: 'find_device_screen_searching_device',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Čekáme až se změříte...`
+  String get find_device_screen_waiting_on_measurement {
+    return Intl.message(
+      'Čekáme až se změříte...',
+      name: 'find_device_screen_waiting_on_measurement',
       desc: '',
       args: [],
     );

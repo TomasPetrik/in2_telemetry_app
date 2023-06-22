@@ -49,6 +49,26 @@ class BottomDialog extends StatelessWidget {
     );
   }
 
+  factory BottomDialog.openNotificationSettings({
+    Key? key,
+    required BuildContext context,
+  }) {
+    return _BottomDialog(
+      title: translactions.dialog_req_notifications_title,
+      description: translactions.dialog_req_notifications_description,
+      iconPath: 'assets/icons/icon_triangle_exclamation_big.svg',
+      iconColor: Theme.of(context).colorScheme.tertiary,
+      positiveButtonStyle: ButtonStyle(
+        buttonType: ButtonType.primary,
+        label: translactions.dialog_req_notifications_go_to_settings,
+      ),
+      negativeButtonStyle: ButtonStyle(
+        buttonType: ButtonType.secondary,
+        label: translactions.common_close,
+      ),
+    );
+  }
+
   factory BottomDialog.deviceConfirmationRemoval({
     Key? key,
     required BuildContext context,

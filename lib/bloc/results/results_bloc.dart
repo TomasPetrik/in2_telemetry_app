@@ -37,9 +37,7 @@ class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
             _offlineResults,
           );
 
-          final results = carePlans.isEmpty
-              ? null
-              : ResultsHelper.getResultsByWhenPeriod(
+          final results = ResultsHelper.getResultsByWhenPeriod(
                   carePlans: carePlans,
                   whenPeriod: whenPeriod,
                   allServerResults: allServerResults,

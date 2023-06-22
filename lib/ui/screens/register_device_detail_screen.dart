@@ -40,7 +40,7 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
     return Material(
       child: Stack(
         children: [
-          BlocListener<RegisterDeviceBloc, RegisterDeviceBlocState>(
+          BlocConsumer<RegisterDeviceBloc, RegisterDeviceBlocState>(
             bloc: registerDeviceBloc,
             listener: (context, state) {
               state.whenOrNull(
@@ -53,102 +53,112 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
                 failedRegistration: (key) => showServerError(context),
               );
             },
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: Paddings.horizontal16,
-                child: Form(
-                  key: registerDevFormKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Gap(
-                        MediaQuery.of(context).viewPadding.top +
-                            Dimensions.appBarHeight,
-                      ),
-                      const Gap(Dimensions.padding16),
-                      Text(
-                        translactions.register_device_detail_screen_device,
-                        style: ScaleTextStyles.text.apply(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onPrimary
-                              .withOpacity(0.48),
+            builder: (context, state) {
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: Paddings.horizontal16,
+                  child: Form(
+                    key: registerDevFormKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Gap(
+                          MediaQuery.of(context).viewPadding.top +
+                              Dimensions.appBarHeight,
                         ),
-                      ),
-                      const Gap(Dimensions.padding8),
-                      TextFormField(
-                        enabled: false,
-                        initialValue: device.visibleName,
-                        style: ScaleTextStyles.text.apply(
-                          color: Theme.of(context).colorScheme.tertiary,
+                        const Gap(Dimensions.padding16),
+                        Text(
+                          translactions.register_device_detail_screen_device,
+                          style: ScaleTextStyles.text.apply(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onPrimary
+                                .withOpacity(0.48),
+                          ),
                         ),
-                      ),
-                      const Gap(Dimensions.padding24),
-                      Text(
-                        translactions
-                            .register_device_detail_screen_identificator,
-                        style: ScaleTextStyles.text.apply(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onPrimary
-                              .withOpacity(0.48),
+                        const Gap(Dimensions.padding8),
+                        TextFormField(
+                          enabled: false,
+                          initialValue: device.visibleName,
+                          style: ScaleTextStyles.text.apply(
+                            color: Theme.of(context).colorScheme.tertiary,
+                          ),
                         ),
-                      ),
-                      const Gap(Dimensions.padding8),
-                      TextFormField(
-                        enabled: false,
-                        initialValue: device.deviceIdentifier,
-                        style: ScaleTextStyles.text.apply(
-                          color: Theme.of(context).colorScheme.tertiary,
+                        const Gap(Dimensions.padding24),
+                        Text(
+                          translactions
+                              .register_device_detail_screen_identificator,
+                          style: ScaleTextStyles.text.apply(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onPrimary
+                                .withOpacity(0.48),
+                          ),
                         ),
-                      ),
-                      const Gap(Dimensions.padding24),
-                      Text(
-                        translactions.register_device_detail_screen_assigned_id,
-                        style: ScaleTextStyles.text.apply(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onPrimary
-                              .withOpacity(0.48),
+                        const Gap(Dimensions.padding8),
+                        TextFormField(
+                          enabled: false,
+                          initialValue: device.deviceIdentifier,
+                          style: ScaleTextStyles.text.apply(
+                            color: Theme.of(context).colorScheme.tertiary,
+                          ),
                         ),
-                      ),
-                      const Gap(Dimensions.padding8),
-                      ScaleTextFormField(
-                        textFormKey: registerDevGlobalKeys[0],
-                        controller: assignedidentifierController,
-                        hintText: translactions
-                            .register_device_detail_screen_assigned_id_hint,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return translactions
-                                .register_device_detail_screen_not_filled_field;
-                          }
-                          return null;
-                        },
-                      ),
-                      Gaps.gap24,
-                      HighlightedElevatedButton(
-                        label: translactions
-                            .register_device_detail_screen_button_register,
-                        buttonType: ButtonType.primary,
-                        onPressed: () async {
-                          if (registerDevFormKey.currentState?.validate() ==
-                              true) {
-                            registerDeviceBloc.add(
-                              RegisterDeviceBlocEvent.registerDevice(
-                                userAccount,
-                                device,
-                                assignedidentifierController.text,
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    ],
+                        const Gap(Dimensions.padding24),
+                        Text(
+                          translactions
+                              .register_device_detail_screen_assigned_id,
+                          style: ScaleTextStyles.text.apply(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onPrimary
+                                .withOpacity(0.48),
+                          ),
+                        ),
+                        const Gap(Dimensions.padding8),
+                        ScaleTextFormField(
+                          textFormKey: registerDevGlobalKeys[0],
+                          controller: assignedidentifierController,
+                          hintText: translactions
+                              .register_device_detail_screen_assigned_id_hint,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return translactions
+                                  .register_device_detail_screen_not_filled_field;
+                            }
+                            return null;
+                          },
+                        ),
+                        Gaps.gap24,
+                        HighlightedElevatedButton(
+                          label: translactions
+                              .register_device_detail_screen_button_register,
+                          buttonType: state !=
+                                  const RegisterDeviceBlocState.registering()
+                              ? ButtonType.primary
+                              : ButtonType.secondary,
+                          onPressed: state !=
+                                  const RegisterDeviceBlocState.registering()
+                              ? () async {
+                                  if (registerDevFormKey.currentState
+                                          ?.validate() ==
+                                      true) {
+                                    registerDeviceBloc.add(
+                                      RegisterDeviceBlocEvent.registerDevice(
+                                        userAccount,
+                                        device,
+                                        assignedidentifierController.text,
+                                      ),
+                                    );
+                                  }
+                                }
+                              : null,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
           Positioned(
             top: 0,

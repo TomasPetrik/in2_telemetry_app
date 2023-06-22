@@ -4,6 +4,7 @@ import 'package:scalesoft_app/cubit/auth_web/auth_web_cubit.dart';
 import 'package:scalesoft_app/cubit/auth_web/auth_web_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/widgets/loading_indicator.dart';
+import 'package:scalesoft_app/utils/constants.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class AuthWebScreen extends StatelessWidget {
@@ -11,13 +12,14 @@ class AuthWebScreen extends StatelessWidget {
     super.key,
     required this.authUri,
     required this.onRedirect,
+    required this.openEGoverment,
     required this.onCancelled,
     required this.onLoadingError,
   });
 
   final Uri authUri;
   final Function(Uri) onRedirect;
-
+  final Function(Uri) openEGoverment;
   final Function onCancelled;
   final Function onLoadingError;
   final AuthWebCubit cubit = getIt<AuthWebCubit>();
@@ -42,7 +44,9 @@ class AuthWebScreen extends StatelessWidget {
                 cubit.loaded();
               },
               onWebResourceError: (WebResourceError error) {
-                onLoadingError();
+                if (error.errorCode == -1009) {
+                  onLoadingError();
+                }
               },
               onNavigationRequest: (NavigationRequest request) {
                 return NavigationDecision.navigate;
@@ -60,6 +64,8 @@ class AuthWebScreen extends StatelessWidget {
                     } else {
                       onCancelled();
                     }
+                  } else if (scheme == EGoverement.scheme) {
+                    openEGoverment.call(authRespUri);
                   }
                 }
               },
@@ -73,33 +79,36 @@ class AuthWebScreen extends StatelessWidget {
       onWillPop: () async {
         return true;
       },
-      child: Material(
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: WebViewWidget(controller: controller),
-            ),
-            BlocBuilder<AuthWebCubit, AuthWebState>(
-              bloc: cubit,
-              builder: ((context, state) {
-                final widget = state.when(
-                  loaded: SizedBox.shrink,
-                  loading: LoadingIndicator.new,
-                );
-
-                return Align(alignment: Alignment.center, child: widget);
-              }),
-            ),
-            Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                icon: const Icon(Icons.close_rounded),
-                onPressed: () {
-                  onCancelled.call();
-                },
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        body: SafeArea(
+          child: Stack(
+            children: [
+              WebViewWidget(
+                controller: controller,
               ),
-            )
-          ],
+              BlocBuilder<AuthWebCubit, AuthWebState>(
+                bloc: cubit,
+                builder: ((context, state) {
+                  final widget = state.when(
+                    loaded: SizedBox.shrink,
+                    loading: LoadingIndicator.new,
+                  );
+
+                  return Align(alignment: Alignment.center, child: widget);
+                }),
+              ),
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                  icon: const Icon(Icons.close_rounded),
+                  onPressed: () {
+                    onCancelled.call();
+                  },
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
