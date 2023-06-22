@@ -298,8 +298,10 @@ class BtConnectionHelper {
           debugPrint('fetched more updated result');
           return hwMeasurementResult2;
         }
+
+        await device.disconnect();
       }
-      await device.disconnect();
+
       return hwMeasurementResult;
     } else {
       return HwMeasurementResult(
