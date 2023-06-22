@@ -112,7 +112,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     try {
-      final userInfo = await _accountRepository.loadUserInfo();
+      final userInfo =
+          await _accountRepository.loadUserInfo(authToken: _session.token!);
 
       final userAccount = UserAccount(
         user: userInfo.currentUser,

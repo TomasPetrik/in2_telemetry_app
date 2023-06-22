@@ -460,7 +460,7 @@
     "result_removal_confirmation_title_button_confirm": "Odstranit výsledek",
     "sync_failed_screen_waiting_on_sync": "Čeká na synchronizaci",
     "daily_when_time_reset_confirmation_title": "Denní doby",
-    "daily_when_time_reset_confirmation_info": "Upravovat denní doby můžete jenom ty, kterým tuto možnost přiřadil Váš lékař.",
+    "daily_when_time_reset_confirmation_info": "Můžete upravovat pouze ty denní doby, u kterých Váš lékař úpravy povolil.",
     "daily_when_time_reset_confirmation_confirm": "Resetovat na výchozí",
     "notifications_screen_title": "Notifikace",
     "notifications_screen_allow_notifications": "Povolit notifikace",

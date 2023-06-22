@@ -347,7 +347,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Resetovat na výchozí"),
         "daily_when_time_reset_confirmation_info":
             MessageLookupByLibrary.simpleMessage(
-                "Upravovat denní doby můžete jenom ty, kterým tuto možnost přiřadil Váš lékař."),
+                "Můžete upravovat pouze ty denní doby, u kterých Váš lékař úpravy povolil."),
         "daily_when_time_reset_confirmation_title":
             MessageLookupByLibrary.simpleMessage("Denní doby"),
         "dashboard_screen_all": MessageLookupByLibrary.simpleMessage("Vše"),
