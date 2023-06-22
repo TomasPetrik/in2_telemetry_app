@@ -112,8 +112,10 @@ _i1.GetIt init(
       ));
   gh.factory<_i25.AccountApiClient>(
       () => _i25.AccountApiClient(gh<_i11.Dio>(instanceName: 'privateDio')));
-  gh.singleton<_i26.AccountRepository>(
-      _i26.AccountRepository(gh<_i25.AccountApiClient>()));
+  gh.singleton<_i26.AccountRepository>(_i26.AccountRepository(
+    gh<_i25.AccountApiClient>(),
+    gh<_i20.Session>(),
+  ));
   gh.singleton<_i27.AppSettingsBloc>(_i27.AppSettingsBloc(
     gh<_i4.AppSettingsDbProvider>(),
     gh<_i14.LocationService>(),

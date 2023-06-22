@@ -1702,10 +1702,10 @@ class I10n {
     );
   }
 
-  /// `Upravovat denní doby můžete jenom ty, kterým tuto možnost přiřadil Váš lékař.`
+  /// `Můžete upravovat pouze ty denní doby, u kterých Váš lékař úpravy povolil.`
   String get daily_when_time_reset_confirmation_info {
     return Intl.message(
-      'Upravovat denní doby můžete jenom ty, kterým tuto možnost přiřadil Váš lékař.',
+      'Můžete upravovat pouze ty denní doby, u kterých Váš lékař úpravy povolil.',
       name: 'daily_when_time_reset_confirmation_info',
       desc: '',
       args: [],
