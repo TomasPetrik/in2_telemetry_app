@@ -13,6 +13,8 @@ abstract class AccountApiClient {
   factory AccountApiClient(@Named(Constants.privateDioName) Dio dio) =
       _AccountApiClient;
 
-  @GET('/user/me')
-  Future<UserInfo> loadUserInfo();
+  @GET('{apiUrl}/user/me')
+  Future<UserInfo> loadUserInfo(
+    @Path('apiUrl') String apiUrl,
+  );
 }
