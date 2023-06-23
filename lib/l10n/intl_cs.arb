@@ -202,8 +202,8 @@
     "onboarding_account_added_screen_continue_to_app": "Pokračovat do aplikace",
     "onboarding_account_added_screen_add_other_account": "Přidat další účet",
     "dialog_req_notifications_title": "Povolení notifikací",
-    "dialog_req_notifications_description": "Aplikace si vyžaduje povolení notifikací pokud chcete dostávat upozornení.",
-    "dialog_req_notifications_go_to_settings": "Prejít do nastavení",
+    "dialog_req_notifications_description": "Aplikace vyžaduje povolení notifikací, pokud chcete dostávat upozornění.",
+    "dialog_req_notifications_go_to_settings": "Přejít do nastavení",
     "dialog_account_removal_confirmation_title": "Odstranit účet",
     "dialog_account_removal_confirmation_description": "Všechna data účtu {accountName}\nbudou z aplikace nevratně\nodstraněna.",
     "@dialog_account_removal_confirmation_description": {

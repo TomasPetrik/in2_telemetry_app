@@ -973,20 +973,20 @@ class I10n {
     );
   }
 
-  /// `Aplikace si vyžaduje povolení notifikací pokud chcete dostávat upozornení.`
+  /// `Aplikace vyžaduje povolení notifikací, pokud chcete dostávat upozornění.`
   String get dialog_req_notifications_description {
     return Intl.message(
-      'Aplikace si vyžaduje povolení notifikací pokud chcete dostávat upozornení.',
+      'Aplikace vyžaduje povolení notifikací, pokud chcete dostávat upozornění.',
       name: 'dialog_req_notifications_description',
       desc: '',
       args: [],
     );
   }
 
-  /// `Prejít do nastavení`
+  /// `Přejít do nastavení`
   String get dialog_req_notifications_go_to_settings {
     return Intl.message(
-      'Prejít do nastavení',
+      'Přejít do nastavení',
       name: 'dialog_req_notifications_go_to_settings',
       desc: '',
       args: [],

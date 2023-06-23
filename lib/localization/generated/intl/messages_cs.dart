@@ -381,9 +381,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Odstranit účet"),
         "dialog_req_notifications_description":
             MessageLookupByLibrary.simpleMessage(
-                "Aplikace si vyžaduje povolení notifikací pokud chcete dostávat upozornení."),
+                "Aplikace vyžaduje povolení notifikací, pokud chcete dostávat upozornění."),
         "dialog_req_notifications_go_to_settings":
-            MessageLookupByLibrary.simpleMessage("Prejít do nastavení"),
+            MessageLookupByLibrary.simpleMessage("Přejít do nastavení"),
         "dialog_req_notifications_title":
             MessageLookupByLibrary.simpleMessage("Povolení notifikací"),
         "find_device_screen_device_connected":
