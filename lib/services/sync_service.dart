@@ -163,45 +163,15 @@ class SyncService {
         .removeByDateTime(measurementResult.measurementDateTime);
   }
 
-  Future<UserAccount> updateUserData(UserAccount userAccount) async {
-    final UserAccount updatedAccount = userAccount.copyWith();
-
+  Future<void> updateUserData(UserAccount userAccount) async {
     //check changes for root user and his represented people
     final userInfo = await _accountRepository.loadUserInfo(
-      authToken: updatedAccount.authToken!,
-      apiUrl: updatedAccount.hospital!.authData.baseUrl,
+      authToken: userAccount.authToken!,
+      apiUrl: userAccount.hospital!.authData.baseUrl,
     );
 
     //1. Update assigned devices
-    updatedAccount.assignedDevices = userInfo.assignedDevices;
-
-    //2. Update user data
-    updatedAccount.user = userInfo.currentUser;
-
-    //3. Update represented people as some users might be not exist anymore or their data have been changed
-
-    final representedPeople = userInfo.representedPeople
-        ?.map(
-          (representedPerson) => UserAccount(
-            user: representedPerson,
-            assignedDevices: userInfo.assignedDevices,
-            authToken: updatedAccount.authToken,
-            hospital: updatedAccount.hospital,
-            userPermissions: updatedAccount.userPermissions,
-            signedIn: updatedAccount.signedIn,
-            lastActiveIn: null,
-            representedPeople: null,
-            parentId: userInfo.currentUser.muid,
-            sessionExpired: false,
-            lastSyncAt: updatedAccount.lastSyncAt,
-            lastSyncFailed: false,
-          ),
-        )
-        .toList();
-
-    updatedAccount.representedPeople = representedPeople;
-
-    return updatedAccount;
+    userAccount.assignedDevices = userInfo.assignedDevices;
   }
 
   Future<void> loadFulFillmentEvaluation(final UserAccount userAccount) async {
@@ -300,11 +270,11 @@ class SyncService {
 
     for (final UserAccount userAccount in userAccounts) {
       try {
-        final updatedAccount = await updateUserData(userAccount);
-        await loadUserData(updatedAccount);
-        updatedAccount.lastSyncAt = DateTime.now();
-        updatedAccount.lastSyncFailed = false;
-        await _accountDbProvider.save(updatedAccount);
+        await loadUserData(userAccount);
+        userAccount.lastSyncAt = DateTime.now();
+        userAccount.lastSyncFailed = false;
+        await updateUserData(userAccount);
+        await _accountDbProvider.save(userAccount);
       } on DioError {
         //for any failed sync set flag and go on next account
         userAccount.lastSyncFailed = true;
