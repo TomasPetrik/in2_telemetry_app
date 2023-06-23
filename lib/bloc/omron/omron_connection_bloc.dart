@@ -107,7 +107,7 @@ class OmronConnectionBloc
                 .contains(dev.bluetoothName!.toLowerCase()),
           );
 
-          var devId = blDevice.name;
+          var devId = deviceInfo.advData!.localName;
           if (supportedDev.deviceModelType == DeviceModelType.omronM7) {
             devId = devId.split('_').last;
           }
