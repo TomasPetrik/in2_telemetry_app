@@ -9,8 +9,6 @@ class Dimensions {
   static const double searchBarHeight = 48;
   static const double singleLineSwitchRowHeight = 54;
   static const double doubleLineSwitchRowHeight = 92;
-  static const double calendarHeight =
-      (24 + 16 + 24 + (5 * (16 + 28 + 8 + 4 + 16 + 0.5))) * 1.31;
   static const double footerHeight = 75;
   static const double cardElevation = 10;
 

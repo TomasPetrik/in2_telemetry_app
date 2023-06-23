@@ -32,6 +32,27 @@ class CalendarScreen extends StatelessWidget {
   final DateTime? preSelectedDt;
   final List<int> carePlansIds;
 
+  double _getCalendarHeight(BuildContext context) {
+    final cellWidth = ((MediaQuery.of(context).size.width -
+            (2 * Dimensions.padding16) -
+            (7 * Dimensions.padding16)) /
+        7);
+
+    final cellHeight = cellWidth * 1.255;
+
+    final wrappedCellHeight = Dimensions.padding16 +
+        cellHeight +
+        Dimensions.padding8 +
+        Dimensions.padding4 +
+        Dimensions.padding16 +
+        0.5;
+
+    final calendarHeight = (wrappedCellHeight * 5) +
+        (Dimensions.padding24 + Dimensions.padding16 + Dimensions.padding24);
+
+    return calendarHeight;
+  }
+
   @override
   Widget build(BuildContext context) {
     final calendarBloc = getIt<CalendarBloc>()
@@ -45,10 +66,12 @@ class CalendarScreen extends StatelessWidget {
       return true;
     }
 
+    final calendarHeight = _getCalendarHeight(context);
+
     bool isSmallDisplay = (MediaQuery.of(context).size.height -
             MediaQuery.of(context).viewPadding.top -
             Dimensions.appBarHeight -
-            Dimensions.calendarHeight) <
+            calendarHeight) <
         Dimensions.footerHeight;
 
     return WillPopScope(
@@ -64,7 +87,7 @@ class CalendarScreen extends StatelessWidget {
                         Dimensions.appBarHeight,
                   ),
                   SizedBox(
-                    height: Dimensions.calendarHeight,
+                    height: calendarHeight,
                     child: BlocBuilder<CalendarBloc, CalendarBlocState>(
                       bloc: calendarBloc,
                       buildWhen: (previous, current) {
