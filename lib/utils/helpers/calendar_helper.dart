@@ -53,6 +53,33 @@ class CalendarHelper {
     return calendarMonths;
   }
 
+  static CalendarDay getToday(
+    BuildContext context,
+  ) {
+    final now = DateTime.now();
+    final currentYear = now.year;
+    final currentMonth = now.month;
+
+    final weekDays = getWeekDaysInMonth(
+      context: context,
+      currentYear: currentYear,
+      currentMonth: currentMonth,
+    );
+
+    final monthDays = weekDays.entries.fold<List<CalendarDay>>(
+      [],
+      (previousValue, week) => [
+        ...previousValue,
+        ...week.value,
+      ],
+    );
+
+    final today = monthDays.firstWhere(
+      (calendarDay) => calendarDay.dayPeriod == CalendarDayPeriod.today,
+    );
+    return today;
+  }
+
   static CalendarMonth getCalendarMonth(
     BuildContext context,
     DateTime monthStartDate,

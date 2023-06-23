@@ -4,10 +4,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_event.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
+import 'package:scalesoft_app/bloc/calendar_footer/calendar_footer_bloc.dart';
+import 'package:scalesoft_app/bloc/calendar_footer/calendar_footer_event.dart';
 import 'package:scalesoft_app/bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc.dart';
 import 'package:scalesoft_app/bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc_event.dart';
 import 'package:scalesoft_app/bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc_state.dart';
-import 'package:scalesoft_app/cubit/calendar_footer/calendar_footer_cubit.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -125,10 +126,14 @@ class CalendarMonthWidget extends StatelessWidget {
                                                   CalendarBlocEvent
                                                       .onDaySelected(
                                                     day.startDt,
+                                                    false,
                                                   ),
                                                 );
-                                                getIt<CalendarFooterCubit>()
-                                                    .selectDay(day);
+                                                getIt<CalendarFooterBloc>().add(
+                                                  CalendarFooterEvent.selectDay(
+                                                    day,
+                                                  ),
+                                                );
                                               },
                                               child: AspectRatio(
                                                 aspectRatio: 1.255,

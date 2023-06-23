@@ -7,7 +7,8 @@ import 'package:scalesoft_app/bloc/calendar/calendar_bloc.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_event.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_day.dart';
-import 'package:scalesoft_app/cubit/calendar_footer/calendar_footer_cubit.dart';
+import 'package:scalesoft_app/bloc/calendar_footer/calendar_footer_bloc.dart';
+import 'package:scalesoft_app/bloc/calendar_footer/calendar_footer_event.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/future_measurements_route.dart';
@@ -38,6 +39,9 @@ class CalendarScreen extends StatelessWidget {
 
     Future<bool> onWillPop() async {
       calendarBloc.add(const CalendarBlocEvent.nullDefaultDay());
+      getIt<CalendarFooterBloc>()
+          .add(const CalendarFooterEvent.selectDay(null));
+
       return true;
     }
 
@@ -64,7 +68,8 @@ class CalendarScreen extends StatelessWidget {
                     child: BlocBuilder<CalendarBloc, CalendarBlocState>(
                       bloc: calendarBloc,
                       buildWhen: (previous, current) {
-                        return current.updateSelf;
+                        bool rebuild = current.updateSelf;
+                        return rebuild;
                       },
                       builder: (context, state) {
                         if (state.months == null ||
@@ -202,10 +207,10 @@ class _CalendarFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final calendarFooterCubit = getIt<CalendarFooterCubit>();
+    final calendarFooterBloc = getIt<CalendarFooterBloc>();
     final session = getIt<Session>();
-    return BlocBuilder<CalendarFooterCubit, CalendarFooterState>(
-      bloc: calendarFooterCubit..selectDay(null),
+    return BlocBuilder<CalendarFooterBloc, CalendarFooterState>(
+      bloc: calendarFooterBloc,
       builder: (context, state) {
         final selectedDay = state.selectedDay;
         if (selectedDay == null ||

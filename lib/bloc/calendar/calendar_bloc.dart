@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_event.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
-import 'package:scalesoft_app/cubit/calendar_footer/calendar_footer_cubit.dart';
+import 'package:scalesoft_app/bloc/calendar_footer/calendar_footer_bloc.dart';
+import 'package:scalesoft_app/bloc/calendar_footer/calendar_footer_event.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/utils/helpers/calendar_helper.dart';
@@ -12,14 +13,14 @@ import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 @injectable
 class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
   final Session _session;
-  final CalendarFooterCubit _calendarFooterCubit;
+  final CalendarFooterBloc _calendarFooterBloc;
   final AccountDbProvider _accountDbProvider;
   late final PageController controller;
   late final BuildContext context;
 
   CalendarBloc(
     this._session,
-    this._calendarFooterCubit,
+    this._calendarFooterBloc,
     this._accountDbProvider,
   ) : super(
           const CalendarBlocState(
@@ -93,12 +94,12 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
           final month = state.months!.firstWhere(
             (month) => month.year == currentYear && month.month == currentMonth,
           );
-          _calendarFooterCubit.selectDay(null);
+          _calendarFooterBloc.add(const CalendarFooterEvent.selectDay(null));
 
           final selectedDay = CalendarHelper.getDayByDateTime(month, dt);
           if (selectedDay != null) {
-            _calendarFooterCubit.selectDay(selectedDay);
-            add(CalendarBlocEvent.onDaySelected(selectedDay.startDt));
+            _calendarFooterBloc.add(CalendarFooterEvent.selectDay(selectedDay));
+            add(CalendarBlocEvent.onDaySelected(selectedDay.startDt, true));
           }
         },
         onPageChanged: (int newPageIndex) async {
@@ -141,7 +142,7 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
             ),
           );
         },
-        onDaySelected: (DateTime selectedDayDt) {
+        onDaySelected: (DateTime selectedDayDt, bool updateSelf) {
           //clear side months if they had some day selected
           _session.preSelecteDtRestoration = selectedDayDt;
 
@@ -170,7 +171,7 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
           emit(
             state.copyWith(
               key: UniqueKey(),
-              updateSelf: true,
+              updateSelf: updateSelf,
             ),
           );
         },

@@ -6,9 +6,10 @@ import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
+import 'package:scalesoft_app/bloc/calendar_footer/calendar_footer_bloc.dart';
+import 'package:scalesoft_app/bloc/calendar_footer/calendar_footer_event.dart';
 import 'package:scalesoft_app/bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc_event.dart';
 import 'package:scalesoft_app/bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc_state.dart';
-import 'package:scalesoft_app/cubit/calendar_footer/calendar_footer_cubit.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/calendar_evaluation_db_provider.dart';
@@ -24,7 +25,7 @@ import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 class CalendarFulfillmentServiceBloc extends Bloc<
     CalendarFulfillmentServiceBlocEvent, CalendarFulfillmentServiceBlocState> {
   final AccountDbProvider _accountDbProvider;
-  final CalendarFooterCubit _calendarFooterCubit;
+  final CalendarFooterBloc _calendarFooterBloc;
   final CarePlansRepository _carePlansRepository;
   final CalendarEvaluationDbProvider _calendarEvaluationDbProvider;
   final MeasurementsDbProvider _measurementsDbProvider;
@@ -33,7 +34,7 @@ class CalendarFulfillmentServiceBloc extends Bloc<
 
   CalendarFulfillmentServiceBloc(
     this._accountDbProvider,
-    this._calendarFooterCubit,
+    this._calendarFooterBloc,
     this._carePlansRepository,
     this._calendarEvaluationDbProvider,
     this._measurementsDbProvider,
@@ -183,7 +184,7 @@ class CalendarFulfillmentServiceBloc extends Bloc<
       CalendarMonth calendarMonth,
       List<CarePlan> carePlans,
     ) async {
-      final selectedDayDt = _calendarFooterCubit.state.selectedDay?.startDt;
+      final selectedDayDt = _calendarFooterBloc.state.selectedDay?.startDt;
 
       //1. popoupate planned measurements for current and upcomming days,
 
@@ -241,9 +242,10 @@ class CalendarFulfillmentServiceBloc extends Bloc<
           );
 
           final carePlans = _accountDbProvider.getCarePlans(carePlansIds);
-          await Future.delayed(const Duration(milliseconds: 700));
+          //await Future.delayed(const Duration(milliseconds: 700));
 
           await setCalendarMonth(calendarMonth, carePlans);
+
           if (calendarMonth.monthStartDate.isAfter(DateTime.now())) {
             emit(
               CalendarFulfillmentServiceBlocState(
@@ -251,7 +253,7 @@ class CalendarFulfillmentServiceBloc extends Bloc<
                 loading: false,
               ),
             );
-            //return;
+            return;
           }
 
           await populateMonth(calendarMonth, carePlans);
@@ -261,6 +263,16 @@ class CalendarFulfillmentServiceBloc extends Bloc<
               loading: false,
             ),
           );
+
+          if (_calendarFooterBloc.state.selectedDay == null &&
+              calendarMonth.monthEndDate.isAfter(DateTime.now()) &&
+              calendarMonth.monthStartDate.isBefore(DateTime.now())) {
+            add(
+              CalendarFulfillmentServiceBlocEvent.onDaySelected(
+                DateTime.now(),
+              ),
+            );
+          }
 
           if (calendarMonth.wasResolved != true) {
             add(
@@ -275,7 +287,11 @@ class CalendarFulfillmentServiceBloc extends Bloc<
           for (final week in state.month!.weekDays.entries) {
             for (final day in week.value) {
               if (day.startDt.isSameDate(selectedDayDt)) {
-                _calendarFooterCubit.selectDay(day);
+                _calendarFooterBloc.add(
+                  CalendarFooterEvent.selectDay(
+                    day,
+                  ),
+                );
                 day.isSelected = true;
               } else {
                 day.isSelected = false;
