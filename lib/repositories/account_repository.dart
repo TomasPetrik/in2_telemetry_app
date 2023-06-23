@@ -13,8 +13,9 @@ class AccountRepository {
 
   Future<UserInfo> loadUserInfo({
     required AuthToken authToken,
+    required String apiUrl,
   }) {
     session.token = authToken;
-    return accountApiClient.loadUserInfo();
+    return accountApiClient.loadUserInfo(apiUrl);
   }
 }
