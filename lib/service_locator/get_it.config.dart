@@ -22,6 +22,7 @@ import '../api/dio_module.dart' as _i44;
 import '../api/interceptors/token_interceptor.dart' as _i39;
 import '../bloc/auth/auth_bloc.dart' as _i40;
 import '../bloc/calendar/calendar_bloc.dart' as _i29;
+import '../bloc/calendar_footer/calendar_footer_bloc.dart' as _i8;
 import '../bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc.dart'
     as _i41;
 import '../bloc/care_plan/care_plan_bloc.dart' as _i9;
@@ -36,7 +37,6 @@ import '../bloc/settings/app_settings_bloc.dart' as _i27;
 import '../bloc/sync/sync_bloc.dart' as _i42;
 import '../bloc/user_content/content_bloc.dart' as _i33;
 import '../cubit/auth_web/auth_web_cubit.dart' as _i6;
-import '../cubit/calendar_footer/calendar_footer_cubit.dart' as _i8;
 import '../cubit/device_management/device_management_cubit.dart' as _i35;
 import '../cubit/hospital_search/hospital_search_cubit.dart' as _i12;
 import '../providers/account_db_provider.dart' as _i3;
@@ -76,7 +76,7 @@ _i1.GetIt init(
   gh.factory<_i6.AuthWebCubit>(() => _i6.AuthWebCubit());
   gh.singleton<_i7.CalendarEvaluationDbProvider>(
       _i7.CalendarEvaluationDbProvider());
-  gh.singleton<_i8.CalendarFooterCubit>(_i8.CalendarFooterCubit());
+  gh.singleton<_i8.CalendarFooterBloc>(_i8.CalendarFooterBloc());
   gh.singleton<_i9.CarePlanBloc>(_i9.CarePlanBloc());
   gh.factory<_i10.ChartBloc>(() => _i10.ChartBloc());
   gh.singleton<_i11.Dio>(
@@ -124,7 +124,7 @@ _i1.GetIt init(
       () => _i28.AuthApiClient(gh<_i11.Dio>(instanceName: 'privateDio')));
   gh.factory<_i29.CalendarBloc>(() => _i29.CalendarBloc(
         gh<_i20.Session>(),
-        gh<_i8.CalendarFooterCubit>(),
+        gh<_i8.CalendarFooterBloc>(),
         gh<_i3.AccountDbProvider>(),
       ));
   gh.factory<_i30.CarePlanApiClient>(
@@ -185,7 +185,7 @@ _i1.GetIt init(
   gh.factory<_i41.CalendarFulfillmentServiceBloc>(
       () => _i41.CalendarFulfillmentServiceBloc(
             gh<_i3.AccountDbProvider>(),
-            gh<_i8.CalendarFooterCubit>(),
+            gh<_i8.CalendarFooterBloc>(),
             gh<_i31.CarePlansRepository>(),
             gh<_i7.CalendarEvaluationDbProvider>(),
             gh<_i15.MeasurementsDbProvider>(),

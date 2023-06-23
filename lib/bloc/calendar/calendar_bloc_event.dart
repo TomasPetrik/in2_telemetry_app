@@ -13,7 +13,9 @@ class CalendarBlocEvent with _$CalendarBlocEvent {
   const factory CalendarBlocEvent.goOnDate(DateTime dateTime) = _GoOnDate;
   const factory CalendarBlocEvent.onPageChanged(int newPage) = _OnPageChanged;
   const factory CalendarBlocEvent.addExtraMonth() = _AddExtraMonth;
-  const factory CalendarBlocEvent.onDaySelected(DateTime selectedDayDt) =
-      _OnDaySelected;
+  const factory CalendarBlocEvent.onDaySelected(
+    DateTime selectedDayDt,
+    bool updateSelf,
+  ) = _OnDaySelected;
   const factory CalendarBlocEvent.nullDefaultDay() = _NullDefaultDay;
 }
