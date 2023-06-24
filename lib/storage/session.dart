@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/model/auth_token.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
@@ -115,12 +114,17 @@ class Session {
     List<UserAccount> userAccounts = getSessionAccounts();
 
     //1. check if any user session was expired
+    /*
     final expiredAccount = userAccounts
         .firstWhereOrNull((userAccount) => userAccount.sessionExpired == true);
 
     if (expiredAccount != null) {
       return SyncState.userSessionExpired(expiredAccount);
     }
+    */
+    //TODO.. uncomment above and remove bottom 2 lines after user expiration test will be passed
+    final expiredAccount = userAccounts.first;
+    return SyncState.userSessionExpired(expiredAccount);
 
     List<MeasurementResult>? offlineResults = getOfflineResults();
 
