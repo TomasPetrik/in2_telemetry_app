@@ -300,6 +300,16 @@ class I10n {
     );
   }
 
+  /// `Pokračovat`
+  String get common_continue {
+    return Intl.message(
+      'Pokračovat',
+      name: 'common_continue',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Přidáno {atTime}`
   String common_addded_at_time(String atTime) {
     return Intl.message(
@@ -1992,20 +2002,20 @@ class I10n {
     );
   }
 
-  /// `Výsledky budou automaticky odeslány`
+  /// `Výsledky budou po potvrzení odeslány`
   String get measurement_summary_screen_success_subtitle {
     return Intl.message(
-      'Výsledky budou automaticky odeslány',
+      'Výsledky budou po potvrzení odeslány',
       name: 'measurement_summary_screen_success_subtitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `Máte hotovo! Výsledek se připsal k ostatním.`
+  /// `Máte hotovo! Výsledek se připíše po potvrzení.`
   String get measurement_summary_screen_result_success_desc {
     return Intl.message(
-      'Máte hotovo! Výsledek se připsal k ostatním.',
+      'Máte hotovo! Výsledek se připíše po potvrzení.',
       name: 'measurement_summary_screen_result_success_desc',
       desc: '',
       args: [],
@@ -2037,6 +2047,26 @@ class I10n {
     return Intl.message(
       'Opakovat měření',
       name: 'measurement_summary_screen_no_data_repeat_measurement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Neodeslat výsledky`
+  String get measurement_summary_screen_disallow_to_send {
+    return Intl.message(
+      'Neodeslat výsledky',
+      name: 'measurement_summary_screen_disallow_to_send',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pozor, vaše naměřené hodnoty byly překročeny, kontaktujte vašeho lékaře !`
+  String get measurement_summary_screen_exceeded_values {
+    return Intl.message(
+      'Pozor, vaše naměřené hodnoty byly překročeny, kontaktujte vašeho lékaře !',
+      name: 'measurement_summary_screen_exceeded_values',
       desc: '',
       args: [],
     );

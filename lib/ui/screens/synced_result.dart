@@ -3,8 +3,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
+import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/model/device_info.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
+import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/providers/account_db_provider.dart';
+import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
@@ -84,6 +89,13 @@ class SyncedResult extends StatelessWidget {
     return null;
   }
 
+  bool _exceededValues() {
+    final UserAccount userAccount = getIt<AccountDbProvider>().get(userId)!;
+    return userAccount.user.measurementThresholds
+            .exceededValues(hwMeasurementResult.measurement!) ==
+        true;
+  }
+
   @override
   Widget build(BuildContext context) {
     final topGap = MediaQuery.of(context).viewPadding.top;
@@ -109,9 +121,15 @@ class SyncedResult extends StatelessWidget {
                     ),
                     Gaps.gap6,
                     Text(
-                      translactions.measurement_summary_screen_success_subtitle,
+                      _exceededValues()
+                          ? translactions
+                              .measurement_summary_screen_exceeded_values
+                          : translactions
+                              .measurement_summary_screen_success_subtitle,
                       style: ScaleTextStyles.label.apply(
-                        color: Theme.of(context).colorScheme.onSecondary,
+                        color: _exceededValues()
+                            ? Theme.of(context).colorScheme.error
+                            : Theme.of(context).colorScheme.onSecondary,
                       ),
                     ),
                     Gaps.gap16,
@@ -179,7 +197,25 @@ class SyncedResult extends StatelessWidget {
             ),
           ),
         ),
-        if (hwMeasurementResult.resultState == ResultState.noData) ...[
+        if (hwMeasurementResult.resultState == ResultState.success) ...[
+          const SliverGap(Dimensions.padding24),
+          SliverToBoxAdapter(
+            child: HighlightedElevatedButton(
+              label: translactions.common_continue,
+              onPressed: () async {
+                await getIt<PendingResultsDbProvider>()
+                    .save(hwMeasurementResult.measurement!)
+                    .then(
+                  (_) {
+                    getIt<SyncBloc>().add(const SyncEvent.syncResults());
+                    GoRouter.of(context).goNamed(DashboardRoute.name);
+                  },
+                );
+              },
+              buttonType: ButtonType.primary,
+            ),
+          ),
+        ] else if (hwMeasurementResult.resultState == ResultState.noData) ...[
           const SliverGap(Dimensions.padding24),
           SliverToBoxAdapter(
             child: HighlightedElevatedButton(
@@ -200,15 +236,26 @@ class SyncedResult extends StatelessWidget {
           ),
         ],
         const SliverGap(Dimensions.padding24),
-        SliverToBoxAdapter(
-          child: HighlightedElevatedButton(
-            label: translactions.common_close,
-            onPressed: () {
-              GoRouter.of(context).goNamed(DashboardRoute.name);
-            },
-            buttonType: ButtonType.secondary,
+        if (hwMeasurementResult.resultState == ResultState.success)
+          SliverToBoxAdapter(
+            child: HighlightedElevatedButton(
+              label: translactions.measurement_summary_screen_disallow_to_send,
+              onPressed: () {
+                GoRouter.of(context).goNamed(DashboardRoute.name);
+              },
+              buttonType: ButtonType.secondary,
+            ),
+          )
+        else
+          SliverToBoxAdapter(
+            child: HighlightedElevatedButton(
+              label: translactions.common_close,
+              onPressed: () {
+                GoRouter.of(context).goNamed(DashboardRoute.name);
+              },
+              buttonType: ButtonType.secondary,
+            ),
           ),
-        ),
         const SliverGap(Dimensions.padding16),
       ],
     );

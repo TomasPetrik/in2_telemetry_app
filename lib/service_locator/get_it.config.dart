@@ -19,22 +19,22 @@ import '../api/client/care_plan_api_client.dart' as _i30;
 import '../api/client/device_api_client.dart' as _i34;
 import '../api/client/time_settings_api_client.dart' as _i22;
 import '../api/dio_module.dart' as _i44;
-import '../api/interceptors/token_interceptor.dart' as _i39;
-import '../bloc/auth/auth_bloc.dart' as _i40;
+import '../api/interceptors/token_interceptor.dart' as _i40;
+import '../bloc/auth/auth_bloc.dart' as _i41;
 import '../bloc/calendar/calendar_bloc.dart' as _i29;
 import '../bloc/calendar_footer/calendar_footer_bloc.dart' as _i8;
 import '../bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc.dart'
-    as _i41;
+    as _i42;
 import '../bloc/care_plan/care_plan_bloc.dart' as _i9;
 import '../bloc/chart_bloc/chart_bloc.dart' as _i10;
 import '../bloc/chart_loader_bloc/chart_loader_bloc.dart' as _i32;
 import '../bloc/daily_times_settings/times_settings_bloc.dart' as _i24;
 import '../bloc/notifications/notifications_bloc.dart' as _i16;
-import '../bloc/omron/omron_connection_bloc.dart' as _i43;
-import '../bloc/register_device/register_device_bloc.dart' as _i37;
+import '../bloc/omron/omron_connection_bloc.dart' as _i37;
+import '../bloc/register_device/register_device_bloc.dart' as _i38;
 import '../bloc/results/results_bloc.dart' as _i19;
 import '../bloc/settings/app_settings_bloc.dart' as _i27;
-import '../bloc/sync/sync_bloc.dart' as _i42;
+import '../bloc/sync/sync_bloc.dart' as _i43;
 import '../bloc/user_content/content_bloc.dart' as _i33;
 import '../cubit/auth_web/auth_web_cubit.dart' as _i6;
 import '../cubit/device_management/device_management_cubit.dart' as _i35;
@@ -53,7 +53,7 @@ import '../repositories/time_settings_repository.dart' as _i23;
 import '../services/auth_service.dart' as _i5;
 import '../services/internet_service.dart' as _i13;
 import '../services/location_service.dart' as _i14;
-import '../services/sync_service.dart' as _i38;
+import '../services/sync_service.dart' as _i39;
 import '../storage/session.dart' as _i20;
 
 // ignore_for_file: unnecessary_lambdas
@@ -156,9 +156,14 @@ _i1.GetIt init(
     gh<_i34.DeviceApiClient>(),
     gh<_i20.Session>(),
   ));
-  gh.factory<_i37.RegisterDeviceBloc>(
-      () => _i37.RegisterDeviceBloc(gh<_i36.DeviceRepository>()));
-  gh.singleton<_i38.SyncService>(_i38.SyncService(
+  gh.factory<_i37.OmronConnectionBloc>(() => _i37.OmronConnectionBloc(
+        gh<_i3.AccountDbProvider>(),
+        gh<_i18.PendingResultsDbProvider>(),
+        gh<_i17.PairedDevicesDbProvider>(),
+      ));
+  gh.factory<_i38.RegisterDeviceBloc>(
+      () => _i38.RegisterDeviceBloc(gh<_i36.DeviceRepository>()));
+  gh.singleton<_i39.SyncService>(_i39.SyncService(
     gh<_i20.Session>(),
     gh<_i3.AccountDbProvider>(),
     gh<_i18.PendingResultsDbProvider>(),
@@ -168,22 +173,22 @@ _i1.GetIt init(
     gh<_i4.AppSettingsDbProvider>(),
     gh<_i36.DeviceRepository>(),
   ));
-  gh.factory<_i39.TokenInterceptor>(() => _i39.TokenInterceptor(
+  gh.factory<_i40.TokenInterceptor>(() => _i40.TokenInterceptor(
         gh<_i20.Session>(),
         gh<_i25.AccountApiClient>(),
         gh<_i3.AccountDbProvider>(),
       ));
-  gh.singleton<_i40.AuthBloc>(_i40.AuthBloc(
+  gh.singleton<_i41.AuthBloc>(_i41.AuthBloc(
     gh<_i5.AuthService>(),
     gh<_i26.AccountRepository>(),
     gh<_i20.Session>(),
     gh<_i3.AccountDbProvider>(),
     gh<_i18.PendingResultsDbProvider>(),
     gh<_i11.Dio>(instanceName: 'privateDio'),
-    gh<_i38.SyncService>(),
+    gh<_i39.SyncService>(),
   ));
-  gh.factory<_i41.CalendarFulfillmentServiceBloc>(
-      () => _i41.CalendarFulfillmentServiceBloc(
+  gh.factory<_i42.CalendarFulfillmentServiceBloc>(
+      () => _i42.CalendarFulfillmentServiceBloc(
             gh<_i3.AccountDbProvider>(),
             gh<_i8.CalendarFooterBloc>(),
             gh<_i31.CarePlansRepository>(),
@@ -191,17 +196,11 @@ _i1.GetIt init(
             gh<_i15.MeasurementsDbProvider>(),
             gh<_i18.PendingResultsDbProvider>(),
           ));
-  gh.singleton<_i42.SyncBloc>(_i42.SyncBloc(
+  gh.singleton<_i43.SyncBloc>(_i43.SyncBloc(
     gh<_i3.AccountDbProvider>(),
-    gh<_i38.SyncService>(),
+    gh<_i39.SyncService>(),
     gh<_i20.Session>(),
   ));
-  gh.factory<_i43.OmronConnectionBloc>(() => _i43.OmronConnectionBloc(
-        gh<_i3.AccountDbProvider>(),
-        gh<_i18.PendingResultsDbProvider>(),
-        gh<_i17.PairedDevicesDbProvider>(),
-        gh<_i42.SyncBloc>(),
-      ));
   return getIt;
 }
 

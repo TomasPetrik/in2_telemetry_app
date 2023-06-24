@@ -10,8 +10,6 @@ import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/api/model/measurement/source_device_info.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_bloc_event.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_state.dart';
-import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
-import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/model/device_info.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/model/user_account.dart';
@@ -28,7 +26,6 @@ class OmronConnectionBloc
   final AccountDbProvider _accountDbProvider;
   final PendingResultsDbProvider _pendingResultsDbProvider;
   final PairedDevicesDbProvider _pairedDevicesDbProvider;
-  final SyncBloc _syncBloc;
   final FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
 
   Device? _device;
@@ -43,7 +40,6 @@ class OmronConnectionBloc
     this._accountDbProvider,
     this._pendingResultsDbProvider,
     this._pairedDevicesDbProvider,
-    this._syncBloc,
   ) : super(const OmronConnectionState.init()) {
     on<OmronConnectionBlocEvent>((event, emit) async {
       Future<DeviceInfo?> verifyDevice(
@@ -131,8 +127,13 @@ class OmronConnectionBloc
             heartRate: measurementInfo?.pulseRate,
           );
 
-          await _pendingResultsDbProvider.save(measurement);
-          _syncBloc.add(const SyncEvent.syncResults());
+          emit(
+            OmronConnectionState.synced(
+              measurementResult:
+                  measurementResult.copyWith(measurement: measurement),
+              deviceInfo: deviceInfo,
+            ),
+          );
         }
 
         if (reqModelPairing) {
@@ -153,14 +154,6 @@ class OmronConnectionBloc
             await _pairedDevicesDbProvider.add(pairedDevice);
             return pairedDevice;
           }
-        } else {
-          emit(
-            OmronConnectionState.synced(
-              measurementResult: measurementResult,
-              deviceInfo: deviceInfo,
-            ),
-          );
-          await Wakelock.disable();
         }
 
         return null;

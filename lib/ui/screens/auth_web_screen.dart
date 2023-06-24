@@ -44,7 +44,8 @@ class AuthWebScreen extends StatelessWidget {
                 cubit.loaded();
               },
               onWebResourceError: (WebResourceError error) {
-                if (error.errorCode == -1009) {
+                if (error.errorType == WebResourceErrorType.timeout ||
+                    error.errorType == WebResourceErrorType.unknown) {
                   onLoadingError();
                 }
               },
