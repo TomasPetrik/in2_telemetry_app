@@ -17,8 +17,13 @@ import 'package:scalesoft_app/api/model/hospital.dart';
 import 'package:scalesoft_app/api/model/measurement/composed_double_value.dart';
 import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/model/measurement_thresholds.dart';
 import 'package:scalesoft_app/api/model/settings/time_setting.dart';
 import 'package:scalesoft_app/api/model/template_time_set.dart';
+import 'package:scalesoft_app/api/model/thresholds/blood_pressure_threshold_setting.dart';
+import 'package:scalesoft_app/api/model/thresholds/heart_rate_threshold_setting.dart';
+import 'package:scalesoft_app/api/model/thresholds/oxygen_saturation_threshold_setting.dart';
+import 'package:scalesoft_app/api/model/thresholds/temperature_threshold_settings.dart';
 import 'package:scalesoft_app/api/model/user.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/box_provider.dart';
@@ -59,6 +64,11 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
     Hive.registerAdapter(TimeSettingAdapter());
     Hive.registerAdapter(DeviceModelAdapter());
     Hive.registerAdapter(DeviceToRegisterAdapter());
+    Hive.registerAdapter(MeasurementThresholdsAdapter());
+    Hive.registerAdapter(BloodPressureThresholdSettingAdapter());
+    Hive.registerAdapter(HeartRateThresholdSettingAdapter());
+    Hive.registerAdapter(OxygenSaturationThresholdSettingAdapter());
+    Hive.registerAdapter(TemperatureThresholdSettingAdapter());
   }
 
   @override

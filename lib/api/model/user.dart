@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:scalesoft_app/api/model/measurement_thresholds.dart';
 
 part 'user.freezed.dart';
 part 'user.g.dart';
@@ -17,6 +18,7 @@ class User with _$User {
     @HiveField(4) List<String>? phoneNumbers,
     @HiveField(5) List<String>? emailAddresses,
     @HiveField(6) List<User>? representedPeople,
+    @HiveField(7) MeasurementThresholds measurementThresholds,
   ) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
