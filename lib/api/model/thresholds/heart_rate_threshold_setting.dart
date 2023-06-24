@@ -11,8 +11,8 @@ class HeartRateThresholdSetting with _$HeartRateThresholdSetting {
 
   @HiveType(typeId: 49, adapterName: 'HeartRateThresholdSettingAdapter')
   factory HeartRateThresholdSetting(
-    @HiveField(1) int min,
-    @HiveField(2) int max,
+    @HiveField(1) int? min,
+    @HiveField(2) int? max,
   ) = _HeartRateThresholdSetting;
 
   factory HeartRateThresholdSetting.fromJson(Map<String, dynamic> json) =>

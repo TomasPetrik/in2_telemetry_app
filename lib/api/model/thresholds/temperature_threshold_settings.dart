@@ -11,8 +11,8 @@ class TemperatureThresholdSetting with _$TemperatureThresholdSetting {
 
   @HiveType(typeId: 51, adapterName: 'TemperatureThresholdSettingAdapter')
   factory TemperatureThresholdSetting(
-    @HiveField(1) double min,
-    @HiveField(2) double max,
+    @HiveField(1) double? min,
+    @HiveField(2) double? max,
   ) = _TemperatureThresholdSetting;
 
   factory TemperatureThresholdSetting.fromJson(
