@@ -11,10 +11,10 @@ class BloodPressureThresholdSetting with _$BloodPressureThresholdSetting {
 
   @HiveType(typeId: 48, adapterName: 'BloodPressureThresholdSettingAdapter')
   factory BloodPressureThresholdSetting(
-    @HiveField(1) int systolicMin,
-    @HiveField(2) int systolicMax,
-    @HiveField(3) int diastolicMin,
-    @HiveField(4) int diastolicMax,
+    @HiveField(1) int? systolicMin,
+    @HiveField(2) int? systolicMax,
+    @HiveField(3) int? diastolicMin,
+    @HiveField(4) int? diastolicMax,
   ) = _BloodPressureThresholdSetting;
 
   factory BloodPressureThresholdSetting.fromJson(Map<String, dynamic> json) =>

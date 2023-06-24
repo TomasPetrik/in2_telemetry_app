@@ -31,27 +31,34 @@ class MeasurementThresholds with _$MeasurementThresholds {
 
   bool _exceededBloodPressure(int systolic, int diastolic) {
     if (bloodPressure == null) return false;
-    return (systolic < bloodPressure!.systolicMin == true ||
-            systolic > bloodPressure!.systolicMax == true) ||
-        (diastolic < bloodPressure!.diastolicMin == true ||
-            diastolic > bloodPressure!.diastolicMax == true);
+    return (bloodPressure?.systolicMin != null &&
+            systolic < bloodPressure!.systolicMin!) ||
+        (bloodPressure?.systolicMax != null &&
+            systolic > bloodPressure!.systolicMax!) ||
+        (bloodPressure?.diastolicMin != null &&
+            diastolic < bloodPressure!.diastolicMin!) ||
+        (bloodPressure?.diastolicMax != null &&
+            diastolic > bloodPressure!.diastolicMax!);
   }
 
   bool _exceededHeartRate(int heartRateValue) {
     if (heartRate == null) return false;
-    return heartRateValue < heartRate!.min || heartRateValue > heartRate!.max;
+    return (heartRate?.min != null && heartRateValue < heartRate!.min!) ||
+        (heartRate?.max != null && heartRateValue > heartRate!.max!);
   }
 
   bool _exceededOxygenSaturation(int oxygenSaturationValue) {
     if (oxygenSaturation == null) return false;
-    return oxygenSaturationValue < oxygenSaturation!.percentageMin ||
-        oxygenSaturationValue > oxygenSaturation!.percentageMax;
+    return (oxygenSaturation?.percentageMin != null &&
+            oxygenSaturationValue < oxygenSaturation!.percentageMin!) ||
+        (oxygenSaturation?.percentageMax != null &&
+            oxygenSaturationValue > oxygenSaturation!.percentageMax!);
   }
 
   bool _exceededTemperature(double temperatureValue) {
     if (temperature == null) return false;
-    return temperatureValue < temperature!.min ||
-        temperatureValue > temperature!.max;
+    return (temperature?.min != null && temperatureValue < temperature!.min!) ||
+        (temperature?.max != null && temperatureValue > temperature!.max!);
   }
 
   bool exceededValues(Measurement measurement) {

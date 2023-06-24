@@ -11,8 +11,8 @@ class OxygenSaturationThresholdSetting with _$OxygenSaturationThresholdSetting {
 
   @HiveType(typeId: 50, adapterName: 'OxygenSaturationThresholdSettingAdapter')
   factory OxygenSaturationThresholdSetting(
-    @HiveField(1) double percentageMin,
-    @HiveField(2) double percentageMax,
+    @HiveField(1) double? percentageMin,
+    @HiveField(2) double? percentageMax,
   ) = _OxygenSaturationThresholdSetting;
 
   factory OxygenSaturationThresholdSetting.fromJson(
