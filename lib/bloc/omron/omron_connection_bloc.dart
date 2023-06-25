@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:injectable/injectable.dart';
@@ -145,8 +146,19 @@ class OmronConnectionBloc
 
           //save paired device
           if (measurementResult.resultState != ResultState.connectionError) {
+            var devId = deviceInfo.advData!.localName;
+
+            final supportedDev = Constants.supportedDevices.firstWhere(
+              (dev) => devId
+                  .toLowerCase()
+                  .contains(dev.bluetoothName!.toLowerCase()),
+            );
+            if (supportedDev.deviceModelType == DeviceModelType.omronM7) {
+              devId = devId.split('_').last;
+            }
+
             final pairedDevice = _device!.copyWith(
-              deviceIdentifier: deviceInfo.advData?.localName,
+              deviceIdentifier: devId,
               wasPaired: true,
               addedAt: DateTime.now(),
             );
@@ -164,14 +176,20 @@ class OmronConnectionBloc
         advertisementData,
       ) async {
         emit(const OmronConnectionState.connecting());
-        await device.connect(autoConnect: false);
 
         final BluetoothDeviceState deviceState = await device.state.first;
         if (deviceState == BluetoothDeviceState.connected) {
           emit(const OmronConnectionState.connected());
         } else {
-          emit(const OmronConnectionState.disconnected());
-          return;
+          try {
+            await device.connect(autoConnect: false);
+            emit(const OmronConnectionState.connected());
+          } catch (e) {
+            debugPrint('dev is already connected');
+          } finally {
+            await device.disconnect();
+            await device.connect(autoConnect: false);
+          }
         }
 
         add(OmronConnectionBlocEvent.verifyDevice(device, advertisementData));
