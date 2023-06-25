@@ -50,12 +50,13 @@ class I10n {
     return Localizations.of<I10n>(context, I10n);
   }
 
-  /// `ScelesoftApp`
+  /// `FONS Care`
   String get appTitle {
     return Intl.message(
-      'ScelesoftApp',
+      'FONS Care',
       name: 'appTitle',
-      desc: 'The title of the application',
+      desc:
+          'FONS Care je inovativní řešení v komunikaci lékařů s pacientem modernizující české zdravotnictví.',
       args: [],
     );
   }
@@ -435,10 +436,10 @@ class I10n {
     );
   }
 
-  /// `Ooops!`
+  /// `Chyba`
   String get server_error_title {
     return Intl.message(
-      'Ooops!',
+      'Chyba',
       name: 'server_error_title',
       desc: '',
       args: [],
@@ -2002,10 +2003,10 @@ class I10n {
     );
   }
 
-  /// `Výsledky budou po potvrzení odeslány`
+  /// `Výsledky budou odeslány po potvrzení`
   String get measurement_summary_screen_success_subtitle {
     return Intl.message(
-      'Výsledky budou po potvrzení odeslány',
+      'Výsledky budou odeslány po potvrzení',
       name: 'measurement_summary_screen_success_subtitle',
       desc: '',
       args: [],
@@ -2062,10 +2063,10 @@ class I10n {
     );
   }
 
-  /// `Pozor, vaše naměřené hodnoty byly překročeny, kontaktujte vašeho lékaře !`
+  /// `Pozor, vaše naměřené hodnoty překročily nastavené meze, kontaktujte vašeho lékaře!`
   String get measurement_summary_screen_exceeded_values {
     return Intl.message(
-      'Pozor, vaše naměřené hodnoty byly překročeny, kontaktujte vašeho lékaře !',
+      'Pozor, vaše naměřené hodnoty překročily nastavené meze, kontaktujte vašeho lékaře!',
       name: 'measurement_summary_screen_exceeded_values',
       desc: '',
       args: [],

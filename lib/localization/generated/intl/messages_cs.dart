@@ -239,7 +239,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "add_device_screen_title":
             MessageLookupByLibrary.simpleMessage("Přidat zařízení"),
-        "appTitle": MessageLookupByLibrary.simpleMessage("ScelesoftApp"),
+        "appTitle": MessageLookupByLibrary.simpleMessage("FONS Care"),
         "app_version": m0,
         "appearance_screen_title":
             MessageLookupByLibrary.simpleMessage("Vzhled"),
@@ -451,7 +451,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Neodeslat výsledky"),
         "measurement_summary_screen_exceeded_values":
             MessageLookupByLibrary.simpleMessage(
-                "Pozor, vaše naměřené hodnoty byly překročeny, kontaktujte vašeho lékaře !"),
+                "Pozor, vaše naměřené hodnoty překročily nastavené meze, kontaktujte vašeho lékaře!"),
         "measurement_summary_screen_no_data_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Zařízení nedodalo žádné výsledky měření."),
@@ -462,7 +462,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Máte hotovo! Výsledek se připíše po potvrzení."),
         "measurement_summary_screen_success_subtitle":
             MessageLookupByLibrary.simpleMessage(
-                "Výsledky budou po potvrzení odeslány"),
+                "Výsledky budou odeslány po potvrzení"),
         "measurement_summary_screen_success_title":
             MessageLookupByLibrary.simpleMessage(
                 "Měření bylo úspěšně dokončeno"),
@@ -573,7 +573,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Výsledky"),
         "server_error_desc": MessageLookupByLibrary.simpleMessage(
             "Zde je něco v nepořádku. Zkuste akci opakovat později."),
-        "server_error_title": MessageLookupByLibrary.simpleMessage("Ooops!"),
+        "server_error_title": MessageLookupByLibrary.simpleMessage("Chyba"),
         "session_expired_description": m41,
         "session_expired_title":
             MessageLookupByLibrary.simpleMessage("Problém s přihlášením"),
