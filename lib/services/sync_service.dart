@@ -172,6 +172,7 @@ class SyncService {
 
     //1. Update assigned devices
     userAccount.assignedDevices = userInfo.assignedDevices;
+    userAccount.user = userInfo.currentUser;
   }
 
   Future<void> loadFulFillmentEvaluation(final UserAccount userAccount) async {
