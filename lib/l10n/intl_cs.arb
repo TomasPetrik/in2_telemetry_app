@@ -1,7 +1,7 @@
 {
-    "appTitle": "ScelesoftApp",
+    "appTitle": "FONS Care",
     "@appTitle": {
-        "description": "The title of the application"
+        "description": "FONS Care je inovativní řešení v komunikaci lékařů s pacientem modernizující české zdravotnictví."
     },
     "app_version": "Verze aplikace {version}",
     "@app_version": {
@@ -34,6 +34,7 @@
     "common_procedure": "Postup",
     "common_today": "Dnes",
     "common_at_time": "v {atTime}",
+    "common_continue": "Pokračovat",
     "@common_at_time": {
         "placeholders": {
             "atTime": {
@@ -92,7 +93,7 @@
             "month": {}
         }
     },
-    "server_error_title": "Ooops!",
+    "server_error_title": "Chyba",
     "server_error_desc": "Zde je něco v nepořádku. Zkuste akci opakovat později.",
     "common_measurement_types": "{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} other{Jiný}}",
     "@common_measurement_types": {
@@ -517,11 +518,13 @@
     "find_device_screen_not_granted_bt_desc": "Aplikace vyžaduje povolení používat Bluetooth pro komunikaci se zařízeními.",
     "find_device_screen_not_granted_bt_btn_settings": "Povolit",
     "measurement_summary_screen_success_title": "Měření bylo úspěšně dokončeno",
-    "measurement_summary_screen_success_subtitle": "Výsledky budou automaticky odeslány",
-    "measurement_summary_screen_result_success_desc": "Máte hotovo! Výsledek se připsal k ostatním.",
+    "measurement_summary_screen_success_subtitle": "Výsledky budou odeslány po potvrzení",
+    "measurement_summary_screen_result_success_desc": "Máte hotovo! Výsledek se připíše po potvrzení.",
     "measurement_summary_screen_sync_error_desc": "Nastala chyba synchronizace.",
     "measurement_summary_screen_no_data_desc": "Zařízení nedodalo žádné výsledky měření.",
     "measurement_summary_screen_no_data_repeat_measurement": "Opakovat měření",
+    "measurement_summary_screen_disallow_to_send": "Neodeslat výsledky",
+    "measurement_summary_screen_exceeded_values": "Pozor, vaše naměřené hodnoty překročily nastavené meze, kontaktujte vašeho lékaře!",
     "results_history_screen_plan_of_day": "Plán měření dne",
     "chart_screen_title": "Výsledky měření {measurementType} v {unitType}",
     "@chart_screen_title": {

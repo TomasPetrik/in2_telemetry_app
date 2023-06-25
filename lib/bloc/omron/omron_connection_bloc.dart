@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:injectable/injectable.dart';
@@ -10,8 +11,6 @@ import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/api/model/measurement/source_device_info.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_bloc_event.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_state.dart';
-import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
-import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/model/device_info.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/model/user_account.dart';
@@ -28,7 +27,6 @@ class OmronConnectionBloc
   final AccountDbProvider _accountDbProvider;
   final PendingResultsDbProvider _pendingResultsDbProvider;
   final PairedDevicesDbProvider _pairedDevicesDbProvider;
-  final SyncBloc _syncBloc;
   final FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
 
   Device? _device;
@@ -43,7 +41,6 @@ class OmronConnectionBloc
     this._accountDbProvider,
     this._pendingResultsDbProvider,
     this._pairedDevicesDbProvider,
-    this._syncBloc,
   ) : super(const OmronConnectionState.init()) {
     on<OmronConnectionBlocEvent>((event, emit) async {
       Future<DeviceInfo?> verifyDevice(
@@ -131,8 +128,13 @@ class OmronConnectionBloc
             heartRate: measurementInfo?.pulseRate,
           );
 
-          await _pendingResultsDbProvider.save(measurement);
-          _syncBloc.add(const SyncEvent.syncResults());
+          emit(
+            OmronConnectionState.synced(
+              measurementResult:
+                  measurementResult.copyWith(measurement: measurement),
+              deviceInfo: deviceInfo,
+            ),
+          );
         }
 
         if (reqModelPairing) {
@@ -144,8 +146,19 @@ class OmronConnectionBloc
 
           //save paired device
           if (measurementResult.resultState != ResultState.connectionError) {
+            var devId = deviceInfo.advData!.localName;
+
+            final supportedDev = Constants.supportedDevices.firstWhere(
+              (dev) => devId
+                  .toLowerCase()
+                  .contains(dev.bluetoothName!.toLowerCase()),
+            );
+            if (supportedDev.deviceModelType == DeviceModelType.omronM7) {
+              devId = devId.split('_').last;
+            }
+
             final pairedDevice = _device!.copyWith(
-              deviceIdentifier: deviceInfo.advData?.localName,
+              deviceIdentifier: devId,
               wasPaired: true,
               addedAt: DateTime.now(),
             );
@@ -153,14 +166,6 @@ class OmronConnectionBloc
             await _pairedDevicesDbProvider.add(pairedDevice);
             return pairedDevice;
           }
-        } else {
-          emit(
-            OmronConnectionState.synced(
-              measurementResult: measurementResult,
-              deviceInfo: deviceInfo,
-            ),
-          );
-          await Wakelock.disable();
         }
 
         return null;
@@ -171,14 +176,19 @@ class OmronConnectionBloc
         advertisementData,
       ) async {
         emit(const OmronConnectionState.connecting());
-        await device.connect(autoConnect: false);
 
         final BluetoothDeviceState deviceState = await device.state.first;
         if (deviceState == BluetoothDeviceState.connected) {
           emit(const OmronConnectionState.connected());
         } else {
-          emit(const OmronConnectionState.disconnected());
-          return;
+          try {
+            await device.connect(autoConnect: false);
+            emit(const OmronConnectionState.connected());
+          } catch (e) {
+            debugPrint('dev is already connected');
+            await device.disconnect();
+            await device.connect(autoConnect: false);
+          }
         }
 
         add(OmronConnectionBlocEvent.verifyDevice(device, advertisementData));

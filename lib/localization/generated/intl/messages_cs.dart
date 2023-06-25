@@ -276,6 +276,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "common_cancel": MessageLookupByLibrary.simpleMessage("Zrušit"),
         "common_close": MessageLookupByLibrary.simpleMessage("Zavřít"),
         "common_confirm": MessageLookupByLibrary.simpleMessage("Potvrdit"),
+        "common_continue": MessageLookupByLibrary.simpleMessage("Pokračovat"),
         "common_days_in_week_short": m6,
         "common_do_sync":
             MessageLookupByLibrary.simpleMessage("Synchronizovat"),
@@ -446,6 +447,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "measurement_screen_today_n_measurements": m28,
         "measurement_screen_tomorrow_n_measurements": m29,
         "measurement_screen_upcomming_n_measurements": m30,
+        "measurement_summary_screen_disallow_to_send":
+            MessageLookupByLibrary.simpleMessage("Neodeslat výsledky"),
+        "measurement_summary_screen_exceeded_values":
+            MessageLookupByLibrary.simpleMessage(
+                "Pozor, vaše naměřené hodnoty byly překročeny, kontaktujte vašeho lékaře !"),
         "measurement_summary_screen_no_data_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Zařízení nedodalo žádné výsledky měření."),
@@ -453,10 +459,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Opakovat měření"),
         "measurement_summary_screen_result_success_desc":
             MessageLookupByLibrary.simpleMessage(
-                "Máte hotovo! Výsledek se připsal k ostatním."),
+                "Máte hotovo! Výsledek se připíše po potvrzení."),
         "measurement_summary_screen_success_subtitle":
             MessageLookupByLibrary.simpleMessage(
-                "Výsledky budou automaticky odeslány"),
+                "Výsledky budou po potvrzení odeslány"),
         "measurement_summary_screen_success_title":
             MessageLookupByLibrary.simpleMessage(
                 "Měření bylo úspěšně dokončeno"),
