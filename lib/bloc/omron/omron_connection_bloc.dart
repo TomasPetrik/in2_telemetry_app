@@ -186,7 +186,6 @@ class OmronConnectionBloc
             emit(const OmronConnectionState.connected());
           } catch (e) {
             debugPrint('dev is already connected');
-          } finally {
             await device.disconnect();
             await device.connect(autoConnect: false);
           }
