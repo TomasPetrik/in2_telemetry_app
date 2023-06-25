@@ -97,16 +97,20 @@ class CalendarMonthWidget extends StatelessWidget {
                                                   : day.dayPeriod ==
                                                           CalendarDayPeriod
                                                               .today
-                                                      ? Theme.of(context)
-                                                          .colorScheme
-                                                          .tertiary
+                                                      ? Theme.of(
+                                                          context,
+                                                        ).colorScheme.tertiary
                                                       : day.dayPeriod ==
                                                               CalendarDayPeriod
                                                                   .past
-                                                          ? Theme.of(context)
+                                                          ? Theme.of(
+                                                              context,
+                                                            )
                                                               .colorScheme
                                                               .secondary
-                                                          : Theme.of(context)
+                                                          : Theme.of(
+                                                              context,
+                                                            )
                                                               .colorScheme
                                                               .secondary
                                                               .withOpacity(
@@ -135,31 +139,33 @@ class CalendarMonthWidget extends StatelessWidget {
                                                   ),
                                                 );
                                               },
-                                              child: AspectRatio(
-                                                aspectRatio: 1.255,
-                                                child: Padding(
-                                                  padding: Paddings.vertical4,
-                                                  child: Center(
-                                                    child: Text(
-                                                      '${day.startDt.day}',
-                                                      style: ScaleTextStyles
-                                                          .text
-                                                          .apply(
-                                                        color: day.isSelected ==
-                                                                    true ||
-                                                                day.dayPeriod !=
-                                                                    CalendarDayPeriod
-                                                                        .future
-                                                            ? Theme.of(context)
-                                                                .colorScheme
-                                                                .onSurface
-                                                            : Theme.of(context)
-                                                                .colorScheme
-                                                                .onPrimary
-                                                                .withOpacity(
-                                                                  0.48,
-                                                                ),
-                                                      ),
+                                              child: Container(
+                                                height: Dimensions
+                                                    .calendarCellHeight,
+                                                padding: Paddings.vertical4,
+                                                child: Center(
+                                                  child: Text(
+                                                    '${day.startDt.day}',
+                                                    style: ScaleTextStyles.text
+                                                        .apply(
+                                                      color: day.isSelected ==
+                                                                  true ||
+                                                              day.dayPeriod !=
+                                                                  CalendarDayPeriod
+                                                                      .future
+                                                          ? Theme.of(
+                                                              context,
+                                                            )
+                                                              .colorScheme
+                                                              .onSurface
+                                                          : Theme.of(
+                                                              context,
+                                                            )
+                                                              .colorScheme
+                                                              .onPrimary
+                                                              .withOpacity(
+                                                                0.48,
+                                                              ),
                                                     ),
                                                   ),
                                                 ),

@@ -253,7 +253,6 @@ class CalendarFulfillmentServiceBloc extends Bloc<
                 loading: false,
               ),
             );
-            return;
           }
 
           await populateMonth(calendarMonth, carePlans);
@@ -272,6 +271,13 @@ class CalendarFulfillmentServiceBloc extends Bloc<
                 DateTime.now(),
               ),
             );
+          }
+
+          if (calendarMonth.monthStartDate.isAfter(DateTime.now())) {
+            debugPrint(
+              'don\'t load month fullfiments for future month: ${calendarMonth.month}, year: ${calendarMonth.year}',
+            );
+            return;
           }
 
           if (calendarMonth.wasResolved != true) {
