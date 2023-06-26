@@ -11,7 +11,20 @@ class Dimensions {
   static const double doubleLineSwitchRowHeight = 92;
   static const double footerHeight = 75;
   static const double cardElevation = 10;
+  static const double calendarCellHeight = 28.0;
 
+  static const wrappedCellHeight = Dimensions.padding16 +
+      Dimensions.calendarCellHeight +
+      Dimensions.padding8 +
+      Dimensions.padding4 +
+      Dimensions.padding16 +
+      Dimensions.padding0_5;
+
+  static const calendarHeight = (wrappedCellHeight * 6) +
+      (Dimensions.padding24 + Dimensions.padding16 + Dimensions.padding24) +
+      Dimensions.padding24;
+
+  static const double padding0_5 = 0.5;
   static const double padding2 = 2;
   static const double padding4 = 4;
   static const double padding5 = 5;
