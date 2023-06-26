@@ -59,11 +59,9 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
         all: true,
       );
 
-      final timestamp = DateTime.now().microsecondsSinceEpoch;
-
       emit(
         CarePlanBlocState(
-          timestamp: timestamp,
+          timestamp: DateTime.now().microsecondsSinceEpoch,
           currentCarePlans: event.carePlans,
           selectedWhenPeriod: event.whenPeriod,
           nextMeasurement: nextMeasurement?.first,
@@ -203,6 +201,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
 
           emit(
             state.copyWith(
+              timestamp: DateTime.now().microsecondsSinceEpoch,
               currentCarePlans: carePlans,
               nextMeasurement: nextMeasurement.first,
               upcomingMeasurements: upcomingMeasurements,
