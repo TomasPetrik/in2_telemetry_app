@@ -924,10 +924,10 @@ class I10n {
     );
   }
 
-  /// `Jak to funguje?`
+  /// `Otevřít uživatelskou příručku`
   String get onboarding_add_account_screen_add_account_how_it_works_button {
     return Intl.message(
-      'Jak to funguje?',
+      'Otevřít uživatelskou příručku',
       name: 'onboarding_add_account_screen_add_account_how_it_works_button',
       desc: '',
       args: [],
@@ -2244,10 +2244,10 @@ class I10n {
     );
   }
 
-  /// `Jak to funguje`
+  /// `Příručka`
   String get how_it_works_screen_title {
     return Intl.message(
-      'Jak to funguje',
+      'Příručka',
       name: 'how_it_works_screen_title',
       desc: '',
       args: [],
