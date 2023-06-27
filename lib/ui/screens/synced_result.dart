@@ -92,7 +92,7 @@ class SyncedResult extends StatelessWidget {
   bool _exceededValues() {
     final UserAccount userAccount = getIt<AccountDbProvider>().get(userId)!;
     return userAccount.user.measurementThresholds
-            .exceededValues(hwMeasurementResult.measurement!) ==
+            ?.exceededValues(hwMeasurementResult.measurement!) ==
         true;
   }
 

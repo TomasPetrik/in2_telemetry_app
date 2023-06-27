@@ -31,27 +31,26 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
 
     final carePlanBloc = getIt<CarePlanBloc>();
     final session = getIt<Session>();
-    final sessionAccounts = session.getSessionAccounts();
-    final allCarePlans = session.getActiveCarePlans();
     final allPendingResults = session.getPendingResults();
-
-    carePlanBloc.add(
-      CarePlanInitializeEvent(
-        carePlans: allCarePlans,
-        whenPeriod: PlanWhenPeriod.today,
-        pendingResults: allPendingResults,
-      ),
-    );
 
     return Stack(
       children: [
-        BlocBuilder<CarePlanBloc, CarePlanBlocState>(
-          bloc: carePlanBloc,
-          builder: (context, state) {
-            return BlocBuilder<SyncBloc, SyncState>(
-              buildWhen: (previous, current) => previous != current,
-              bloc: syncBloc..add(const SyncEvent.init()),
-              builder: (context, syncState) {
+        BlocBuilder<SyncBloc, SyncState>(
+          buildWhen: (previous, current) => previous != current,
+          bloc: syncBloc..add(const SyncEvent.init()),
+          builder: (context, syncState) {
+            return BlocBuilder<CarePlanBloc, CarePlanBlocState>(
+              bloc: carePlanBloc
+                ..add(
+                  CarePlanInitializeEvent(
+                    carePlans: session.getActiveCarePlans(),
+                    whenPeriod: PlanWhenPeriod.today,
+                    pendingResults: allPendingResults,
+                  ),
+                ),
+              builder: (context, state) {
+                final sessionAccounts = session.getSessionAccounts();
+
                 if (state.selectedWhenPeriod == null ||
                     state.currentCarePlans == null ||
                     state.allTodayMeasurements == null ||
@@ -60,7 +59,9 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                 } else {
                   final allCarePlans = session.getActiveCarePlans();
                   final supportedMeasurementTypes =
-                      CarePlanHelper.getMeasurementTypes(allCarePlans);
+                      CarePlanHelper.getMeasurementTypes(
+                    session.getActiveCarePlans(),
+                  );
 
                   return NavigationScreen(
                     key: ValueKey(state.timestamp),

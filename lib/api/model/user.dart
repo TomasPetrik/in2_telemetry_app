@@ -18,7 +18,7 @@ class User with _$User {
     @HiveField(4) List<String>? phoneNumbers,
     @HiveField(5) List<String>? emailAddresses,
     @HiveField(6) List<User>? representedPeople,
-    @HiveField(7) MeasurementThresholds measurementThresholds,
+    @HiveField(7) MeasurementThresholds? measurementThresholds,
   ) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
