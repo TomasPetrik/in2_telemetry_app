@@ -105,7 +105,8 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                           dropdownValue = value!;
                         });
                       },
-                      items: MeasurementType.values
+                      // TODO: Make visible options configurable per hospital #IN2-8428
+                      items: [MeasurementType.bloodPressure, MeasurementType.heartRate]
                           .map<DropdownMenuItem<MeasurementType>>(
                               (MeasurementType measurementType) {
                         return DropdownMenuItem<MeasurementType>(
