@@ -47,7 +47,7 @@ class MeasurementsList extends StatelessWidget {
   bool _isTodaysPlanFinished() {
     return measurements.isEmpty &&
         whenPeriod == PlanWhenPeriod.today &&
-        nextMeasurement.carePlan.hasMeasurementsToday() == true;
+        CarePlanHelper.hasMeasurementsToday(nextMeasurement.carePlan);
   }
 
   int _getPlanEvaluation() {
@@ -87,7 +87,7 @@ class MeasurementsList extends StatelessWidget {
                   label:
                       translactions.dashboard_screen_upcoming_measurement_info(
                     nextMeasurement.whenStart.toDateOrDay().toLowerCase(),
-                    nextMeasurement.timingDayWhen.start.toString(),
+                    nextMeasurement.whenStart.toTimeOfDay().toString(),
                   ),
                 ),
               )

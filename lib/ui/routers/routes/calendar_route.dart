@@ -24,7 +24,7 @@ class CalendarRoute extends ApplicationRoute with PageBuilderMixin {
       pageBuilder: pageBuilder(
         withTransition: false,
         builder: (state) {
-          final preSelectedDt = getIt<Session>().preSelecteDtRestoration;
+          final preSelectedDt = getIt<Session>().preSelectedDtRestoration;
           final carePlansIds = state.extra! as List<int>;
 
           return CalendarScreen(

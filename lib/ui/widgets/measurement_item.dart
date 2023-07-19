@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -20,12 +19,17 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
     required this.plannedMeasurement,
   });
 
-  TimingDayWhen get timingDayWhen => plannedMeasurement.timingDayWhen;
+  // TimingDayWhen get timingDayWhen => plannedMeasurement.timingDayWhen;
   CarePlan get carePlan => plannedMeasurement.carePlan;
+
   MeasurementNeed get measurementNeed => getMeasurementNeed(plannedMeasurement);
+
   int get requiredCount => plannedMeasurement.reqCount;
+
   int? get currentCount => plannedMeasurement.currentCount;
+
   DateTime get whenStart => plannedMeasurement.whenStart;
+
   DateTime get whenEnd => plannedMeasurement.whenEnd;
 
   final PlannedMeasurement plannedMeasurement;
@@ -61,7 +65,9 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                showAsLongPeriodical ? '00:00' : timingDayWhen.start.toString(),
+                showAsLongPeriodical
+                    ? '00:00'
+                    : plannedMeasurement.whenStart.toTimeOfDay().toString(),
                 style: ScaleTextStyles.label.apply(
                   color: showAsLongPeriodical
                       ? Colors.transparent
@@ -139,8 +145,12 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
                                 )
                               : translactions
                                   .dashboard_screen_measurement_interval(
-                                  timingDayWhen.start.toString(),
-                                  timingDayWhen.end.toString(),
+                                  plannedMeasurement.whenStart
+                                      .toTimeOfDay()
+                                      .toString(),
+                                  plannedMeasurement.whenEnd
+                                      .toTimeOfDay()
+                                      .toString(),
                                 ),
                           style: ScaleTextStyles.label.apply(
                             color: measurementNeed == MeasurementNeed.now
@@ -148,10 +158,10 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
                                 : Theme.of(context).colorScheme.tertiary,
                           ),
                         ),
-                        if (timingDayWhen.whenCode != null)
+                        if (plannedMeasurement.whenCode != null)
                           Text(
                             translactions
-                                .common_when_code(timingDayWhen.whenCode!.name),
+                                .common_when_code(plannedMeasurement.whenCode!.name),
                             style: ScaleTextStyles.label.apply(
                               color: measurementNeed == MeasurementNeed.now
                                   ? Theme.of(context).colorScheme.onSecondary

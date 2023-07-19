@@ -28,8 +28,10 @@ class EvaluationPlanHelper {
 
     if (offlineResults.isNotEmpty) {
       //get all planned measurements within current time since plan exists
-      final allPlannedMeasurements = carePlan.getAllTodayPlannedMeasurements(
-        offlineResults: offlineResults,
+      final allPlannedMeasurements =
+          CarePlanHelper.getPlannedMeasurementsUpToToday(
+        carePlan,
+        offlineResults,
       );
 
       //check if offline results are included in these measurements
