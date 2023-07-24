@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/ui/routers/routes/how_it_works_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/manual_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -78,14 +78,13 @@ class OnboardingScreen extends StatelessWidget with BottomSheetMixin {
                         }
                       },
                     ),
-                    // Disabled until lorem ipsum text is replaced #IN2-8344
                     Gaps.gap24,
                     HighlightedElevatedButton(
                       label: translactions
-                          .onboarding_add_account_screen_add_account_how_it_works_button,
+                          .open_manual_button,
                       buttonType: ButtonType.secondary,
                       onPressed: () async {
-                        GoRouter.of(context).pushNamed(HowItWorksRoute.name);
+                        GoRouter.of(context).pushNamed(ManualRoute.name);
                       },
                     ),
                   ],

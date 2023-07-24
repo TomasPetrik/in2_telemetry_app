@@ -3,8 +3,8 @@ import 'package:pdfx/pdfx.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
-class HowItWorksScreen extends StatelessWidget {
-  const HowItWorksScreen({super.key});
+class ManualScreen extends StatelessWidget {
+  const ManualScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class HowItWorksScreen extends StatelessWidget {
             left: 0,
             right: 0,
             child: BluredScaleAppBar(
-              title: translactions.how_it_works_screen_title,
+              title: translactions.manual_screen_title,
               showClose: true,
               onBackTap: () {},
             ),

@@ -17,7 +17,7 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/appearance_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/hospital_detail_route.dart';
-import 'package:scalesoft_app/ui/routers/routes/how_it_works_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/manual_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/notification_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_detail_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
@@ -225,14 +225,14 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                         builder: (context, state) {
                           return SettingsItem(
                             label: translactions
-                                .how_it_works_screen_title,
-                            subLabel: translactions.onboarding_add_account_screen_add_account_how_it_works_button,
+                                .manual_screen_title,
+                            subLabel: translactions.open_manual_button,
                             iconWidget: SvgPicture.asset(
                               'assets/icons/icon_question.svg',
                               color: Theme.of(context).colorScheme.onSecondary,
                             ),
                             onTap: () {
-                              GoRouter.of(context).pushNamed(HowItWorksRoute.name);
+                              GoRouter.of(context).pushNamed(ManualRoute.name);
                             },
                           );
                         },

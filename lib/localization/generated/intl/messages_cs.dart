@@ -433,16 +433,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Měření pro"),
         "hospital_selector_search_for_account":
             MessageLookupByLibrary.simpleMessage("Název účtu..."),
-        "how_it_works_screen_desc": MessageLookupByLibrary.simpleMessage(
-            "• Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n• Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n• Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n• Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
-        "how_it_works_screen_title":
-            MessageLookupByLibrary.simpleMessage("Příručka"),
         "manual_measurement_screen_measurement_time":
             MessageLookupByLibrary.simpleMessage("Čas odečtu"),
         "manual_measurement_screen_title":
             MessageLookupByLibrary.simpleMessage("Vlastní zápis hodnot"),
         "manual_measurement_screen_type":
             MessageLookupByLibrary.simpleMessage("Typ"),
+        "manual_screen_title": MessageLookupByLibrary.simpleMessage("Příručka"),
         "measurement_dialog_device_desc": m27,
         "measurement_screen_today_n_measurements": m28,
         "measurement_screen_tomorrow_n_measurements": m29,
@@ -508,9 +505,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "onboarding_account_added_screen_user_added": m34,
         "onboarding_add_account_screen_add_account_button":
             MessageLookupByLibrary.simpleMessage("Přidat účet"),
-        "onboarding_add_account_screen_add_account_how_it_works_button":
-            MessageLookupByLibrary.simpleMessage(
-                "Otevřít uživatelskou příručku"),
         "onboarding_add_account_screen_add_account_subtitle":
             MessageLookupByLibrary.simpleMessage(
                 "Pro používání aplikace musíte mít\naktivní alespoň jeden účet."),
@@ -524,6 +518,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Můžete se začít měřit"),
         "onboarding_add_account_screen_add_account_title":
             MessageLookupByLibrary.simpleMessage("Přidat účet"),
+        "open_manual_button": MessageLookupByLibrary.simpleMessage(
+            "Otevřít uživatelskou příručku"),
         "register_device_detail_registration_fail_message": m35,
         "register_device_detail_registration_fail_title":
             MessageLookupByLibrary.simpleMessage("Chyba"),
