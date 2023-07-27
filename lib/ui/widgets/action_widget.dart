@@ -10,6 +10,7 @@ import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/scale_card.dart';
+import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
@@ -56,8 +57,8 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
         upcomingMeasurements.isEmpty) {
       measurementWhenType = MeasurementWhenType.finished;
     } else if (nextMeasurement != null) {
-      final todayStart = nextMeasurement!.timingDayWhen.start.todayDateTime();
-      var todayEnd = nextMeasurement!.timingDayWhen.end.todayDateTime();
+      final todayStart = nextMeasurement!.whenStart.toTimeOfDay().todayDateTime();
+      var todayEnd = nextMeasurement!.whenEnd.toTimeOfDay().todayDateTime();
       if (todayEnd.isBefore(todayStart)) {
         todayEnd = todayEnd.add(const Duration(days: 1));
       }
@@ -65,7 +66,7 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
         measurementWhenType = MeasurementWhenType.ongoing;
       } else if (now.isBefore(todayStart)) {
         measurementWhenType = MeasurementWhenType.upcoming;
-      } else if (nextMeasurement!.carePlan.hasMeasurementsToday() == true) {
+      } else if (CarePlanHelper.hasMeasurementsToday(nextMeasurement!.carePlan)) {
         measurementWhenType = MeasurementWhenType.finished;
       }
     }
@@ -80,16 +81,16 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
       case MeasurementWhenType.ongoing:
         return '${translactions.common_measurement} ${translactions.common_measurement_types_genitive(
               nextMeasurement!.carePlan.activity.measurementType.name,
-            ).toLowerCase()} ${nextMeasurement!.timingDayWhen.whenCode != null ? translactions.common_when_code(
-              nextMeasurement!.timingDayWhen.whenCode!.name,
+            ).toLowerCase()} ${nextMeasurement!.whenCode != null ? translactions.common_when_code(
+              nextMeasurement!.whenCode!.name,
             ).toLowerCase() : ''}';
 
       case MeasurementWhenType.upcoming:
         return '${translactions.common_measurement} ${translactions.common_measurement_types_genitive(
               nextMeasurement!.carePlan.activity.measurementType.name,
-            ).toLowerCase()} ${nextMeasurement!.timingDayWhen.whenCode != null ? translactions.common_when_code(
-              nextMeasurement!.timingDayWhen.whenCode!.name,
-            ).toLowerCase() : ''} v ${nextMeasurement!.timingDayWhen.start.toString()}';
+            ).toLowerCase()} ${nextMeasurement!.whenCode != null ? translactions.common_when_code(
+              nextMeasurement!.whenCode!.name,
+            ).toLowerCase() : ''} v ${nextMeasurement!.whenStart.toTimeOfDay().toString()}';
 
       case MeasurementWhenType.finished:
         return translactions.dashboard_screen_no_more_measurements;
@@ -152,7 +153,7 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
                       if (measurementType == MeasurementWhenType.ongoing) ...[
                         Gaps.gap16,
                         Text(
-                          nextMeasurement?.timingDayWhen.start.toString() ?? '',
+                          nextMeasurement?.whenStart.toTimeOfDay().toString() ?? '',
                           style: ScaleTextStyles.text.apply(
                             color: Theme.of(context).colorScheme.onSurface,
                           ),

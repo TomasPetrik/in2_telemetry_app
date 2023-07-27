@@ -50,7 +50,7 @@ extension DateParse on DateTime {
     return WeekDay.values[tomorrow.weekday - 1];
   }
 
-  WeekDay yesterdaywWeekDay() {
+  WeekDay yesterdayWeekDay() {
     final today = DateTime(year, month, day);
     final yesterday = today.subtract(const Duration(days: 1));
     return WeekDay.values[yesterday.weekday - 1];
@@ -73,12 +73,12 @@ extension DateParse on DateTime {
     return today;
   }
 
-  DateTime getStartDay() {
+  DateTime getStartOfDay() {
     final startDayDt = DateTime(year, month, day, 0, 0, 0, 0, 0);
     return startDayDt;
   }
 
-  DateTime getEndDay() {
+  DateTime getEndOfDay() {
     final endDayDt =
         DateTime(year, month, day, 0, 0, 0, 0, 0).add(const Duration(days: 1));
     return endDayDt;
@@ -119,13 +119,42 @@ extension DateParse on DateTime {
     final difference = daysBetween(currentDt, this);
 
     if (difference == -1) {
-      return translactions.common_when_day_name(WhenPeriod.yesterday.name).capitalize();
+      return translactions
+          .common_when_day_name(WhenPeriod.yesterday.name)
+          .capitalize();
     }
     if (difference == 0) {
-      return translactions.common_when_day_name(WhenPeriod.today.name).capitalize();
+      return translactions
+          .common_when_day_name(WhenPeriod.today.name)
+          .capitalize();
     } else {
       return toRegularDate();
     }
+  }
+
+  DateTime nextWeekStart() {
+    var nextWeekStartWithTime = add(Duration(days: 7 + weekday - 1));
+    return nextWeekStartWithTime.getDate();
+  }
+
+  DateTime getDate() {
+    return DateTime(year, month, day);
+  }
+
+  DateTime nextMonthStart() {
+    return DateTime(year, month + 1);
+  }
+
+  DateTime nextYearStart() {
+    return DateTime(year + 1);
+  }
+
+  DateTime replaceTime(Duration timeOfDay){
+    return getStartOfDay().add(timeOfDay);
+  }
+
+  bool isBeforeOrAt(DateTime other){
+    return isBefore(other) || isAtSameMomentAs(other);
   }
 }
 

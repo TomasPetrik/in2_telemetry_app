@@ -1,12 +1,14 @@
 import 'package:collection/collection.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_version.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/providers/interval_generation/timing_interval_generator.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
-import 'package:scalesoft_app/utils/extensions/list_extensions.dart';
+import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 class CarePlanHelper {
   static DateTime getEarliestDateOfCarePlans(List<CarePlan> carePlans) {
@@ -25,9 +27,9 @@ class CarePlanHelper {
     List<CarePlan> carePlans = [];
     for (final carePlan in allCarePlans) {
       if ((whenPeriod == ResultsWhenPeriod.today &&
-              carePlan.hasMeasurementsToday()) ||
+              hasMeasurementsToday(carePlan)) ||
           (whenPeriod == ResultsWhenPeriod.yesterday &&
-              carePlan.hasMeasurementsYesterday())) {
+              hasMeasurementsYesterday(carePlan))) {
         carePlans.add(carePlan);
       }
     }
@@ -35,29 +37,38 @@ class CarePlanHelper {
     return carePlans;
   }
 
+  static bool hasMeasurementsToday(CarePlan plan) {
+    final from = DateTime.now().getStartOfDay();
+    final to = DateTime.now().getEndOfDay();
+
+    final todayMeasurements = getMeasurements([plan], from, to, []);
+    return todayMeasurements.isNotEmpty;
+  }
+
+  static bool hasMeasurementsYesterday(CarePlan plan) {
+    final from =
+        DateTime.now().subtract(const Duration(days: 1)).getStartOfDay();
+    final to = DateTime.now().getStartOfDay();
+
+    final yesterdayMeasurements = getMeasurements([plan], from, to, []);
+    return yesterdayMeasurements.isNotEmpty;
+  }
+
   static Set<MeasurementType> getMeasurementTypes(List<CarePlan> carePlans) {
-    final measurementTypes = <MeasurementType>{};
-    carePlans
-        .where(
-          (carePlan) => measurementTypes.add(carePlan.activity.measurementType),
-        )
-        .toList();
+    final measurementTypes = carePlans.map((x) => x.activity.measurementType);
+    final result = {...measurementTypes};
 
-    return measurementTypes;
+    return result;
   }
 
-  static Set<MeasurementType> getMeasurementTypesByResults(List<MeasurementResult> results) {
-    final measurementTypes = <MeasurementType>{};
-    results
-        .where(
-          (result) => measurementTypes.add(result.measurementType!),
-        )
-        .toList();
+  static Set<MeasurementType> getMeasurementTypesByResults(
+    List<MeasurementResult> results,
+  ) {
+    final measurementTypes = results.map((x) => x.measurementType!);
+    final result = {...measurementTypes};
 
-    return measurementTypes;
+    return result;
   }
-
-  
 
   static Map<PlanWhenPeriod, int> getPossibleWhenPeriods(
     final List<CarePlan> carePlans,
@@ -67,11 +78,17 @@ class CarePlanHelper {
       PlanWhenPeriod.next10: 10,
     };
 
-    final todayMeasurements =
-        getMeasurements(carePlans, PlanWhenPeriod.today, offlineResults);
+    final todayMeasurements = getMeasurementsForPeriod(
+      carePlans,
+      PlanWhenPeriod.today,
+      offlineResults,
+    );
 
-    final tomorrowMeasurements =
-        getMeasurements(carePlans, PlanWhenPeriod.tomorrow, offlineResults);
+    final tomorrowMeasurements = getMeasurementsForPeriod(
+      carePlans,
+      PlanWhenPeriod.tomorrow,
+      offlineResults,
+    );
 
     periods[PlanWhenPeriod.today] =
         todayMeasurements.fold<int>(0, (prevValue, measurement) {
@@ -108,6 +125,106 @@ class CarePlanHelper {
 
   static List<PlannedMeasurement> getMeasurements(
     List<CarePlan> carePlans,
+    DateTime from,
+    DateTime to,
+    List<MeasurementResult> offlineResults, {
+    bool ignoreOngoing = false,
+    bool ignoreCompleted = false,
+  }) {
+    List<PlannedMeasurement> result = [];
+
+    for (final plan in carePlans) {
+      final activeVersions = plan.getCpVersions().where(
+            (x) => x.isActiveInDates(from, to),
+          );
+
+      for (final version in activeVersions) {
+        final versionMeasurements = getMeasurementsForVersion(
+          version,
+          plan,
+          from,
+          to,
+          offlineResults,
+          ignoreOngoing: ignoreOngoing,
+          ignoreCompleted: ignoreCompleted,
+        );
+
+        result.addAll(versionMeasurements);
+      }
+    }
+
+    return result;
+  }
+
+  static List<PlannedMeasurement> getMeasurementsForVersion(
+    CarePlanVersion version,
+    CarePlan plan,
+    DateTime from,
+    DateTime to,
+    List<MeasurementResult> offlineResults, {
+    bool ignoreOngoing = false,
+    bool ignoreCompleted = false,
+  }) {
+    final planStart = [version.activeFrom, version.scheduledStart].max;
+
+    List<DateTime> endLimits = [];
+    if (version.activeTo != null) {
+      endLimits.add(version.activeTo!);
+    }
+    if (version.scheduledEnd != null) {
+      endLimits.add(version.scheduledEnd!);
+    }
+    final endLimit = endLimits.minOrNull;
+
+    final intervals = TimingIntervalGenerator.generateIntervalsByRangeAndTiming(
+      version.timing,
+      from,
+      to,
+      planStart,
+      startLimit: planStart,
+      endLimit: endLimit,
+    );
+
+    final plannedMeasurements = intervals.map(
+      (interval) => PlannedMeasurement(
+        userId: plan.userId!,
+        whenStart: interval.start,
+        whenEnd: interval.end,
+        carePlan: plan,
+        reqCount: plan.frequency,
+        whenCode: interval.whenCode,
+      ),
+    );
+
+    List<PlannedMeasurement> result = [];
+
+    for (final plannedMeasurement in plannedMeasurements) {
+      final fulfillmentEvaluation = MeasurementHelper.getFulfillmentEvaluation(
+        plannedMeasurement,
+        offlineResults,
+      );
+
+      plannedMeasurement.currentCount =
+          fulfillmentEvaluation.actualMeasurementCount;
+      plannedMeasurement.fulfillmentEvaluationItem = fulfillmentEvaluation;
+
+      if (ignoreOngoing && from.isAfter(plannedMeasurement.whenStart)) {
+        continue;
+      }
+
+      if (ignoreCompleted &&
+          plannedMeasurement.fulfillmentEvaluationItem!.wasMeasured()) {
+        continue;
+      }
+
+      result.add(plannedMeasurement);
+    }
+
+    return result;
+  }
+
+  static List<PlannedMeasurement> getMeasurementsForPeriod(
+    List<CarePlan> carePlans,
     PlanWhenPeriod whenPeriod,
     List<MeasurementResult> offlineResults,
   ) {
@@ -115,17 +232,26 @@ class CarePlanHelper {
 
     switch (whenPeriod) {
       case PlanWhenPeriod.today:
-        measurements = Calendar.getTodayMeasurements(
-          carePlans: carePlans,
-          offlineResults: offlineResults,
+        final from = DateTime.now();
+        final to = from.getEndOfDay();
+        measurements = getMeasurements(
+          carePlans,
+          from,
+          to,
+          offlineResults,
+          ignoreCompleted: true,
         );
         break;
-
       case PlanWhenPeriod.tomorrow:
-        measurements = Calendar.getMeasurementsOfDay(
-          carePlans: carePlans,
-          dayDt: DateTime.now().getTomorrowMidnight(),
-          offlineResults: offlineResults,
+        final from =
+            DateTime.now().add(const Duration(days: 1)).getStartOfDay();
+        final to = from.getEndOfDay();
+        measurements = getMeasurements(
+          carePlans,
+          from,
+          to,
+          offlineResults,
+          ignoreCompleted: true,
         );
         break;
       case PlanWhenPeriod.next10:
@@ -139,68 +265,42 @@ class CarePlanHelper {
     }
 
     measurements.sort(
-      (a, b) => a.whenStart.millisecondsSinceEpoch
-          .compareTo(b.whenStart.millisecondsSinceEpoch),
+      (a, b) => a.whenStart.compareTo(b.whenStart),
     );
 
     return measurements;
   }
+
+  /// Returns all planned measurements up to, and including today
+  /// (up to the upcoming midnight).
+  static List<PlannedMeasurement> getPlannedMeasurementsUpToToday(
+    CarePlan plan,
+    List<MeasurementResult> offlineResults,
+  ) {
+    final from = plan.scheduledStart;
+    final to = DateTime.now().getEndOfDay();
+
+    return getMeasurements([plan], from, to, offlineResults);
+  }
 }
 
 class Calendar {
-  static List<PlannedMeasurement> getTodayMeasurements({
-    required List<CarePlan> carePlans,
-    required List<MeasurementResult> offlineResults,
-  }) {
-    List<PlannedMeasurement> measurements = [];
-
-    for (final carePlan in carePlans) {
-      //add only if the measurement was not in results or in pending results
-      final todayRemainingMeasurements = carePlan.getTodayMeasurements(
-        dateTime: DateTime.now(),
-        offlineResults: offlineResults,
-      );
-      measurements.addAll(todayRemainingMeasurements);
-    }
-
-    return measurements;
-  }
-
   static List<PlannedMeasurement> getMeasurementsOfDay({
     required List<CarePlan> carePlans,
     required DateTime dayDt,
     required List<MeasurementResult> offlineResults,
     bool all = false,
   }) {
-    List<PlannedMeasurement> measurementsOfDay = [];
-    for (final carePlan in carePlans) {
-      final measurements = carePlan.getMeasurementsOfDay(
-        dateTime: dayDt,
-        offlineResults: offlineResults,
-        all: all,
-      );
-      measurementsOfDay.addAll(measurements);
-    }
+    final from = dayDt.getStartOfDay();
+    final to = dayDt.getEndOfDay();
 
-    return measurementsOfDay;
-  }
-
-  static List<PlannedMeasurement> getMeasurementOfDay({
-    required List<CarePlan> carePlans,
-    required DateTime dayDt,
-    required List<MeasurementResult> offlineResults,
-  }) {
-    List<PlannedMeasurement> measurementsOfDay = [];
-    for (final carePlan in carePlans) {
-      final measurements = carePlan.getMeasurementsOfDay(
-        dateTime: dayDt,
-        offlineResults: offlineResults,
-        all: true,
-      );
-      measurementsOfDay.addAll(measurements);
-    }
-
-    return measurementsOfDay;
+    return CarePlanHelper.getMeasurements(
+      carePlans,
+      from,
+      to,
+      offlineResults,
+      ignoreCompleted: !all,
+    );
   }
 
   static PlannedMeasurement getVeryFirstMeasurement({
@@ -211,8 +311,10 @@ class Calendar {
     final currentDate = carePlan.scheduledStart;
     int daysShift = 0;
     while (upcomingMeasurements.isEmpty) {
-      final measurements = carePlan.getMeasurementsOfDay(
-        dateTime: currentDate.add(Duration(days: daysShift)),
+      final measurements = getMeasurementsOfDay(
+        carePlans: [carePlan],
+        dayDt: currentDate.add(Duration(days: daysShift)),
+        offlineResults: [],
       );
 
       upcomingMeasurements.addAll(measurements);
@@ -235,50 +337,26 @@ class Calendar {
     required int reqCount,
     required List<MeasurementResult> offlineResults,
   }) {
-    List<PlannedMeasurement> upcomingMeasurements = [];
-
     final currentDt = DateTime.now();
-
-    //1. add today remaining measurements if exists
-    for (final carePlan in carePlans) {
-      final todayRemainingMeasurements = carePlan.getTodayMeasurements(
-        dateTime: DateTime.now(),
-        offlineResults: offlineResults,
-      );
-      upcomingMeasurements.addAll(todayRemainingMeasurements);
-    }
-    upcomingMeasurements.removeWhere((measurement) => measurement.isLongPeriod);
-
-    //2. start populating tomorrow and other days
-    upcomingMeasurements = populateOtherDays(
-      upcomingMeasurements,
+    final upcomingMeasurements = getNUpcomingMeasurementss(
       carePlans,
       reqCount,
       currentDt,
       offlineResults,
+      false,
     );
 
     upcomingMeasurements.sort(
-      (a, b) => a.whenStart.millisecondsSinceEpoch
-          .compareTo(b.whenStart.millisecondsSinceEpoch),
+      (a, b) => a.whenStart.compareTo(b.whenStart),
     );
 
-    final upcomingNMeasurements = upcomingMeasurements.take(reqCount).toList();
+    // Take into account measurement frequency:
+    // If a measurement window requires two measurements,
+    // count it twice toward the reqCount limit.
+    List<PlannedMeasurement> nMeasurements = [];
 
-    //take first total N measurement including frequency
-
-    List<PlannedMeasurement> allMeasurements = upcomingNMeasurements
-        .where((measurement) => measurement.isLongPeriod)
-        .toList();
-
-    List<PlannedMeasurement> notLongPeriodMeasurements = upcomingNMeasurements
-        .whereNot((measurement) => measurement.isLongPeriod)
-        .toList();
-
-    List<PlannedMeasurement> nMeasurements = [...allMeasurements];
-
-    int i = 0;
-    for (final measurement in notLongPeriodMeasurements) {
+    int measurementCount = 0;
+    for (final measurement in upcomingMeasurements) {
       nMeasurements.add(measurement);
       int remCount = measurement.reqCount;
       if (measurement.currentCount != null) {
@@ -286,8 +364,8 @@ class Calendar {
       }
       if (remCount < 0) remCount = 0;
 
-      i += remCount;
-      if (i >= reqCount) break;
+      measurementCount += remCount;
+      if (measurementCount >= reqCount) break;
     }
 
     return nMeasurements;
@@ -298,30 +376,16 @@ class Calendar {
     required List<CarePlan> carePlans,
     required int reqCount,
   }) {
-    List<PlannedMeasurement> upcomingMeasurements = [];
-    final currentDt = DateTime.now();
-
-    //1. add today remaining measurements for plans which have been started but weren't finished until today midnight
-    for (final carePlan in carePlans) {
-      final todayUpcomingMeasurements = carePlan.getTodayMeasurements(
-        dateTime: DateTime.now(),
-        ignoreOngoing: true,
-      );
-      upcomingMeasurements.addAll(todayUpcomingMeasurements);
-    }
-
-    //2. start populating tomorrow and other days
-    upcomingMeasurements = populateOtherDays(
-      upcomingMeasurements,
+    var upcomingMeasurements = getNUpcomingMeasurementss(
       carePlans,
       reqCount,
-      currentDt,
+      DateTime.now(),
       [],
+      true,
     );
 
     upcomingMeasurements.sort(
-      (a, b) => a.whenStart.millisecondsSinceEpoch
-          .compareTo(b.whenStart.millisecondsSinceEpoch),
+      (a, b) => a.whenStart.compareTo(b.whenStart),
     );
 
     final upcomingNMeasurements = upcomingMeasurements.take(reqCount).toList();
@@ -329,60 +393,38 @@ class Calendar {
     return upcomingNMeasurements;
   }
 
-  static List<PlannedMeasurement> populateOtherDays(
-    List<PlannedMeasurement> upcomingMeasurements,
+  static List<PlannedMeasurement> getNUpcomingMeasurementss(
     List<CarePlan> carePlans,
     int reqCount,
-    DateTime currentDt,
+    DateTime from,
     List<MeasurementResult> offlineResults,
+    bool ignoreOngoing,
   ) {
-    int daysShift = 1;
-    while (upcomingMeasurements.length < reqCount) {
-      final shiftedDate =
-          currentDt.getTodayMidnight().add(Duration(days: daysShift));
+    // Using a set to remove duplicates
+    // (measurements that span multiple day may be generated twice)
+    final Set<PlannedMeasurement> resultSet = {};
+    var currentDate = from;
 
-      //this will prevent deadlock (if we are asking for future measurements but all plans were already ended)
-      if (carePlans
-              .where(
-                (carePlan) =>
-                    carePlan.scheduledEnd?.isBefore(shiftedDate) == true,
-              )
-              .length ==
-          carePlans.length) {
-        break;
-      }
+    while (resultSet.length < reqCount &&
+        carePlans.any(
+          (x) => x.scheduledEnd == null || x.scheduledEnd!.isAfter(currentDate),
+        )) {
+      final to = currentDate.getTomorrowMidnight();
 
-      for (final carePlan in carePlans) {
-        //skip plans which haven't been started yet or was already finished
-        if (carePlan.scheduledStart.isAfter(shiftedDate) ||
-            carePlan.scheduledEnd?.isBefore(shiftedDate) == true) {
-          continue;
-        }
+      final measurements = CarePlanHelper.getMeasurements(
+        carePlans,
+        currentDate,
+        to,
+        offlineResults,
+        ignoreOngoing: ignoreOngoing,
+        ignoreCompleted: true,
+      );
 
-        final measurements = carePlan.getMeasurementsOfDay(
-          dateTime: shiftedDate,
-          offlineResults: offlineResults,
-        );
-        upcomingMeasurements.addAll(measurements);
-        //remove duplicates if exist
+      resultSet.addAll(measurements);
 
-        upcomingMeasurements = upcomingMeasurements
-            .whereWithIndex(
-              (element, index) =>
-                  upcomingMeasurements.indexWhere(
-                    (element2) =>
-                        element2.whenStart == element.whenStart &&
-                        element2.whenEnd == element.whenEnd &&
-                        element2.carePlan.id == element.carePlan.id,
-                  ) ==
-                  index,
-            )
-            .toList();
-      }
-
-      daysShift += 1;
+      currentDate = currentDate.getTomorrowMidnight();
     }
-    return upcomingMeasurements;
+    return resultSet.toList();
   }
 }
 
@@ -391,7 +433,6 @@ class PlannedMeasurement {
     required this.userId,
     required this.whenStart,
     required this.whenEnd,
-    required this.timingDayWhen,
     required this.carePlan,
     required this.reqCount,
     this.currentCount,
@@ -402,7 +443,7 @@ class PlannedMeasurement {
   final String userId;
   final DateTime whenStart;
   final DateTime whenEnd;
-  final TimingDayWhen timingDayWhen;
+
   final CarePlan carePlan;
   final int reqCount;
   int? currentCount;
@@ -415,13 +456,19 @@ class PlannedMeasurement {
   bool get isLongPeriod =>
       reqCount > 1 && whenStart.difference(whenEnd).abs().inHours > 23;
 
-  bool hasMeasurementAt(DateTime dateTime) {
-    if (dateTime.isBefore(whenEnd) && dateTime.isAfter(whenStart)) {
-      return true;
-    } else {
+  @override
+  bool operator ==(other) {
+    if (other is! PlannedMeasurement) {
       return false;
     }
+
+    return other.whenStart == whenStart &&
+        other.whenEnd == whenEnd &&
+        other.carePlan.id == carePlan.id;
   }
+
+  @override
+  int get hashCode => Object.hash(whenStart, whenEnd, carePlan.id);
 }
 
 enum PlanWhenPeriod {

@@ -199,10 +199,11 @@ class CalendarFulfillmentServiceBloc extends Bloc<
             day.isSelected = false;
           }
 
-          final plannedMeasurements = Calendar.getMeasurementOfDay(
+          final plannedMeasurements = Calendar.getMeasurementsOfDay(
             carePlans: carePlans,
             dayDt: day.startDt,
             offlineResults: offlineResults,
+            all: true,
           );
 
           //filter out only future measurements which were already completed
