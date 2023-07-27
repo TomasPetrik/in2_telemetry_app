@@ -103,7 +103,7 @@ class TimingWhenGenerator {
       if (start.isBeforeOrAt(resultStart) &&
           resultStart.isBeforeOrAt(intervalBounds.end) &&
           start.isBefore(resultEnd)) {
-        if (!resultStart.isAtSameMomentAs(resultEnd)) {
+        if (resultStart.isBefore(resultEnd)) {
           result.add(DateTimeRange(start: resultStart, end: resultEnd));
         }
       }
@@ -154,7 +154,7 @@ class TimingWhenGenerator {
       if (start.isBeforeOrAt(resultStart) &&
           resultStart.isBeforeOrAt(intervalBounds.end) &&
           start.isBefore(resultEnd)) {
-        if (!resultStart.isAtSameMomentAs(resultEnd)) {
+        if (resultStart.isBefore(resultEnd)) {
           result.add(DateTimeRange(start: resultStart, end: resultEnd));
         }
       }

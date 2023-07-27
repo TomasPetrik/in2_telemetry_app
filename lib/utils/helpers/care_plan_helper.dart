@@ -165,7 +165,7 @@ class CarePlanHelper {
     bool ignoreOngoing = false,
     bool ignoreCompleted = false,
   }) {
-    final startLimit = [version.activeFrom, version.scheduledStart].max;
+    final planStart = [version.activeFrom, version.scheduledStart].max;
 
     List<DateTime> endLimits = [];
     if (version.activeTo != null) {
@@ -180,7 +180,8 @@ class CarePlanHelper {
       version.timing,
       from,
       to,
-      startLimit: startLimit,
+      planStart,
+      startLimit: planStart,
       endLimit: endLimit,
     );
 

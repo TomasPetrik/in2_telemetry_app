@@ -15,7 +15,6 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
   final Session _session;
   final CalendarFooterBloc _calendarFooterBloc;
   final AccountDbProvider _accountDbProvider;
-  final CarePlanHelper _carePlanHelper;
   late final PageController controller;
   late final BuildContext context;
 
@@ -23,7 +22,6 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
     this._session,
     this._calendarFooterBloc,
     this._accountDbProvider,
-    this._carePlanHelper,
   ) : super(
           const CalendarBlocState(
             padEnds: true,

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 import 'package:scalesoft_app/api/model/care_plan/interval_generation/timing_model.dart';
 import 'package:scalesoft_app/providers/interval_generation/generators/timing_day_of_week_generator.dart';
 import 'package:scalesoft_app/providers/interval_generation/generators/timing_period_generator.dart';
@@ -15,19 +15,26 @@ class TimingIntervalGenerator {
   static List<EvaluationIntervalModel> generateIntervalsByRangeAndTiming(
     TimingModel timing,
     DateTime start,
-    DateTime end, {
+    DateTime end,
+    DateTime planStart, {
     DateTime? startLimit,
     DateTime? endLimit,
   }) {
-    // TODO: timezones?
+    // Make sure intervals start after the care plan starts
+    startLimit = startLimit != null ? [planStart, startLimit].max : planStart;
 
     if (start.isAtSameMomentAs(end) || start.isAfter(end)) {
       return [];
     }
 
-    var intervals = [DateTimeRange(start: start, end: end)];
-
-    intervals = TimingPeriodGenerator.getModifiedIntervals(timing, intervals);
+    var intervals = TimingPeriodGenerator.getIntervals(
+      timing,
+      start,
+      end,
+      planStart,
+      startLimit: startLimit,
+      endLimit: endLimit,
+    );
 
     if (timing.weekDays?.isNotEmpty == true) {
       intervals = TimingDayOfWeekGenerator.getModifiedIntervals(
