@@ -10,7 +10,7 @@ import 'package:scalesoft_app/ui/routers/routes/configuration_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/future_measurements_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/hospital_detail_route.dart';
-import 'package:scalesoft_app/ui/routers/routes/how_it_works_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/manual_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/manual_measurement_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/metering_first_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/no_user_route.dart';
@@ -86,7 +86,7 @@ class AppRouter {
             RegisterDeviceSearchRoute(navigator: navAuthManager).route,
             RegisterDeviceDetailRoute(navigator: navAuthManager).route,
             RegisterDeviceSuccessRoute(navigator: navAuthManager).route,
-            HowItWorksRoute(navigator: navAuthManager).route,
+            ManualRoute(navigator: navAuthManager).route,
           ],
         ),
       ],
