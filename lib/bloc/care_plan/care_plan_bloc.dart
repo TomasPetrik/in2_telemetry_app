@@ -46,7 +46,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
               offlineResults: todayOfflineResults,
             );
 
-      final upcomingMeasurements = CarePlanHelper.getMeasurements(
+      final upcomingMeasurements = CarePlanHelper.getMeasurementsForPeriod(
         event.carePlans,
         event.whenPeriod,
         todayOfflineResults,
@@ -88,7 +88,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
         offlineResults: todayOfflineResults,
       );
 
-      final upcomingMeasurements = CarePlanHelper.getMeasurements(
+      final upcomingMeasurements = CarePlanHelper.getMeasurementsForPeriod(
         state.currentCarePlans!,
         event.whenPeriod,
         todayOfflineResults,
@@ -135,7 +135,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
         offlineResults: todayOfflineResults,
       );
 
-      final upcomingMeasurements = CarePlanHelper.getMeasurements(
+      final upcomingMeasurements = CarePlanHelper.getMeasurementsForPeriod(
         carePlans,
         state.selectedWhenPeriod!,
         todayOfflineResults,
@@ -186,7 +186,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
             offlineResults: todayOfflineResults,
           );
 
-          final upcomingMeasurements = CarePlanHelper.getMeasurements(
+          final upcomingMeasurements = CarePlanHelper.getMeasurementsForPeriod(
             carePlans,
             state.selectedWhenPeriod!,
             todayOfflineResults,

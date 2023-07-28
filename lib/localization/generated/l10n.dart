@@ -50,12 +50,13 @@ class I10n {
     return Localizations.of<I10n>(context, I10n);
   }
 
-  /// `ScelesoftApp`
+  /// `FONS Care`
   String get appTitle {
     return Intl.message(
-      'ScelesoftApp',
+      'FONS Care',
       name: 'appTitle',
-      desc: 'The title of the application',
+      desc:
+          'FONS Care je inovativní řešení v komunikaci lékařů s pacientem modernizující české zdravotnictví.',
       args: [],
     );
   }
@@ -435,10 +436,10 @@ class I10n {
     );
   }
 
-  /// `Ooops!`
+  /// `Chyba`
   String get server_error_title {
     return Intl.message(
-      'Ooops!',
+      'Chyba',
       name: 'server_error_title',
       desc: '',
       args: [],
@@ -923,11 +924,11 @@ class I10n {
     );
   }
 
-  /// `Jak to funguje?`
-  String get onboarding_add_account_screen_add_account_how_it_works_button {
+  /// `Otevřít uživatelskou příručku`
+  String get open_manual_button {
     return Intl.message(
-      'Jak to funguje?',
-      name: 'onboarding_add_account_screen_add_account_how_it_works_button',
+      'Otevřít uživatelskou příručku',
+      name: 'open_manual_button',
       desc: '',
       args: [],
     );
@@ -983,20 +984,20 @@ class I10n {
     );
   }
 
-  /// `Aplikace si vyžaduje povolení notifikací pokud chcete dostávat upozornení.`
+  /// `Aplikace vyžaduje povolení notifikací, pokud chcete dostávat upozornění.`
   String get dialog_req_notifications_description {
     return Intl.message(
-      'Aplikace si vyžaduje povolení notifikací pokud chcete dostávat upozornení.',
+      'Aplikace vyžaduje povolení notifikací, pokud chcete dostávat upozornění.',
       name: 'dialog_req_notifications_description',
       desc: '',
       args: [],
     );
   }
 
-  /// `Prejít do nastavení`
+  /// `Přejít do nastavení`
   String get dialog_req_notifications_go_to_settings {
     return Intl.message(
-      'Prejít do nastavení',
+      'Přejít do nastavení',
       name: 'dialog_req_notifications_go_to_settings',
       desc: '',
       args: [],
@@ -2002,10 +2003,10 @@ class I10n {
     );
   }
 
-  /// `Výsledky budou po potvrzení odeslány`
+  /// `Výsledky budou odeslány po potvrzení`
   String get measurement_summary_screen_success_subtitle {
     return Intl.message(
-      'Výsledky budou po potvrzení odeslány',
+      'Výsledky budou odeslány po potvrzení',
       name: 'measurement_summary_screen_success_subtitle',
       desc: '',
       args: [],
@@ -2062,10 +2063,10 @@ class I10n {
     );
   }
 
-  /// `Pozor, vaše naměřené hodnoty byly překročeny, kontaktujte vašeho lékaře !`
+  /// `Pozor, vaše naměřené hodnoty překročily nastavené meze, kontaktujte vašeho lékaře!`
   String get measurement_summary_screen_exceeded_values {
     return Intl.message(
-      'Pozor, vaše naměřené hodnoty byly překročeny, kontaktujte vašeho lékaře !',
+      'Pozor, vaše naměřené hodnoty překročily nastavené meze, kontaktujte vašeho lékaře!',
       name: 'measurement_summary_screen_exceeded_values',
       desc: '',
       args: [],
@@ -2243,21 +2244,11 @@ class I10n {
     );
   }
 
-  /// `Jak to funguje`
-  String get how_it_works_screen_title {
+  /// `Příručka`
+  String get manual_screen_title {
     return Intl.message(
-      'Jak to funguje',
-      name: 'how_it_works_screen_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `• Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n• Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n• Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n• Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.`
-  String get how_it_works_screen_desc {
-    return Intl.message(
-      '• Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n• Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n• Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n• Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
-      name: 'how_it_works_screen_desc',
+      'Příručka',
+      name: 'manual_screen_title',
       desc: '',
       args: [],
     );

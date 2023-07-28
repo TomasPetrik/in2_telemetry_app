@@ -239,7 +239,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "add_device_screen_title":
             MessageLookupByLibrary.simpleMessage("Přidat zařízení"),
-        "appTitle": MessageLookupByLibrary.simpleMessage("ScelesoftApp"),
+        "appTitle": MessageLookupByLibrary.simpleMessage("FONS Care"),
         "app_version": m0,
         "appearance_screen_title":
             MessageLookupByLibrary.simpleMessage("Vzhled"),
@@ -382,9 +382,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Odstranit účet"),
         "dialog_req_notifications_description":
             MessageLookupByLibrary.simpleMessage(
-                "Aplikace si vyžaduje povolení notifikací pokud chcete dostávat upozornení."),
+                "Aplikace vyžaduje povolení notifikací, pokud chcete dostávat upozornění."),
         "dialog_req_notifications_go_to_settings":
-            MessageLookupByLibrary.simpleMessage("Prejít do nastavení"),
+            MessageLookupByLibrary.simpleMessage("Přejít do nastavení"),
         "dialog_req_notifications_title":
             MessageLookupByLibrary.simpleMessage("Povolení notifikací"),
         "find_device_screen_device_connected":
@@ -433,16 +433,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Měření pro"),
         "hospital_selector_search_for_account":
             MessageLookupByLibrary.simpleMessage("Název účtu..."),
-        "how_it_works_screen_desc": MessageLookupByLibrary.simpleMessage(
-            "• Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n• Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n• Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n• Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."),
-        "how_it_works_screen_title":
-            MessageLookupByLibrary.simpleMessage("Jak to funguje"),
         "manual_measurement_screen_measurement_time":
             MessageLookupByLibrary.simpleMessage("Čas odečtu"),
         "manual_measurement_screen_title":
             MessageLookupByLibrary.simpleMessage("Vlastní zápis hodnot"),
         "manual_measurement_screen_type":
             MessageLookupByLibrary.simpleMessage("Typ"),
+        "manual_screen_title": MessageLookupByLibrary.simpleMessage("Příručka"),
         "measurement_dialog_device_desc": m27,
         "measurement_screen_today_n_measurements": m28,
         "measurement_screen_tomorrow_n_measurements": m29,
@@ -451,7 +448,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Neodeslat výsledky"),
         "measurement_summary_screen_exceeded_values":
             MessageLookupByLibrary.simpleMessage(
-                "Pozor, vaše naměřené hodnoty byly překročeny, kontaktujte vašeho lékaře !"),
+                "Pozor, vaše naměřené hodnoty překročily nastavené meze, kontaktujte vašeho lékaře!"),
         "measurement_summary_screen_no_data_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Zařízení nedodalo žádné výsledky měření."),
@@ -462,7 +459,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Máte hotovo! Výsledek se připíše po potvrzení."),
         "measurement_summary_screen_success_subtitle":
             MessageLookupByLibrary.simpleMessage(
-                "Výsledky budou po potvrzení odeslány"),
+                "Výsledky budou odeslány po potvrzení"),
         "measurement_summary_screen_success_title":
             MessageLookupByLibrary.simpleMessage(
                 "Měření bylo úspěšně dokončeno"),
@@ -508,8 +505,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "onboarding_account_added_screen_user_added": m34,
         "onboarding_add_account_screen_add_account_button":
             MessageLookupByLibrary.simpleMessage("Přidat účet"),
-        "onboarding_add_account_screen_add_account_how_it_works_button":
-            MessageLookupByLibrary.simpleMessage("Jak to funguje?"),
         "onboarding_add_account_screen_add_account_subtitle":
             MessageLookupByLibrary.simpleMessage(
                 "Pro používání aplikace musíte mít\naktivní alespoň jeden účet."),
@@ -523,6 +518,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Můžete se začít měřit"),
         "onboarding_add_account_screen_add_account_title":
             MessageLookupByLibrary.simpleMessage("Přidat účet"),
+        "open_manual_button": MessageLookupByLibrary.simpleMessage(
+            "Otevřít uživatelskou příručku"),
         "register_device_detail_registration_fail_message": m35,
         "register_device_detail_registration_fail_title":
             MessageLookupByLibrary.simpleMessage("Chyba"),
@@ -573,7 +570,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Výsledky"),
         "server_error_desc": MessageLookupByLibrary.simpleMessage(
             "Zde je něco v nepořádku. Zkuste akci opakovat později."),
-        "server_error_title": MessageLookupByLibrary.simpleMessage("Ooops!"),
+        "server_error_title": MessageLookupByLibrary.simpleMessage("Chyba"),
         "session_expired_description": m41,
         "session_expired_title":
             MessageLookupByLibrary.simpleMessage("Problém s přihlášením"),

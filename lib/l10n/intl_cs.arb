@@ -1,7 +1,7 @@
 {
-    "appTitle": "ScelesoftApp",
+    "appTitle": "FONS Care",
     "@appTitle": {
-        "description": "The title of the application"
+        "description": "FONS Care je inovativní řešení v komunikaci lékařů s pacientem modernizující české zdravotnictví."
     },
     "app_version": "Verze aplikace {version}",
     "@app_version": {
@@ -93,7 +93,7 @@
             "month": {}
         }
     },
-    "server_error_title": "Ooops!",
+    "server_error_title": "Chyba",
     "server_error_desc": "Zde je něco v nepořádku. Zkuste akci opakovat později.",
     "common_measurement_types": "{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} other{Jiný}}",
     "@common_measurement_types": {
@@ -190,7 +190,7 @@
     "onboarding_add_account_screen_add_account_text2": "Přihlaste se přes dvoufaktorové ověření",
     "onboarding_add_account_screen_add_account_text3": "Můžete se začít měřit",
     "onboarding_add_account_screen_add_account_button": "Přidat účet",
-    "onboarding_add_account_screen_add_account_how_it_works_button": "Jak to funguje?",
+    "open_manual_button": "Otevřít uživatelskou příručku",
     "onboarding_account_added_screen_add_account_title": "Přidat účet",
     "onboarding_account_added_screen_user_added": "Uživatel {name} byl úspěšně přidán.",
     "@onboarding_account_added_screen_user_added": {
@@ -203,8 +203,8 @@
     "onboarding_account_added_screen_continue_to_app": "Pokračovat do aplikace",
     "onboarding_account_added_screen_add_other_account": "Přidat další účet",
     "dialog_req_notifications_title": "Povolení notifikací",
-    "dialog_req_notifications_description": "Aplikace si vyžaduje povolení notifikací pokud chcete dostávat upozornení.",
-    "dialog_req_notifications_go_to_settings": "Prejít do nastavení",
+    "dialog_req_notifications_description": "Aplikace vyžaduje povolení notifikací, pokud chcete dostávat upozornění.",
+    "dialog_req_notifications_go_to_settings": "Přejít do nastavení",
     "dialog_account_removal_confirmation_title": "Odstranit účet",
     "dialog_account_removal_confirmation_description": "Všechna data účtu {accountName}\nbudou z aplikace nevratně\nodstraněna.",
     "@dialog_account_removal_confirmation_description": {
@@ -518,13 +518,13 @@
     "find_device_screen_not_granted_bt_desc": "Aplikace vyžaduje povolení používat Bluetooth pro komunikaci se zařízeními.",
     "find_device_screen_not_granted_bt_btn_settings": "Povolit",
     "measurement_summary_screen_success_title": "Měření bylo úspěšně dokončeno",
-    "measurement_summary_screen_success_subtitle": "Výsledky budou po potvrzení odeslány",
+    "measurement_summary_screen_success_subtitle": "Výsledky budou odeslány po potvrzení",
     "measurement_summary_screen_result_success_desc": "Máte hotovo! Výsledek se připíše po potvrzení.",
     "measurement_summary_screen_sync_error_desc": "Nastala chyba synchronizace.",
     "measurement_summary_screen_no_data_desc": "Zařízení nedodalo žádné výsledky měření.",
     "measurement_summary_screen_no_data_repeat_measurement": "Opakovat měření",
     "measurement_summary_screen_disallow_to_send": "Neodeslat výsledky",
-    "measurement_summary_screen_exceeded_values": "Pozor, vaše naměřené hodnoty byly překročeny, kontaktujte vašeho lékaře !",
+    "measurement_summary_screen_exceeded_values": "Pozor, vaše naměřené hodnoty překročily nastavené meze, kontaktujte vašeho lékaře!",
     "results_history_screen_plan_of_day": "Plán měření dne",
     "chart_screen_title": "Výsledky měření {measurementType} v {unitType}",
     "@chart_screen_title": {
@@ -572,6 +572,5 @@
             }
         }
     },
-    "how_it_works_screen_title": "Jak to funguje",
-    "how_it_works_screen_desc": "• Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n• Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n• Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n• Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+    "manual_screen_title": "Příručka"
 }

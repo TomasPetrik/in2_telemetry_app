@@ -144,7 +144,7 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
         },
         onDaySelected: (DateTime selectedDayDt, bool updateSelf) {
           //clear side months if they had some day selected
-          _session.preSelecteDtRestoration = selectedDayDt;
+          _session.preSelectedDtRestoration = selectedDayDt;
 
           final currentMonthIndex = state.months?.indexWhere(
             (month) =>
@@ -176,7 +176,7 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
           );
         },
         nullDefaultDay: () {
-          _session.preSelecteDtRestoration = null;
+          _session.preSelectedDtRestoration = null;
         },
       );
     });

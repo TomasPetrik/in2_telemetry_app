@@ -37,7 +37,7 @@ class NotificationsHelper {
         //only for current active plans
         if (carePlan.wasExpired != true &&
             carePlan.started &&
-            !carePlan.fihisned) {
+            !carePlan.finished) {
           //schedule for next 30 measurements of this plan
           final nextMeasurements = Calendar.getNScheduledMeasurements(
             carePlans: [carePlan],

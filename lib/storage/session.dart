@@ -24,7 +24,7 @@ class Session {
   //For history and future details restoration
   List<UserEvaluationDay>? usersEvaluationsDayRestoration;
   //For calendar restoration
-  DateTime? preSelecteDtRestoration;
+  DateTime? preSelectedDtRestoration;
 
   final PendingResultsDbProvider _pendingResultsDbProvider;
 
@@ -61,7 +61,7 @@ class Session {
     List<CarePlan> carePlans = [];
     for (final userAccount in getSessionAccounts()) {
       for (final CarePlan carePlan in userAccount.carePlans!) {
-        if (carePlan.isFinisnedByToday() == false) {
+        if (carePlan.isActiveToday()) {
           carePlans.add(carePlan);
         }
       }

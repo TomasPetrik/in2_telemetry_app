@@ -105,6 +105,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                           dropdownValue = value!;
                         });
                       },
+                      // TODO: Make visible options configurable per hospital #IN2-8428
                       items: MeasurementType.values
                           .map<DropdownMenuItem<MeasurementType>>(
                               (MeasurementType measurementType) {

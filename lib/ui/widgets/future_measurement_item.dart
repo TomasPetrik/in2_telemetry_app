@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -21,11 +20,14 @@ class FutureMeasurementItem extends StatelessWidget with BottomSheetMixin {
   final bool isMultiUser;
   final PlannedMeasurement futureMeasurement;
 
-  TimingDayWhen get timingDayWhen => futureMeasurement.timingDayWhen;
   CarePlan get carePlan => futureMeasurement.carePlan;
+
   int get requiredCount => futureMeasurement.reqCount;
+
   int? get currentCount => futureMeasurement.currentCount;
+
   DateTime get whenStart => futureMeasurement.whenStart;
+
   DateTime get whenEnd => futureMeasurement.whenEnd;
 
   bool get showAsLongPeriodical =>
@@ -47,7 +49,9 @@ class FutureMeasurementItem extends StatelessWidget with BottomSheetMixin {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                showAsLongPeriodical ? '00:00' : timingDayWhen.start.toString(),
+                showAsLongPeriodical
+                    ? '00:00'
+                    : futureMeasurement.whenStart.toTimeOfDay().toString(),
                 style: ScaleTextStyles.label.apply(
                   color: showAsLongPeriodical
                       ? Colors.transparent
@@ -123,8 +127,12 @@ class FutureMeasurementItem extends StatelessWidget with BottomSheetMixin {
                                 )
                               : translactions
                                   .dashboard_screen_measurement_interval(
-                                  timingDayWhen.start.toString(),
-                                  timingDayWhen.end.toString(),
+                                  futureMeasurement.whenStart
+                                      .toTimeOfDay()
+                                      .toString(),
+                                  futureMeasurement.whenEnd
+                                      .toTimeOfDay()
+                                      .toString(),
                                 ),
                           style: ScaleTextStyles.label.apply(
                             color: Theme.of(context)

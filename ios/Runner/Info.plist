@@ -50,15 +50,15 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Need BLE permission</string>
+	<string>Aplikace vyžaduje povolení používat Bluetooth pro komunikaci se zařízeními.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>Need BLE permission</string>
+	<string>Aplikace vyžaduje povolení používat Bluetooth pro komunikaci se zařízeními.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Need Location permission</string>
+	<string>Aplikace vyžaduje právo na lokaci pro komunikaci se zařízeními.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Need Location permission</string>
+	<string>Aplikace vyžaduje právo na lokaci pro komunikaci se zařízeními.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Need Location permission</string>
+	<string>Aplikace vyžaduje právo na lokaci pro komunikaci se zařízeními.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

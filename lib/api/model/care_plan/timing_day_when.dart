@@ -2,7 +2,9 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 part 'timing_day_when.freezed.dart';
+
 part 'timing_day_when.g.dart';
+
 part 'timing_day_when.hive.dart';
 
 @unfreezed
@@ -106,6 +108,10 @@ class DailyTime extends HiveObject {
       millisecond: 0,
       microsecond: 0,
     );
+  }
+
+  Duration toDuration() {
+    return Duration(hours: hour, minutes: minute, seconds: second);
   }
 }
 
