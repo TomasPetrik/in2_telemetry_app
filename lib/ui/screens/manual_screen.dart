@@ -3,21 +3,23 @@ import 'package:pdfx/pdfx.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
+
 class ManualScreen extends StatelessWidget {
   const ManualScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final pdfController = PdfControllerPinch(document: PdfDocument.openAsset('assets/manual.pdf'));
+    final pdfController = PdfControllerPinch(
+      document: PdfDocument.openAsset('assets/manual.pdf'),
+    );
     return Material(
-      child:
-      Stack(
+      child: Stack(
         children: [
           Positioned.fill(
             top: Dimensions.appBarHeight,
-            child:  PdfViewPinch(
+            child: PdfViewPinch(
               controller: pdfController,
-            )
+            ),
           ),
           Positioned(
             top: 0,

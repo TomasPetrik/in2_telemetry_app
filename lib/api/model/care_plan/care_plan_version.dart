@@ -70,8 +70,9 @@ class CarePlanVersion with _$CarePlanVersion {
         )
         .map(
           (x) => TimeOfDayTimingModel(
-              measurementWindowStart: x.start.toDuration(),
-              measurementWindowEnd: x.end.toDuration()),
+            measurementWindowStart: x.start.toDuration(),
+            measurementWindowEnd: x.end.toDuration(),
+          ),
         )
         .toList();
   }

@@ -7,7 +7,6 @@ import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_state.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
-import 'package:scalesoft_app/providers/interval_generation/timing_interval_generator.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
@@ -90,7 +89,10 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
       );
 
       final upcomingMeasurements = CarePlanHelper.getMeasurementsForPeriod(
-          state.currentCarePlans!, event.whenPeriod, todayOfflineResults);
+        state.currentCarePlans!,
+        event.whenPeriod,
+        todayOfflineResults,
+      );
 
       final allTodayMeasurements = Calendar.getMeasurementsOfDay(
         carePlans: state.currentCarePlans!,
