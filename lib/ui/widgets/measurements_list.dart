@@ -71,7 +71,7 @@ class MeasurementsList extends StatelessWidget {
                 'assets/icons/icon_circle_check_big.svg',
                 color: Theme.of(context).colorScheme.onTertiary,
               ),
-              label: translactions.dashboard_screen_todays_plan_finished(
+              label: localization.dashboard_screen_todays_plan_finished(
                 _getPlanEvaluation(),
               ),
             ),
@@ -85,7 +85,7 @@ class MeasurementsList extends StatelessWidget {
                     color: Theme.of(context).colorScheme.tertiary,
                   ),
                   label:
-                      translactions.dashboard_screen_upcoming_measurement_info(
+                      localization.dashboard_screen_upcoming_measurement_info(
                     nextMeasurement.whenStart.toDateOrDay().toLowerCase(),
                     nextMeasurement.whenStart.toTimeOfDay().toString(),
                   ),
@@ -99,7 +99,7 @@ class MeasurementsList extends StatelessWidget {
                       child: Padding(
                         padding: Paddings.left16,
                         child: Text(
-                          translactions
+                          localization
                               .dashboard_screen_periodical_measurements,
                           style: ScaleTextStyles.label.apply(
                             color: Theme.of(context).colorScheme.onPrimary,
@@ -160,7 +160,7 @@ class MeasurementsList extends StatelessWidget {
                                 Padding(
                                   padding: Paddings.left16,
                                   child: Text(
-                                    translactions.common_measurement_times(
+                                    localization.common_measurement_times(
                                       planWhenPeriod.name,
                                     ),
                                     style: ScaleTextStyles.label.apply(

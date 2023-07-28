@@ -41,7 +41,7 @@ class RegisterDeviceSuccessScreen extends StatelessWidget {
                   child: Padding(
                     padding: Paddings.horizontal48,
                     child: Text(
-                      translactions.register_device_success_screen_desc,
+                      localization.register_device_success_screen_desc,
                       style: ScaleTextStyles.text.apply(
                         color: Theme.of(context).colorScheme.onSecondary,
                       ),
@@ -52,7 +52,7 @@ class RegisterDeviceSuccessScreen extends StatelessWidget {
                 const SliverGap(Dimensions.padding24),
                 SliverToBoxAdapter(
                   child: HighlightedElevatedButton(
-                    label: translactions.common_close,
+                    label: localization.common_close,
                     onPressed: () {
                       GoRouter.of(context).goNamed(DashboardRoute.name);
                     },

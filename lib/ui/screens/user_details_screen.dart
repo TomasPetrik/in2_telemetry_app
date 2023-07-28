@@ -44,11 +44,11 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
         final anyProgressWidget = state.whenOrNull(
           inProgress: () => ProcessItem(
             processType: ProcessType.inProgress,
-            label: translactions.sync_widget_sync_in_progress,
+            label: localization.sync_widget_sync_in_progress,
           ),
           synced: () => ProcessItem(
             processType: ProcessType.done,
-            label: translactions.sync_widget_synced,
+            label: localization.sync_widget_synced,
           ),
         );
 
@@ -97,7 +97,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                       padding: Paddings.left16,
                       sliver: SliverToBoxAdapter(
                         child: Text(
-                          translactions.user_detail_screen_measurement_plans,
+                          localization.user_detail_screen_measurement_plans,
                           style: ScaleTextStyles.textAccent.apply(
                             color: Theme.of(context).colorScheme.onSecondary,
                           ),
@@ -141,7 +141,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                     padding: Paddings.left16,
                     sliver: SliverToBoxAdapter(
                       child: Text(
-                        translactions.user_detail_screen_user_info,
+                        localization.user_detail_screen_user_info,
                         style: ScaleTextStyles.textAccent.apply(
                           color: Theme.of(context).colorScheme.onSecondary,
                         ),
@@ -150,25 +150,25 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                   ),
                   const SliverGap(Dimensions.padding24),
                   SliverNameValueRow(
-                    name: translactions.user_detail_screen_user_name,
+                    name: localization.user_detail_screen_user_name,
                     value: userAccount.user.firstNames[0],
                   ),
                   const SliverGap(Dimensions.padding8),
                   SliverNameValueRow(
-                    name: translactions.user_detail_screen_user_surname,
+                    name: localization.user_detail_screen_user_surname,
                     value: userAccount.user.lastNames[0],
                   ),
                   if (userAccount.user.phoneNumbers?.isNotEmpty == true) ...[
                     const SliverGap(Dimensions.padding8),
                     SliverNameValueRow(
-                      name: translactions.user_detail_screen_user_phone,
+                      name: localization.user_detail_screen_user_phone,
                       value: userAccount.user.phoneNumbers![0],
                     ),
                   ],
                   if (userAccount.user.emailAddresses?.isNotEmpty == true) ...[
                     const SliverGap(Dimensions.padding8),
                     SliverNameValueRow(
-                      name: translactions.user_detail_screen_user_email,
+                      name: localization.user_detail_screen_user_email,
                       value: userAccount.user.emailAddresses![0],
                     ),
                   ],
@@ -178,7 +178,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                       child: Padding(
                         padding: Paddings.horizontal16,
                         child: HighlightedElevatedButton(
-                          label: translactions
+                          label: localization
                               .user_detail_screen_register_device_button,
                           buttonType: ButtonType.primary,
                           onPressed: () {
@@ -198,7 +198,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                         padding: Paddings.horizontal16,
                         child: HighlightedElevatedButton(
                           label:
-                              translactions.user_detail_screen_remove_account,
+                              localization.user_detail_screen_remove_account,
                           buttonType: ButtonType.alert,
                           onPressed: () async {
                             showAccounRemovalConfirmation(

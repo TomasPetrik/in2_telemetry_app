@@ -86,7 +86,7 @@ class _ScaleTimePickerState extends State<ScaleTimePicker> {
                   Navigator.of(context).pop(null);
                 },
                 child: Text(
-                  translactions.common_cancel,
+                  localization.common_cancel,
                   style: ScaleTextStyles.text.apply(
                     color: Theme.of(context).colorScheme.error,
                   ),
@@ -102,7 +102,7 @@ class _ScaleTimePickerState extends State<ScaleTimePicker> {
                   Navigator.of(context).pop(DailyTime(selectedHour, minute, 0));
                 },
                 child: Text(
-                  translactions.common_confirm,
+                  localization.common_confirm,
                   style: ScaleTextStyles.text.apply(
                     color: Theme.of(context).colorScheme.primary,
                   ),

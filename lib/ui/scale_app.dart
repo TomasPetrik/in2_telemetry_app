@@ -30,7 +30,7 @@ class ScaleApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
       ],
-      onGenerateTitle: (BuildContext context) => translactions.appTitle,
+      onGenerateTitle: (BuildContext context) => localization.appTitle,
       supportedLocales: const [
         Locale('cs'),
       ],

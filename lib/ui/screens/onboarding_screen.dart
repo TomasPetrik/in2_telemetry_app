@@ -39,7 +39,7 @@ class OnboardingScreen extends StatelessWidget with BottomSheetMixin {
                     ),
                     Gaps.gap36,
                     Text(
-                      translactions
+                      localization
                           .onboarding_add_account_screen_add_account_subtitle,
                       textAlign: TextAlign.center,
                       style: ScaleTextStyles.text.apply(
@@ -49,22 +49,22 @@ class OnboardingScreen extends StatelessWidget with BottomSheetMixin {
                     Gaps.gap24,
                     OnboardingItemDesc(
                       imagePath: 'assets/icons/icon_hospital_user.svg',
-                      desc: translactions
+                      desc: localization
                           .onboarding_add_account_screen_add_account_text1,
                     ),
                     OnboardingItemDesc(
                       imagePath: 'assets/icons/icon_shield_keyhole.svg',
-                      desc: translactions
+                      desc: localization
                           .onboarding_add_account_screen_add_account_text2,
                     ),
                     OnboardingItemDesc(
                       imagePath: 'assets/icons/icon_wave_pulse.svg',
-                      desc: translactions
+                      desc: localization
                           .onboarding_add_account_screen_add_account_text3,
                     ),
                     Gaps.gap24,
                     HighlightedElevatedButton(
-                      label: translactions
+                      label: localization
                           .onboarding_add_account_screen_add_account_button,
                       onPressed: () async {
                         final hospitalSelection =
@@ -80,7 +80,7 @@ class OnboardingScreen extends StatelessWidget with BottomSheetMixin {
                     ),
                     Gaps.gap24,
                     HighlightedElevatedButton(
-                      label: translactions
+                      label: localization
                           .open_manual_button,
                       buttonType: ButtonType.secondary,
                       onPressed: () async {
@@ -98,7 +98,7 @@ class OnboardingScreen extends StatelessWidget with BottomSheetMixin {
             right: 0,
             child: BluredScaleAppBar(
               title:
-                  translactions.onboarding_add_account_screen_add_account_title,
+                  localization.onboarding_add_account_screen_add_account_title,
             ),
           ),
         ],

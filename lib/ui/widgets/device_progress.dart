@@ -34,7 +34,7 @@ class DeviceProgress extends StatelessWidget {
         const SliverGap(Dimensions.padding42),
         SliverToBoxAdapter(
           child: Text(
-            translactions.common_procedure,
+            localization.common_procedure,
             style: ScaleTextStyles.textAccent.apply(
               color: Theme.of(context).colorScheme.onSecondary,
             ),
@@ -48,7 +48,7 @@ class DeviceProgress extends StatelessWidget {
         const SliverGap(Dimensions.padding60),
         if (device.aboutUrl != null) ...[
           ActionItem(
-            label: translactions.find_device_screen_device_reference,
+            label: localization.find_device_screen_device_reference,
             onTap: () async {
               if (!await launchUrl(
                 Uri.parse(device.aboutUrl!),

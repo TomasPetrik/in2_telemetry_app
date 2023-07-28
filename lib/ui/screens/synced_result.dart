@@ -38,11 +38,11 @@ class SyncedResult extends StatelessWidget {
   String _getDesc(BuildContext context) {
     switch (hwMeasurementResult.resultState) {
       case ResultState.success:
-        return translactions.measurement_summary_screen_result_success_desc;
+        return localization.measurement_summary_screen_result_success_desc;
       case ResultState.noData:
-        return translactions.measurement_summary_screen_no_data_desc;
+        return localization.measurement_summary_screen_no_data_desc;
       case ResultState.connectionError:
-        return translactions.measurement_summary_screen_sync_error_desc;
+        return localization.measurement_summary_screen_sync_error_desc;
     }
   }
 
@@ -80,7 +80,7 @@ class SyncedResult extends StatelessWidget {
         case MeasurementType.heartRate:
           final hearthRate =
               hwMeasurementResult.measurementInfo?.pulseRate ?? 'N/A';
-          return '$hearthRate ${translactions.common_heart_rate_unit}';
+          return '$hearthRate ${localization.common_heart_rate_unit}';
 
         default:
           return null;
@@ -114,7 +114,7 @@ class SyncedResult extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      translactions.measurement_summary_screen_success_title,
+                      localization.measurement_summary_screen_success_title,
                       style: ScaleTextStyles.text.apply(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
@@ -122,9 +122,9 @@ class SyncedResult extends StatelessWidget {
                     Gaps.gap6,
                     Text(
                       _exceededValues()
-                          ? translactions
+                          ? localization
                               .measurement_summary_screen_exceeded_values
-                          : translactions
+                          : localization
                               .measurement_summary_screen_success_subtitle,
                       style: ScaleTextStyles.label.apply(
                         color: _exceededValues()
@@ -154,7 +154,7 @@ class SyncedResult extends StatelessWidget {
                         Gaps.gap16,
                         Expanded(
                           child: Text(
-                            translactions.common_measurement_types(
+                            localization.common_measurement_types(
                               measurementType.name,
                             ),
                             style: ScaleTextStyles.textAccent.apply(
@@ -201,7 +201,7 @@ class SyncedResult extends StatelessWidget {
           const SliverGap(Dimensions.padding24),
           SliverToBoxAdapter(
             child: HighlightedElevatedButton(
-              label: translactions.common_continue,
+              label: localization.common_continue,
               onPressed: () async {
                 await getIt<PendingResultsDbProvider>()
                     .save(hwMeasurementResult.measurement!)
@@ -219,7 +219,7 @@ class SyncedResult extends StatelessWidget {
           const SliverGap(Dimensions.padding24),
           SliverToBoxAdapter(
             child: HighlightedElevatedButton(
-              label: translactions
+              label: localization
                   .measurement_summary_screen_no_data_repeat_measurement,
               onPressed: () {
                 GoRouter.of(context).pushReplacementNamed(
@@ -239,7 +239,7 @@ class SyncedResult extends StatelessWidget {
         if (hwMeasurementResult.resultState == ResultState.success)
           SliverToBoxAdapter(
             child: HighlightedElevatedButton(
-              label: translactions.measurement_summary_screen_disallow_to_send,
+              label: localization.measurement_summary_screen_disallow_to_send,
               onPressed: () {
                 GoRouter.of(context).goNamed(DashboardRoute.name);
               },
@@ -249,7 +249,7 @@ class SyncedResult extends StatelessWidget {
         else
           SliverToBoxAdapter(
             child: HighlightedElevatedButton(
-              label: translactions.common_close,
+              label: localization.common_close,
               onPressed: () {
                 GoRouter.of(context).goNamed(DashboardRoute.name);
               },

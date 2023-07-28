@@ -44,14 +44,14 @@ class AppearanceItem extends StatelessWidget {
 
   String _getTitle(BuildContext context) {
     return itemType == AppearanceItemType.light
-        ? translactions.configuration_screen_light
-        : translactions.configuration_screen_dark;
+        ? localization.configuration_screen_light
+        : localization.configuration_screen_dark;
   }
 
   String _getSubTitle(BuildContext context) {
     return itemType == AppearanceItemType.light
-        ? translactions.configuration_screen_good_in_day
-        : translactions.configuration_screen_good_in_night;
+        ? localization.configuration_screen_good_in_day
+        : localization.configuration_screen_good_in_night;
   }
 
   String _getIconPath(BuildContext context) {

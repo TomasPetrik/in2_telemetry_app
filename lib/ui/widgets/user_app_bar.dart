@@ -90,7 +90,7 @@ class UserAppBar extends StatelessWidget with BottomSheetMixin {
                             color: Theme.of(context).colorScheme.onPrimary,
                           ),
                           session.isMultiUser == true
-                              ? translactions.common_all_accounts
+                              ? localization.common_all_accounts
                               : sessionAccounts[0].hospital?.title ?? '',
                           textAlign: TextAlign.center,
                         ),
@@ -106,7 +106,7 @@ class UserAppBar extends StatelessWidget with BottomSheetMixin {
                   ),
                   session.isMultiUser == true
                       ? '${sessionAccounts.first.user.fullName}'
-                          ' ${sessionAccounts.length > 1 ? translactions.common_plus_n_others(sessionAccounts.length - 1) : ''}'
+                          ' ${sessionAccounts.length > 1 ? localization.common_plus_n_others(sessionAccounts.length - 1) : ''}'
                       : sessionAccounts[0].user.fullName,
                   textAlign: TextAlign.center,
                 ),

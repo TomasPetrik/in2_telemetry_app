@@ -24,13 +24,13 @@ class ResultPeriodItem extends StatelessWidget {
 
   String _getSubtitle(BuildContext context) {
     if (percentage == null) {
-      return translactions.results_plan_no_measurement_needed;
+      return localization.results_plan_no_measurement_needed;
     }
     switch (whenPeriod) {
       case ResultsWhenPeriod.today:
-        return translactions.results_plan_fulfilled_on(percentage!);
+        return localization.results_plan_fulfilled_on(percentage!);
       case ResultsWhenPeriod.yesterday:
-        return translactions.results_plan_fulfilled_on(percentage!);
+        return localization.results_plan_fulfilled_on(percentage!);
     }
   }
 
@@ -50,7 +50,7 @@ class ResultPeriodItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                translactions.common_measurement_times(whenPeriod.name),
+                localization.common_measurement_times(whenPeriod.name),
                 style: ScaleTextStyles.textAccent
                     .apply(color: Theme.of(context).colorScheme.onPrimary),
               ),

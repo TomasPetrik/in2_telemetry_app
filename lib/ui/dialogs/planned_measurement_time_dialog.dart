@@ -35,7 +35,7 @@ class PlannedMeasurementTimeDialog extends StatelessWidget {
           Padding(
             padding: Paddings.horizontal16,
             child: Text(
-              translactions.common_measurement,
+              localization.common_measurement,
               style: ScaleTextStyles.textAccent
                   .apply(color: Theme.of(context).colorScheme.onSecondary),
             ),
@@ -64,7 +64,7 @@ class PlannedMeasurementTimeDialog extends StatelessWidget {
           Padding(
             padding: Paddings.horizontal16,
             child: HighlightedElevatedButton(
-              label: translactions.common_show_calendar,
+              label: localization.common_show_calendar,
               onPressed: () {
                 Navigator.of(context)
                     .pop(PlannedPeriodSelection(showCalendar: true));
@@ -75,7 +75,7 @@ class PlannedMeasurementTimeDialog extends StatelessWidget {
           Padding(
             padding: Paddings.horizontal16,
             child: HighlightedElevatedButton(
-              label: translactions.common_close,
+              label: localization.common_close,
               onPressed: () {
                 Navigator.of(context).pop();
               },

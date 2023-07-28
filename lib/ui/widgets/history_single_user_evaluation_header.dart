@@ -39,7 +39,7 @@ class HistorySingleUserEvaluationHeader extends StatelessWidget {
             reqCounts == 0 ? 0 : ((actualCounts / reqCounts) * 100).toInt();
 
         return ProgressItem(
-          translactions.common_measurement_types(
+          localization.common_measurement_types(
             carePlanFulfillment.key.name,
           ),
           measurementTypeEvaluation,
@@ -55,7 +55,7 @@ class HistorySingleUserEvaluationHeader extends StatelessWidget {
               ? const SizedBox.shrink()
               : ProgressHeader(
                   progressItems: progressItems,
-                  label: translactions.results_history_screen_plan_of_day,
+                  label: localization.results_history_screen_plan_of_day,
                 ),
           Gaps.gap24,
         ],

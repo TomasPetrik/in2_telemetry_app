@@ -138,8 +138,8 @@ class _ChartPlaceHolder extends StatelessWidget {
               Gaps.gap24,
               Text(
                 chartLoadedResult == ChartResultType.error
-                    ? translactions.chart_placeholder_error_loading_data
-                    : translactions.chart_placeholder_no_data_in_month,
+                    ? localization.chart_placeholder_error_loading_data
+                    : localization.chart_placeholder_no_data_in_month,
                 style: ScaleTextStyles.text.apply(
                   color: Theme.of(context).colorScheme.onSecondary,
                 ),

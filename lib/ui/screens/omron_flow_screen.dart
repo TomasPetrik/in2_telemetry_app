@@ -93,11 +93,11 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                     disabledBt: () {
                       return DeviceProgress(
                         header: WarningItem(
-                          title: translactions
+                          title: localization
                               .find_device_screen_disabled_bt_title,
                           description:
-                              translactions.find_device_screen_disabled_bt_desc,
-                          buttonLabel: translactions
+                              localization.find_device_screen_disabled_bt_desc,
+                          buttonLabel: localization
                               .find_device_screen_disabled_bt_btn_settings,
                           icon: SvgPicture.asset(
                             'assets/icons/icon_bluetooth_slash_big.svg',
@@ -115,11 +115,11 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                     noBtPermissions: () {
                       return DeviceProgress(
                         header: WarningItem(
-                          title: translactions
+                          title: localization
                               .find_device_screen_not_granted_bt_title,
-                          description: translactions
+                          description: localization
                               .find_device_screen_not_granted_bt_desc,
-                          buttonLabel: translactions
+                          buttonLabel: localization
                               .find_device_screen_not_granted_bt_btn_settings,
                           icon: SvgPicture.asset(
                             'assets/icons/icon_bluetooth_slash_big.svg',
@@ -140,9 +140,9 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                       return DeviceProgress(
                         header: ProcessItem(
                           label: reqModelPairing
-                              ? translactions
+                              ? localization
                                   .find_device_screen_searching_device
-                              : translactions
+                              : localization
                                   .find_device_screen_waiting_on_measurement,
                           processType: ProcessType.inProgress,
                         ),
@@ -155,9 +155,9 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                       return DeviceProgress(
                         header: ProcessItem(
                           label: reqModelPairing
-                              ? translactions
+                              ? localization
                                   .find_device_screen_searching_device
-                              : translactions
+                              : localization
                                   .find_device_screen_waiting_on_measurement,
                           processType: ProcessType.inProgress,
                         ),
@@ -170,7 +170,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                       return DeviceProgress(
                         header: ProcessItem(
                           label:
-                              translactions.find_device_screen_device_connected,
+                              localization.find_device_screen_device_connected,
                           processType: ProcessType.connected,
                         ),
                         device: device,
@@ -191,7 +191,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                       return DeviceProgress(
                         header: ProcessItem(
                           label:
-                              translactions.find_device_screen_pairing_device,
+                              localization.find_device_screen_pairing_device,
                           processType: ProcessType.inProgress,
                         ),
                         device: device,
@@ -202,7 +202,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                     paired: (deviceInfo) {
                       return DeviceProgress(
                         header: ProcessItem(
-                          label: translactions
+                          label: localization
                               .find_device_screen_waiting_on_measurement,
                           processType: ProcessType.inProgress,
                         ),
@@ -214,7 +214,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                     syncing: () {
                       return DeviceProgress(
                         header: ProcessItem(
-                          label: translactions.find_device_screen_sync_results,
+                          label: localization.find_device_screen_sync_results,
                           processType: ProcessType.inProgress,
                         ),
                         device: device,
@@ -247,8 +247,8 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
               right: 0,
               child: BluredScaleAppBar(
                 title: device.visibleName ?? '',
-                subTitle: '${translactions.common_measurement} '
-                    '${translactions.common_measurement_types_genitive(measurementType.name).toLowerCase()}',
+                subTitle: '${localization.common_measurement} '
+                    '${localization.common_measurement_types_genitive(measurementType.name).toLowerCase()}',
                 showClose: true,
                 onCloseTap: _onWillPop,
               ),

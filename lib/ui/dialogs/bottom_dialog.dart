@@ -30,9 +30,9 @@ class BottomDialog extends StatelessWidget {
     required MeasurementType measurementType,
   }) {
     return _BottomDialog(
-      title: translactions.result_removal_confirmation_title,
-      description: translactions.result_removal_confirmation_desc(
-        translactions
+      title: localization.result_removal_confirmation_title,
+      description: localization.result_removal_confirmation_desc(
+        localization
             .common_measurement_types_genitive(measurementType.name)
             .toLowerCase(),
       ),
@@ -40,11 +40,11 @@ class BottomDialog extends StatelessWidget {
       iconColor: Theme.of(context).colorScheme.tertiary,
       positiveButtonStyle: ButtonStyle(
         buttonType: ButtonType.alert,
-        label: translactions.result_removal_confirmation_title_button_confirm,
+        label: localization.result_removal_confirmation_title_button_confirm,
       ),
       negativeButtonStyle: ButtonStyle(
         buttonType: ButtonType.secondary,
-        label: translactions.common_close,
+        label: localization.common_close,
       ),
     );
   }
@@ -54,17 +54,17 @@ class BottomDialog extends StatelessWidget {
     required BuildContext context,
   }) {
     return _BottomDialog(
-      title: translactions.dialog_req_notifications_title,
-      description: translactions.dialog_req_notifications_description,
+      title: localization.dialog_req_notifications_title,
+      description: localization.dialog_req_notifications_description,
       iconPath: 'assets/icons/icon_triangle_exclamation_big.svg',
       iconColor: Theme.of(context).colorScheme.tertiary,
       positiveButtonStyle: ButtonStyle(
         buttonType: ButtonType.primary,
-        label: translactions.dialog_req_notifications_go_to_settings,
+        label: localization.dialog_req_notifications_go_to_settings,
       ),
       negativeButtonStyle: ButtonStyle(
         buttonType: ButtonType.secondary,
-        label: translactions.common_close,
+        label: localization.common_close,
       ),
     );
   }
@@ -74,17 +74,17 @@ class BottomDialog extends StatelessWidget {
     required BuildContext context,
   }) {
     return _BottomDialog(
-      title: translactions.metering_screen_device_removal_title,
-      description: translactions.metering_screen_device_removal_message,
+      title: localization.metering_screen_device_removal_title,
+      description: localization.metering_screen_device_removal_message,
       iconPath: 'assets/icons/icon_trash_blank_big.svg',
       iconColor: Theme.of(context).colorScheme.tertiary,
       positiveButtonStyle: ButtonStyle(
         buttonType: ButtonType.alert,
-        label: translactions.metering_screen_device_removal_button_confirm,
+        label: localization.metering_screen_device_removal_button_confirm,
       ),
       negativeButtonStyle: ButtonStyle(
         buttonType: ButtonType.secondary,
-        label: translactions.common_close,
+        label: localization.common_close,
       ),
     );
   }
@@ -95,18 +95,18 @@ class BottomDialog extends StatelessWidget {
     required String accountName,
   }) {
     return _BottomDialog(
-      title: translactions.dialog_account_removal_confirmation_title,
-      description: translactions
+      title: localization.dialog_account_removal_confirmation_title,
+      description: localization
           .dialog_account_removal_confirmation_description(accountName),
       iconPath: 'assets/icons/icon_trash_blank_big.svg',
       iconColor: Theme.of(context).colorScheme.tertiary,
       positiveButtonStyle: ButtonStyle(
         buttonType: ButtonType.alert,
-        label: translactions.dialog_account_removal_confirmation_title,
+        label: localization.dialog_account_removal_confirmation_title,
       ),
       negativeButtonStyle: ButtonStyle(
         buttonType: ButtonType.secondary,
-        label: translactions.common_close,
+        label: localization.common_close,
       ),
     );
   }
@@ -116,17 +116,17 @@ class BottomDialog extends StatelessWidget {
     required BuildContext context,
   }) {
     return _BottomDialog(
-      title: translactions.daily_when_time_reset_confirmation_title,
-      description: translactions.daily_when_time_reset_confirmation_info,
+      title: localization.daily_when_time_reset_confirmation_title,
+      description: localization.daily_when_time_reset_confirmation_info,
       iconPath: 'assets/icons/icon_clock_big.svg',
       iconColor: Theme.of(context).colorScheme.tertiary,
       positiveButtonStyle: ButtonStyle(
         buttonType: ButtonType.primary,
-        label: translactions.daily_when_time_reset_confirmation_confirm,
+        label: localization.daily_when_time_reset_confirmation_confirm,
       ),
       negativeButtonStyle: ButtonStyle(
         buttonType: ButtonType.secondary,
-        label: translactions.common_close,
+        label: localization.common_close,
       ),
     );
   }
@@ -136,13 +136,13 @@ class BottomDialog extends StatelessWidget {
     required BuildContext context,
   }) {
     return _BottomDialog(
-      title: translactions.server_error_title,
-      description: translactions.server_error_desc,
+      title: localization.server_error_title,
+      description: localization.server_error_desc,
       iconPath: 'assets/icons/icon_triangle_exclamation_big.svg',
       iconColor: Theme.of(context).colorScheme.error,
       positiveButtonStyle: ButtonStyle(
         buttonType: ButtonType.secondary,
-        label: translactions.common_close,
+        label: localization.common_close,
       ),
     );
   }
@@ -153,14 +153,14 @@ class BottomDialog extends StatelessWidget {
     required String macAddress,
   }) {
     return _BottomDialog(
-      title: translactions.register_device_detail_registration_fail_title,
-      description: translactions
+      title: localization.register_device_detail_registration_fail_title,
+      description: localization
           .register_device_detail_registration_fail_message(macAddress),
       iconPath: 'assets/icons/icon_triangle_exclamation_big.svg',
       iconColor: Theme.of(context).colorScheme.error,
       positiveButtonStyle: ButtonStyle(
         buttonType: ButtonType.secondary,
-        label: translactions.common_close,
+        label: localization.common_close,
       ),
     );
   }

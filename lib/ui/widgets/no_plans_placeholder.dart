@@ -29,11 +29,11 @@ class NoContentPlaceholder extends StatelessWidget with BottomSheetMixin {
   String _getLabelByType() {
     switch (noContentType) {
       case NoContentType.notAllowedSeeOwnMeasurements:
-        return translactions.results_screen_no_permission_to_see_results;
+        return localization.results_screen_no_permission_to_see_results;
       case NoContentType.noHistoricalData:
-        return translactions.results_screen_no_historic_data;
+        return localization.results_screen_no_historic_data;
       case NoContentType.noPlans:
-        return translactions.dashboard_screen_any_user_plan;
+        return localization.dashboard_screen_any_user_plan;
     }
   }
 

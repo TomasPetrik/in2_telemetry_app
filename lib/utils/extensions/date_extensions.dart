@@ -103,12 +103,12 @@ extension DateParse on DateTime {
     final difference = daysBetween(currentDt, this);
 
     if (difference == -1) {
-      return translactions.common_measurement_times(WhenPeriod.yesterday.name);
+      return localization.common_measurement_times(WhenPeriod.yesterday.name);
     }
     if (difference == 0) {
-      return translactions.common_measurement_times(WhenPeriod.today.name);
+      return localization.common_measurement_times(WhenPeriod.today.name);
     } else if (difference == 1) {
-      return translactions.common_measurement_times(WhenPeriod.tomorrow.name);
+      return localization.common_measurement_times(WhenPeriod.tomorrow.name);
     } else {
       return toRegularDate();
     }
@@ -119,12 +119,12 @@ extension DateParse on DateTime {
     final difference = daysBetween(currentDt, this);
 
     if (difference == -1) {
-      return translactions
+      return localization
           .common_when_day_name(WhenPeriod.yesterday.name)
           .capitalize();
     }
     if (difference == 0) {
-      return translactions
+      return localization
           .common_when_day_name(WhenPeriod.today.name)
           .capitalize();
     } else {

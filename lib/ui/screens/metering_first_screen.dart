@@ -56,10 +56,10 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
   }
 
   String getTitle() {
-    String title = translactions.common_measurement;
+    String title = localization.common_measurement;
     if (widget.selectedMeasurementType != null) {
       title +=
-          ' ${translactions.common_measurement_types_genitive(defaultMeasurementType.name).toLowerCase()}';
+          ' ${localization.common_measurement_types_genitive(defaultMeasurementType.name).toLowerCase()}';
     }
     return title;
   }
@@ -114,7 +114,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                                       (measurementType) => Row(
                                         children: [
                                           NavigationTabChip(
-                                            label: translactions
+                                            label: localization
                                                 .common_measurement_types(
                                               measurementType.name,
                                             ),
@@ -155,7 +155,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                             padding: Paddings.horizontal48,
                             child: Center(
                               child: Text(
-                                translactions
+                                localization
                                     .device_selector_unsupported_devices,
                                 style: ScaleTextStyles.text.apply(
                                   color:
@@ -224,7 +224,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                             padding: Paddings.horizontal48,
                             child: Center(
                               child: Text(
-                                translactions
+                                localization
                                     .metering_screen_no_added_device_yet,
                                 style: ScaleTextStyles.text.apply(
                                   color:
@@ -247,7 +247,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                             padding: Paddings.horizontal48,
                             child: Center(
                               child: Text(
-                                translactions
+                                localization
                                     .metering_screen_no_eligible_to_measure_with_uknow_device,
                                 style: ScaleTextStyles.text.apply(
                                   color:
@@ -262,7 +262,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                             userAccount.canMeasureWithUnknowDevice) ...[
                           Gaps.gap24,
                           SettingsItem(
-                            label: translactions.metering_screen_add_device,
+                            label: localization.metering_screen_add_device,
                             iconWidget: SvgPicture.asset(
                               'assets/icons/icon_plus.svg',
                               color: Theme.of(context).colorScheme.onSecondary,
@@ -285,7 +285,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                         )) ...[
                           Gaps.gap24,
                           SettingsItem(
-                            label: translactions.common_personal_record,
+                            label: localization.common_personal_record,
                             iconWidget: SvgPicture.asset(
                               'assets/icons/icon_square_pen_medium.svg',
                               color: Theme.of(context).colorScheme.onSecondary,

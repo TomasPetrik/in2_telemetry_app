@@ -40,14 +40,14 @@ class MeteringFirstRoute extends ApplicationRoute with PageBuilderMixin {
           final supportedUserMeasurementTypes =
               CarePlanHelper.getMeasurementTypes(userAccount.carePlans!);
 
-          const allMeasurentTypes = Constants.supportedMeasurementTypes;
+          const allMeasurementTypes = Constants.supportedMeasurementTypes;
 
           return MeteringFirstScreen(
             userId: userId,
             selectedMeasurementType: measurementType,
             allMeasurementTypes: supportedUserMeasurementTypes.isNotEmpty
                 ? supportedUserMeasurementTypes
-                : allMeasurentTypes,
+                : allMeasurementTypes,
           );
         },
       ),

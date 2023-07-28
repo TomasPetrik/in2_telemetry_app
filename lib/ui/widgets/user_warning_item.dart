@@ -23,11 +23,11 @@ class UserWarningItem extends StatelessWidget {
   Widget build(BuildContext context) {
     if (userProblemType == UserProblemType.sessionExpired) {
       return WarningItem(
-        title: translactions.session_expired_title,
-        description: translactions.session_expired_description(
+        title: localization.session_expired_title,
+        description: localization.session_expired_description(
           userAccount.user.fullName,
         ),
-        buttonLabel: translactions.common_log_in,
+        buttonLabel: localization.common_log_in,
         icon: SvgPicture.asset(
           'assets/icons/icon_triangle_exclamation_medium.svg',
           color: Theme.of(context).colorScheme.error,
@@ -42,14 +42,14 @@ class UserWarningItem extends StatelessWidget {
       );
     } else if (userProblemType == UserProblemType.lastSyncFailed) {
       return WarningItem(
-        title: translactions.sync_widget_sync_failed_title,
+        title: localization.sync_widget_sync_failed_title,
         description: userAccount.lastSyncAt != null
-            ? translactions.sync_widget_sync_failed_desc(
+            ? localization.sync_widget_sync_failed_desc(
                 userAccount.lastSyncAt!.toDateOrDay().toLowerCase(),
                 userAccount.lastSyncAt!.toTimeOfDay().toString(),
               )
             : '',
-        buttonLabel: translactions.common_do_sync,
+        buttonLabel: localization.common_do_sync,
         icon: SvgPicture.asset(
           'assets/icons/icon_triangle_exclamation_medium.svg',
           color: Theme.of(context).colorScheme.error,
@@ -62,9 +62,9 @@ class UserWarningItem extends StatelessWidget {
       );
     } else if (userProblemType == UserProblemType.syncResultsFailed) {
       return WarningItem(
-        title: translactions.sync_widget_sync_results_failed_title,
-        description: translactions.sync_widget_sync_results_failed_desc,
-        buttonLabel: translactions.common_do_sync,
+        title: localization.sync_widget_sync_results_failed_title,
+        description: localization.sync_widget_sync_results_failed_desc,
+        buttonLabel: localization.common_do_sync,
         icon: SvgPicture.asset(
           'assets/icons/icon_triangle_exclamation_medium.svg',
           color: Theme.of(context).colorScheme.error,

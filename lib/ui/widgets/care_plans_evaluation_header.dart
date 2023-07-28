@@ -55,7 +55,7 @@ class CarePlansEvaluationHeader extends StatelessWidget {
       if (progress != null) {
         progressItems.add(
           ProgressItem(
-            translactions.common_measurement_types(measurementType.name),
+            localization.common_measurement_types(measurementType.name),
             progress,
           ),
         );
@@ -72,7 +72,7 @@ class CarePlansEvaluationHeader extends StatelessWidget {
       if (progress != null) {
         progressItems.add(
           ProgressItem(
-            translactions.common_overall,
+            localization.common_overall,
             progress,
           ),
         );
@@ -92,7 +92,7 @@ class CarePlansEvaluationHeader extends StatelessWidget {
                   whenPeriod: whenPeriod,
                   openWhenSelector: openWhenSelector,
                   progressItems: progressItems,
-                  label: translactions.common_plans_fulfillment_plural(
+                  label: localization.common_plans_fulfillment_plural(
                     progressItems.length,
                   ),
                 ),

@@ -86,7 +86,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                     ),
                     Gaps.gap16,
                     Text(
-                      translactions.manual_measurement_screen_type,
+                      localization.manual_measurement_screen_type,
                       style: ScaleTextStyles.text.apply(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
@@ -112,7 +112,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                         return DropdownMenuItem<MeasurementType>(
                           value: measurementType,
                           child: Text(
-                            translactions
+                            localization
                                 .common_measurement_types(measurementType.name),
                           ),
                         );
@@ -122,7 +122,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                     measurementForm,
                     Gaps.gap24,
                     Text(
-                      translactions.manual_measurement_screen_measurement_time,
+                      localization.manual_measurement_screen_measurement_time,
                       style: ScaleTextStyles.text.apply(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
@@ -162,7 +162,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                     ),
                     Gaps.gap24,
                     HighlightedElevatedButton(
-                      label: translactions.common_save,
+                      label: localization.common_save,
                       buttonType: ButtonType.primary,
                       onPressed: () async {
                         final measurement = measurementForm.getMeasurement();
@@ -189,7 +189,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                   child: ScaleAppBar(
-                    title: translactions.manual_measurement_screen_title,
+                    title: localization.manual_measurement_screen_title,
                     showClose: true,
                   ),
                 ),

@@ -58,7 +58,7 @@ class CalendarMonthWidget extends StatelessWidget {
               children: [
                 Gaps.gap24,
                 Text(
-                  '${translactions.common_months(Constants.monthsInYear[loadedMonth.month]!)} ${loadedMonth.year}',
+                  '${localization.common_months(Constants.monthsInYear[loadedMonth.month]!)} ${loadedMonth.year}',
                   style: ScaleTextStyles.label.apply(
                     color: Theme.of(context).colorScheme.onPrimary,
                   ),

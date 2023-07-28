@@ -95,7 +95,7 @@ class NotificationsHelper {
     final scheduledTime = tz.TZDateTime.from(whenStart, tz.local);
     await notificationsPlugin.zonedSchedule(
       id,
-      translactions.common_app_name,
+      localization.common_app_name,
       _getBodyMessage(userAccount, plannedMeasurement),
       scheduledTime,
       const NotificationDetails(
@@ -119,13 +119,13 @@ class NotificationsHelper {
   ) {
     String message = '';
     message +=
-        '${userAccount.user.fullName} - ${translactions.common_measurement} ';
-    message += '${translactions.common_measurement_types_genitive(
+        '${userAccount.user.fullName} - ${localization.common_measurement} ';
+    message += '${localization.common_measurement_types_genitive(
           plannedMeasurement.carePlan.activity.measurementType.name,
         ).toLowerCase()} ';
 
     if (plannedMeasurement.carePlan.isPeriodical) {
-      message += translactions.notification_periodical_frequency_from_to(
+      message += localization.notification_periodical_frequency_from_to(
         plannedMeasurement.carePlan.frequency,
         plannedMeasurement.isLongPeriod
             ? plannedMeasurement.whenStart.toDateFormatLong()
@@ -136,11 +136,11 @@ class NotificationsHelper {
       );
     } else {
       if (plannedMeasurement.whenCode != null) {
-        message += translactions
+        message += localization
             .common_when_code(plannedMeasurement.whenCode!.name)
             .toLowerCase();
       }
-      message += ' ${translactions.common_at_time(
+      message += ' ${localization.common_at_time(
         plannedMeasurement.whenStart.toTimeOfDay().toString(),
       )}';
     }

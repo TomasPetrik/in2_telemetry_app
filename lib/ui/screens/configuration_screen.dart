@@ -63,7 +63,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            translactions.configuration_screen_logged_accounts,
+                            localization.configuration_screen_logged_accounts,
                             style: ScaleTextStyles.textAccent.apply(
                               color: Theme.of(context).colorScheme.onSecondary,
                             ),
@@ -112,7 +112,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                                 showWarning: showWarning,
                                 label: hospital.key.title,
                                 subLabel: '${hospital.value[0].user.fullName}'
-                                    ' ${hospital.value.length > 1 ? translactions.common_plus_n_others(hospital.value.length - 1) : ''}',
+                                    ' ${hospital.value.length > 1 ? localization.common_plus_n_others(hospital.value.length - 1) : ''}',
                                 iconWidget: Padding(
                                   padding: Paddings.all8,
                                   child: ImageWidget(hospital.key.iconPath),
@@ -153,7 +153,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                       ),
                       Gaps.gap24,
                       SettingsItem(
-                        label: translactions.configuration_screen_add_account,
+                        label: localization.configuration_screen_add_account,
                         iconWidget: SvgPicture.asset(
                           'assets/icons/icon_plus.svg',
                           color: Theme.of(context).colorScheme.onSecondary,
@@ -174,16 +174,16 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                       ),
                       Gaps.gap42,
                       Text(
-                        translactions.configuration_screen_settings,
+                        localization.configuration_screen_settings,
                         style: ScaleTextStyles.textAccent.apply(
                           color: Theme.of(context).colorScheme.onSecondary,
                         ),
                       ),
                       Gaps.gap24,
                       SettingsItem(
-                        label: translactions
+                        label: localization
                             .configuration_screen_notification_label,
-                        subLabel: translactions
+                        subLabel: localization
                             .configuration_screen_notification_sublabel,
                         iconWidget: SvgPicture.asset(
                           'assets/icons/icon_message_square_notification.svg',
@@ -200,12 +200,12 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                           ..add(const AppSettingsBlocEvent.initSettings()),
                         builder: (context, state) {
                           return SettingsItem(
-                            label: translactions
+                            label: localization
                                 .configuration_screen_appearance_label,
                             subLabel: state.autosetAppearance == true
-                                ? translactions
+                                ? localization
                                     .configuration_screen_auto_appearance_sublabel
-                                : translactions
+                                : localization
                                     .configuration_screen_system_appearance_sublabel,
                             iconWidget: SvgPicture.asset(
                               'assets/icons/icon_paint_roller.svg',
@@ -224,9 +224,9 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                           ..add(const AppSettingsBlocEvent.initSettings()),
                         builder: (context, state) {
                           return SettingsItem(
-                            label: translactions
+                            label: localization
                                 .manual_screen_title,
-                            subLabel: translactions.open_manual_button,
+                            subLabel: localization.open_manual_button,
                             iconWidget: SvgPicture.asset(
                               'assets/icons/icon_question.svg',
                               color: Theme.of(context).colorScheme.onSecondary,
@@ -250,7 +250,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                               Gaps.gap24,
                               Center(
                                 child: Text(
-                                  translactions
+                                  localization
                                       .app_version(packageInfo.version),
                                   style: ScaleTextStyles.label.apply(
                                     color:
@@ -272,7 +272,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                 left: 0,
                 right: 0,
                 child: BluredScaleAppBar(
-                  title: translactions.common_app_name,
+                  title: localization.common_app_name,
                 ),
               ),
             ],
