@@ -158,7 +158,6 @@ _i1.GetIt init(
   ));
   gh.factory<_i37.OmronConnectionBloc>(() => _i37.OmronConnectionBloc(
         gh<_i3.AccountDbProvider>(),
-        gh<_i18.PendingResultsDbProvider>(),
         gh<_i17.PairedDevicesDbProvider>(),
       ));
   gh.factory<_i38.RegisterDeviceBloc>(
