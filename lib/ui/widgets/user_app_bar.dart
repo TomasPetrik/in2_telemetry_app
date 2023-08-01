@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
+import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
+import 'package:scalesoft_app/bloc/sync/sync_event.dart';
+import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -9,6 +13,7 @@ import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
+import 'package:scalesoft_app/ui/widgets/rotating_icon.dart';
 
 class UserAppBar extends StatelessWidget with BottomSheetMixin {
   const UserAppBar({
@@ -95,7 +100,39 @@ class UserAppBar extends StatelessWidget with BottomSheetMixin {
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      const SizedBox(width: 56),
+                      SizedBox(
+                        width: 56,
+                        child: BlocBuilder<SyncBloc, SyncState>(
+                          buildWhen: (previous, current) => previous != current,
+                          bloc: getIt<SyncBloc>(),
+                          builder: (context, syncState) {
+                            if (syncState == const SyncState.inProgress()) {
+                              return RotatingIcon(
+                                child: IconButton(
+                                  onPressed: () {},
+                                  padding: EdgeInsets.zero,
+                                  icon: SvgPicture.asset(
+                                    'assets/icons/icon_rotate.svg',
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return IconButton(
+                                onPressed: () {
+                                  getIt<SyncBloc>()
+                                      .add(const SyncEvent.syncAll());
+                                },
+                                padding: EdgeInsets.zero,
+                                icon: SvgPicture.asset(
+                                  'assets/icons/icon_rotate.svg',
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),
