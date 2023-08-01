@@ -104,7 +104,9 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                             color: Theme.of(context).colorScheme.error,
                           ),
                           onTap: () async {
-                            AppSettings.openBluetoothSettings();
+                            AppSettings.openAppSettings(
+                              type: AppSettingsType.bluetooth,
+                            );
                           },
                         ),
                         device: device,

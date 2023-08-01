@@ -27,7 +27,7 @@ class NoUserRoute extends ApplicationRoute with BottomSheetMixin {
         showNotificationsSettings(context: context)
             .then((openNotificationSettings) {
           if (openNotificationSettings == true) {
-            AppSettings.openNotificationSettings();
+            AppSettings.openAppSettings(type: AppSettingsType.notification);
           }
         });
       }

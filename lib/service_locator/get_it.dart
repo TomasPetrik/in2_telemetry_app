@@ -12,7 +12,7 @@ final I10n translactions = getIt<I10n>();
   preferRelativeImports: true, // default
   asExtension: false, // default
 )
-GetIt configureDependencies(BuildContext context) {
+Future<GetIt> configureDependencies(BuildContext context) async {
   getIt.registerLazySingleton(I10n.new);
-  return init(getIt);
+  return await init(getIt);
 }

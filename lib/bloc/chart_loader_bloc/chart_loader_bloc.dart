@@ -154,7 +154,7 @@ class ChartLoaderBloc extends Bloc<ChartLoaderBlocEvent, ChartLoaderBlocState> {
           calendarMonth.month,
           MeasurementResults(items: measurementResults),
         );
-      } on DioError {
+      } on DioException {
         debugPrint(
           'Not loaded  measurement for ${userAccount.user.fullName}',
         );

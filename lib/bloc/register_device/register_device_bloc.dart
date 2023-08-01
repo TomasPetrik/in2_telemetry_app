@@ -111,8 +111,8 @@ class RegisterDeviceBloc
             );
 
             emit(const RegisterDeviceBlocState.deviceRegistered());
-          } on DioError catch (dioError) {
-            if (dioError.response?.statusCode == 500) {
+          } on DioException catch (exception) {
+            if (exception.response?.statusCode == 500) {
               emit(
                 RegisterDeviceBlocState.deviceAlreadyRegistered(UniqueKey()),
               );

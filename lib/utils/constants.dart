@@ -15,6 +15,9 @@ class EGoverement {
 }
 
 class Constants {
+  /* Keep debug logs max for N days */
+  static const int keepLogsDays = 2;
+
   /* Background service interval fetch */
   static const int autoSyncIntervalMinutes = 15;
 

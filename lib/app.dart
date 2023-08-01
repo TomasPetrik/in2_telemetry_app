@@ -22,6 +22,7 @@ import 'package:scalesoft_app/providers/calendar_evaluation_db_provider.dart';
 import 'package:scalesoft_app/providers/measurements_db_provider.dart';
 import 'package:scalesoft_app/providers/paired_devices_db_provider.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
+import 'package:scalesoft_app/providers/reports_db_provider.dart';
 import 'package:scalesoft_app/providers/session_db_provider.dart';
 import 'package:scalesoft_app/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -118,9 +119,9 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
         final path = state.whenOrNull(
           unauthenticated: () => '/${NoUserRoute.name}',
           onUserAdded: (UserAccount userAccount) =>
-          '/${UserAddedRoute.name}/${userAccount.user.muid}',
+              '/${UserAddedRoute.name}/${userAccount.user.muid}',
           onAppearanceChanged: (_) =>
-          '/${ConfigurationRoute.name}/${AppearanceRoute.name}',
+              '/${ConfigurationRoute.name}/${AppearanceRoute.name}',
           onDaylightAppearanceChanged: (originalLocation) => originalLocation,
           activeMode: (key) => '/${DashboardRoute.name}',
         );
@@ -135,7 +136,7 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
   }
 
   Future<void> init() async {
-    configureDependencies(context);
+    await configureDependencies(context);
 
     getIt<Dio>(instanceName: Constants.privateDioName)
         .interceptors
@@ -164,6 +165,9 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
     final measurementDbProvider = getIt<MeasurementsDbProvider>();
     await measurementDbProvider.init();
 
+    final reportsDbProvider = getIt<ReportsDbProvider>();
+    await reportsDbProvider.init();
+
     var appSettings = settingsDbProvider.read();
     if (appSettings == null) {
       appSettings = AppSettings(
@@ -183,7 +187,7 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
     final notifcationsBloc = getIt<NotificationsBloc>();
     notifcationsBloc.add(const NotificationsEvent.initPlugin());
     notifcationsBloc.notificationsStreamController.stream.listen(
-          (_) {
+      (_) {
         _goRouter?.goNamed(DashboardRoute.name);
         getIt<CarePlanBloc>().add(const RefreshStateEvent());
       },

@@ -78,7 +78,7 @@ class CalendarFulfillmentServiceBloc extends Bloc<
               MeasurementResults(items: measurementResults),
             );
           }
-        } on DioError {
+        } on DioException {
           debugPrint(
             'Not loaded month ${calendarMonth.month} in year ${calendarMonth.year} measurements for ${userAccount.user.fullName}',
           );
@@ -107,7 +107,7 @@ class CalendarFulfillmentServiceBloc extends Bloc<
             calendarMonth.month,
             evaluation,
           );
-        } on DioError {
+        } on DioException {
           debugPrint(
             'Not loaded month ${calendarMonth.month} in year ${calendarMonth.year} fulfillments for ${userAccount.user.fullName}',
           );

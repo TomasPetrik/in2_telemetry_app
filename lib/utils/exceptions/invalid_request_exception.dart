@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
 
-class InvalidRequestException extends DioError {
+class InvalidRequestException extends DioException {
   InvalidRequestException() : super(requestOptions: RequestOptions(path: ''));
 }

@@ -17,6 +17,7 @@ import 'package:scalesoft_app/providers/session_db_provider.dart';
 import 'package:scalesoft_app/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/location_service.dart';
+import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/utils/constants.dart';
@@ -31,6 +32,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
   final Session _session;
   final CarePlanBloc _carePlanBloc;
   final LocationService _locationService;
+  final ReportService _reportService;
   Timer? _watchDogTimer;
   GoRouter? goRouter;
 
@@ -41,6 +43,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     this._session,
     this._carePlanBloc,
     this._locationService,
+    this._reportService,
   ) : super(const ContentState.initial()) {
     on<CheckLastLoggedUserContentEvent>(_checkLastLoggedUserContentEvent);
     on<OnUserAddedContentEvent>(_onUserAddedContentEvent);
@@ -100,6 +103,8 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
   ) async {
     goRouter = event.goRouter;
     initBackgroundFetch();
+
+    await _reportService.removeOldLogs();
 
     final userAccount = _accountDbProvider.getLast();
     final isMultiUser = _sessionDbProvider.isMultiUser();

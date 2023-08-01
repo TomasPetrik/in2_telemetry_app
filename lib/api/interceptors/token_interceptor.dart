@@ -5,12 +5,14 @@ import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/account_api_client.dart';
 import 'package:scalesoft_app/api/client/auth_api_client.dart';
 import 'package:scalesoft_app/api/model/auth_token.dart';
+import 'package:scalesoft_app/api/model/report/report.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/config.dart';
 import 'package:scalesoft_app/parsers/jwt_parser.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/utils/constants.dart';
 import 'package:scalesoft_app/utils/exceptions/invalid_request_exception.dart';
@@ -20,11 +22,13 @@ class TokenInterceptor extends Interceptor {
   final Session session;
   final AccountApiClient accountApiClient;
   final AccountDbProvider accountDbProvider;
+  final ReportService reportService;
 
   TokenInterceptor(
     this.session,
     this.accountApiClient,
     this.accountDbProvider,
+    this.reportService,
   );
 
   @override
@@ -43,7 +47,22 @@ class TokenInterceptor extends Interceptor {
   }
 
   @override
-  Future<void> onError(DioError err, ErrorInterceptorHandler handler) async {
+  Future<void> onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
+    if (err.requestOptions.headers
+        .containsKey(HttpHeaders.authorizationHeader)) {
+      final originalToken = err
+          .requestOptions.headers[HttpHeaders.authorizationHeader]
+          .toString()
+          .split(' ')[1];
+      final userAccount = accountDbProvider.getByToken(originalToken);
+      if (userAccount != null) {
+        reportService.trackEvent(userAccount, Severity.error, err.error.toString());
+      }
+    }
+
     switch (err.response?.statusCode) {
       case 400:
         final refreshToken = err.requestOptions.data['refresh_token'];

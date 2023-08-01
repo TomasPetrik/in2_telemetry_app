@@ -340,6 +340,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Notifikace"),
         "configuration_screen_notification_sublabel":
             MessageLookupByLibrary.simpleMessage("Dle plánu měření"),
+        "configuration_screen_send_debug_logs":
+            MessageLookupByLibrary.simpleMessage("Odeslat vývojářské data"),
         "configuration_screen_settings":
             MessageLookupByLibrary.simpleMessage("Nastavení"),
         "configuration_screen_system_appearance_sublabel":

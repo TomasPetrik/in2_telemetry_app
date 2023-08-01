@@ -59,7 +59,9 @@ class _RegisterDeviceSearchScreenState
                       color: Theme.of(context).colorScheme.error,
                     ),
                     onTap: () async {
-                      AppSettings.openBluetoothSettings();
+                      AppSettings.openAppSettings(
+                        type: AppSettingsType.bluetooth,
+                      );
                     },
                   ),
                   noBtPermissions: () => WarningItem(
