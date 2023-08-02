@@ -166,8 +166,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                                   MeasurementHelper.doMeasurement(
                                     context: context,
                                     userId: sessionAccounts[0].user.muid,
-                                    allMeasurementTypes:
-                                        supportedMeasurementTypes,
+                                    showAllMeasurementTypes: true,
                                   );
                                 },
                               ),
@@ -208,8 +207,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                                             .currentCarePlans![0]
                                             .activity
                                             .measurementType,
-                                        allMeasurementTypes:
-                                            supportedMeasurementTypes,
+                                        showAllMeasurementTypes: true,
                                       );
                                     },
                                   ),

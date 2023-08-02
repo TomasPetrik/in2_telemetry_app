@@ -19,21 +19,20 @@ import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/device_item.dart';
 import 'package:scalesoft_app/ui/widgets/navigation_tab_chip.dart';
 import 'package:scalesoft_app/ui/widgets/settings_item.dart';
+import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 class MeteringFirstScreen extends StatefulWidget {
   const MeteringFirstScreen({
     super.key,
     required this.userId,
     this.selectedMeasurementType,
-    required this.allMeasurementTypes,
-  }) : assert(
-          selectedMeasurementType != null || allMeasurementTypes.length > 0,
-          'Either selectedMeasurementType != null or allMeasurementTypes should be not empty !',
-        );
+    required this.showAllMeasurementTypes,
+  });
 
   final String userId;
   final MeasurementType? selectedMeasurementType;
-  final Set<MeasurementType> allMeasurementTypes;
+  final bool showAllMeasurementTypes;
 
   @override
   State<MeteringFirstScreen> createState() => _MeteringFirstScreenState();
@@ -45,12 +44,26 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
   final DeviceManagementCubit devManagementCubit =
       getIt<DeviceManagementCubit>();
   late MeasurementType defaultMeasurementType;
+  late Set<MeasurementType> displayedMeasurementTypes;
 
   @override
   void initState() {
     userAccount = getIt<AccountDbProvider>().get(widget.userId)!;
+
+    final supportedUserMeasurementTypes =
+        CarePlanHelper.getMeasurementTypes(userAccount.carePlans!);
+
+    if (widget.showAllMeasurementTypes ||
+        supportedUserMeasurementTypes.isEmpty) {
+      displayedMeasurementTypes =
+          userAccount.hospital?.enabledMeasurementTypes.toSet() ??
+              Constants.supportedMeasurementTypes;
+    } else {
+      displayedMeasurementTypes = supportedUserMeasurementTypes;
+    }
+
     defaultMeasurementType =
-        widget.selectedMeasurementType ?? widget.allMeasurementTypes.first;
+        widget.selectedMeasurementType ?? displayedMeasurementTypes.first;
 
     super.initState();
   }
@@ -83,8 +96,8 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                   bloc: devManagementCubit
                     ..init(
                       widget.selectedMeasurementType ??
-                          widget.allMeasurementTypes.first,
-                      widget.allMeasurementTypes,
+                          displayedMeasurementTypes.first,
+                      displayedMeasurementTypes,
                       widget.userId,
                     ),
                   builder: (context, state) {
@@ -298,6 +311,8 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                                   'userId': widget.userId,
                                   'measurementType':
                                       selectedMeasurementType.name,
+                                  'showAllMeasurementTypes':
+                                      widget.showAllMeasurementTypes.toString(),
                                 },
                               );
                             },

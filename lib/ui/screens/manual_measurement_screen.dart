@@ -24,10 +24,12 @@ class ManualMeasurementScreen extends StatefulWidget {
     super.key,
     required this.userId,
     required this.measurementType,
+    required this.enabledMeasurementTypes,
   });
 
   final MeasurementType measurementType;
   final String userId;
+  final List<MeasurementType> enabledMeasurementTypes;
 
   @override
   State<ManualMeasurementScreen> createState() =>
@@ -40,6 +42,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
 
   late TextEditingController timeEditingController;
   late DailyTime measurementTime;
+  late List<MeasurementType> enabledMeasurementTypes;
 
   @override
   void initState() {
@@ -50,6 +53,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
       text: currentTime.toString(),
     );
     measurementTime = currentTime;
+    enabledMeasurementTypes = widget.enabledMeasurementTypes;
     super.initState();
   }
 
@@ -105,8 +109,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                           dropdownValue = value!;
                         });
                       },
-                      // TODO: Make visible options configurable per hospital #IN2-8428
-                      items: MeasurementType.values
+                      items: enabledMeasurementTypes
                           .map<DropdownMenuItem<MeasurementType>>(
                               (MeasurementType measurementType) {
                         return DropdownMenuItem<MeasurementType>(

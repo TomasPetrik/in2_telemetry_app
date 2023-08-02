@@ -8,7 +8,6 @@ import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/info_placeholder.dart';
 import 'package:scalesoft_app/ui/widgets/personal_measurement_footer.dart';
-import 'package:scalesoft_app/utils/constants.dart';
 import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -61,9 +60,7 @@ class NoContentPlaceholder extends StatelessWidget with BottomSheetMixin {
               MeasurementHelper.doMeasurement(
                 context: context,
                 userId: userAccount!.user.muid,
-                allMeasurementTypes: supportedMeasurementTypes.isNotEmpty
-                    ? supportedMeasurementTypes
-                    : Constants.supportedMeasurements.keys.toSet(),
+                showAllMeasurementTypes: true,
               );
             },
           ),

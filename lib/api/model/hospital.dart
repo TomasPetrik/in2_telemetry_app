@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scalesoft_app/api/model/auth_data.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
 
 part 'hospital.freezed.dart';
 part 'hospital.g.dart';
@@ -16,6 +17,7 @@ class Hospital with _$Hospital {
     @HiveField(1) required String title,
     @HiveField(2) required String iconPath,
     @HiveField(3) required AuthData authData,
+    @HiveField(4) required List<MeasurementType> enabledMeasurementTypes,
   }) = _Hospital;
 
   factory Hospital.fromJson(Map<String, dynamic> json) =>
