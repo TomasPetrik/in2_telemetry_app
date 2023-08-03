@@ -246,7 +246,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                         bloc: reportBloc,
                         builder: (context, state) {
                           return HighlightedElevatedButton(
-                            label: translactions
+                            label: localization
                                 .configuration_screen_send_debug_logs,
                             buttonType: ButtonType.primary,
                             onPressed: () {
