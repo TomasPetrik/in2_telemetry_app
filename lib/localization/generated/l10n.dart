@@ -714,10 +714,10 @@ class I10n {
     );
   }
 
-  /// `Odeslat vývojářské data`
+  /// `Odeslat vývojářská data`
   String get configuration_screen_send_debug_logs {
     return Intl.message(
-      'Odeslat vývojářské data',
+      'Odeslat vývojářská data',
       name: 'configuration_screen_send_debug_logs',
       desc: '',
       args: [],
