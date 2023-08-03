@@ -40,9 +40,9 @@ class AppearanceSettingsScreen extends StatelessWidget {
                           return Column(
                             children: [
                               SwitchRow.titleAndLabel(
-                                title: translactions
+                                title: localization
                                     .configuration_screen_auto_mode_title,
-                                label: translactions
+                                label: localization
                                     .configuration_screen_auto_mode_desc,
                                 defaultValue: state.autosetAppearance == true,
                                 onChanged: (turnedOn) {
@@ -105,7 +105,7 @@ class AppearanceSettingsScreen extends StatelessWidget {
             left: 0,
             right: 0,
             child: ScaleAppBar(
-              title: translactions.appearance_screen_title,
+              title: localization.appearance_screen_title,
               onBackTap: () {},
             ),
           ),

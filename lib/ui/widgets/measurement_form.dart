@@ -101,7 +101,7 @@ class MeasurementForm extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      translactions.common_measurement_units_names(
+                      localization.common_measurement_units_names(
                         measurementConfig.unitNames[0].name,
                       ),
                       style: ScaleTextStyles.text.apply(
@@ -127,7 +127,7 @@ class MeasurementForm extends StatelessWidget {
                             value.isEmpty == true ||
                             measurementConfig.min > value.toDouble() ||
                             measurementConfig.max < value.toDouble()) {
-                          return translactions.common_wrong_value;
+                          return localization.common_wrong_value;
                         } else {
                           _value1 = value.toDouble();
                           return null;
@@ -145,7 +145,7 @@ class MeasurementForm extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        translactions.common_measurement_units_names(
+                        localization.common_measurement_units_names(
                           measurementConfig.unitNames[1].name,
                         ),
                         style: ScaleTextStyles.text.apply(
@@ -171,7 +171,7 @@ class MeasurementForm extends StatelessWidget {
                               value.isEmpty == true ||
                               measurementConfig.min > value.toDouble() ||
                               measurementConfig.max < value.toDouble()) {
-                            return translactions.common_wrong_value;
+                            return localization.common_wrong_value;
                           } else {
                             _value2 = value.toDouble();
                             return null;

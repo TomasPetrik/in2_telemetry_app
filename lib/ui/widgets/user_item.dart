@@ -67,11 +67,11 @@ class UserItem extends StatelessWidget {
     final carePlans = userAccount.carePlans;
     if (carePlans?.isEmpty == true) return null;
 
-    String label = translactions
+    String label = localization
         .common_measurement_types(carePlans![0].activity.measurementType.name);
 
     if (carePlans.length > 1) {
-      label += ' ${translactions.common_plus_n_others(carePlans.length - 1)}';
+      label += ' ${localization.common_plus_n_others(carePlans.length - 1)}';
     }
     return label;
   }

@@ -20,7 +20,7 @@ class PlannedMeasurementHeader extends StatelessWidget {
       child: Row(
         children: [
           Text(
-            translactions.common_measurement,
+            localization.common_measurement,
             style: ScaleTextStyles.textAccent
                 .apply(color: Theme.of(context).colorScheme.onSecondary),
           ),
@@ -30,7 +30,7 @@ class PlannedMeasurementHeader extends StatelessWidget {
               openTimeSelector.call();
             },
             child: Text(
-              translactions.common_measurement_times(whenPeriod.name),
+              localization.common_measurement_times(whenPeriod.name),
               style: ScaleTextStyles.text.apply(
                 color: Theme.of(context).primaryColor,
               ),

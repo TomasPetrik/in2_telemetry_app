@@ -150,7 +150,7 @@ class CalendarScreen extends StatelessWidget {
                         } else {
                           return ScaleAppBar(
                             title:
-                                '${translactions.common_months(Constants.monthsInYear[state.currentMonth!]!)} ${state.currentYear}',
+                                '${localization.common_months(Constants.monthsInYear[state.currentMonth!]!)} ${state.currentYear}',
                             showClose: true,
                             onCloseTap: onWillPop,
                             customLeftWidget: state.isCurrentMonth == true
@@ -164,7 +164,7 @@ class CalendarScreen extends StatelessWidget {
                                       );
                                     },
                                     child: Text(
-                                      translactions.common_today,
+                                      localization.common_today,
                                       style: ScaleTextStyles.text.apply(
                                         color: Theme.of(context)
                                             .colorScheme
@@ -276,7 +276,7 @@ class _CalendarFooter extends StatelessWidget {
                             Gaps.gap6,
                             Text(
                               '${selectedDay.userAccounts!.first.user.fullName}'
-                              ' ${selectedDay.userAccounts!.length > 1 ? translactions.common_plus_n_others(selectedDay.userAccounts!.length - 1) : ''}',
+                              ' ${selectedDay.userAccounts!.length > 1 ? localization.common_plus_n_others(selectedDay.userAccounts!.length - 1) : ''}',
                               style: ScaleTextStyles.label.apply(
                                 color:
                                     Theme.of(context).colorScheme.onSecondary,
@@ -287,7 +287,7 @@ class _CalendarFooter extends StatelessWidget {
                       ),
                       Gaps.gap16,
                       Text(
-                        '$measurementsCount ${translactions.common_measurement.toLowerCase()}',
+                        '$measurementsCount ${localization.common_measurement.toLowerCase()}',
                         style: ScaleTextStyles.text.apply(
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),

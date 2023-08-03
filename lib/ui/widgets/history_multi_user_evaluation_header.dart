@@ -43,7 +43,7 @@ class HistoryMultiUserEvaluationHeader extends StatelessWidget {
           Gaps.gap16,
           ProgressHeader(
             progressItems: progressItems,
-            label: translactions.results_history_screen_plan_of_day,
+            label: localization.results_history_screen_plan_of_day,
           ),
           Gaps.gap24,
         ],

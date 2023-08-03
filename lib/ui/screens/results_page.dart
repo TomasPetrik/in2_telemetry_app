@@ -153,7 +153,7 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                     navigationHeader: Row(
                       children: [
                         Text(
-                          translactions.results_screen_results_title,
+                          localization.results_screen_results_title,
                           style: ScaleTextStyles.textAccent.apply(
                             color: Theme.of(context).colorScheme.onSecondary,
                           ),
@@ -163,7 +163,7 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                     tabs: [
                       if (supportedMeasurementTypes.length > 1) ...{
                         NavigationTabBarItem(
-                          label: translactions.dashboard_screen_all,
+                          label: localization.dashboard_screen_all,
                           slivers: [
                             ResultsList(
                               dayDt: state.selectedWhenPeriod ==
@@ -181,7 +181,7 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                       ...supportedMeasurementTypes
                           .map(
                             (measurementType) => NavigationTabBarItem(
-                              label: translactions.common_measurement_types(
+                              label: localization.common_measurement_types(
                                 measurementType.name,
                               ),
                               slivers: [

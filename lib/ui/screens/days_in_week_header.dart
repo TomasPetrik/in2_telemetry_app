@@ -19,7 +19,7 @@ class DaysInWeekHeader extends StatelessWidget {
                 (dayInWeek) => Expanded(
                   child: Center(
                     child: Text(
-                      translactions.common_days_in_week_short(dayInWeek.name),
+                      localization.common_days_in_week_short(dayInWeek.name),
                       style: ScaleTextStyles.label.apply(
                         color: Theme.of(context).colorScheme.onSecondary,
                       ),

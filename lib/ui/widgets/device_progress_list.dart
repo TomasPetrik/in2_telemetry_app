@@ -22,30 +22,30 @@ class DeviceProgressList extends StatelessWidget {
       return [
         ConnectionState(
           'assets/icons/icon_power_off.svg',
-          translactions.find_device_screen_step1_p(device.visibleName!),
+          localization.find_device_screen_step1_p(device.visibleName!),
           1,
         ),
         ConnectionState(
           'assets/icons/icon_bluetooth_on.svg',
-          translactions.find_device_screen_step2_p,
+          localization.find_device_screen_step2_p,
           1,
         ),
         ConnectionState(
           'assets/icons/icon_arrow_spin.svg',
-          translactions.find_device_screen_step3_p,
+          localization.find_device_screen_step3_p,
           2,
         ),
         ConnectionState(
           'assets/icons/icon_wave_pulse.svg',
-          translactions.find_device_screen_step4_p(
-            translactions
+          localization.find_device_screen_step4_p(
+            localization
                 .common_action_button_label(device.actionButtonType!.name),
           ),
           3,
         ),
         ConnectionState(
           'assets/icons/icon_arrow_spin.svg',
-          translactions.find_device_screen_step5_p,
+          localization.find_device_screen_step5_p,
           3,
         )
       ];
@@ -54,14 +54,14 @@ class DeviceProgressList extends StatelessWidget {
         if (device.askToActivateBt == true) ...{
           ConnectionState(
             'assets/icons/icon_circle_information.svg',
-            translactions.find_device_screen_step1(device.visibleName!),
+            localization.find_device_screen_step1(device.visibleName!),
             1,
           )
         },
         ConnectionState(
           'assets/icons/icon_power_off.svg',
-          translactions.find_device_screen_step2(
-            translactions
+          localization.find_device_screen_step2(
+            localization
                 .common_action_button_label(device.actionButtonType!.name),
           ),
           1,
@@ -69,13 +69,13 @@ class DeviceProgressList extends StatelessWidget {
         if (device.askToConfirmMeasurement == true) ...{
           ConnectionState(
             'assets/icons/icon_wave_pulse.svg',
-            translactions.find_device_screen_step3,
+            localization.find_device_screen_step3,
             1,
           )
         },
         ConnectionState(
           'assets/icons/icon_arrow_spin.svg',
-          translactions.find_device_screen_step4,
+          localization.find_device_screen_step4,
           1,
         ),
       ];

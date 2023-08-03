@@ -79,25 +79,25 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
   String getMeasurementText(BuildContext context) {
     switch (measurementType) {
       case MeasurementWhenType.ongoing:
-        return '${translactions.common_measurement} ${translactions.common_measurement_types_genitive(
+        return '${localization.common_measurement} ${localization.common_measurement_types_genitive(
               nextMeasurement!.carePlan.activity.measurementType.name,
-            ).toLowerCase()} ${nextMeasurement!.whenCode != null ? translactions.common_when_code(
+            ).toLowerCase()} ${nextMeasurement!.whenCode != null ? localization.common_when_code(
               nextMeasurement!.whenCode!.name,
             ).toLowerCase() : ''}';
 
       case MeasurementWhenType.upcoming:
-        return '${translactions.common_measurement} ${translactions.common_measurement_types_genitive(
+        return '${localization.common_measurement} ${localization.common_measurement_types_genitive(
               nextMeasurement!.carePlan.activity.measurementType.name,
-            ).toLowerCase()} ${nextMeasurement!.whenCode != null ? translactions.common_when_code(
+            ).toLowerCase()} ${nextMeasurement!.whenCode != null ? localization.common_when_code(
               nextMeasurement!.whenCode!.name,
             ).toLowerCase() : ''} v ${nextMeasurement!.whenStart.toTimeOfDay().toString()}';
 
       case MeasurementWhenType.finished:
-        return translactions.dashboard_screen_no_more_measurements;
+        return localization.dashboard_screen_no_more_measurements;
       case MeasurementWhenType.noMeasurement:
-        return translactions.dashboard_screen_no_todays_measurements;
+        return localization.dashboard_screen_no_todays_measurements;
       case MeasurementWhenType.notVisible:
-        return translactions.dashboard_screen_no_more_future_measurements;
+        return localization.dashboard_screen_no_more_future_measurements;
     }
   }
 
@@ -186,7 +186,7 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
                       nextMeasurement != null) ...[
                     Gaps.gap16,
                     HighlightedElevatedButton(
-                      label: translactions.common_measure_now,
+                      label: localization.common_measure_now,
                       buttonType: ButtonType.secondary,
                       onPressed: () {
                         MeasurementHelper.doMeasurement(

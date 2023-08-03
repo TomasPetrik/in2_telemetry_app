@@ -62,7 +62,7 @@ class ResultsList extends StatelessWidget {
                       Padding(
                         padding: Paddings.left16,
                         child: Text(
-                          translactions
+                          localization
                               .dashboard_screen_periodical_measurements,
                           style: ScaleTextStyles.label.apply(
                             color: Theme.of(context).colorScheme.onPrimary,

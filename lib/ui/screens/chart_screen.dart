@@ -132,18 +132,18 @@ class _ChartScreenState extends State<ChartScreen> {
                   left: 0,
                   right: 0,
                   child: ScaleAppBar(
-                    title: translactions.chart_screen_title(
-                      translactions
+                    title: localization.chart_screen_title(
+                      localization
                           .common_measurement_types_genitive(
                             measurementType.name,
                           )
                           .toLowerCase(),
-                      translactions.common_measurement_units_types(
+                      localization.common_measurement_units_types(
                         measurementType.name,
                       ),
                     ),
                     subTitle:
-                        '${userAccount.user.fullName} - ${translactions.common_months(Constants.monthsInYear[state.currentMonth!]!)}',
+                        '${userAccount.user.fullName} - ${localization.common_months(Constants.monthsInYear[state.currentMonth!]!)}',
                     customLeftWidget: SizedBox(
                       height: 24,
                       child: Row(

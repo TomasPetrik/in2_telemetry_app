@@ -64,7 +64,7 @@ class AddDeviceScreen extends StatelessWidget {
             left: 0,
             right: 0,
             child: BluredScaleAppBar(
-              title: translactions.add_device_screen_title,
+              title: localization.add_device_screen_title,
               showClose: true,
               onBackTap: () {},
             ),

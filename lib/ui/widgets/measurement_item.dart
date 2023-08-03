@@ -126,7 +126,7 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          translactions.common_measurement_types(
+                          localization.common_measurement_types(
                             carePlan.activity.measurementType.name,
                           ),
                           style: ScaleTextStyles.textAccent.apply(
@@ -138,12 +138,12 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
                         Gaps.gap6,
                         Text(
                           showAsLongPeriodical
-                              ? translactions
+                              ? localization
                                   .dashboard_screen_measurement_periodical_interval(
                                   whenStart.toDateFormatLong(),
                                   whenEnd.toDateFormatLong(),
                                 )
-                              : translactions
+                              : localization
                                   .dashboard_screen_measurement_interval(
                                   plannedMeasurement.whenStart
                                       .toTimeOfDay()
@@ -160,7 +160,7 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
                         ),
                         if (plannedMeasurement.whenCode != null)
                           Text(
-                            translactions
+                            localization
                                 .common_when_code(plannedMeasurement.whenCode!.name),
                             style: ScaleTextStyles.label.apply(
                               color: measurementNeed == MeasurementNeed.now
@@ -170,7 +170,7 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
                           ),
                         if (requiredCount > 1 && currentCount != null)
                           Text(
-                            translactions.dashboard_screen_measurements_left(
+                            localization.dashboard_screen_measurements_left(
                               requiredCount - currentCount!,
                               requiredCount,
                             ),
@@ -185,7 +185,7 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
                     const Spacer(),
                     if (measurementNeed == MeasurementNeed.now) ...{
                       NavigationTabChip(
-                        label: translactions.common_measure,
+                        label: localization.common_measure,
                         isSelected: true,
                         onTap: () {
                           MeasurementHelper.doMeasurement(

@@ -68,7 +68,7 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
                         ),
                         const Gap(Dimensions.padding16),
                         Text(
-                          translactions.register_device_detail_screen_device,
+                          localization.register_device_detail_screen_device,
                           style: ScaleTextStyles.text.apply(
                             color: Theme.of(context)
                                 .colorScheme
@@ -86,7 +86,7 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
                         ),
                         const Gap(Dimensions.padding24),
                         Text(
-                          translactions
+                          localization
                               .register_device_detail_screen_identificator,
                           style: ScaleTextStyles.text.apply(
                             color: Theme.of(context)
@@ -105,7 +105,7 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
                         ),
                         const Gap(Dimensions.padding24),
                         Text(
-                          translactions
+                          localization
                               .register_device_detail_screen_assigned_id,
                           style: ScaleTextStyles.text.apply(
                             color: Theme.of(context)
@@ -118,11 +118,11 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
                         ScaleTextFormField(
                           textFormKey: registerDevGlobalKeys[0],
                           controller: assignedidentifierController,
-                          hintText: translactions
+                          hintText: localization
                               .register_device_detail_screen_assigned_id_hint,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return translactions
+                              return localization
                                   .register_device_detail_screen_not_filled_field;
                             }
                             return null;
@@ -130,7 +130,7 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
                         ),
                         Gaps.gap24,
                         HighlightedElevatedButton(
-                          label: translactions
+                          label: localization
                               .register_device_detail_screen_button_register,
                           buttonType: state !=
                                   const RegisterDeviceBlocState.registering()
@@ -165,7 +165,7 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
             left: 0,
             right: 0,
             child: ScaleAppBar(
-              title: translactions.register_device_detail_screen_title,
+              title: localization.register_device_detail_screen_title,
               showClose: true,
               onBackTap: () {},
             ),

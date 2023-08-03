@@ -1,17 +1,13 @@
 import 'package:collection/collection.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
-import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
 import 'package:scalesoft_app/ui/screens/metering_first_screen.dart';
 import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
-import 'package:scalesoft_app/utils/constants.dart';
-import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 class MeteringFirstRoute extends ApplicationRoute with PageBuilderMixin {
   static const name = 'metering-first';
-  static const path = '/metering-first/:userId/:measurementType';
+  static const path = '/metering-first/:userId/:measurementType/:showAllMeasurementTypes';
 
   MeteringFirstRoute({
     required super.navigator,
@@ -29,25 +25,20 @@ class MeteringFirstRoute extends ApplicationRoute with PageBuilderMixin {
         withTransition: false,
         builder: (state) {
           final userId = state.params['userId']!;
-          final userAccount = getIt<AccountDbProvider>().get(userId)!;
           final measurementTypeName = state.params['measurementType'];
+          final showAllMeasurementTypes =
+              bool.parse(state.params['showAllMeasurementTypes'] ?? 'false');
           MeasurementType? measurementType;
           if (measurementTypeName?.isNotEmpty == true) {
             measurementType = MeasurementType.values.firstWhereOrNull(
               (measurementType) => measurementType.name == measurementTypeName,
             );
           }
-          final supportedUserMeasurementTypes =
-              CarePlanHelper.getMeasurementTypes(userAccount.carePlans!);
-
-          const allMeasurentTypes = Constants.supportedMeasurementTypes;
 
           return MeteringFirstScreen(
             userId: userId,
             selectedMeasurementType: measurementType,
-            allMeasurementTypes: supportedUserMeasurementTypes.isNotEmpty
-                ? supportedUserMeasurementTypes
-                : allMeasurentTypes,
+            showAllMeasurementTypes: showAllMeasurementTypes,
           );
         },
       ),

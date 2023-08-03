@@ -26,7 +26,7 @@ class ManualScreen extends StatelessWidget {
             left: 0,
             right: 0,
             child: BluredScaleAppBar(
-              title: translactions.manual_screen_title,
+              title: localization.manual_screen_title,
               showClose: true,
               onBackTap: () {},
             ),

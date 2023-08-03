@@ -1,4 +1,5 @@
 import 'package:scalesoft_app/api/model/auth_data.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/model/hospital.dart';
 import 'package:scalesoft_app/configuration/configuration_base.dart';
 
@@ -14,6 +15,7 @@ class ProductionConfiguration extends BaseConfiguration {
         authUrl: 'https://portal-auth.nemuh.cz/connect/authorize',
         tokenUrl: 'https://portal-auth.nemuh.cz/connect/token',
       ),
+      enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate],
     ),
     const Hospital(
       id: 1,
@@ -24,6 +26,7 @@ class ProductionConfiguration extends BaseConfiguration {
         authUrl: 'https://portal-auth.nem-km.cz/connect/authorize',
         tokenUrl: 'https://portal-auth.nem-km.cz/connect/token',
       ),
+      enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate],
     ),
     const Hospital(
       id: 2,
@@ -34,6 +37,7 @@ class ProductionConfiguration extends BaseConfiguration {
         authUrl: 'https://portal-auth.nemocnice-vs.cz/connect/authorize',
         tokenUrl: 'https://portal-auth.nemocnice-vs.cz/connect/token',
       ),
+      enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate],
     ),
     // TODO: Add URLs and uncomment #IN2-8308
     // const Hospital(

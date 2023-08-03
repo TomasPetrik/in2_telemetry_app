@@ -26,13 +26,13 @@ class PlannedPeriodItem extends StatelessWidget {
   String _getSubtitle(BuildContext context, int measurements) {
     switch (whenPeriod) {
       case PlanWhenPeriod.today:
-        return translactions
+        return localization
             .measurement_screen_today_n_measurements(measurements);
       case PlanWhenPeriod.next10:
-        return translactions
+        return localization
             .measurement_screen_upcomming_n_measurements(measurements);
       case PlanWhenPeriod.tomorrow:
-        return translactions
+        return localization
             .measurement_screen_tomorrow_n_measurements(measurements);
     }
   }
@@ -53,7 +53,7 @@ class PlannedPeriodItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                translactions.common_measurement_times(whenPeriod.name),
+                localization.common_measurement_times(whenPeriod.name),
                 style: ScaleTextStyles.textAccent.apply(
                   color: Theme.of(context).colorScheme.onPrimary,
                 ),

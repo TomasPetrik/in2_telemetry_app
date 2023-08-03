@@ -24,10 +24,12 @@ class ManualMeasurementScreen extends StatefulWidget {
     super.key,
     required this.userId,
     required this.measurementType,
+    required this.enabledMeasurementTypes,
   });
 
   final MeasurementType measurementType;
   final String userId;
+  final List<MeasurementType> enabledMeasurementTypes;
 
   @override
   State<ManualMeasurementScreen> createState() =>
@@ -40,6 +42,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
 
   late TextEditingController timeEditingController;
   late DailyTime measurementTime;
+  late List<MeasurementType> enabledMeasurementTypes;
 
   @override
   void initState() {
@@ -50,6 +53,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
       text: currentTime.toString(),
     );
     measurementTime = currentTime;
+    enabledMeasurementTypes = widget.enabledMeasurementTypes;
     super.initState();
   }
 
@@ -86,7 +90,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                     ),
                     Gaps.gap16,
                     Text(
-                      translactions.manual_measurement_screen_type,
+                      localization.manual_measurement_screen_type,
                       style: ScaleTextStyles.text.apply(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
@@ -105,14 +109,13 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                           dropdownValue = value!;
                         });
                       },
-                      // TODO: Make visible options configurable per hospital #IN2-8428
-                      items: MeasurementType.values
+                      items: enabledMeasurementTypes
                           .map<DropdownMenuItem<MeasurementType>>(
                               (MeasurementType measurementType) {
                         return DropdownMenuItem<MeasurementType>(
                           value: measurementType,
                           child: Text(
-                            translactions
+                            localization
                                 .common_measurement_types(measurementType.name),
                           ),
                         );
@@ -122,7 +125,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                     measurementForm,
                     Gaps.gap24,
                     Text(
-                      translactions.manual_measurement_screen_measurement_time,
+                      localization.manual_measurement_screen_measurement_time,
                       style: ScaleTextStyles.text.apply(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
@@ -162,7 +165,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                     ),
                     Gaps.gap24,
                     HighlightedElevatedButton(
-                      label: translactions.common_save,
+                      label: localization.common_save,
                       buttonType: ButtonType.primary,
                       onPressed: () async {
                         final measurement = measurementForm.getMeasurement();
@@ -189,7 +192,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                   child: ScaleAppBar(
-                    title: translactions.manual_measurement_screen_title,
+                    title: localization.manual_measurement_screen_title,
                     showClose: true,
                   ),
                 ),

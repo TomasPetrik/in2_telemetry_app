@@ -17,13 +17,13 @@ class DeviceItem extends StatelessWidget {
   final VoidCallback? onRemove;
 
   String getSubTitle(BuildContext context) {
-    String subTitle = translactions.measurement_dialog_device_desc(
+    String subTitle = localization.measurement_dialog_device_desc(
       device.deviceModelType!.name,
     );
 
     if (device.addedAt != null) {
       subTitle +=
-          '\n${translactions.common_addded_at_time(device.addedAt!.toDateFormatLong())}';
+          '\n${localization.common_addded_at_time(device.addedAt!.toDateFormatLong())}';
     }
 
     return subTitle;

@@ -91,7 +91,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   isActive: true,
                 ),
-                label: translactions.tabs_measurement,
+                label: localization.tabs_measurement,
               ),
               BottomNavigationBarItem(
                 icon: TabIconWidget(
@@ -108,7 +108,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                   isActive: true,
                 ),
-                label: translactions.tabs_results,
+                label: localization.tabs_results,
               ),
               BottomNavigationBarItem(
                 icon: TabIconWidget(
@@ -127,7 +127,7 @@ class HomeScreen extends StatelessWidget {
                   isActive: true,
                   showWarning: showWarning,
                 ),
-                label: translactions.tabs_more,
+                label: localization.tabs_more,
               ),
             ],
           );

@@ -28,7 +28,7 @@ class PersonalMeasurementFooter extends StatelessWidget {
               ),
               Gaps.gap16,
               Text(
-                translactions.dashboard_screen_manual_measurement_info,
+                localization.dashboard_screen_manual_measurement_info,
                 style: ScaleTextStyles.text.apply(
                   color: Theme.of(context).colorScheme.onSecondary,
                 ),
@@ -37,7 +37,7 @@ class PersonalMeasurementFooter extends StatelessWidget {
             ],
             Gaps.gap24,
             HighlightedElevatedButton(
-              label: translactions.common_personal_measurement,
+              label: localization.common_personal_measurement,
               buttonType: ButtonType.primary,
               onPressed: onPressed,
             ),

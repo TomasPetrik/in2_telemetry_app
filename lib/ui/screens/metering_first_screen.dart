@@ -19,21 +19,20 @@ import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/device_item.dart';
 import 'package:scalesoft_app/ui/widgets/navigation_tab_chip.dart';
 import 'package:scalesoft_app/ui/widgets/settings_item.dart';
+import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 class MeteringFirstScreen extends StatefulWidget {
   const MeteringFirstScreen({
     super.key,
     required this.userId,
     this.selectedMeasurementType,
-    required this.allMeasurementTypes,
-  }) : assert(
-          selectedMeasurementType != null || allMeasurementTypes.length > 0,
-          'Either selectedMeasurementType != null or allMeasurementTypes should be not empty !',
-        );
+    required this.showAllMeasurementTypes,
+  });
 
   final String userId;
   final MeasurementType? selectedMeasurementType;
-  final Set<MeasurementType> allMeasurementTypes;
+  final bool showAllMeasurementTypes;
 
   @override
   State<MeteringFirstScreen> createState() => _MeteringFirstScreenState();
@@ -45,21 +44,35 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
   final DeviceManagementCubit devManagementCubit =
       getIt<DeviceManagementCubit>();
   late MeasurementType defaultMeasurementType;
+  late Set<MeasurementType> displayedMeasurementTypes;
 
   @override
   void initState() {
     userAccount = getIt<AccountDbProvider>().get(widget.userId)!;
+
+    final supportedUserMeasurementTypes =
+        CarePlanHelper.getMeasurementTypes(userAccount.carePlans!);
+
+    if (widget.showAllMeasurementTypes ||
+        supportedUserMeasurementTypes.isEmpty) {
+      displayedMeasurementTypes =
+          userAccount.hospital?.enabledMeasurementTypes.toSet() ??
+              Constants.supportedMeasurementTypes;
+    } else {
+      displayedMeasurementTypes = supportedUserMeasurementTypes;
+    }
+
     defaultMeasurementType =
-        widget.selectedMeasurementType ?? widget.allMeasurementTypes.first;
+        widget.selectedMeasurementType ?? displayedMeasurementTypes.first;
 
     super.initState();
   }
 
   String getTitle() {
-    String title = translactions.common_measurement;
+    String title = localization.common_measurement;
     if (widget.selectedMeasurementType != null) {
       title +=
-          ' ${translactions.common_measurement_types_genitive(defaultMeasurementType.name).toLowerCase()}';
+          ' ${localization.common_measurement_types_genitive(defaultMeasurementType.name).toLowerCase()}';
     }
     return title;
   }
@@ -83,8 +96,8 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                   bloc: devManagementCubit
                     ..init(
                       widget.selectedMeasurementType ??
-                          widget.allMeasurementTypes.first,
-                      widget.allMeasurementTypes,
+                          displayedMeasurementTypes.first,
+                      displayedMeasurementTypes,
                       widget.userId,
                     ),
                   builder: (context, state) {
@@ -114,7 +127,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                                       (measurementType) => Row(
                                         children: [
                                           NavigationTabChip(
-                                            label: translactions
+                                            label: localization
                                                 .common_measurement_types(
                                               measurementType.name,
                                             ),
@@ -155,7 +168,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                             padding: Paddings.horizontal48,
                             child: Center(
                               child: Text(
-                                translactions
+                                localization
                                     .device_selector_unsupported_devices,
                                 style: ScaleTextStyles.text.apply(
                                   color:
@@ -224,7 +237,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                             padding: Paddings.horizontal48,
                             child: Center(
                               child: Text(
-                                translactions
+                                localization
                                     .metering_screen_no_added_device_yet,
                                 style: ScaleTextStyles.text.apply(
                                   color:
@@ -247,7 +260,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                             padding: Paddings.horizontal48,
                             child: Center(
                               child: Text(
-                                translactions
+                                localization
                                     .metering_screen_no_eligible_to_measure_with_uknow_device,
                                 style: ScaleTextStyles.text.apply(
                                   color:
@@ -262,7 +275,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                             userAccount.canMeasureWithUnknowDevice) ...[
                           Gaps.gap24,
                           SettingsItem(
-                            label: translactions.metering_screen_add_device,
+                            label: localization.metering_screen_add_device,
                             iconWidget: SvgPicture.asset(
                               'assets/icons/icon_plus.svg',
                               color: Theme.of(context).colorScheme.onSecondary,
@@ -285,7 +298,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                         )) ...[
                           Gaps.gap24,
                           SettingsItem(
-                            label: translactions.common_personal_record,
+                            label: localization.common_personal_record,
                             iconWidget: SvgPicture.asset(
                               'assets/icons/icon_square_pen_medium.svg',
                               color: Theme.of(context).colorScheme.onSecondary,
@@ -298,6 +311,8 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                                   'userId': widget.userId,
                                   'measurementType':
                                       selectedMeasurementType.name,
+                                  'showAllMeasurementTypes':
+                                      widget.showAllMeasurementTypes.toString(),
                                 },
                               );
                             },

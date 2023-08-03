@@ -19,7 +19,7 @@ class MeasurementHelper {
     required final BuildContext context,
     required final String userId,
     final MeasurementType? selectedMeasurementType,
-    final Set<MeasurementType>? allMeasurementTypes,
+    final bool showAllMeasurementTypes = false,
   }) async {
     if (selectedMeasurementType == null ||
         Constants.supportedDevices.any(
@@ -33,6 +33,7 @@ class MeasurementHelper {
           'measurementType': selectedMeasurementType != null
               ? selectedMeasurementType.name
               : 'anyType',
+          'showAllMeasurementTypes': showAllMeasurementTypes.toString(),
         },
       );
     } else {
@@ -41,6 +42,7 @@ class MeasurementHelper {
         params: {
           'userId': userId,
           'measurementType': selectedMeasurementType.name,
+          'showAllMeasurementTypes': showAllMeasurementTypes.toString(),
         },
       );
     }

@@ -51,7 +51,7 @@ class UserSelectionDialog extends StatelessWidget {
                   Gaps.gap20,
                   Expanded(
                     child: Text(
-                      translactions
+                      localization
                           .user_selection_dialog_measurement_in_hospital(
                         hospital.title,
                       ),
@@ -102,7 +102,7 @@ class UserSelectionDialog extends StatelessWidget {
             Padding(
               padding: Paddings.horizontal16,
               child: HighlightedElevatedButton(
-                label: translactions.common_close,
+                label: localization.common_close,
                 buttonType: ButtonType.secondary,
                 onPressed: () {
                   Navigator.of(context).pop();

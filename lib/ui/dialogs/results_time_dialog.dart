@@ -36,7 +36,7 @@ class ResultsTimeDialog extends StatelessWidget {
           Padding(
             padding: Paddings.horizontal16,
             child: Text(
-              translactions.results_measurements_when_selector_title,
+              localization.results_measurements_when_selector_title,
               style: ScaleTextStyles.textAccent
                   .apply(color: Theme.of(context).colorScheme.onSecondary),
             ),
@@ -66,7 +66,7 @@ class ResultsTimeDialog extends StatelessWidget {
             Padding(
               padding: Paddings.horizontal16,
               child: HighlightedElevatedButton(
-                label: translactions.common_show_calendar,
+                label: localization.common_show_calendar,
                 onPressed: () {
                   Navigator.of(context)
                       .pop(ResultPeriodSelection(showCalendar: true));
@@ -78,7 +78,7 @@ class ResultsTimeDialog extends StatelessWidget {
           Padding(
             padding: Paddings.horizontal16,
             child: HighlightedElevatedButton(
-              label: translactions.common_close,
+              label: localization.common_close,
               onPressed: () {
                 Navigator.of(context).pop();
               },

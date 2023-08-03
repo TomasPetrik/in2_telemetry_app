@@ -55,7 +55,7 @@ class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
                     right: Dimensions.padding48,
                   ),
                   child: Text(
-                    translactions.onboarding_account_added_screen_user_added(
+                    localization.onboarding_account_added_screen_user_added(
                       userAccount.user.fullName,
                     ),
                     style: ScaleTextStyles.text.apply(
@@ -66,7 +66,7 @@ class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
                 ),
                 Gaps.gap24,
                 HighlightedElevatedButton(
-                  label: translactions
+                  label: localization
                       .onboarding_account_added_screen_continue_to_app,
                   onPressed: () async {
                     getIt<ContentBloc>()
@@ -75,7 +75,7 @@ class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
                 ),
                 Gaps.gap24,
                 HighlightedElevatedButton(
-                  label: translactions
+                  label: localization
                       .onboarding_account_added_screen_add_other_account,
                   buttonType: ButtonType.secondary,
                   onPressed: () async {
@@ -98,7 +98,7 @@ class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
             left: 0,
             right: 0,
             child: BluredScaleAppBar(
-              title: translactions
+              title: localization
                   .onboarding_account_added_screen_add_account_title,
             ),
           ),

@@ -28,18 +28,18 @@ class SyncItem extends StatelessWidget {
       none: () => const SliverToBoxAdapter(child: SizedBox.shrink()),
       inProgress: () => ProcessItem(
         processType: ProcessType.inProgress,
-        label: translactions.sync_widget_sync_in_progress,
+        label: localization.sync_widget_sync_in_progress,
       ),
       synced: () => ProcessItem(
         processType: ProcessType.done,
-        label: translactions.sync_widget_synced,
+        label: localization.sync_widget_synced,
       ),
       userSessionExpired: (userAccount) => WarningItem(
-        title: translactions.session_expired_title,
-        description: translactions.session_expired_description(
+        title: localization.session_expired_title,
+        description: localization.session_expired_description(
           userAccount.user.fullName,
         ),
-        buttonLabel: translactions.common_log_in,
+        buttonLabel: localization.common_log_in,
         icon: SvgPicture.asset(
           'assets/icons/icon_triangle_exclamation_medium.svg',
           color: Theme.of(context).colorScheme.error,
@@ -54,9 +54,9 @@ class SyncItem extends StatelessWidget {
       ),
       syncUserDataFailed: (offlineResults, lastSync) => ProcessItem(
         processType: ProcessType.error,
-        label: translactions.sync_widget_sync_failed_title,
+        label: localization.sync_widget_sync_failed_title,
         desc: lastSync != null
-            ? translactions.sync_widget_sync_failed_desc(
+            ? localization.sync_widget_sync_failed_desc(
                 lastSync.toDateOrDay().toLowerCase(),
                 lastSync.toTimeOfDay().toString(),
               )
@@ -72,7 +72,7 @@ class SyncItem extends StatelessWidget {
       ),
       syncSomeUsersDataFailed: (offlineResults) => ProcessItem(
         processType: ProcessType.error,
-        label: translactions.sync_widget_sync_failed_title,
+        label: localization.sync_widget_sync_failed_title,
         onRefresh: onRefresh,
         onTap: offlineResults == null
             ? null
@@ -84,9 +84,9 @@ class SyncItem extends StatelessWidget {
       ),
       userResultsFailed: (offlineResults, lastSync) => ProcessItem(
         processType: ProcessType.error,
-        label: translactions.sync_widget_sync_failed_title,
+        label: localization.sync_widget_sync_failed_title,
         desc: lastSync != null
-            ? translactions.sync_widget_sync_failed_desc(
+            ? localization.sync_widget_sync_failed_desc(
                 lastSync.toDateOrDay().toLowerCase(),
                 lastSync.toTimeOfDay().toString(),
               )
@@ -102,7 +102,7 @@ class SyncItem extends StatelessWidget {
       ),
       someUsersResultsFailed: (offlineResults) => ProcessItem(
         processType: ProcessType.error,
-        label: translactions.sync_widget_sync_failed_title,
+        label: localization.sync_widget_sync_failed_title,
         onRefresh: onRefresh,
         onTap: offlineResults == null
             ? null
@@ -113,15 +113,15 @@ class SyncItem extends StatelessWidget {
               },
       ),
       userCarePlanChanged: (carePlan) => WarningItem(
-        title: translactions.notification_widget_plan_changed_title,
-        description: translactions.notification_widget_plan_changed_desc(
-          translactions
+        title: localization.notification_widget_plan_changed_title,
+        description: localization.notification_widget_plan_changed_desc(
+          localization
               .common_measurement_types_genitive(
                 carePlan.activity.measurementType.name,
               )
               .toLowerCase(),
         ),
-        buttonLabel: translactions.common_understand,
+        buttonLabel: localization.common_understand,
         icon: SvgPicture.asset(
           'assets/icons/icon_circle_exclamation_medium.svg',
           color: Theme.of(context).colorScheme.tertiary,
@@ -132,15 +132,15 @@ class SyncItem extends StatelessWidget {
         },
       ),
       someUsersCarePlanChanged: (userAccount, carePlan) => WarningItem(
-        title: translactions.notification_widget_plan_changed_title,
+        title: localization.notification_widget_plan_changed_title,
         description:
-            translactions.notification_widget_plan_changed_for_user_desc(
+            localization.notification_widget_plan_changed_for_user_desc(
           userAccount.user.fullName,
-          translactions.common_measurement_types_genitive(
+          localization.common_measurement_types_genitive(
             carePlan.activity.measurementType.name,
           ),
         ),
-        buttonLabel: translactions.common_understand,
+        buttonLabel: localization.common_understand,
         icon: SvgPicture.asset(
           'assets/icons/icon_circle_exclamation_medium.svg',
           color: Theme.of(context).colorScheme.tertiary,

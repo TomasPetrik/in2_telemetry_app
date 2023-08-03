@@ -70,7 +70,7 @@ class CarePlanItem extends StatelessWidget {
                 ),
                 Gaps.gap12,
                 Text(
-                  translactions.common_measurement_types(
+                  localization.common_measurement_types(
                     carePlan.activity.measurementType.name,
                   ),
                   style: ScaleTextStyles.textAccent.apply(
@@ -114,11 +114,11 @@ class CarePlanItem extends StatelessWidget {
             Gaps.gap6,
             Text(
               carePlan.scheduledEnd != null
-                  ? translactions.user_details_screen_plan_active_from_to_date(
+                  ? localization.user_details_screen_plan_active_from_to_date(
                       carePlan.scheduledStart.toRegularDate(),
                       carePlan.scheduledEnd!.toRegularDate(),
                     )
-                  : translactions.user_details_screen_plan_active_from_date(
+                  : localization.user_details_screen_plan_active_from_date(
                       carePlan.scheduledStart.toRegularDate(),
                     ),
               style: ScaleTextStyles.textAccent.apply(

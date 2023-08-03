@@ -142,7 +142,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                     tabs: [
                       if (supportedMeasurementTypes.length > 1) ...{
                         NavigationTabBarItem(
-                          label: translactions.dashboard_screen_all,
+                          label: localization.dashboard_screen_all,
                           slivers: [
                             if (state.nextMeasurement != null)
                               MeasurementsList(
@@ -166,8 +166,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                                   MeasurementHelper.doMeasurement(
                                     context: context,
                                     userId: sessionAccounts[0].user.muid,
-                                    allMeasurementTypes:
-                                        supportedMeasurementTypes,
+                                    showAllMeasurementTypes: true,
                                   );
                                 },
                               ),
@@ -178,7 +177,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                       ...supportedMeasurementTypes
                           .map(
                             (measurementType) => NavigationTabBarItem(
-                              label: translactions.common_measurement_types(
+                              label: localization.common_measurement_types(
                                 measurementType.name,
                               ),
                               slivers: [
@@ -208,8 +207,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                                             .currentCarePlans![0]
                                             .activity
                                             .measurementType,
-                                        allMeasurementTypes:
-                                            supportedMeasurementTypes,
+                                        showAllMeasurementTypes: true,
                                       );
                                     },
                                   ),

@@ -52,8 +52,8 @@ class _WhenCodeSetState extends State<WhenCodeSet> with BottomSheetMixin {
       children: [
         Text(
           whenCode != null
-              ? '${translactions.common_when_code(whenCode!.name)} ${translactions.common_from.toLowerCase()}'
-              : translactions.common_to.toLowerCase(),
+              ? '${localization.common_when_code(whenCode!.name)} ${localization.common_from.toLowerCase()}'
+              : localization.common_to.toLowerCase(),
           style: ScaleTextStyles.text.apply(
             color: Theme.of(context).colorScheme.onPrimary,
           ),

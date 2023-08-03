@@ -49,10 +49,10 @@ class _RegisterDeviceSearchScreenState
               builder: (context, state) {
                 final header = state.whenOrNull(
                   disabledBt: () => WarningItem(
-                    title: translactions.find_device_screen_disabled_bt_title,
+                    title: localization.find_device_screen_disabled_bt_title,
                     description:
-                        translactions.find_device_screen_disabled_bt_desc,
-                    buttonLabel: translactions
+                        localization.find_device_screen_disabled_bt_desc,
+                    buttonLabel: localization
                         .find_device_screen_disabled_bt_btn_settings,
                     icon: SvgPicture.asset(
                       'assets/icons/icon_bluetooth_slash_big.svg',
@@ -66,10 +66,10 @@ class _RegisterDeviceSearchScreenState
                   ),
                   noBtPermissions: () => WarningItem(
                     title:
-                        translactions.find_device_screen_not_granted_bt_title,
+                        localization.find_device_screen_not_granted_bt_title,
                     description:
-                        translactions.find_device_screen_not_granted_bt_desc,
-                    buttonLabel: translactions
+                        localization.find_device_screen_not_granted_bt_desc,
+                    buttonLabel: localization
                         .find_device_screen_not_granted_bt_btn_settings,
                     icon: SvgPicture.asset(
                       'assets/icons/icon_bluetooth_slash_big.svg',
@@ -82,11 +82,11 @@ class _RegisterDeviceSearchScreenState
                     },
                   ),
                   init: () => ProcessItem(
-                    label: translactions.find_device_screen_searching_device,
+                    label: localization.find_device_screen_searching_device,
                     processType: ProcessType.inProgress,
                   ),
                   searching: (devices) => ProcessItem(
-                    label: translactions.find_device_screen_searching_device,
+                    label: localization.find_device_screen_searching_device,
                     processType: ProcessType.inProgress,
                   ),
                 );
@@ -117,7 +117,7 @@ class _RegisterDeviceSearchScreenState
                               padding: Paddings.horizontal48,
                               child: Center(
                                 child: Text(
-                                  translactions
+                                  localization
                                       .register_device_search_screen_desc,
                                   style: ScaleTextStyles.text.apply(
                                     color: Theme.of(context)
@@ -181,7 +181,7 @@ class _RegisterDeviceSearchScreenState
               left: 0,
               right: 0,
               child: BluredScaleAppBar(
-                title: translactions.register_device_search_screen_title,
+                title: localization.register_device_search_screen_title,
                 showClose: true,
                 onCloseTap: _onWillPop,
               ),

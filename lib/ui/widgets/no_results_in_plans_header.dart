@@ -40,8 +40,8 @@ class NoResultsInPlansHeader extends StatelessWidget {
                   Gaps.gap16,
                   Expanded(
                     child: Text(
-                      translactions.results_screen_no_results_in_plans(
-                        translactions.common_measurement_times(whenPeriod.name),
+                      localization.results_screen_no_results_in_plans(
+                        localization.common_measurement_times(whenPeriod.name),
                       ),
                       style: ScaleTextStyles.text.apply(
                         color: Theme.of(context).colorScheme.onPrimary,
@@ -54,7 +54,7 @@ class NoResultsInPlansHeader extends StatelessWidget {
                       openWhenSelector.call();
                     },
                     child: Text(
-                      translactions.common_measurement_times(whenPeriod.name),
+                      localization.common_measurement_times(whenPeriod.name),
                       style: ScaleTextStyles.text.apply(
                         color: Theme.of(context).primaryColor,
                       ),

@@ -43,7 +43,7 @@ class FutureMeasurementsList extends StatelessWidget {
                 Padding(
                   padding: Paddings.left16,
                   child: Text(
-                    translactions.dashboard_screen_periodical_measurements,
+                    localization.dashboard_screen_periodical_measurements,
                     style: ScaleTextStyles.label.apply(
                       color: Theme.of(context).colorScheme.onPrimary,
                     ),

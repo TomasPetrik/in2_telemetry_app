@@ -112,7 +112,7 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            translactions.common_measurement_types(
+                            localization.common_measurement_types(
                               mResult.measurementType!.name,
                             ),
                             style: ScaleTextStyles.text.apply(
@@ -124,14 +124,14 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                             Gaps.gap6,
                             Text(
                               mResult.isLongPeriod
-                                  ? translactions
+                                  ? localization
                                       .dashboard_screen_measurement_periodical_interval(
                                       mResult.measurementIntervalStart!
                                           .toDateFormatLong(),
                                       mResult.measurementIntervalEnd!
                                           .toDateFormatLong(),
                                     )
-                                  : translactions
+                                  : localization
                                       .dashboard_screen_measurement_interval(
                                       mResult.measurementIntervalStart!
                                           .toLocal()
@@ -150,7 +150,7 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                             if (mResult.reqCount! >
                                 1) //for periodical show count
                               Text(
-                                translactions
+                                localization
                                     .results_screen_measurements_completed(
                                   mResult.currentCount!,
                                   mResult.reqCount!,
@@ -162,7 +162,7 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                               ),
                             if (mResult.whenCode != null)
                               Text(
-                                translactions
+                                localization
                                     .common_when_code(mResult.whenCode!.name),
                                 style: ScaleTextStyles.label.apply(
                                   color:
@@ -175,7 +175,7 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                       const Spacer(),
                       if (mResult.wasMeasured == false) ...{
                         Text(
-                          translactions.common_not_measured,
+                          localization.common_not_measured,
                           style: ScaleTextStyles.text.apply(
                             color: Theme.of(context).colorScheme.error,
                           ),

@@ -43,7 +43,7 @@ class UserHospitalSelectionDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    translactions.hospital_selection_dialog_measurement_for,
+                    localization.hospital_selection_dialog_measurement_for,
                     style: ScaleTextStyles.textAccent.apply(
                       color: Theme.of(context).colorScheme.onSecondary,
                     ),
@@ -70,10 +70,10 @@ class UserHospitalSelectionDialog extends StatelessWidget {
               Padding(
                 padding: Paddings.horizontal16,
                 child: SettingsItem(
-                  label: translactions.common_all_accounts,
+                  label: localization.common_all_accounts,
                   subLabel:
                       '${hospitalUserEntries.first.value[0].user.fullName}'
-                      ' ${hospitalUserEntries.first.value.length > 1 ? translactions.common_plus_n_others(hospitalUserEntries.first.value.length - 1) : ''}',
+                      ' ${hospitalUserEntries.first.value.length > 1 ? localization.common_plus_n_others(hospitalUserEntries.first.value.length - 1) : ''}',
                   iconWidget: Padding(
                     padding: Paddings.all8,
                     child: SvgPicture.asset(
@@ -104,7 +104,7 @@ class UserHospitalSelectionDialog extends StatelessWidget {
                     iconBackground: ScaleColorsLight.content20,
                     label: hospital.key.title,
                     subLabel: '${hospital.value[0].user.fullName}'
-                        ' ${hospital.value.length > 1 ? translactions.common_plus_n_others(hospital.value.length - 1) : ''}',
+                        ' ${hospital.value.length > 1 ? localization.common_plus_n_others(hospital.value.length - 1) : ''}',
                     iconWidget: Padding(
                       padding: Paddings.all8,
                       child: ImageWidget(hospital.key.iconPath),
@@ -142,7 +142,7 @@ class UserHospitalSelectionDialog extends StatelessWidget {
             Padding(
               padding: Paddings.horizontal16,
               child: HighlightedElevatedButton(
-                label: translactions.common_close,
+                label: localization.common_close,
                 buttonType: ButtonType.secondary,
                 onPressed: () {
                   Navigator.of(context).pop();

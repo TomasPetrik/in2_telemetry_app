@@ -70,7 +70,7 @@ class SwitchRow extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              translactions.notifications_screen_10_min_before_measurement,
+              localization.notifications_screen_10_min_before_measurement,
               style: ScaleTextStyles.text.apply(
                 color: Theme.of(context).colorScheme.onPrimary,
               ),

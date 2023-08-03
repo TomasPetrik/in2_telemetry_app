@@ -49,7 +49,7 @@ class FutureMeasurementsScreen extends StatelessWidget {
               navigationHeader: Row(
                 children: [
                   Text(
-                    translactions.common_measurement,
+                    localization.common_measurement,
                     style: ScaleTextStyles.textAccent.apply(
                       color: Theme.of(context).colorScheme.onSecondary,
                     ),
@@ -59,7 +59,7 @@ class FutureMeasurementsScreen extends StatelessWidget {
               tabs: [
                 if (measurementTypes.length > 1) ...{
                   NavigationTabBarItem(
-                    label: translactions.dashboard_screen_all,
+                    label: localization.dashboard_screen_all,
                     slivers: [
                       FutureMeasurementsList(
                         dayDt: date,
@@ -73,7 +73,7 @@ class FutureMeasurementsScreen extends StatelessWidget {
                 ...measurementTypes
                     .map(
                       (measurementType) => NavigationTabBarItem(
-                        label: translactions.common_measurement_types(
+                        label: localization.common_measurement_types(
                           measurementType.name,
                         ),
                         slivers: [
@@ -104,7 +104,7 @@ class FutureMeasurementsScreen extends StatelessWidget {
             child: BluredScaleAppBar(
               title: date.toRegularDate(),
               subTitle:
-                  '${userNames.first}${userNames.length > 1 ? ' ${translactions.common_plus_n_others(userNames.length - 1)}' : ''}',
+                  '${userNames.first}${userNames.length > 1 ? ' ${localization.common_plus_n_others(userNames.length - 1)}' : ''}',
               showClose: true,
               onCloseTap: () {},
               onBackTap: () {},

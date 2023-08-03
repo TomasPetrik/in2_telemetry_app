@@ -5,7 +5,7 @@ import 'package:scalesoft_app/localization/generated/l10n.dart';
 import 'package:scalesoft_app/service_locator/get_it.config.dart';
 
 final getIt = GetIt.instance;
-final I10n translactions = getIt<I10n>();
+final I10n localization = getIt<I10n>();
 
 @InjectableInit(
   initializerName: 'init',

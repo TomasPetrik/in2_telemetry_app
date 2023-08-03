@@ -82,17 +82,17 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
                     SliverPadding(
                       padding: Paddings.horizontal16,
                       sliver: WarningItem(
-                        title: translactions
+                        title: localization
                             .notification_widget_plan_changed_title,
                         description:
-                            translactions.notification_widget_plan_changed_desc(
-                          translactions
+                            localization.notification_widget_plan_changed_desc(
+                          localization
                               .common_measurement_types_genitive(
                                 widget.carePlan.activity.measurementType.name,
                               )
                               .toLowerCase(),
                         ),
-                        buttonLabel: translactions.common_understand,
+                        buttonLabel: localization.common_understand,
                         buttonType: SmallButtonType.none,
                         icon: SvgPicture.asset(
                           'assets/icons/icon_circle_exclamation_medium.svg',
@@ -117,7 +117,7 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
                     padding: Paddings.left16,
                     sliver: SliverToBoxAdapter(
                       child: Text(
-                        translactions.care_plan_detail_screen_plan_info,
+                        localization.care_plan_detail_screen_plan_info,
                         style: ScaleTextStyles.textAccent.apply(
                           color: Theme.of(context).colorScheme.onSecondary,
                         ),
@@ -126,27 +126,27 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
                   ),
                   const SliverGap(Dimensions.padding26),
                   SliverNameValueRow(
-                    name: translactions.care_plan_detail_screen_managed_by,
+                    name: localization.care_plan_detail_screen_managed_by,
                     value: widget.carePlan.author.fullName,
                   ),
                   const SliverGap(Dimensions.padding8),
                   SliverNameValueRow(
                     name:
-                        translactions.care_plan_detail_screen_active_from_date,
+                        localization.care_plan_detail_screen_active_from_date,
                     value: widget.carePlan.scheduledStart.toRegularDate(),
                   ),
                   if (widget.carePlan.scheduledEnd != null) ...[
                     const SliverGap(Dimensions.padding8),
                     SliverNameValueRow(
                       name:
-                          translactions.care_plan_detail_screen_active_to_date,
+                          localization.care_plan_detail_screen_active_to_date,
                       value: widget.carePlan.scheduledEnd!.toRegularDate(),
                     ),
                   ],
                   const SliverGap(Dimensions.padding8),
                   SliverNameValueRow(
-                    name: translactions.care_plan_detail_screen_measurement,
-                    value: translactions.common_measurement_types(
+                    name: localization.care_plan_detail_screen_measurement,
+                    value: localization.common_measurement_types(
                       widget.carePlan.activity.measurementType.name,
                     ),
                   ),
@@ -156,7 +156,7 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
                       padding: Paddings.horizontal16,
                       child: HighlightedElevatedButton(
                         label:
-                            translactions.care_plan_detail_screen_show_calendar,
+                            localization.care_plan_detail_screen_show_calendar,
                         buttonType: ButtonType.primary,
                         onPressed: () async {
                           GoRouter.of(context).pushNamed(
@@ -178,7 +178,7 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
                 left: 0,
                 right: 0,
                 child: BluredScaleAppBar(
-                  title: translactions.common_measurement_types(
+                  title: localization.common_measurement_types(
                     widget.carePlan.activity.measurementType.name,
                   ),
                   onBackTap: syncDataIfNeed,

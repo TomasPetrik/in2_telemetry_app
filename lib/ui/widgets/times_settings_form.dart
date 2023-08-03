@@ -99,7 +99,7 @@ class _TimeSettingsForm extends StatelessWidget with BottomSheetMixin {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  translactions.care_plan_detail_daily_times,
+                  localization.care_plan_detail_daily_times,
                   style: ScaleTextStyles.textAccent.apply(
                     color: Theme.of(context).colorScheme.onSecondary,
                   ),

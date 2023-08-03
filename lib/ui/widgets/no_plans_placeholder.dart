@@ -8,7 +8,6 @@ import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/info_placeholder.dart';
 import 'package:scalesoft_app/ui/widgets/personal_measurement_footer.dart';
-import 'package:scalesoft_app/utils/constants.dart';
 import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -29,11 +28,11 @@ class NoContentPlaceholder extends StatelessWidget with BottomSheetMixin {
   String _getLabelByType() {
     switch (noContentType) {
       case NoContentType.notAllowedSeeOwnMeasurements:
-        return translactions.results_screen_no_permission_to_see_results;
+        return localization.results_screen_no_permission_to_see_results;
       case NoContentType.noHistoricalData:
-        return translactions.results_screen_no_historic_data;
+        return localization.results_screen_no_historic_data;
       case NoContentType.noPlans:
-        return translactions.dashboard_screen_any_user_plan;
+        return localization.dashboard_screen_any_user_plan;
     }
   }
 
@@ -61,9 +60,7 @@ class NoContentPlaceholder extends StatelessWidget with BottomSheetMixin {
               MeasurementHelper.doMeasurement(
                 context: context,
                 userId: userAccount!.user.muid,
-                allMeasurementTypes: supportedMeasurementTypes.isNotEmpty
-                    ? supportedMeasurementTypes
-                    : Constants.supportedMeasurements.keys.toSet(),
+                showAllMeasurementTypes: true,
               );
             },
           ),

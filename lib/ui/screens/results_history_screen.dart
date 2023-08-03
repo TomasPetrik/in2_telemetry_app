@@ -60,7 +60,7 @@ class ResultsHistoryScreen extends StatelessWidget {
               navigationHeader: Row(
                 children: [
                   Text(
-                    translactions.results_screen_results_title,
+                    localization.results_screen_results_title,
                     style: ScaleTextStyles.textAccent.apply(
                       color: Theme.of(context).colorScheme.onSecondary,
                     ),
@@ -70,7 +70,7 @@ class ResultsHistoryScreen extends StatelessWidget {
               tabs: [
                 if (measurementTypes.length > 1) ...{
                   NavigationTabBarItem(
-                    label: translactions.dashboard_screen_all,
+                    label: localization.dashboard_screen_all,
                     slivers: [
                       ResultsList(
                         dayDt: date,
@@ -84,7 +84,7 @@ class ResultsHistoryScreen extends StatelessWidget {
                 ...measurementTypes
                     .map(
                       (measurementType) => NavigationTabBarItem(
-                        label: translactions.common_measurement_types(
+                        label: localization.common_measurement_types(
                           measurementType.name,
                         ),
                         slivers: [
@@ -114,7 +114,7 @@ class ResultsHistoryScreen extends StatelessWidget {
             child: BluredScaleAppBar(
               title: date.toRegularDate(),
               subTitle:
-                  '${userNames.first}${userNames.length > 1 ? ' ${translactions.common_plus_n_others(userNames.length - 1)}' : ''}',
+                  '${userNames.first}${userNames.length > 1 ? ' ${localization.common_plus_n_others(userNames.length - 1)}' : ''}',
               showClose: true,
               onCloseTap: () {},
               onBackTap: () {},

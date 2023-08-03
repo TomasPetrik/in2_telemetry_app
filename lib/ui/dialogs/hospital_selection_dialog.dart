@@ -47,7 +47,7 @@ class HospitalSelectionDialog extends StatelessWidget {
             Padding(
               padding: Paddings.horizontal16,
               child: ScaleSearchBar(
-                searchHint: translactions.hospital_selector_search_for_account,
+                searchHint: localization.hospital_selector_search_for_account,
                 searchController: searchController,
                 onBack: () {
                   Navigator.of(context).pop();
@@ -100,7 +100,7 @@ class HospitalSelectionDialog extends StatelessWidget {
             Padding(
               padding: Paddings.horizontal16,
               child: HighlightedElevatedButton(
-                label: translactions.common_close,
+                label: localization.common_close,
                 buttonType: ButtonType.secondary,
                 onPressed: () {
                   Navigator.of(context).pop();

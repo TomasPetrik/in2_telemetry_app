@@ -72,7 +72,7 @@ class ProgressHeader extends StatelessWidget {
                         openWhenSelector?.call();
                       },
                       child: Text(
-                        translactions
+                        localization
                             .common_measurement_times(whenPeriod!.name),
                         style: ScaleTextStyles.text.apply(
                           color: Theme.of(context).primaryColor,

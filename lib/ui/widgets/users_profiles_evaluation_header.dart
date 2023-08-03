@@ -56,7 +56,7 @@ class UsersProfilesEvaluationHeader extends StatelessWidget {
             whenPeriod: whenPeriod,
             openWhenSelector: openWhenSelector,
             progressItems: progressItems,
-            label: translactions.common_plan_fulfillment,
+            label: localization.common_plan_fulfillment,
           ),
           Gaps.gap24,
         ],

@@ -44,7 +44,7 @@ class NotificationsSettingsScreen extends StatelessWidget {
                         ),
                         Gaps.gap16,
                         SwitchRow.title(
-                          title: translactions
+                          title: localization
                               .notifications_screen_allow_notifications,
                           defaultValue: appSettings.enabledNotifications,
                           onChanged: (turnedOn) {
@@ -60,7 +60,7 @@ class NotificationsSettingsScreen extends StatelessWidget {
                           SizedBox(
                             height: 40,
                             child: Text(
-                              translactions.notifications_screen_measurements,
+                              localization.notifications_screen_measurements,
                               style: ScaleTextStyles.textAccent.apply(
                                 color:
                                     Theme.of(context).colorScheme.onSecondary,
@@ -69,7 +69,7 @@ class NotificationsSettingsScreen extends StatelessWidget {
                           ),
                           Gaps.gap24,
                           SwitchRow.text(
-                            title: translactions
+                            title: localization
                                 .notifications_screen_at_start_of_measurement,
                             defaultValue:
                                 appSettings.notifyAtStartOfMeasurement,
@@ -82,7 +82,7 @@ class NotificationsSettingsScreen extends StatelessWidget {
                             },
                           ),
                           SwitchRow.text(
-                            title: translactions
+                            title: localization
                                 .notifications_screen_10_min_before_measurement,
                             defaultValue:
                                 appSettings.notify10minBeforeMeasurement,
@@ -107,7 +107,7 @@ class NotificationsSettingsScreen extends StatelessWidget {
             left: 0,
             right: 0,
             child: BluredScaleAppBar(
-              title: translactions.notifications_screen_title,
+              title: localization.notifications_screen_title,
               onBackTap: () {},
             ),
           ),

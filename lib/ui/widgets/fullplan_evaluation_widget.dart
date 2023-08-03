@@ -54,7 +54,7 @@ class FullPlanEvaluationWidget extends StatelessWidget {
                     ),
                     Gaps.gap16,
                     Text(
-                      translactions
+                      localization
                           .care_plan_detail_screen_fulfillment_evaluation,
                       style: ScaleTextStyles.text.apply(
                         color: Theme.of(context).colorScheme.onPrimary,
@@ -76,7 +76,7 @@ class FullPlanEvaluationWidget extends StatelessWidget {
                 if (veryFirstMeasurement.whenEnd.isAfter(DateTime.now())) ...[
                   Gaps.gap6,
                   Text(
-                    translactions
+                    localization
                         .care_plan_detail_screen_fulfillment_evaluation_valid_from(
                       veryFirstMeasurement.whenStart.toDateOrDay(),
                       veryFirstMeasurement.whenStart.toTimeShort(),
