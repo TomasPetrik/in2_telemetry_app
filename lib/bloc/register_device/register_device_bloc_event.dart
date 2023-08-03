@@ -8,7 +8,10 @@ part 'register_device_bloc_event.freezed.dart';
 
 @freezed
 class RegisterDeviceBlocEvent with _$RegisterDeviceBlocEvent {
-  const factory RegisterDeviceBlocEvent.init(BuildContext context) = _Init;
+  const factory RegisterDeviceBlocEvent.init(
+    String userId,
+    BuildContext context,
+  ) = _Init;
   const factory RegisterDeviceBlocEvent.newBtState(BluetoothState newBtState) =
       _NewBtState;
 

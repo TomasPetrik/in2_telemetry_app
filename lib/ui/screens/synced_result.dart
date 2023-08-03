@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/report/report.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/model/device_info.dart';
@@ -11,12 +12,14 @@ import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/scale_card.dart';
+import 'package:scalesoft_app/utils/events_constants.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 class SyncedResult extends StatelessWidget {
@@ -207,6 +210,11 @@ class SyncedResult extends StatelessWidget {
                     .save(hwMeasurementResult.measurement!)
                     .then(
                   (_) {
+                    getIt<ReportService>().trackEvent(
+                      userId: userId,
+                      severity: Severity.info,
+                      message: EventsConstants.eventMeasurementSent,
+                    );
                     getIt<SyncBloc>().add(const SyncEvent.syncResults());
                     GoRouter.of(context).goNamed(DashboardRoute.name);
                   },
@@ -222,6 +230,11 @@ class SyncedResult extends StatelessWidget {
               label: translactions
                   .measurement_summary_screen_no_data_repeat_measurement,
               onPressed: () {
+                getIt<ReportService>().trackEvent(
+                  userId: userId,
+                  severity: Severity.info,
+                  message: EventsConstants.eventMeasurementRepeat,
+                );
                 GoRouter.of(context).pushReplacementNamed(
                   OmronFlowRoute.name,
                   queryParams: {
@@ -241,6 +254,11 @@ class SyncedResult extends StatelessWidget {
             child: HighlightedElevatedButton(
               label: translactions.measurement_summary_screen_disallow_to_send,
               onPressed: () {
+                getIt<ReportService>().trackEvent(
+                  userId: userId,
+                  severity: Severity.info,
+                  message: EventsConstants.eventMeasurementWontSend,
+                );
                 GoRouter.of(context).goNamed(DashboardRoute.name);
               },
               buttonType: ButtonType.secondary,

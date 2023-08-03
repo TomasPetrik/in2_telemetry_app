@@ -80,8 +80,7 @@ class OnboardingScreen extends StatelessWidget with BottomSheetMixin {
                     ),
                     Gaps.gap24,
                     HighlightedElevatedButton(
-                      label: translactions
-                          .open_manual_button,
+                      label: translactions.open_manual_button,
                       buttonType: ButtonType.secondary,
                       onPressed: () async {
                         GoRouter.of(context).pushNamed(ManualRoute.name);
