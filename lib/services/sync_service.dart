@@ -276,7 +276,7 @@ class SyncService {
         userAccount.lastSyncFailed = false;
         await updateUserData(userAccount);
         await _accountDbProvider.save(userAccount);
-      } on DioError {
+      } on DioException {
         //for any failed sync set flag and go on next account
         userAccount.lastSyncFailed = true;
         await _accountDbProvider.save(userAccount);

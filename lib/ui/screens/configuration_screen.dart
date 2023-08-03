@@ -7,6 +7,9 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
+import 'package:scalesoft_app/bloc/report/report_bloc.dart';
+import 'package:scalesoft_app/bloc/report/report_bloc_event.dart';
+import 'package:scalesoft_app/bloc/report/report_bloc_state.dart';
 import 'package:scalesoft_app/bloc/settings/app_settings_bloc.dart';
 import 'package:scalesoft_app/bloc/settings/app_settings_bloc_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
@@ -25,6 +28,7 @@ import 'package:scalesoft_app/ui/themes/scalesoft_colors_light.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
+import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/image_widget.dart';
 import 'package:scalesoft_app/ui/widgets/settings_item.dart';
 
@@ -35,6 +39,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
   Widget build(BuildContext context) {
     final AccountDbProvider accountDbProvider = getIt<AccountDbProvider>();
     final hospitalUserEntries = accountDbProvider.getHospitalUsersMap().entries;
+    final reportBloc = getIt<ReportBloc>()..add(ReportBlocEvent.init(context));
 
     return Scaffold(
       body: BlocBuilder<AuthBloc, AuthState>(
@@ -224,8 +229,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                           ..add(const AppSettingsBlocEvent.initSettings()),
                         builder: (context, state) {
                           return SettingsItem(
-                            label: localization
-                                .manual_screen_title,
+                            label: localization.manual_screen_title,
                             subLabel: localization.open_manual_button,
                             iconWidget: SvgPicture.asset(
                               'assets/icons/icon_question.svg',
@@ -233,6 +237,21 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                             ),
                             onTap: () {
                               GoRouter.of(context).pushNamed(ManualRoute.name);
+                            },
+                          );
+                        },
+                      ),
+                      Gaps.gap24,
+                      BlocBuilder<ReportBloc, ReportBlocState>(
+                        bloc: reportBloc,
+                        builder: (context, state) {
+                          return HighlightedElevatedButton(
+                            label: translactions
+                                .configuration_screen_send_debug_logs,
+                            buttonType: ButtonType.primary,
+                            onPressed: () {
+                              reportBloc
+                                  .add(const ReportBlocEvent.sendReports());
                             },
                           );
                         },

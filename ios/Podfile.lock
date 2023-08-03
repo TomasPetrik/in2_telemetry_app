@@ -1,7 +1,9 @@
 PODS:
-  - "app_settings (3.0.0+1)":
+  - app_settings (4.3.0):
     - Flutter
-  - background_fetch (1.1.6):
+  - background_fetch (1.2.0):
+    - Flutter
+  - device_info_plus (0.0.1):
     - Flutter
   - Flutter (1.0.0)
   - flutter_blue_plus (0.0.1):
@@ -21,9 +23,13 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - permission_handler_apple (9.1.0):
+  - pdfx (1.0.0):
+    - Flutter
+  - permission_handler_apple (9.1.1):
     - Flutter
   - Protobuf (3.23.0)
+  - unique_identifier (0.0.1):
+    - Flutter
   - url_launcher_ios (0.0.1):
     - Flutter
   - wakelock (0.0.1):
@@ -34,6 +40,7 @@ PODS:
 DEPENDENCIES:
   - app_settings (from `.symlinks/plugins/app_settings/ios`)
   - background_fetch (from `.symlinks/plugins/background_fetch/ios`)
+  - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - Flutter (from `Flutter`)
   - flutter_blue_plus (from `.symlinks/plugins/flutter_blue_plus/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
@@ -41,7 +48,9 @@ DEPENDENCIES:
   - notification_permissions (from `.symlinks/plugins/notification_permissions/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - pdfx (from `.symlinks/plugins/pdfx/ios`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
+  - unique_identifier (from `.symlinks/plugins/unique_identifier/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - wakelock (from `.symlinks/plugins/wakelock/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
@@ -55,6 +64,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/app_settings/ios"
   background_fetch:
     :path: ".symlinks/plugins/background_fetch/ios"
+  device_info_plus:
+    :path: ".symlinks/plugins/device_info_plus/ios"
   Flutter:
     :path: Flutter
   flutter_blue_plus:
@@ -69,8 +80,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  pdfx:
+    :path: ".symlinks/plugins/pdfx/ios"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
+  unique_identifier:
+    :path: ".symlinks/plugins/unique_identifier/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
   wakelock:
@@ -79,17 +94,20 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 SPEC CHECKSUMS:
-  app_settings: d103828c9f5d515c4df9ee754dabd443f7cedcf3
-  background_fetch: bc9b44b0bf8b434e282a2ac9be8662800a0296ed
+  app_settings: ee4ae4d1c9a907a23b81c40e5c56a5ca8a20a62b
+  background_fetch: 79229f3677f19e1851b8e46d051720842e25a7fc
+  device_info_plus: 7545d84d8d1b896cb16a4ff98c19f07ec4b298ea
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_blue_plus: 6787777145d615de01828f3a9fa423c3c702f0b3
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   geolocator_apple: cc556e6844d508c95df1e87e3ea6fa4e58c50401
   notification_permissions: 825ea1bf2a52ab585c53fd7b5e8e96876d735d4b
-  package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
-  path_provider_foundation: eaf5b3e458fc0e5fbb9940fb09980e853fe058b8
-  permission_handler_apple: 8f116445eff3c0e7c65ad60f5fef5490aa94b4e4
+  package_info_plus: fd030dabf36271f146f1f3beacd48f564b0f17f7
+  path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
+  pdfx: 7b876b09de8b7a0bf444a4f82b439ffcff4ee1ec
+  permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
   Protobuf: 43e3764cdf3609fdd00417649561565703437fdc
+  unique_identifier: 5b4b48cfe07a95df6aa11746944c0dce22ab5400
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
   webview_flutter_wkwebview: 2e2d318f21a5e036e2c3f26171342e95908bd60a

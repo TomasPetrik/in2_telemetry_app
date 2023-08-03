@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:scalesoft_app/api/model/report/report_request.dart';
 import 'package:scalesoft_app/api/model/user_info.dart';
 import 'package:scalesoft_app/utils/constants.dart';
 
@@ -16,5 +17,11 @@ abstract class AccountApiClient {
   @GET('{apiUrl}/user/me')
   Future<UserInfo> loadUserInfo(
     @Path('apiUrl') String apiUrl,
+  );
+
+  @POST('{apiUrl}/user/me/app-logs')
+  Future<void> sendUserAppReports(
+    @Path('apiUrl') String apiUrl,
+    @Body() ReportRequest reportRequest,
   );
 }

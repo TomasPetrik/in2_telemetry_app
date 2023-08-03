@@ -714,6 +714,16 @@ class I10n {
     );
   }
 
+  /// `Odeslat vývojářské data`
+  String get configuration_screen_send_debug_logs {
+    return Intl.message(
+      'Odeslat vývojářské data',
+      name: 'configuration_screen_send_debug_logs',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Vzhled`
   String get appearance_screen_title {
     return Intl.message(

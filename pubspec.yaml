@@ -17,7 +17,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.93+93
+version: 1.0.94+94
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -43,7 +43,7 @@ dependencies:
   # API
   dio: ^5.0.3
   retrofit: ^4.0.1
-  json_annotation: ^4.8.0
+  json_annotation: ^4.8.1
   freezed_annotation: ^2.2.0
   equatable: ^2.0.5
 
@@ -52,11 +52,11 @@ dependencies:
 
   # IoC
   injectable: ^2.1.0
-  get_it: ^7.2.0
+  get_it: ^7.6.0
 
   # MISC
   intl: ^0.18.0
-  app_settings: ^4.2.0
+  app_settings: ^5.0.0
   permission_handler: ^10.3.0
   collection: ^1.17.0
   pretty_dio_logger: ^1.2.0-beta-1
@@ -68,7 +68,7 @@ dependencies:
   webview_flutter: ^4.2.2
 
   # Bluetooth Comm
-  flutter_blue_plus: ^1.4.0
+  flutter_blue_plus: 1.4.0
 
   flutter_svg: ^1.1.6
   hive: ^2.2.3
@@ -79,7 +79,9 @@ dependencies:
       path: hive_flutter/
 
   go_router: ^6.5.1
-  package_info_plus: 3.1.2
+  package_info_plus: ^4.0.2
+  device_info_plus: ^9.0.2
+  unique_identifier: ^0.3.0
 
   # Background fetching service
   background_fetch: ^1.1.5
@@ -94,21 +96,24 @@ dependencies:
 
   # Open url in webview
   url_launcher: ^6.1.11
-  wakelock: ^0.5.6
+  wakelock: ^0.6.2
   notification_permissions: ^0.6.1
 
   # View pdf
   pdfx: ^2.3.0
+
+dependency_overrides:
+  win32: ^5.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   # API
-  retrofit_generator: ^6.0.0+1
-  injectable_generator: ^2.1.4
+  retrofit_generator: ^7.0.8
+  injectable_generator: ^2.1.6
   build_runner: ^2.3.3
-  json_serializable: ^6.1.5
+  json_serializable: ^6.7.1
   hive_generator:
     git:
       url: https://github.com/yura2000/hive.git
@@ -121,7 +126,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
-  freezed: ^2.2.0
+  freezed: ^2.4.1
   flutter_launcher_icons: ^0.13.1
   dart_code_metrics: ^5.7.3
 
