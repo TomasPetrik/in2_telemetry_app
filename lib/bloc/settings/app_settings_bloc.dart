@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/bloc/settings/app_settings_bloc_event.dart';
@@ -8,7 +9,6 @@ import 'package:scalesoft_app/globals.dart';
 import 'package:scalesoft_app/model/app_settings.dart';
 import 'package:scalesoft_app/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/services/location_service.dart';
 import 'package:scalesoft_app/utils/extensions/locale_extensions.dart';
 import 'package:scalesoft_app/utils/extensions/theme_mode_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/appearance_helper.dart';
@@ -16,11 +16,9 @@ import 'package:scalesoft_app/utils/helpers/appearance_helper.dart';
 @singleton
 class AppSettingsBloc extends Bloc<AppSettingsBlocEvent, AppSettings> {
   final AppSettingsDbProvider _settingsDbProvider;
-  final LocationService _locationService;
 
   AppSettingsBloc(
     this._settingsDbProvider,
-    this._locationService,
   ) : super(
           _settingsDbProvider.read() ??
               AppSettings(
@@ -53,7 +51,6 @@ class AppSettingsBloc extends Bloc<AppSettingsBlocEvent, AppSettings> {
             final appSettings = _getAppSettings();
 
             AppearanceHelper.setSystemUIOverlayStyle(newThemeMode);
-
             await _settingsDbProvider.write(
               appSettings.copyWith(themeModeLocal: newThemeMode.toLocal()),
             );
@@ -64,30 +61,26 @@ class AppSettingsBloc extends Bloc<AppSettingsBlocEvent, AppSettings> {
           },
           setAutoAppearance: (bool enabled) async {
             final appSettings = _getAppSettings();
+            final newThemeMode =
+                enabled ? ThemeMode.system : buildConfig.themeMode;
             final newAppSettings = appSettings.copyWith(
               autosetAppearance: enabled,
+              themeModeLocal: newThemeMode.toLocal(),
             );
 
-            _settingsDbProvider.write(newAppSettings);
-            emit(newAppSettings);
-
-            if (enabled) {
-              add(const AppSettingsBlocEvent.detectDayLightAndSetTheme());
+            if (newThemeMode == ThemeMode.system) {
+              final brightness = SchedulerBinding
+                  .instance.platformDispatcher.platformBrightness;
+              AppearanceHelper.setSystemUIOverlayStyleByBrightness(brightness);
+            } else {
+              AppearanceHelper.setSystemUIOverlayStyle(newThemeMode);
             }
-          },
-          detectDayLightAndSetTheme: () async {
-            final dayLightThemeMode =
-                await _locationService.getThemeModeByDayLight();
 
-            final appSettings = _getAppSettings();
-            final newAppSettings = appSettings.copyWith(
-              themeModeLocal: dayLightThemeMode.toLocal(),
-            );
             await _settingsDbProvider.write(newAppSettings);
             emit(newAppSettings);
 
             getIt<ContentBloc>()
-                .add(OnAppearanceChangedContentEvent(dayLightThemeMode));
+                .add(OnAppearanceChangedContentEvent(newThemeMode));
           },
         );
       },

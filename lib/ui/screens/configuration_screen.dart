@@ -269,8 +269,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                               Gaps.gap24,
                               Center(
                                 child: Text(
-                                  localization
-                                      .app_version(packageInfo.version),
+                                  localization.app_version(packageInfo.version),
                                   style: ScaleTextStyles.label.apply(
                                     color:
                                         Theme.of(context).colorScheme.tertiary,

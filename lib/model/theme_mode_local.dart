@@ -18,5 +18,9 @@ class ThemeModeLocal with _$ThemeModeLocal {
   factory ThemeModeLocal.fromJson(Map<String, dynamic> json) =>
       _$ThemeModeLocalFromJson(json);
 
-  ThemeMode get themeMode => index == 0 ? ThemeMode.light : ThemeMode.dark;
+  ThemeMode get themeMode => index == 0
+      ? ThemeMode.light
+      : index == 1
+          ? ThemeMode.dark
+          : ThemeMode.system;
 }

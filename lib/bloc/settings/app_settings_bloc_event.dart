@@ -13,7 +13,4 @@ class AppSettingsBlocEvent with _$AppSettingsBlocEvent {
 
   const factory AppSettingsBlocEvent.setAutoAppearance(bool enabled) =
       _SetAutoAppearance;
-
-  const factory AppSettingsBlocEvent.detectDayLightAndSetTheme() =
-      _DetectDayLightAndSetTheme;
 }

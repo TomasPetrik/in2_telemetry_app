@@ -17,14 +17,11 @@ import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/session_db_provider.dart';
 import 'package:scalesoft_app/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/services/location_service.dart';
 import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/utils/constants.dart';
 import 'package:scalesoft_app/utils/events_constants.dart';
-import 'package:scalesoft_app/utils/extensions/theme_mode_extensions.dart';
-import 'package:scalesoft_app/utils/helpers/appearance_helper.dart';
 
 @singleton
 class ContentBloc extends Bloc<ContentEvent, ContentState> {
@@ -33,7 +30,6 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
   final AppSettingsDbProvider _appSettingsDbProvider;
   final Session _session;
   final CarePlanBloc _carePlanBloc;
-  final LocationService _locationService;
   final ReportService _reportsService;
   Timer? _watchDogTimer;
   GoRouter? goRouter;
@@ -44,7 +40,6 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     this._appSettingsDbProvider,
     this._session,
     this._carePlanBloc,
-    this._locationService,
     this._reportsService,
   ) : super(const ContentState.initial()) {
     on<CheckLastLoggedUserContentEvent>(_checkLastLoggedUserContentEvent);
@@ -63,16 +58,8 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     final appSettings = _appSettingsDbProvider.read();
     if (appSettings == null) return;
     if (appSettings.autosetAppearance == true) {
-      final newThemeMode = await _locationService.getThemeModeByDayLight();
-      if (appSettings.themeModeLocal != newThemeMode.toLocal()) {
-        await _appSettingsDbProvider.write(
-          appSettings.copyWith(themeModeLocal: newThemeMode.toLocal()),
-        );
-
-        AppearanceHelper.setSystemUIOverlayStyle(ThemeMode.light);
-        final originalLocation = goRouter!.location;
-        add(OnDaylightAppearanceChangedContentEvent(originalLocation));
-      }
+      final originalLocation = goRouter!.location;
+      add(OnDaylightAppearanceChangedContentEvent(originalLocation));
     }
   }
 

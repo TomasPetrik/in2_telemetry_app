@@ -9,4 +9,12 @@ class AppearanceHelper {
           : SystemUiOverlayStyle.light,
     );
   }
+
+  static void setSystemUIOverlayStyleByBrightness(Brightness brightness) {
+    SystemChrome.setSystemUIOverlayStyle(
+      brightness == Brightness.light
+          ? SystemUiOverlayStyle.dark
+          : SystemUiOverlayStyle.light,
+    );
+  }
 }
