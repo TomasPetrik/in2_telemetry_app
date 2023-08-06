@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scalesoft_app/api/model/report/report.dart';
-import 'package:scalesoft_app/cubit/auth_web/auth_web_cubit.dart';
-import 'package:scalesoft_app/cubit/auth_web/auth_web_state.dart';
+import 'package:scalesoft_app/cubit/loader/loader_cubit.dart';
+import 'package:scalesoft_app/cubit/loader/loader_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/ui/widgets/loading_indicator.dart';
@@ -25,7 +25,7 @@ class AuthWebScreen extends StatelessWidget {
   final Function(Uri) openEGoverment;
   final Function onCancelled;
   final Function onLoadingError;
-  final AuthWebCubit cubit = getIt<AuthWebCubit>();
+  final LoaderCubit cubit = getIt<LoaderCubit>();
 
   final WebViewController controller = WebViewController();
   final WebViewCookieManager cookieManager = WebViewCookieManager();
@@ -110,7 +110,7 @@ class AuthWebScreen extends StatelessWidget {
               WebViewWidget(
                 controller: controller,
               ),
-              BlocBuilder<AuthWebCubit, AuthWebState>(
+              BlocBuilder<LoaderCubit, LoaderState>(
                 bloc: cubit,
                 builder: ((context, state) {
                   final widget = state.when(

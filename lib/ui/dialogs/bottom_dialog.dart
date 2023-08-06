@@ -9,7 +9,7 @@ import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 class BottomDialog extends StatelessWidget {
   const BottomDialog({
     super.key,
-    required this.title,
+    this.title,
     required this.description,
     required this.iconPath,
     required this.iconColor,
@@ -17,7 +17,7 @@ class BottomDialog extends StatelessWidget {
     required this.negativeButtonStyle,
   });
 
-  final String title;
+  final String? title;
   final String description;
   final String iconPath;
   final Color iconColor;
@@ -165,6 +165,22 @@ class BottomDialog extends StatelessWidget {
     );
   }
 
+  factory BottomDialog.reportsSent({
+    Key? key,
+    required BuildContext context,
+  }) {
+    return _BottomDialog(
+      title: '',
+      description: localization.configuration_screen_debug_logs_sent,
+      iconPath: 'assets/icons/icon_circle_check_big.svg',
+      iconColor: Theme.of(context).colorScheme.onTertiary,
+      positiveButtonStyle: ButtonStyle(
+        buttonType: ButtonType.secondary,
+        label: localization.common_close,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return _BottomDialog(
@@ -203,15 +219,17 @@ class _BottomDialog extends BottomDialog {
         mainAxisSize: MainAxisSize.min,
         children: [
           Gaps.gap34,
-          Padding(
-            padding: Paddings.horizontal16,
-            child: Text(
-              title,
-              style: ScaleTextStyles.textAccent
-                  .apply(color: Theme.of(context).colorScheme.onSecondary),
+          if (title?.isNotEmpty == true) ...[
+            Padding(
+              padding: Paddings.horizontal16,
+              child: Text(
+                title!,
+                style: ScaleTextStyles.textAccent
+                    .apply(color: Theme.of(context).colorScheme.onSecondary),
+              ),
             ),
-          ),
-          Gaps.gap26,
+            Gaps.gap26,
+          ],
           Center(
             child: SvgPicture.asset(
               iconPath,

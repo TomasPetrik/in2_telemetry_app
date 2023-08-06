@@ -38,6 +38,22 @@ mixin BottomSheetMixin {
     return result;
   }
 
+  Future<void> showReportsSent(
+    BuildContext context,
+  ) async {
+    await showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return BottomDialog.reportsSent(
+          context: context,
+        );
+      },
+    );
+  }
+
   Future<void> showDevAlreadyRegistered(
     BuildContext context,
     String deviceIdentifier,

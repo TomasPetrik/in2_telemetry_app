@@ -14,6 +14,8 @@ import 'package:scalesoft_app/bloc/settings/app_settings_bloc.dart';
 import 'package:scalesoft_app/bloc/settings/app_settings_bloc_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
+import 'package:scalesoft_app/cubit/loader/loader_cubit.dart';
+import 'package:scalesoft_app/cubit/loader/loader_state.dart';
 import 'package:scalesoft_app/model/app_settings.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -30,6 +32,7 @@ import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/image_widget.dart';
+import 'package:scalesoft_app/ui/widgets/loading_indicator.dart';
 import 'package:scalesoft_app/ui/widgets/settings_item.dart';
 
 class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
@@ -39,7 +42,8 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
   Widget build(BuildContext context) {
     final AccountDbProvider accountDbProvider = getIt<AccountDbProvider>();
     final hospitalUserEntries = accountDbProvider.getHospitalUsersMap().entries;
-    final reportBloc = getIt<ReportBloc>()..add(ReportBlocEvent.init(context));
+    final reportBloc = getIt<ReportBloc>()..add(const ReportBlocEvent.init());
+    final loaderCubit = getIt<LoaderCubit>()..loaded();
 
     return Scaffold(
       body: BlocBuilder<AuthBloc, AuthState>(
@@ -242,8 +246,23 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                         },
                       ),
                       Gaps.gap24,
-                      BlocBuilder<ReportBloc, ReportBlocState>(
+                      BlocConsumer<ReportBloc, ReportBlocState>(
                         bloc: reportBloc,
+                        listener: (context, state) {
+                          state.whenOrNull(
+                            succed: () {
+                              loaderCubit.loaded();
+                              showReportsSent(context);
+                            },
+                            failed: () {
+                              loaderCubit.loaded();
+                              showServerError(context);
+                            },
+                            sending: () {
+                              loaderCubit.loading();
+                            },
+                          );
+                        },
                         builder: (context, state) {
                           return HighlightedElevatedButton(
                             label: localization
@@ -284,6 +303,17 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                     ],
                   ),
                 ),
+              ),
+              BlocBuilder<LoaderCubit, LoaderState>(
+                bloc: loaderCubit,
+                builder: ((context, state) {
+                  final widget = state.when(
+                    loaded: SizedBox.shrink,
+                    loading: LoadingIndicator.new,
+                  );
+
+                  return Align(alignment: Alignment.center, child: widget);
+                }),
               ),
               Positioned(
                 top: 0,

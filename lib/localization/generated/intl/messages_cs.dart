@@ -328,6 +328,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Automaticky"),
         "configuration_screen_dark":
             MessageLookupByLibrary.simpleMessage("Tmavý"),
+        "configuration_screen_debug_logs_sent":
+            MessageLookupByLibrary.simpleMessage(
+                "Vývojářské data byla úspěšně odeslána"),
         "configuration_screen_good_in_day":
             MessageLookupByLibrary.simpleMessage("Skvělý přes den"),
         "configuration_screen_good_in_night":
