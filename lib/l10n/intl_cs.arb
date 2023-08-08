@@ -142,6 +142,7 @@
     "configuration_screen_dark": "Tmavý",
     "configuration_screen_good_in_night": "Skvělý v noci",
     "configuration_screen_send_debug_logs": "Odeslat vývojářská data",
+    "configuration_screen_debug_logs_sent": "Vývojářská data byla úspěšně odeslána",
     "appearance_screen_title": "Vzhled",
     "user_detail_screen_remove_account": "Odstranit účet",
     "user_detail_screen_measurement_plans": "Plány měření",

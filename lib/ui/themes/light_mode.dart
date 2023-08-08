@@ -40,7 +40,7 @@ class LightMode {
 
   static ColorScheme get colorScheme => ColorScheme(
         background: backgroundColor,
-        brightness: Brightness.dark,
+        brightness: Brightness.light,
         error: alertColor,
         onBackground: paperAccent,
         onError: warning,

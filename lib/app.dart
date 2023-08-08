@@ -143,7 +143,7 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
         }
         return ScaleApp(goRouter: _goRouter!);
       },
-      themeMode: ThemeMode.dark,
+      themeMode: buildConfig.themeMode,
     );
   }
 
