@@ -4,8 +4,13 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
+import 'package:scalesoft_app/bloc/report/report_bloc.dart';
+import 'package:scalesoft_app/bloc/report/report_bloc_event.dart';
+import 'package:scalesoft_app/bloc/report/report_bloc_state.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
+import 'package:scalesoft_app/cubit/loader/loader_cubit.dart';
+import 'package:scalesoft_app/cubit/loader/loader_state.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
@@ -17,6 +22,7 @@ import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/care_plan_item.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
+import 'package:scalesoft_app/ui/widgets/loading_indicator.dart';
 import 'package:scalesoft_app/ui/widgets/process_item.dart';
 import 'package:scalesoft_app/ui/widgets/sliver_name_value_row.dart';
 import 'package:scalesoft_app/ui/widgets/user_warning_item.dart';
@@ -31,6 +37,9 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
 
   @override
   Widget build(BuildContext context) {
+    final reportBloc = getIt<ReportBloc>()..add(const ReportBlocEvent.init());
+    final loaderCubit = getIt<LoaderCubit>()..loaded();
+
     final relevantProblems = [
       UserProblemType.sessionExpired,
       UserProblemType.lastSyncFailed,
@@ -172,6 +181,47 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                       value: userAccount.user.emailAddresses![0],
                     ),
                   ],
+                  const SliverGap(Dimensions.padding24),
+                  BlocConsumer<ReportBloc, ReportBlocState>(
+                    bloc: reportBloc,
+                    listener: (context, state) {
+                      state.whenOrNull(
+                        succed: () {
+                          loaderCubit.loaded();
+                          showReportsSent(context);
+                        },
+                        failed: () {
+                          loaderCubit.loaded();
+                          showServerError(context);
+                        },
+                        sending: () {
+                          loaderCubit.loading();
+                        },
+                      );
+                    },
+                    builder: (context, state) {
+                      return SliverToBoxAdapter(
+                        child: Padding(
+                          padding: Paddings.horizontal16,
+                          child: Center(
+                            child: InkWell(
+                              onTap: () {
+                                reportBloc
+                                    .add(const ReportBlocEvent.sendReports());
+                              },
+                              child: Text(
+                                localization.user_detail_screen_send_debug_logs,
+                                style: ScaleTextStyles.textAccent.apply(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                   if (userAccount.canManageTelemonitoringDevices) ...[
                     const SliverGap(Dimensions.padding24),
                     SliverToBoxAdapter(
@@ -197,8 +247,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                       child: Padding(
                         padding: Paddings.horizontal16,
                         child: HighlightedElevatedButton(
-                          label:
-                              localization.user_detail_screen_remove_account,
+                          label: localization.user_detail_screen_remove_account,
                           buttonType: ButtonType.alert,
                           onPressed: () async {
                             showAccounRemovalConfirmation(
@@ -218,6 +267,17 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                     const SliverGap(Dimensions.padding16),
                   ],
                 ],
+              ),
+              BlocBuilder<LoaderCubit, LoaderState>(
+                bloc: loaderCubit,
+                builder: ((context, state) {
+                  final widget = state.when(
+                    loaded: SizedBox.shrink,
+                    loading: LoadingIndicator.new,
+                  );
+
+                  return Align(alignment: Alignment.center, child: widget);
+                }),
               ),
               Positioned(
                 top: 0,

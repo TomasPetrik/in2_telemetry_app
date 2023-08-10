@@ -171,7 +171,7 @@ class BottomDialog extends StatelessWidget {
   }) {
     return _BottomDialog(
       title: '',
-      description: localization.configuration_screen_debug_logs_sent,
+      description: localization.user_detail_screen_debug_logs_sent,
       iconPath: 'assets/icons/icon_circle_check_big.svg',
       iconColor: Theme.of(context).colorScheme.onTertiary,
       positiveButtonStyle: ButtonStyle(
