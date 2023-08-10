@@ -35,7 +35,7 @@ class EventsConstants {
   static const eventUserErrorDataLoaded = 'EVENT_USER_ERROR_DATA_LOADED';
   static const eventUserRemoved = 'EVENT_USER_REMOVED';
   static const eventUserSwitchedToActive = 'EVENT_USER_SWITCHED_TO_ACTIVE';
-  static const eventUserContentDefaultAutoSet = 'EVENT_USER_AUTO_DEFAULT_SET';
+  static const eventUserContentDefaultAutoSet = 'EVENT_USER_CONTENT_DEFAULT_AUTO_SET';
   static const eventUserAdded = 'EVENT_USER_ADDED';
 
   /* MISC */

@@ -328,9 +328,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Automaticky"),
         "configuration_screen_dark":
             MessageLookupByLibrary.simpleMessage("Tmavý"),
-        "configuration_screen_debug_logs_sent":
-            MessageLookupByLibrary.simpleMessage(
-                "Vývojářské data byla úspěšně odeslána"),
         "configuration_screen_good_in_day":
             MessageLookupByLibrary.simpleMessage("Skvělý přes den"),
         "configuration_screen_good_in_night":
@@ -343,8 +340,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Notifikace"),
         "configuration_screen_notification_sublabel":
             MessageLookupByLibrary.simpleMessage("Dle plánu měření"),
-        "configuration_screen_send_debug_logs":
-            MessageLookupByLibrary.simpleMessage("Odeslat vývojářské data"),
         "configuration_screen_settings":
             MessageLookupByLibrary.simpleMessage("Nastavení"),
         "configuration_screen_system_appearance_sublabel":
@@ -599,12 +594,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "tabs_measurement": MessageLookupByLibrary.simpleMessage("Měření"),
         "tabs_more": MessageLookupByLibrary.simpleMessage("Více"),
         "tabs_results": MessageLookupByLibrary.simpleMessage("Výsledky"),
+        "user_detail_screen_debug_logs_sent":
+            MessageLookupByLibrary.simpleMessage(
+                "Vývojářské data byla úspěšně odeslána"),
         "user_detail_screen_measurement_plans":
             MessageLookupByLibrary.simpleMessage("Plány měření"),
         "user_detail_screen_register_device_button":
             MessageLookupByLibrary.simpleMessage("Registrovat zařízení"),
         "user_detail_screen_remove_account":
             MessageLookupByLibrary.simpleMessage("Odstranit účet"),
+        "user_detail_screen_send_debug_logs":
+            MessageLookupByLibrary.simpleMessage("Odeslat vývojářské data"),
         "user_detail_screen_user_email":
             MessageLookupByLibrary.simpleMessage("Email"),
         "user_detail_screen_user_info":
