@@ -15,7 +15,6 @@ import 'package:scalesoft_app/bloc/user_content/content_state.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/session_db_provider.dart';
-import 'package:scalesoft_app/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
@@ -27,7 +26,6 @@ import 'package:scalesoft_app/utils/events_constants.dart';
 class ContentBloc extends Bloc<ContentEvent, ContentState> {
   final AccountDbProvider _accountDbProvider;
   final SessionDbProvider _sessionDbProvider;
-  final AppSettingsDbProvider _appSettingsDbProvider;
   final Session _session;
   final CarePlanBloc _carePlanBloc;
   final ReportService _reportsService;
@@ -37,7 +35,6 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
   ContentBloc(
     this._accountDbProvider,
     this._sessionDbProvider,
-    this._appSettingsDbProvider,
     this._session,
     this._carePlanBloc,
     this._reportsService,
@@ -54,15 +51,6 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     on<StopWatchDog>(_onStopWatchDog);
   }
 
-  Future<void> _checkAutoAppearanceMode() async {
-    final appSettings = _appSettingsDbProvider.read();
-    if (appSettings == null) return;
-    if (appSettings.autosetAppearance == true) {
-      final originalLocation = goRouter!.location;
-      add(OnDaylightAppearanceChangedContentEvent(originalLocation));
-    }
-  }
-
   void _autoRefreshDashboard() {
     _reportsService.trackEvent(
       userAccount: _session.isMultiUser == false ? _session.userAccount : null,
@@ -71,9 +59,6 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     );
     //1. Notify dashboard to refresh screen
     _carePlanBloc.add(const RefreshStateEvent());
-
-    //2. Check auto-appearance if is enabled
-    _checkAutoAppearanceMode();
   }
 
   Future<void> _startWatchDog() async {

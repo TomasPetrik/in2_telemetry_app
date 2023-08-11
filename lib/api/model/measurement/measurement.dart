@@ -25,7 +25,7 @@ class Measurement with _$Measurement {
     @HiveField(8) String? patientMuid,
     @JsonKey(includeToJson: false)
     @HiveField(9)
-        MeasurementType? measurementType,
+    MeasurementType? measurementType,
   }) = _ManualMeasurement;
 
   factory Measurement.fromJson(Map<String, dynamic> json) =>

@@ -58,8 +58,6 @@ import '../services/report_service.dart' as _i36;
 import '../services/sync_service.dart' as _i37;
 import '../storage/session.dart' as _i20;
 
-// ignore_for_file: unnecessary_lambdas
-// ignore_for_file: lines_longer_than_80_chars
 // initializes the registration of main-scope dependencies inside of GetIt
 Future<_i1.GetIt> init(
   _i1.GetIt getIt, {
@@ -194,7 +192,6 @@ Future<_i1.GetIt> init(
   gh.singleton<_i41.ContentBloc>(_i41.ContentBloc(
     gh<_i3.AccountDbProvider>(),
     gh<_i21.SessionDbProvider>(),
-    gh<_i4.AppSettingsDbProvider>(),
     gh<_i20.Session>(),
     gh<_i8.CarePlanBloc>(),
     gh<_i36.ReportService>(),
