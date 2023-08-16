@@ -5,6 +5,7 @@ import 'package:scalesoft_app/providers/interval_generation/generators/timing_pe
 import 'package:scalesoft_app/api/model/care_plan/interval_generation/evaluation_interval_model.dart';
 import 'package:scalesoft_app/providers/interval_generation/generators/timing_time_of_day_generator.dart';
 import 'package:scalesoft_app/providers/interval_generation/generators/timing_when_generator.dart';
+import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 class TimingIntervalGenerator {
   /// Generates measurement intervals.
@@ -67,7 +68,11 @@ class TimingIntervalGenerator {
 
     final frequency = timing.frequency!;
 
-    var result = intervals
+    // Only keep intervals which occur at least partially between start and end
+    var relevantIntervals = intervals
+        .where((x) => x.start.isBeforeOrAt(end) && x.end.isAfterOrAt(start));
+
+    var result = relevantIntervals
         .map((x) => EvaluationIntervalModel(x.start, x.end, frequency))
         .toList();
 
