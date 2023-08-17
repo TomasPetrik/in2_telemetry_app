@@ -794,20 +794,20 @@ class I10n {
     );
   }
 
-  /// `Odeslat vývojářské data`
+  /// `Odeslat vývojářská data`
   String get user_detail_screen_send_debug_logs {
     return Intl.message(
-      'Odeslat vývojářské data',
+      'Odeslat vývojářská data',
       name: 'user_detail_screen_send_debug_logs',
       desc: '',
       args: [],
     );
   }
 
-  /// `Vývojářské data byla úspěšně odeslána`
+  /// `Vývojářská data byla úspěšně odeslána`
   String get user_detail_screen_debug_logs_sent {
     return Intl.message(
-      'Vývojářské data byla úspěšně odeslána',
+      'Vývojářská data byla úspěšně odeslána',
       name: 'user_detail_screen_debug_logs_sent',
       desc: '',
       args: [],

@@ -149,12 +149,16 @@ extension DateParse on DateTime {
     return DateTime(year + 1);
   }
 
-  DateTime replaceTime(Duration timeOfDay){
+  DateTime replaceTime(Duration timeOfDay) {
     return getStartOfDay().add(timeOfDay);
   }
 
-  bool isBeforeOrAt(DateTime other){
+  bool isBeforeOrAt(DateTime other) {
     return isBefore(other) || isAtSameMomentAs(other);
+  }
+
+  bool isAfterOrAt(DateTime other) {
+    return isAfter(other) || isAtSameMomentAs(other);
   }
 }
 

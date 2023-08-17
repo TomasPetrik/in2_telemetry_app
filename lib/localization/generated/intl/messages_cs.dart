@@ -596,7 +596,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tabs_results": MessageLookupByLibrary.simpleMessage("Výsledky"),
         "user_detail_screen_debug_logs_sent":
             MessageLookupByLibrary.simpleMessage(
-                "Vývojářské data byla úspěšně odeslána"),
+                "Vývojářská data byla úspěšně odeslána"),
         "user_detail_screen_measurement_plans":
             MessageLookupByLibrary.simpleMessage("Plány měření"),
         "user_detail_screen_register_device_button":
@@ -604,7 +604,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "user_detail_screen_remove_account":
             MessageLookupByLibrary.simpleMessage("Odstranit účet"),
         "user_detail_screen_send_debug_logs":
-            MessageLookupByLibrary.simpleMessage("Odeslat vývojářské data"),
+            MessageLookupByLibrary.simpleMessage("Odeslat vývojářská data"),
         "user_detail_screen_user_email":
             MessageLookupByLibrary.simpleMessage("Email"),
         "user_detail_screen_user_info":
