@@ -57,16 +57,16 @@ class ActionWidget extends StatelessWidget with BottomSheetMixin {
         upcomingMeasurements.isEmpty) {
       measurementWhenType = MeasurementWhenType.finished;
     } else if (nextMeasurement != null) {
-      final todayStart = nextMeasurement!.whenStart.toTimeOfDay().todayDateTime();
-      var todayEnd = nextMeasurement!.whenEnd.toTimeOfDay().todayDateTime();
-      if (todayEnd.isBefore(todayStart)) {
-        todayEnd = todayEnd.add(const Duration(days: 1));
-      }
-      if (now.isBefore(todayEnd) && now.isAfter(todayStart)) {
+      final start = nextMeasurement!.whenStart;
+      final end = nextMeasurement!.whenEnd;
+
+      if (now.isBefore(end) && now.isAfter(start)) {
         measurementWhenType = MeasurementWhenType.ongoing;
-      } else if (now.isBefore(todayStart)) {
+      } else if (now.isBefore(start)) {
         measurementWhenType = MeasurementWhenType.upcoming;
-      } else if (CarePlanHelper.hasMeasurementsToday(nextMeasurement!.carePlan)) {
+      } else if (CarePlanHelper.hasMeasurementsToday(
+        nextMeasurement!.carePlan,
+      )) {
         measurementWhenType = MeasurementWhenType.finished;
       }
     }
