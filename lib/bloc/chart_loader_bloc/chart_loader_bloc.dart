@@ -97,7 +97,7 @@ class ChartLoaderBloc extends Bloc<ChartLoaderBlocEvent, ChartLoaderBlocState> {
               */
 
               return [...prevCandles, emptyCandle, ...measurementCandles];
-            })
+            }),
           ],
         );
 

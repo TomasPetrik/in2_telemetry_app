@@ -13,9 +13,7 @@ import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 part 'care_plan.freezed.dart';
-
 part 'care_plan.g.dart';
-
 part 'care_plan.hive.dart';
 
 @unfreezed
@@ -86,7 +84,7 @@ class CarePlan with _$CarePlan {
 
   List<CarePlanVersion> getCpVersions() {
     final List<CarePlanVersion> sortedPlanVersions = [
-      if (carePlanVersions != null) ...carePlanVersions!
+      if (carePlanVersions != null) ...carePlanVersions!,
     ]..sort(
         (a, b) => a.activeFrom.compareTo(b.activeFrom),
       );
@@ -104,7 +102,7 @@ class CarePlan with _$CarePlan {
               timingDayWhen: timingDayWhen,
               activeFrom: scheduledStart,
               activeTo: scheduledEnd,
-            )
+            ),
           ];
 
     return cpVersions;

@@ -462,7 +462,7 @@ class BtConnectionHelper {
       //Permission.bluetooth, // -> is handled by flutter blue plus
       Permission.bluetoothScan,
       Permission.bluetoothConnect,
-      Permission.bluetoothAdvertise
+      Permission.bluetoothAdvertise,
     ].request();
 
     if (statuses.values.any((permission) => permission.isGranted == false)) {

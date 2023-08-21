@@ -118,7 +118,7 @@ class _TimeSettingsForm extends StatelessWidget with BottomSheetMixin {
                     'assets/icons/icon_dots_horizontal.svg',
                     color: Theme.of(context).colorScheme.primary,
                   ),
-                )
+                ),
               ],
             ),
           ),

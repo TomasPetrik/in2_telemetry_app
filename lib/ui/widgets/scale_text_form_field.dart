@@ -96,7 +96,7 @@ class _ScaleTextFormFieldState extends State<ScaleTextFormField> {
               top: Dimensions.padding12,
               bottom: Dimensions.padding12,
               child: widget.suffixIcon!,
-            )
+            ),
         ],
       ),
     );

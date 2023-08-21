@@ -94,7 +94,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                             allTodayMeasurements: state.allTodayMeasurements!,
                           ),
                         ),
-                      }
+                      },
                     ],
                     noContentWidget: allCarePlans.isEmpty
                         ? NoContentPlaceholder(

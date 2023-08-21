@@ -48,7 +48,7 @@ class BluredScaleAppBar extends StatelessWidget {
           onBackTap: onBackTap,
           onCloseTap: onCloseTap,
           customLeftWidget: customLeftWidget,
-        )
+        ),
       ],
     );
   }

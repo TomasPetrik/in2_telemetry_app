@@ -61,7 +61,7 @@ class NoResultsInPlansHeader extends StatelessWidget {
                     ),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),

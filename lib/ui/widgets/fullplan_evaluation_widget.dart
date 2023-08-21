@@ -89,7 +89,7 @@ class FullPlanEvaluationWidget extends StatelessWidget {
                 Gaps.gap16,
                 SingleProgressIndicator(
                   progress: progress,
-                )
+                ),
               ],
             ),
           ),

@@ -43,7 +43,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
     final relevantProblems = [
       UserProblemType.sessionExpired,
       UserProblemType.lastSyncFailed,
-      UserProblemType.syncResultsFailed
+      UserProblemType.syncResultsFailed,
     ];
 
     return BlocBuilder<SyncBloc, SyncState>(

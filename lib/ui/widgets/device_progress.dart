@@ -59,7 +59,7 @@ class DeviceProgress extends StatelessWidget {
             },
           ),
           const SliverGap(Dimensions.padding20),
-        ]
+        ],
       ],
     );
   }

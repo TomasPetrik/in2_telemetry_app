@@ -180,7 +180,7 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
         ...prevAccounts,
         rootAccount,
         if (rootAccount.representedPeople != null)
-          ...rootAccount.representedPeople!
+          ...rootAccount.representedPeople!,
       ],
     );
 
