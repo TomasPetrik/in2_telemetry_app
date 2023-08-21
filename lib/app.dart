@@ -8,7 +8,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scalesoft_app/api/interceptors/token_interceptor.dart';
-import 'package:scalesoft_app/api/model/report/report.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_bloc.dart';
@@ -27,7 +26,6 @@ import 'package:scalesoft_app/providers/reports_db_provider.dart';
 import 'package:scalesoft_app/providers/session_db_provider.dart';
 import 'package:scalesoft_app/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
 import 'package:scalesoft_app/ui/managers/content_manager.dart';
 import 'package:scalesoft_app/ui/routers/app_router.dart';
@@ -77,25 +75,15 @@ Future<void> _main({
   required final ThemeMode themeMode,
   required final Locale locale,
 }) async {
-  await runZonedGuarded(
-    () async {
-      WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
 
-      tz.initializeTimeZones();
-      initializeGlobals(themeMode: themeMode, locale: locale);
+  tz.initializeTimeZones();
+  initializeGlobals(themeMode: themeMode, locale: locale);
 
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]).then(
-        (value) => runApp(const ScalesoftApp()),
-      );
-    },
-    (error, stackTrace) {
-      getIt<ReportService>()
-          .trackEvent(severity: Severity.error, message: stackTrace.toString());
-    },
-  );
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]).then((value) => runApp(const ScalesoftApp()));
 
   // Register to receive BackgroundFetch events after app is terminated.
   // Requires {stopOnTerminate: false, enableHeadless: true}
@@ -148,7 +136,7 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
   }
 
   Future<void> init() async {
-    await configureDependencies();
+    await configureDependencies(context);
 
     getIt<Dio>(instanceName: Constants.privateDioName)
         .interceptors

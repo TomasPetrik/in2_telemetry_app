@@ -9,7 +9,6 @@ import 'package:scalesoft_app/api/model/measurement/composed_int_value.dart';
 import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/api/model/measurement/source_device_info.dart';
-import 'package:scalesoft_app/api/model/report/report.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_bloc_event.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_state.dart';
 import 'package:scalesoft_app/model/device_info.dart';
@@ -17,9 +16,7 @@ import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/paired_devices_db_provider.dart';
-import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/utils/constants.dart';
-import 'package:scalesoft_app/utils/events_constants.dart';
 import 'package:scalesoft_app/utils/helpers/bt_connection_helper.dart';
 import 'package:wakelock/wakelock.dart';
 
@@ -28,7 +25,6 @@ class OmronConnectionBloc
     extends Bloc<OmronConnectionBlocEvent, OmronConnectionState> {
   final AccountDbProvider _accountDbProvider;
   final PairedDevicesDbProvider _pairedDevicesDbProvider;
-  final ReportService _reportsService;
   final FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
 
   Device? _device;
@@ -42,7 +38,6 @@ class OmronConnectionBloc
   OmronConnectionBloc(
     this._accountDbProvider,
     this._pairedDevicesDbProvider,
-    this._reportsService,
   ) : super(const OmronConnectionState.init()) {
     on<OmronConnectionBlocEvent>((event, emit) async {
       Future<DeviceInfo?> verifyDevice(
@@ -58,11 +53,6 @@ class OmronConnectionBloc
         deviceInfo?.batteryInfo = batteryInfo;
 
         if (deviceInfo != null) {
-          _reportsService.trackEvent(
-            userAccount: _userAccount,
-            severity: Severity.info,
-            message: EventsConstants.eventDeviceVerified,
-          );
           emit(
             OmronConnectionState.verified(
               device: blDevice,
@@ -71,11 +61,6 @@ class OmronConnectionBloc
           );
           return deviceInfo;
         } else {
-          _reportsService.trackEvent(
-            userAccount: _userAccount,
-            severity: Severity.error,
-            message: EventsConstants.eventDeviceVerificationFailed,
-          );
           emit(
             OmronConnectionState.notVerified(
               measurementResult: HwMeasurementResult(
@@ -95,18 +80,8 @@ class OmronConnectionBloc
         DeviceInfo deviceInfo,
       ) async {
         if (reqModelPairing) {
-          _reportsService.trackEvent(
-            userAccount: _userAccount,
-            severity: Severity.info,
-            message: EventsConstants.eventDevicePairing,
-          );
           emit(const OmronConnectionState.pairing());
         } else {
-          _reportsService.trackEvent(
-            userAccount: _userAccount,
-            severity: Severity.info,
-            message: EventsConstants.eventDeviceSyncing,
-          );
           emit(const OmronConnectionState.syncing());
         }
 
@@ -157,20 +132,6 @@ class OmronConnectionBloc
               deviceInfo: deviceInfo,
             ),
           );
-
-          if (reqModelPairing) {
-            _reportsService.trackEvent(
-              userAccount: _userAccount,
-              severity: Severity.info,
-              message: EventsConstants.eventDevicePaired,
-            );
-          } else {
-            _reportsService.trackEvent(
-              userAccount: _userAccount,
-              severity: Severity.info,
-              message: EventsConstants.eventDeviceSynced,
-            );
-          }
         }
 
         if (reqModelPairing) {
@@ -227,12 +188,6 @@ class OmronConnectionBloc
           }
         }
 
-        _reportsService.trackEvent(
-          userAccount: _userAccount,
-          severity: Severity.info,
-          message: EventsConstants.eventDeviceConnected,
-        );
-
         add(OmronConnectionBlocEvent.verifyDevice(device, advertisementData));
       }
 
@@ -247,11 +202,6 @@ class OmronConnectionBloc
 
           if (btState == BluetoothState.off) {
             emit(const OmronConnectionState.disabledBt());
-            _reportsService.trackEvent(
-              userAccount: _userAccount,
-              severity: Severity.warning,
-              message: EventsConstants.eventBluetoothDisabled,
-            );
           } else {
             emit(const OmronConnectionState.noBtPermissions());
           }
@@ -259,11 +209,6 @@ class OmronConnectionBloc
           final hasPermissionsGranted =
               await BtConnectionHelper.hasPermissionsGranted();
           if (!hasPermissionsGranted) {
-            _reportsService.trackEvent(
-              userAccount: _userAccount,
-              severity: Severity.warning,
-              message: EventsConstants.eventNoBTPermissionsGranted,
-            );
             emit(const OmronConnectionState.noBtPermissions());
           }
 
@@ -273,18 +218,8 @@ class OmronConnectionBloc
           if (newBtState == BluetoothState.on) {
             add(const OmronConnectionBlocEvent.checkDeviceAvailability());
           } else if (newBtState == BluetoothState.off) {
-            _reportsService.trackEvent(
-              userAccount: _userAccount,
-              severity: Severity.warning,
-              message: EventsConstants.eventBluetoothDisabled,
-            );
             emit(const OmronConnectionState.disabledBt());
           } else {
-            _reportsService.trackEvent(
-              userAccount: _userAccount,
-              severity: Severity.warning,
-              message: EventsConstants.eventNoBTPermissionsGranted,
-            );
             emit(const OmronConnectionState.noBtPermissions());
           }
         },
@@ -292,11 +227,6 @@ class OmronConnectionBloc
           add(const OmronConnectionBlocEvent.searchDevice());
         },
         searchDevice: () async {
-          _reportsService.trackEvent(
-            userAccount: _userAccount,
-            severity: Severity.info,
-            message: EventsConstants.eventDeviceSearchingStart,
-          );
           emit(const OmronConnectionState.searching());
           final foundDevice = await BtConnectionHelper.searchDevice(
             serviceUuid: bloodPressureServiceUuid,
@@ -318,11 +248,6 @@ class OmronConnectionBloc
           }
         },
         stopSearch: () async {
-          _reportsService.trackEvent(
-            userAccount: _userAccount,
-            severity: Severity.info,
-            message: EventsConstants.eventDeviceSearchingStop,
-          );
           await Wakelock.disable();
           _flutterBlue.stopScan();
         },
@@ -351,22 +276,12 @@ class OmronConnectionBloc
               device: _device!,
             );
             if (foundDevice != null) {
-              _reportsService.trackEvent(
-                userAccount: _userAccount,
-                severity: Severity.info,
-                message: EventsConstants.eventDeviceFound,
-              );
               await foundDevice.device.connect(autoConnect: false);
               await measureAndSync(foundDevice.device, deviceInfo);
             }
           }
         },
         foundDevice: (device, advertisementData) async {
-          _reportsService.trackEvent(
-            userAccount: _userAccount,
-            severity: Severity.info,
-            message: EventsConstants.eventDeviceFound,
-          );
           emit(OmronConnectionState.found(device: device));
         },
       );

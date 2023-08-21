@@ -76,23 +76,18 @@ class ReportService {
     return instance;
   }
 
-  /* 
-    1. Some events can be related to specific userAccount (or userId) directy,
-    2. Other not user-related events will be automatically added to most recent active user in future
-  */
-  Future<void> trackEvent({
-    UserAccount? userAccount,
-    String? userId,
-    required Severity severity,
-    required String message,
-  }) async {
-    String? patientMuid = userAccount?.user.muid ?? userId;
+  Future<void> trackEvent(
+    UserAccount userAccount,
+    Severity severity,
+    String message,
+  ) async {
     final report = Report(
       eventTime: DateTime.now(),
       appVersion: _appVersion,
+      phoneModel: _phoneModel,
       osVersion: _osVersion,
       severity: severity,
-      patientMuid: patientMuid,
+      patientMuid: userAccount.user.muid,
       message: message,
     );
     _reportsDbProvider.save(report);
@@ -117,11 +112,8 @@ class ReportService {
           continue;
         }
 
-        final reportRequest = ReportRequest(
-          appIdentifier: _appIdentifier,
-          phoneModel: _phoneModel,
-          logs: userReports,
-        );
+        final reportRequest =
+            ReportRequest(appIdentifier: _appIdentifier, logs: userReports);
 
         await _accountRepository.sendUserAppReports(
           userAccount: userAccount,

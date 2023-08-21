@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:oauth2/oauth2.dart';
 import 'package:scalesoft_app/api/model/auth_token.dart';
-import 'package:scalesoft_app/api/model/report/report.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
@@ -16,16 +15,13 @@ import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/repositories/account_repository.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/auth_service.dart';
-import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/utils/constants.dart';
-import 'package:scalesoft_app/utils/events_constants.dart';
 
 @singleton
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthService _authService;
-  final ReportService _reportsService;
   final AccountRepository _accountRepository;
   final AccountDbProvider _accountDbProvider;
   final PendingResultsDbProvider _pendingResultsDbProvider;
@@ -36,7 +32,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   AuthBloc(
     this._authService,
-    this._reportsService,
     this._accountRepository,
     this._session,
     this._accountDbProvider,
@@ -56,9 +51,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Authenticate event,
     Emitter<AuthState> emit,
   ) async {
-    try {
-      emit(const AuthState.authenticating());
+    emit(const AuthState.authenticating());
 
+    try {
       _grant = _authService.getAuthGrant(
         Config.value.clientId,
         Config.value.clientSecret,
@@ -68,10 +63,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       _session.hospital = event.hospital;
 
-      _reportsService.trackEvent(
-        severity: Severity.info,
-        message: EventsConstants.eventUserOpenAuthReqInBrowser,
-      );
       emit(
         AuthState.openAuthRequest(
           authUri: _grant!.getAuthorizationUrl(
@@ -82,10 +73,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       );
     } on Exception {
-      _reportsService.trackEvent(
-        severity: Severity.error,
-        message: EventsConstants.eventUserUnauthenticated,
-      );
       emit(const AuthState.unauthenticated());
     }
   }
@@ -95,10 +82,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     try {
-      _reportsService.trackEvent(
-        severity: Severity.info,
-        message: EventsConstants.eventUserAuthenticating,
-      );
       emit(const AuthState.handlingResponse());
 
       final tokenResponse = await _grant!.handleAuthorizationResponse(
@@ -118,10 +101,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         tokenResponse.credentials.expiration!,
       );
 
-      _reportsService.trackEvent(
-        severity: Severity.info,
-        message: EventsConstants.eventUserAuthenticated,
-      );
       emit(AuthState.authenticated(credentials: tokenResponse.credentials));
     } on Exception {
       emit(const AuthState.unauthenticated());
@@ -133,10 +112,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     try {
-      _reportsService.trackEvent(
-        severity: Severity.info,
-        message: EventsConstants.eventUserLoadingInfo,
-      );
       final userInfo = await _accountRepository.loadUserInfo(
         authToken: _session.token!,
         apiUrl: _session.hospital!.authData.baseUrl,
@@ -174,12 +149,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             .toList(),
       );
 
-      _reportsService.trackEvent(
-        userAccount: userAccount,
-        severity: Severity.info,
-        message: EventsConstants.eventUserLoaded,
-      );
-
       await _syncService.loadDeviceModels(userAccount);
       await _syncService.loadWhenValues(userAccount);
       await _syncService.loadTimeSettings(userAccount);
@@ -191,10 +160,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthState.userVerified(userAccount: userAccount));
     } on Exception {
       _session.token = null;
-      _reportsService.trackEvent(
-        severity: Severity.error,
-        message: EventsConstants.eventUserUnauthenticated,
-      );
       emit(const AuthState.unauthenticated());
     }
   }
@@ -228,11 +193,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } else {
         emit(AuthState.inactiveUserRemoved(userAccount: event.userAccount));
       }
-      _reportsService.trackEvent(
-        userAccount: event.userAccount,
-        severity: Severity.info,
-        message: EventsConstants.eventUserRemoved,
-      );
     } on Exception catch (e) {
       emit(AuthState.logoutFailed(error: e));
     }
@@ -242,10 +202,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     CancelAuth event,
     Emitter<AuthState> emit,
   ) async {
-    _reportsService.trackEvent(
-      severity: Severity.warning,
-      message: EventsConstants.eventUserAuthCancelled,
-    );
     emit(const AuthState.cancelled());
   }
 
@@ -253,10 +209,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     ErrorLoadDataEvent event,
     Emitter<AuthState> emit,
   ) async {
-    _reportsService.trackEvent(
-      severity: Severity.error,
-      message: EventsConstants.eventUserErrorDataLoaded,
-    );
     emit(const AuthState.errorLoadData());
   }
 }

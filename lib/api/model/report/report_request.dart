@@ -12,9 +12,8 @@ class ReportRequest with _$ReportRequest {
 
   @HiveType(typeId: 62, adapterName: 'ReportRequestAdapter')
   const factory ReportRequest({
-    @HiveField(0) required String appIdentifier,
-    @HiveField(1) required String phoneModel,
-    @HiveField(2) required List<Report> logs,
+    @HiveField(0) String? appIdentifier,
+    @HiveField(1) List<Report>? logs,
   }) = _ReportRequest;
 
   factory ReportRequest.fromJson(Map<String, dynamic> json) =>
