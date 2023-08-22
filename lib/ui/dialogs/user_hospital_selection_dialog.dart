@@ -61,7 +61,7 @@ class UserHospitalSelectionDialog extends StatelessWidget {
                       Icons.add,
                       color: Theme.of(context).colorScheme.primary,
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

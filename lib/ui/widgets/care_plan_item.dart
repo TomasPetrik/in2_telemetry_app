@@ -96,7 +96,7 @@ class CarePlanItem extends StatelessWidget {
                       color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
-                ]
+                ],
               ],
             ),
             Gaps.gap16,

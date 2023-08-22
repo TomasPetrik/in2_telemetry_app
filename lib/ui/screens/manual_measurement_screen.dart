@@ -159,7 +159,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                               'assets/icons/icon_clock.svg',
                               color: Theme.of(context).colorScheme.primary,
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),

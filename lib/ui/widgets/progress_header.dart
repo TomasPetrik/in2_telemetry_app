@@ -72,8 +72,7 @@ class ProgressHeader extends StatelessWidget {
                         openWhenSelector?.call();
                       },
                       child: Text(
-                        localization
-                            .common_measurement_times(whenPeriod!.name),
+                        localization.common_measurement_times(whenPeriod!.name),
                         style: ScaleTextStyles.text.apply(
                           color: Theme.of(context).primaryColor,
                         ),
@@ -91,7 +90,7 @@ class ProgressHeader extends StatelessWidget {
                       label: progressItems.first.label,
                     );
                   },
-                )
+                ),
               } else
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,

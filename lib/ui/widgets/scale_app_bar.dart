@@ -125,7 +125,7 @@ class ScaleAppBar extends StatelessWidget {
                         ),
                       ],
                     ),
-                  ]
+                  ],
                 ],
               ),
             ),

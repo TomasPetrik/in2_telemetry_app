@@ -182,7 +182,7 @@ class MeasurementForm extends StatelessWidget {
                     ],
                   ),
                 ),
-              ]
+              ],
             ],
           ),
         ],

@@ -103,7 +103,7 @@ class _WarningItem extends WarningItem {
                           isSelected: buttonType == SmallButtonType.regular,
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),

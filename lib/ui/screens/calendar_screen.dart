@@ -281,7 +281,7 @@ class _CalendarFooter extends StatelessWidget {
                                 color:
                                     Theme.of(context).colorScheme.onSecondary,
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),

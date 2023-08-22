@@ -33,7 +33,7 @@ class ConnectionLevel extends StatelessWidget {
               color: Theme.of(context).colorScheme.onPrimary,
             ),
           ),
-        )
+        ),
       ],
     );
   }

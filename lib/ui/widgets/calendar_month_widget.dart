@@ -185,7 +185,7 @@ class CalendarMonthWidget extends StatelessWidget {
                                             CalendarDayPlanned(
                                               plannedMeasurements:
                                                   day.plannedMeasurements,
-                                            )
+                                            ),
                                         ],
                                       ),
                               );
@@ -196,7 +196,7 @@ class CalendarMonthWidget extends StatelessWidget {
                             height: 0.5,
                             color:
                                 Theme.of(context).colorScheme.onSurfaceVariant,
-                          )
+                          ),
                         ],
                       );
                     },

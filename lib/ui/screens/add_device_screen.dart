@@ -43,7 +43,7 @@ class AddDeviceScreen extends StatelessWidget {
                               'measurementType': measurementType.name,
                               'modelName': '${supportedDevice.modelName}',
                               'deviceManufacturer':
-                                  '${supportedDevice.deviceManufacturer}'
+                                  '${supportedDevice.deviceManufacturer}',
                             },
                           );
                         },
@@ -55,7 +55,7 @@ class AddDeviceScreen extends StatelessWidget {
                         ),
                       ),
                     )
-                    .toList()
+                    .toList(),
               ],
             ),
           ),

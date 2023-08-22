@@ -41,7 +41,7 @@ class Constants {
       ['0', '0'],
       [
         FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(3)
+        LengthLimitingTextInputFormatter(3),
       ],
     ),
     MeasurementType.temperature: MeasurementConfig(
@@ -64,7 +64,7 @@ class Constants {
       ['0'],
       [
         FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(3)
+        LengthLimitingTextInputFormatter(3),
       ],
     ),
     MeasurementType.oxygenSaturation: MeasurementConfig(
@@ -87,7 +87,7 @@ class Constants {
       ['0'],
       [
         FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(3)
+        LengthLimitingTextInputFormatter(3),
       ],
     ),
     MeasurementType.steps: MeasurementConfig(
@@ -100,7 +100,7 @@ class Constants {
       ['0'],
       [
         FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(10)
+        LengthLimitingTextInputFormatter(10),
       ],
     ),
     MeasurementType.globalPosition: MeasurementConfig(
@@ -126,7 +126,7 @@ class Constants {
       ['0'],
       [
         FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(2)
+        LengthLimitingTextInputFormatter(2),
       ],
     ),
   };
@@ -134,7 +134,7 @@ class Constants {
   /* Supported measurement types */
 
   static const Set<MeasurementType> supportedMeasurementTypes = {
-    MeasurementType.bloodPressure
+    MeasurementType.bloodPressure,
   };
 
   /* EGoverment authorization */
@@ -188,6 +188,6 @@ class Constants {
     9: 'sept',
     10: 'oct',
     11: 'nov',
-    12: 'dec'
+    12: 'dec',
   };
 }

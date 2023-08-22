@@ -91,7 +91,7 @@ class _WhenCodeSetState extends State<WhenCodeSet> with BottomSheetMixin {
                   'assets/icons/icon_right.svg',
                   color: Theme.of(context).colorScheme.primary,
                 ),
-              )
+              ),
             ],
           ),
         ),

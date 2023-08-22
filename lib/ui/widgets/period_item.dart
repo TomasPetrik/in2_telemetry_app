@@ -64,7 +64,7 @@ class PlannedPeriodItem extends StatelessWidget {
                 style: ScaleTextStyles.label.apply(
                   color: Theme.of(context).colorScheme.onSecondary,
                 ),
-              )
+              ),
             ],
           ),
           const Spacer(),

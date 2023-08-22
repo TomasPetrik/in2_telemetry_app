@@ -24,7 +24,7 @@ class ResultsHelper {
         carePlans: carePlans,
         whenPeriod: ResultsWhenPeriod.today,
         offlineResults: todayAndYesterdayResults,
-      )
+      ),
     };
   }
 

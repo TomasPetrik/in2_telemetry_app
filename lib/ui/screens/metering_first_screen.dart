@@ -194,7 +194,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                                         'modelName':
                                             '${supportedDevice.modelName}',
                                         'deviceManufacturer':
-                                            '${supportedDevice.deviceManufacturer}'
+                                            '${supportedDevice.deviceManufacturer}',
                                       },
                                     );
                                   },
@@ -287,7 +287,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                                 params: {
                                   'userId': widget.userId,
                                   'measurementType':
-                                      selectedMeasurementType.name
+                                      selectedMeasurementType.name,
                                 },
                               );
                             },

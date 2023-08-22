@@ -39,7 +39,7 @@ class EvaluationPlanHelper {
         [],
         (prevDateTimes, plMeasurement) => [
           ...prevDateTimes,
-          ...plMeasurement.fulfillmentEvaluationItem!.actualMeasurementTimes
+          ...plMeasurement.fulfillmentEvaluationItem!.actualMeasurementTimes,
         ],
       ).toSet();
       offlineResultsCount = allLegitDateTimes

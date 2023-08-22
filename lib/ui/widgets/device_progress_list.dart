@@ -47,7 +47,7 @@ class DeviceProgressList extends StatelessWidget {
           'assets/icons/icon_arrow_spin.svg',
           localization.find_device_screen_step5_p,
           3,
-        )
+        ),
       ];
     } else {
       return [
@@ -56,7 +56,7 @@ class DeviceProgressList extends StatelessWidget {
             'assets/icons/icon_circle_information.svg',
             localization.find_device_screen_step1(device.visibleName!),
             1,
-          )
+          ),
         },
         ConnectionState(
           'assets/icons/icon_power_off.svg',
@@ -71,7 +71,7 @@ class DeviceProgressList extends StatelessWidget {
             'assets/icons/icon_wave_pulse.svg',
             localization.find_device_screen_step3,
             1,
-          )
+          ),
         },
         ConnectionState(
           'assets/icons/icon_arrow_spin.svg',

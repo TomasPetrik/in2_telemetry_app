@@ -71,7 +71,7 @@ class DeviceItem extends StatelessWidget {
               color: Theme.of(context).colorScheme.error,
             ),
           ),
-        ]
+        ],
       ],
     );
   }

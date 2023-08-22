@@ -65,8 +65,7 @@ class _RegisterDeviceSearchScreenState
                     },
                   ),
                   noBtPermissions: () => WarningItem(
-                    title:
-                        localization.find_device_screen_not_granted_bt_title,
+                    title: localization.find_device_screen_not_granted_bt_title,
                     description:
                         localization.find_device_screen_not_granted_bt_desc,
                     buttonLabel: localization
@@ -170,8 +169,8 @@ class _RegisterDeviceSearchScreenState
                           },
                           childCount: btDevices!.length,
                         ),
-                      )
-                    }
+                      ),
+                    },
                   ],
                 );
               },

@@ -3,7 +3,7 @@ buildscript {
     ext.gradle_version = '7.4.2'
     ext {
         compileSdkVersion = 33
-        targetSdkVersion = 31
+        targetSdkVersion = 33
         appCompatVersion = "1.4.2"
     }
     repositories {

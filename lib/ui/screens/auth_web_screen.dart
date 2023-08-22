@@ -133,7 +133,7 @@ class AuthWebScreen extends StatelessWidget {
                     onCancelled.call();
                   },
                 ),
-              )
+              ),
             ],
           ),
         ),
