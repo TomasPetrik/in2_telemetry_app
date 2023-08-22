@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scalesoft_app/cubit/loader/loader_cubit.dart';
-import 'package:scalesoft_app/cubit/loader/loader_state.dart';
+import 'package:scalesoft_app/cubit/auth_web/auth_web_cubit.dart';
+import 'package:scalesoft_app/cubit/auth_web/auth_web_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/widgets/loading_indicator.dart';
 import 'package:scalesoft_app/utils/constants.dart';
