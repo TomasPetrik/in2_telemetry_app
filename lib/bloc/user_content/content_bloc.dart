@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
+import 'package:scalesoft_app/api/model/report/report.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
@@ -19,8 +20,6 @@ import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/utils/constants.dart';
-import 'package:scalesoft_app/utils/extensions/theme_mode_extensions.dart';
-import 'package:scalesoft_app/utils/helpers/appearance_helper.dart';
 import 'package:scalesoft_app/utils/events_constants.dart';
 
 @singleton
@@ -29,8 +28,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
   final SessionDbProvider _sessionDbProvider;
   final Session _session;
   final CarePlanBloc _carePlanBloc;
-  final LocationService _locationService;
-  final ReportService _reportService;
+  final ReportService _reportsService;
   Timer? _watchDogTimer;
   GoRouter? goRouter;
 
@@ -39,8 +37,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     this._sessionDbProvider,
     this._session,
     this._carePlanBloc,
-    this._locationService,
-    this._reportService,
+    this._reportsService,
   ) : super(const ContentState.initial()) {
     on<CheckLastLoggedUserContentEvent>(_checkLastLoggedUserContentEvent);
     on<OnUserAddedContentEvent>(_onUserAddedContentEvent);
@@ -54,24 +51,12 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     on<StopWatchDog>(_onStopWatchDog);
   }
 
-  Future<void> _checkAutoAppearanceMode() async {
-    final appSettings = _appSettingsDbProvider.read();
-    if (appSettings == null) return;
-    if (appSettings.autosetAppearance == true) {
-      final newThemeMode = await _locationService.getThemeModeByDayLight();
-      if (appSettings.themeModeLocal != newThemeMode.toLocal()) {
-        await _appSettingsDbProvider.write(
-          appSettings.copyWith(themeModeLocal: newThemeMode.toLocal()),
-        );
-
-        AppearanceHelper.setSystemUIOverlayStyle(ThemeMode.light);
-        final originalLocation = goRouter!.location;
-        add(OnDaylightAppearanceChangedContentEvent(originalLocation));
-      }
-    }
-  }
-
-  void _notifyEssentials() {
+  void _autoRefreshDashboard() {
+    _reportsService.trackEvent(
+      userAccount: _session.isMultiUser == false ? _session.userAccount : null,
+      severity: Severity.info,
+      message: EventsConstants.eventAutoRefreshDashboard,
+    );
     //1. Notify dashboard to refresh screen
     _carePlanBloc.add(const RefreshStateEvent());
   }
@@ -81,13 +66,13 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     final offsetSec = 60 - DateTime.now().second + 1;
     //debugPrint('watchdog will start after $offsetSec seconds');
     await Future.delayed(Duration(seconds: offsetSec));
-    _notifyEssentials();
+    _autoRefreshDashboard();
 
     //debugPrint('watchdog started on ${DateTime.now().toIso8601String()}}');
     _watchDogTimer?.cancel();
     _watchDogTimer = Timer.periodic(const Duration(seconds: 60), (Timer timer) {
       debugPrint('notifing essentials');
-      _notifyEssentials();
+      _autoRefreshDashboard();
     });
   }
 
@@ -98,11 +83,16 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     goRouter = event.goRouter;
     initBackgroundFetch();
 
-    await _reportService.removeOldLogs();
+    await _reportsService.removeOldLogs();
 
     final userAccount = _accountDbProvider.getLast();
     final isMultiUser = _sessionDbProvider.isMultiUser();
     if (userAccount == null) {
+      _reportsService.trackEvent(
+        userAccount: isMultiUser == false ? _session.userAccount : null,
+        severity: Severity.info,
+        message: EventsConstants.eventNoLastUserDetected,
+      );
       emit(const ContentState.unauthenticated());
 
       BackgroundFetch.stop().then((int status) {
@@ -111,6 +101,12 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     } else {
       _session.userAccount = userAccount;
       _session.isMultiUser = isMultiUser;
+
+      _reportsService.trackEvent(
+        userAccount: userAccount,
+        severity: Severity.info,
+        message: EventsConstants.eventUserContentDefaultAutoSet,
+      );
 
       //Do all sync always when start app
       getIt<SyncBloc>().add(const SyncEvent.syncAll());
@@ -152,6 +148,12 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
 
     _accountDbProvider.save(parentAccount);
 
+    _reportsService.trackEvent(
+      userAccount: parentAccount,
+      severity: Severity.info,
+      message: EventsConstants.eventUserSwitchedToActive,
+    );
+
     //Try to re-load care plans when switch user
     getIt<SyncBloc>().add(const SyncEvent.syncAll());
 
@@ -162,6 +164,11 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     SwitchMultiUserContentEvent event,
     Emitter<ContentState> emit,
   ) async {
+    _reportsService.trackEvent(
+      userAccount: _session.isMultiUser == false ? _session.userAccount : null,
+      severity: Severity.info,
+      message: EventsConstants.eventSwitchToMultiuser,
+    );
     _session.isMultiUser = true;
     _sessionDbProvider.setIsMultiUser(true);
     emit(ContentState.activeMode(UniqueKey()));
@@ -185,6 +192,12 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
       debugPrint('[BackgroundFetch] start FAILURE: $e');
     });
 
+    _reportsService.trackEvent(
+      userAccount: event.userAccount,
+      severity: Severity.info,
+      message: EventsConstants.eventUserAdded,
+    );
+
     emit(ContentState.onUserAdded(event.userAccount));
   }
 
@@ -196,6 +209,11 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
       debugPrint('[BackgroundFetch] stop success: $status');
     });
 
+    _reportsService.trackEvent(
+      userAccount: _session.isMultiUser == false ? _session.userAccount : null,
+      severity: Severity.info,
+      message: EventsConstants.eventNoUserContent,
+    );
     _session.isMultiUser = false;
     _sessionDbProvider.setIsMultiUser(false);
     emit(const ContentState.unauthenticated());
@@ -205,6 +223,11 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     OnAppearanceChangedContentEvent event,
     Emitter<ContentState> emit,
   ) async {
+    _reportsService.trackEvent(
+      userAccount: _session.isMultiUser == false ? _session.userAccount : null,
+      severity: Severity.info,
+      message: EventsConstants.eventAppearanceChanged,
+    );
     emit(ContentState.onAppearanceChanged(event.themeMode));
   }
 
@@ -212,6 +235,11 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     OnDaylightAppearanceChangedContentEvent event,
     Emitter<ContentState> emit,
   ) async {
+    _reportsService.trackEvent(
+      userAccount: _session.isMultiUser == false ? _session.userAccount : null,
+      severity: Severity.info,
+      message: EventsConstants.eventDaylightAppearanceChanged,
+    );
     emit(ContentState.onDaylightAppearanceChanged(event.originalLocation));
   }
 

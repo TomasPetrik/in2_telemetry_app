@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:scalesoft_app/cubit/auth_web/auth_web_cubit.dart';
-import 'package:scalesoft_app/cubit/auth_web/auth_web_state.dart';
+import 'package:scalesoft_app/api/model/report/report.dart';
+import 'package:scalesoft_app/cubit/loader/loader_cubit.dart';
+import 'package:scalesoft_app/cubit/loader/loader_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/ui/widgets/loading_indicator.dart';
 import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/utils/events_constants.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class AuthWebScreen extends StatelessWidget {
@@ -39,11 +42,26 @@ class AuthWebScreen extends StatelessWidget {
               onProgress: (int progress) {
                 // Update loading bar.
               },
-              onPageStarted: (String url) {},
+              onPageStarted: (String url) {
+                getIt<ReportService>().trackEvent(
+                  severity: Severity.info,
+                  message: EventsConstants.eventOAuthWebPageStarted,
+                );
+              },
               onPageFinished: (String url) {
+                getIt<ReportService>().trackEvent(
+                  severity: Severity.info,
+                  message: EventsConstants.eventOAuthWebPageLoaded,
+                );
                 cubit.loaded();
               },
               onWebResourceError: (WebResourceError error) {
+                getIt<ReportService>().trackEvent(
+                  severity: Severity.error,
+                  message:
+                      '${EventsConstants.eventOAuthWebErr}: ${error.description}',
+                );
+
                 if (error.errorType == WebResourceErrorType.timeout ||
                     error.errorType == WebResourceErrorType.unknown) {
                   onLoadingError();
@@ -66,6 +84,10 @@ class AuthWebScreen extends StatelessWidget {
                       onCancelled();
                     }
                   } else if (scheme == EGoverement.scheme) {
+                    getIt<ReportService>().trackEvent(
+                      severity: Severity.info,
+                      message: EventsConstants.eventOAuthOpenEGoverment,
+                    );
                     openEGoverment.call(authRespUri);
                   }
                 }
@@ -104,6 +126,10 @@ class AuthWebScreen extends StatelessWidget {
                 child: IconButton(
                   icon: const Icon(Icons.close_rounded),
                   onPressed: () {
+                    getIt<ReportService>().trackEvent(
+                      severity: Severity.info,
+                      message: EventsConstants.eventOAuthWebPageCancelled,
+                    );
                     onCancelled.call();
                   },
                 ),

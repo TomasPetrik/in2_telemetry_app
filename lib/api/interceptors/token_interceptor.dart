@@ -59,7 +59,11 @@ class TokenInterceptor extends Interceptor {
           .split(' ')[1];
       final userAccount = accountDbProvider.getByToken(originalToken);
       if (userAccount != null) {
-        reportService.trackEvent(userAccount, Severity.error, err.error.toString());
+        reportService.trackEvent(
+          userAccount: userAccount,
+          severity: Severity.error,
+          message: err.response?.toString() ?? err.error.toString(),
+        );
       }
     }
 

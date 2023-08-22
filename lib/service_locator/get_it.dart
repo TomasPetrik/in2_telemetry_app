@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/localization/generated/l10n.dart';
@@ -12,7 +12,7 @@ final I10n localization = getIt<I10n>();
   preferRelativeImports: true, // default
   asExtension: false, // default
 )
-Future<GetIt> configureDependencies(BuildContext context) async {
+Future<GetIt> configureDependencies() async {
   getIt.registerLazySingleton(I10n.new);
   return await init(getIt);
 }

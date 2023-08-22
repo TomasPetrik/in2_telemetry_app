@@ -13,11 +13,10 @@ class Report with _$Report {
   const factory Report({
     @HiveField(0) DateTime? eventTime,
     @HiveField(1) String? appVersion,
-    @HiveField(2) String? phoneModel,
-    @HiveField(3) String? osVersion,
-    @HiveField(4) Severity? severity,
-    @HiveField(5) String? message,
-    @JsonKey(includeToJson: false) @HiveField(6) String? patientMuid,
+    @HiveField(2) String? osVersion,
+    @HiveField(3) Severity? severity,
+    @HiveField(4) String? message,
+    @JsonKey(includeToJson: false) @HiveField(5) String? patientMuid,
   }) = _Report;
 
   factory Report.fromJson(Map<String, dynamic> json) => _$ReportFromJson(json);

@@ -43,6 +43,19 @@ class ReportsDbProvider extends BoxProvider<Report> {
       '${report.eventTime!.millisecondsSinceEpoch}',
       report,
     );
+
+    final patientMuid = report.patientMuid;
+    if (patientMuid != null) {
+      //also assign previously unassigned events to hospital enviroment of current user
+      final unassignedReports =
+          box.values.where((report) => report.patientMuid == null);
+      for (final report in unassignedReports) {
+        await box.put(
+          '${report.eventTime!.millisecondsSinceEpoch}',
+          report.copyWith(patientMuid: patientMuid),
+        );
+      }
+    }
     return report;
   }
 

@@ -45,7 +45,7 @@ class _RegisterDeviceSearchScreenState
           children: [
             BlocBuilder<RegisterDeviceBloc, RegisterDeviceBlocState>(
               bloc: registerDeviceBloc
-                ..add(RegisterDeviceBlocEvent.init(context)),
+                ..add(RegisterDeviceBlocEvent.init(widget.userId, context)),
               builder: (context, state) {
                 final header = state.whenOrNull(
                   disabledBt: () => WarningItem(
