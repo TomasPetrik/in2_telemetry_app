@@ -202,19 +202,22 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                                     padding: Paddings.top24,
                                     child: DeviceItem(
                                       device: supportedDevice,
-                                      onRemove: () async {
-                                        final confirmed =
-                                            await showDeviceRemovalConfirmation(
-                                          context: context,
-                                        );
+                                      onRemove: supportedDevice.wasPaired ==
+                                              true
+                                          ? () async {
+                                              final confirmed =
+                                                  await showDeviceRemovalConfirmation(
+                                                context: context,
+                                              );
 
-                                        if (confirmed == true) {
-                                          devManagementCubit.removeDevice(
-                                            supportedDevice,
-                                            selectedMeasurementType,
-                                          );
-                                        }
-                                      },
+                                              if (confirmed == true) {
+                                                devManagementCubit.removeDevice(
+                                                  supportedDevice,
+                                                  selectedMeasurementType,
+                                                );
+                                              }
+                                            }
+                                          : null,
                                     ),
                                   ),
                                 ),
