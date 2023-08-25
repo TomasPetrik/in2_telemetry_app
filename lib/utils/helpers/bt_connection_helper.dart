@@ -163,7 +163,7 @@ class BtConnectionHelper {
         }
       }
 
-      if (FlutterBluePlus.isScanningNow == false) {
+      if (syncMode = false || FlutterBluePlus.isScanningNow == false) {
         return null;
       }
     }
@@ -216,6 +216,14 @@ class BtConnectionHelper {
       List<Device> availableDevices = [];
 
       for (final scanResult in matchedResults) {
+        availableDevices.add(
+          convertToDevice(
+            scanResult.advertisementData.localName,
+            scanResult.device,
+          ),
+        );
+
+        /*
         final devState = await scanResult.device.connectionState.first;
         if (devState == BluetoothConnectionState.connected) {
           availableDevices.add(
@@ -241,6 +249,7 @@ class BtConnectionHelper {
             debugPrint('device was disconnected yet');
           }
         }
+        */
       }
 
       debugPrint('available devices ${matchedResults.length}');
