@@ -336,6 +336,8 @@
     "metering_screen_device_removal_title": "Odstranit zařízení",
     "metering_screen_device_removal_button_confirm": "Odstranit zařízení",
     "metering_screen_device_removal_message": "Zařízení bude odstraněno. Pro opětovné používání ho budete muset znovu spárovat s aplikací.",
+    "metering_screen_lended_devices": "Zapůjčené zařízení",
+    "metering_screen_personal_devices": "Vlastní zařízení",
     "add_device_screen_title": "Přidat zařízení",
     "manual_measurement_screen_title": "Vlastní zápis hodnot",
     "manual_measurement_screen_type": "Typ",
@@ -541,8 +543,20 @@
     },
     "chart_placeholder_error_loading_data": "Zde je něco v nepořádku. Zkuste akci opakovat později.",
     "chart_placeholder_no_data_in_month": "Historie měření neobsahuje žádná data.",
-    "register_device_search_screen_title": "Registrovat zařízení",
-    "register_device_search_screen_desc": "Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.",
+    "device_search_screen_purpose_title": "{devicePurposeName, select, addDevice{Přidat zařízení} registerDevice{Registrovat zařízení} other{Jiný}}",
+    "@device_search_screen_purpose_title": {
+        "description": "Device purpose names",
+        "placeholders": {
+            "devicePurposeName": {}
+        }
+    },
+    "device_search_screen_purpose_desc": "{devicePurposeName, select, addDevice{Pro přidání zařízení je potřeba mít Bluetooth v režimu párovaní jenom zařízení, které chcete přidať.} registerDevice{Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.} other{Jiný}}",
+    "@device_search_screen_purpose_desc": {
+        "description": "Device purpose description",
+        "placeholders": {
+            "devicePurposeName": {}
+        }
+    },
     "register_device_detail_screen_title": "Zařízení k registraci",
     "register_device_detail_screen_device": "Zařízení",
     "register_device_detail_screen_assigned_id": "Označení",

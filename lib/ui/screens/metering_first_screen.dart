@@ -4,14 +4,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/cubit/device_management/device_management_cubit.dart';
 import 'package:scalesoft_app/cubit/device_management/device_management_state.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/ui/routers/routes/add_device_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/device_search_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/manual_measurement_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
+import 'package:scalesoft_app/ui/screens/device_search_screen.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -77,6 +79,19 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
     return title;
   }
 
+  void goToMetering(Device device, MeasurementType measurementType) {
+    GoRouter.of(context).pushNamed(
+      OmronFlowRoute.name,
+      queryParams: {
+        'userId': widget.userId,
+        'measurementType': measurementType.name,
+        'deviceId': device.deviceIdentifier!,
+        'modelName': '${device.modelName}',
+        'deviceManufacturer': '${device.deviceManufacturer}',
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -106,7 +121,8 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                     final supportDeviceMeasurement =
                         state.supportDeviceMeasurement;
 
-                    final suitableDevices = state.devices ?? [];
+                    final assignedDevices = state.assignedDevices ?? [];
+                    final personalDevices = state.personalDevices ?? [];
 
                     if (selectedMeasurementType == null ||
                         supportDeviceMeasurement == null) {
@@ -178,52 +194,99 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                               ),
                             ),
                           ),
-                        ] else if (suitableDevices.isNotEmpty == true)
-                          ...suitableDevices
-                              .map(
-                                (supportedDevice) => InkWell(
-                                  onTap: () {
-                                    GoRouter.of(context).pushNamed(
-                                      OmronFlowRoute.name,
-                                      queryParams: {
-                                        'userId': widget.userId,
-                                        'measurementType':
-                                            selectedMeasurementType.name,
-                                        'deviceId':
-                                            supportedDevice.deviceIdentifier!,
-                                        'modelName':
-                                            '${supportedDevice.modelName}',
-                                        'deviceManufacturer':
-                                            '${supportedDevice.deviceManufacturer}',
-                                      },
-                                    );
-                                  },
-                                  child: Container(
-                                    padding: Paddings.top24,
-                                    child: DeviceItem(
-                                      device: supportedDevice,
-                                      onRemove: supportedDevice.wasPaired ==
-                                              true
-                                          ? () async {
-                                              final confirmed =
-                                                  await showDeviceRemovalConfirmation(
-                                                context: context,
-                                              );
+                        ] else if (assignedDevices.isNotEmpty ||
+                            personalDevices.isNotEmpty) ...[
+                          if (assignedDevices.isNotEmpty) ...[
+                            Gaps.gap24,
+                            Text(
+                              localization.metering_screen_lended_devices,
+                              style: ScaleTextStyles.label.copyWith(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                              ),
+                            ),
+                            ...assignedDevices
+                                .map(
+                                  (assignedDevice) => InkWell(
+                                    onTap: () {
+                                      goToMetering(
+                                        assignedDevice,
+                                        selectedMeasurementType,
+                                      );
+                                    },
+                                    child: Container(
+                                      padding: Paddings.top24,
+                                      child: DeviceItem(
+                                        device: assignedDevice,
+                                        onRemove:
+                                            assignedDevice.isLendedDevice !=
+                                                    true
+                                                ? () async {
+                                                    final confirmed =
+                                                        await showDeviceRemovalConfirmation(
+                                                      context: context,
+                                                    );
 
-                                              if (confirmed == true) {
-                                                devManagementCubit.removeDevice(
-                                                  supportedDevice,
-                                                  selectedMeasurementType,
-                                                );
-                                              }
-                                            }
-                                          : null,
+                                                    if (confirmed == true) {
+                                                      devManagementCubit
+                                                          .removeDevice(
+                                                        assignedDevice,
+                                                        selectedMeasurementType,
+                                                      );
+                                                    }
+                                                  }
+                                                : null,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              )
-                              .toList()
-                        else if (userAccount.canMeasureWithUnknowDevice) ...[
+                                )
+                                .toList(),
+                          ],
+                          if (personalDevices.isNotEmpty) ...[
+                            Gaps.gap24,
+                            Text(
+                              localization.metering_screen_personal_devices,
+                              style: ScaleTextStyles.label.copyWith(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                              ),
+                            ),
+                            ...personalDevices
+                                .map(
+                                  (personalDevice) => InkWell(
+                                    onTap: () {
+                                      goToMetering(
+                                        personalDevice,
+                                        selectedMeasurementType,
+                                      );
+                                    },
+                                    child: Container(
+                                      padding: Paddings.top24,
+                                      child: DeviceItem(
+                                        device: personalDevice,
+                                        onRemove:
+                                            personalDevice.isLendedDevice !=
+                                                    true
+                                                ? () async {
+                                                    final confirmed =
+                                                        await showDeviceRemovalConfirmation(
+                                                      context: context,
+                                                    );
+
+                                                    if (confirmed == true) {
+                                                      devManagementCubit
+                                                          .removeDevice(
+                                                        personalDevice,
+                                                        selectedMeasurementType,
+                                                      );
+                                                    }
+                                                  }
+                                                : null,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          ],
+                        ] else if (userAccount.canMeasureWithUnknowDevice) ...[
                           Gaps.gap24,
                           Center(
                             child: SvgPicture.asset(
@@ -280,7 +343,30 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                               color: Theme.of(context).colorScheme.onSecondary,
                             ),
                             hasNavigationIcon: false,
-                            onTap: () {
+                            onTap: () async {
+                              GoRouter.of(context).pushNamed<Device?>(
+                                DeviceSearchRoute.name,
+                                params: {
+                                  'userId': userAccount.user.muid,
+                                  'devicePurpose': DevicePurpose.addDevice.name,
+                                },
+                              ).then((final Device? device) {
+                                if (device != null) {
+                                  GoRouter.of(context).pushNamed(
+                                    OmronFlowRoute.name,
+                                    queryParams: {
+                                      'userId': widget.userId,
+                                      'measurementType':
+                                          selectedMeasurementType.name,
+                                      'modelName': '${device.modelName}',
+                                      'deviceManufacturer':
+                                          '${device.deviceManufacturer}',
+                                    },
+                                  );
+                                }
+                              });
+
+                              /*
                               GoRouter.of(context).pushNamed(
                                 AddDeviceRoute.name,
                                 params: {
@@ -289,6 +375,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                                       selectedMeasurementType.name,
                                 },
                               );
+                              */
                             },
                           ),
                         ],

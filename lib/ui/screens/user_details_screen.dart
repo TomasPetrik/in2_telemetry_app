@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/report/report_bloc.dart';
@@ -15,7 +16,9 @@ import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/care_plan_detail_route.dart';
-import 'package:scalesoft_app/ui/routers/routes/register_device_search_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/device_search_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/register_device_detail_route.dart';
+import 'package:scalesoft_app/ui/screens/device_search_screen.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -232,10 +235,25 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                               .user_detail_screen_register_device_button,
                           buttonType: ButtonType.primary,
                           onPressed: () {
-                            GoRouter.of(context).pushNamed(
-                              RegisterDeviceSearchRoute.name,
-                              params: {'userId': userAccount.user.muid},
-                            );
+                            GoRouter.of(context).pushNamed<Device?>(
+                              DeviceSearchRoute.name,
+                              params: {
+                                'userId': userAccount.user.muid,
+                                'devicePurpose': DevicePurpose.registerDevice.name,
+                              },
+                            ).then((final Device? device) {
+                              if (device != null) {
+                                GoRouter.of(context).pushNamed(
+                                  RegisterDeviceDetailRoute.name,
+                                  params: {
+                                    'userId': userAccount.user.muid,
+                                    'localId': '${device.localId!}',
+                                    'deviceIdentifier':
+                                        device.deviceIdentifier!,
+                                  },
+                                );
+                              }
+                            });
                           },
                         ),
                       ),

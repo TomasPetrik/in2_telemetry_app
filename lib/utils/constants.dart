@@ -148,6 +148,7 @@ class Constants {
       deviceManufacturer: 'Beurer',
       visibleName: 'Beurer BM 77',
       bluetoothName: 'BM77',
+      bluetoothPairingName: 'BM77',
       deviceModelType: DeviceModelType.beurerBm77,
       imagePath: 'assets/images/beurer_bm_77.png',
       supportedMeasurementTypes: [
@@ -165,6 +166,7 @@ class Constants {
       deviceManufacturer: "Omron",
       visibleName: 'Omron M7',
       bluetoothName: 'BLESmart',
+      bluetoothPairingName: 'BLEsmart',
       deviceModelType: DeviceModelType.omronM7,
       imagePath: 'assets/images/omron_m7.png',
       supportedMeasurementTypes: [

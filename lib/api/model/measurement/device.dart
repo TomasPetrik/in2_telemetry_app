@@ -12,54 +12,31 @@ class Device with _$Device {
 
   @HiveType(typeId: 33, adapterName: 'DeviceAdapter')
   const factory Device({
-    @HiveField(0)
-        String? deviceIdentifier,
-    @HiveField(1)
-        String? modelName,
-    @HiveField(2)
-        String? deviceManufacturer,
-    @JsonKey(includeToJson: false)
-    @HiveField(3)
-        String? visibleName,
-    @JsonKey(includeToJson: false)
-    @HiveField(4)
-        String? bluetoothName,
-    @JsonKey(includeToJson: false)
-    @HiveField(6)
-        int? localId,
+    @HiveField(0) String? deviceIdentifier,
+    @HiveField(1) String? modelName,
+    @HiveField(2) String? deviceManufacturer,
+    @JsonKey(includeToJson: false) @HiveField(3) String? visibleName,
+    @JsonKey(includeToJson: false) @HiveField(4) String? bluetoothName,
+    @JsonKey(includeToJson: false) @HiveField(5) String? bluetoothPairingName,
+    @JsonKey(includeToJson: false) @HiveField(6) int? localId,
     @JsonKey(includeToJson: false)
     @HiveField(7)
-        DeviceModelType? deviceModelType,
+    DeviceModelType? deviceModelType,
     @JsonKey(includeToJson: false)
     @HiveField(8)
-        List<MeasurementType>? supportedMeasurementTypes,
-    @JsonKey(includeToJson: false)
-    @HiveField(9)
-        String? imagePath,
-    @JsonKey(includeToJson: false)
-    @HiveField(10)
-        bool? reqPairing,
-    @JsonKey(includeToJson: false)
-    @HiveField(11)
-        DateTime? addedAt,
-    @JsonKey(includeToJson: false)
-    @HiveField(12)
-        bool? askToActivateBt,
-    @JsonKey(includeToJson: false)
-    @HiveField(13)
-        bool? askToConfirmMeasurement,
+    List<MeasurementType>? supportedMeasurementTypes,
+    @JsonKey(includeToJson: false) @HiveField(9) String? imagePath,
+    @JsonKey(includeToJson: false) @HiveField(10) bool? reqPairing,
+    @JsonKey(includeToJson: false) @HiveField(11) DateTime? addedAt,
+    @JsonKey(includeToJson: false) @HiveField(12) bool? askToActivateBt,
+    @JsonKey(includeToJson: false) @HiveField(13) bool? askToConfirmMeasurement,
     @JsonKey(includeToJson: false)
     @HiveField(14)
-        ActionButtonType? actionButtonType,
-    @JsonKey(includeToJson: false)
-    @HiveField(16)
-        bool? wasPaired,
-    @JsonKey(includeToJson: false)
-    @HiveField(17)
-        bool? isLendedDevice,
-    @JsonKey(includeToJson: false)
-    @HiveField(18)
-        String? aboutUrl,
+    ActionButtonType? actionButtonType,
+    @JsonKey(includeToJson: false) @HiveField(16) bool? wasPaired,
+    @JsonKey(includeToJson: false) @HiveField(17) bool? isLendedDevice,
+    @JsonKey(includeToJson: false) @HiveField(18) String? aboutUrl,
+    @HiveField(19) String? assignedIdentifier,
   }) = _Device;
 
   factory Device.fromJson(Map<String, dynamic> json) => _$DeviceFromJson(json);

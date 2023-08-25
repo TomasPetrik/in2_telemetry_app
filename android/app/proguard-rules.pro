@@ -36,4 +36,4 @@
 -keep,allowobfuscation,allowshrinking class * extends com.google.gson.reflect.TypeToken
 
 # for flutter_blue_plus
--keep class com.boskokg.flutter_blue_plus.** { *; }
+-keep class com.boskokg.flutter_blue_plus.* { *; }

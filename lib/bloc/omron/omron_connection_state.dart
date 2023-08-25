@@ -32,6 +32,7 @@ class OmronConnectionState with _$OmronConnectionState {
   const factory OmronConnectionState.disconnected() = _Disconnected;
   const factory OmronConnectionState.syncing() = _Syncing;
   const factory OmronConnectionState.synced({
+    required int timestamp,
     required HwMeasurementResult measurementResult,
     required DeviceInfo deviceInfo,
   }) = _Synced;

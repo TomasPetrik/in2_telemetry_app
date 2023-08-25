@@ -8,10 +8,6 @@ PODS:
   - Flutter (1.0.0)
   - flutter_blue_plus (0.0.1):
     - Flutter
-    - flutter_blue_plus/Protos (= 0.0.1)
-  - flutter_blue_plus/Protos (0.0.1):
-    - Flutter
-    - Protobuf (~> 3.11)
   - flutter_local_notifications (0.0.1):
     - Flutter
   - notification_permissions (0.4.4):
@@ -25,7 +21,6 @@ PODS:
     - Flutter
   - permission_handler_apple (9.1.1):
     - Flutter
-  - Protobuf (3.23.0)
   - unique_identifier (0.0.1):
     - Flutter
   - url_launcher_ios (0.0.1):
@@ -51,10 +46,6 @@ DEPENDENCIES:
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - wakelock (from `.symlinks/plugins/wakelock/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
-
-SPEC REPOS:
-  trunk:
-    - Protobuf
 
 EXTERNAL SOURCES:
   app_settings:
@@ -93,14 +84,13 @@ SPEC CHECKSUMS:
   background_fetch: 79229f3677f19e1851b8e46d051720842e25a7fc
   device_info_plus: 7545d84d8d1b896cb16a4ff98c19f07ec4b298ea
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  flutter_blue_plus: 6787777145d615de01828f3a9fa423c3c702f0b3
+  flutter_blue_plus: 5cb46a0d66c6cacebf7551e0e5a6bfa345ccc224
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   notification_permissions: 825ea1bf2a52ab585c53fd7b5e8e96876d735d4b
   package_info_plus: fd030dabf36271f146f1f3beacd48f564b0f17f7
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
   pdfx: 7b876b09de8b7a0bf444a4f82b439ffcff4ee1ec
   permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
-  Protobuf: 43e3764cdf3609fdd00417649561565703437fdc
   unique_identifier: 5b4b48cfe07a95df6aa11746944c0dce22ab5400
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f

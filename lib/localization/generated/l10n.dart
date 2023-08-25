@@ -1382,6 +1382,26 @@ class I10n {
     );
   }
 
+  /// `Zapůjčené zařízení`
+  String get metering_screen_lended_devices {
+    return Intl.message(
+      'Zapůjčené zařízení',
+      name: 'metering_screen_lended_devices',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vlastní zařízení`
+  String get metering_screen_personal_devices {
+    return Intl.message(
+      'Vlastní zařízení',
+      name: 'metering_screen_personal_devices',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Přidat zařízení`
   String get add_device_screen_title {
     return Intl.message(
@@ -2133,23 +2153,35 @@ class I10n {
     );
   }
 
-  /// `Registrovat zařízení`
-  String get register_device_search_screen_title {
-    return Intl.message(
-      'Registrovat zařízení',
-      name: 'register_device_search_screen_title',
-      desc: '',
-      args: [],
+  /// `{devicePurposeName, select, addDevice{Přidat zařízení} registerDevice{Registrovat zařízení} other{Jiný}}`
+  String device_search_screen_purpose_title(Object devicePurposeName) {
+    return Intl.select(
+      devicePurposeName,
+      {
+        'addDevice': 'Přidat zařízení',
+        'registerDevice': 'Registrovat zařízení',
+        'other': 'Jiný',
+      },
+      name: 'device_search_screen_purpose_title',
+      desc: 'Device purpose names',
+      args: [devicePurposeName],
     );
   }
 
-  /// `Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.`
-  String get register_device_search_screen_desc {
-    return Intl.message(
-      'Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.',
-      name: 'register_device_search_screen_desc',
-      desc: '',
-      args: [],
+  /// `{devicePurposeName, select, addDevice{Pro přidání zařízení je potřeba mít Bluetooth v režimu párovaní jenom zařízení, které chcete přidať.} registerDevice{Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.} other{Jiný}}`
+  String device_search_screen_purpose_desc(Object devicePurposeName) {
+    return Intl.select(
+      devicePurposeName,
+      {
+        'addDevice':
+            'Pro přidání zařízení je potřeba mít Bluetooth v režimu párovaní jenom zařízení, které chcete přidať.',
+        'registerDevice':
+            'Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.',
+        'other': 'Jiný',
+      },
+      name: 'device_search_screen_purpose_desc',
+      desc: 'Device purpose description',
+      args: [devicePurposeName],
     );
   }
 

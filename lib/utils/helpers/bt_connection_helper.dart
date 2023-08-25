@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/extensions/uint8_list_extension.dart';
@@ -15,17 +16,56 @@ import 'package:scalesoft_app/utils/constants.dart';
 const String deviceInfo = '0000180a-0000-1000-8000-00805f9b34fb';
 const String bloodPressure = '00001810-0000-1000-8000-00805f9b34fb';
 const String batteryService = '0000180f-0000-1000-8000-00805f9b34fb';
-const String bloodPressureServiceUuid = "1810";
+const String bloodPressureServiceUuid = '1810';
 
 class DeviceSearchResult {
   BluetoothDevice device;
-  AdvertisementData advertisementData;
+  String localName;
 
-  DeviceSearchResult(this.device, this.advertisementData);
+  DeviceSearchResult(this.device, this.localName);
 }
 
+enum SearchMode { pairing, syncing }
+
+@singleton
 class BtConnectionHelper {
-  static bool matchDeviceId(Device device, String localName) {
+  bool syncMode = false;
+
+  bool matchDeviceMode(
+    String localName,
+    device,
+    SearchMode searchMode,
+  ) {
+    final supportedBtNames = Constants.supportedDevices
+        .map((supDev) => supDev.bluetoothName ?? '')
+        .toList();
+
+    final supportedBtPairingNames = Constants.supportedDevices
+        .map((supDev) => supDev.bluetoothPairingName ?? '')
+        .toList();
+
+    if ((searchMode == SearchMode.pairing &&
+            supportedBtPairingNames.any((suppBtPairName) {
+              return localName.contains(suppBtPairName);
+            })) ||
+        (searchMode == SearchMode.syncing &&
+            supportedBtNames.any((suppBtName) {
+              return localName.contains(suppBtName);
+            }))) {
+      return true;
+    } else {
+      debugPrint(
+        '$localName is not in ${searchMode.name} mode',
+      );
+      return false;
+    }
+  }
+
+  bool matchDeviceId(Device device, String localName) {
+    if (device.deviceIdentifier == null) {
+      return true;
+    }
+
     final supportedDev = Constants.supportedDevices.firstWhere(
       (dev) {
         return localName
@@ -42,25 +82,59 @@ class BtConnectionHelper {
       deviceId = deviceId?.split('_').last;
     }
 
-    return deviceId == searchDevId;
+    if (deviceId == searchDevId) {
+      debugPrint('$localName is matching ID $deviceId');
+      return true;
+    } else {
+      debugPrint('$localName NOT matching ID $deviceId');
+      return false;
+    }
   }
 
-  static Future<DeviceSearchResult?> searchDevice({
+  Future<DeviceSearchResult?> searchDevice({
     required String serviceUuid,
     required Device device,
+    required SearchMode searchMode,
   }) async {
-    final flutterBlue = FlutterBluePlus.instance;
-
-    final isScanning = await flutterBlue.isScanning.first;
+    syncMode = true;
+    final isScanning = FlutterBluePlus.isScanningNow;
     if (!isScanning) {
-      flutterBlue.startScan();
+      FlutterBluePlus.startScan();
+    }
+
+    final connectedDevices = await FlutterBluePlus.connectedSystemDevices;
+
+    for (final connectedDevice in connectedDevices) {
+      debugPrint('disconecting from ${connectedDevice.localName}');
+      await connectedDevice.disconnect();
     }
 
     while (true) {
       await Future.delayed(const Duration(seconds: 1));
-      final availableDevices = await flutterBlue.scanResults.first;
+      final availableDevices = await FlutterBluePlus.scanResults.first;
+
+      /*
+      final List<BluetoothDevice> allDevices = [
+        ...availableDevices.map((availableDevice) => availableDevice.device),
+        ...connectedDevices,
+      ];
 
       debugPrint('found ${availableDevices.length} devices');
+
+      final connectedDev = allDevices.firstWhereOrNull((connectedDev) {
+        return matchDeviceMode(connectedDev.localName, device, searchMode) &&
+            matchDeviceId(
+              device,
+              connectedDev.localName,
+            );
+      });
+
+      if (connectedDev != null) {
+        await FlutterBluePlus.stopScan();
+        return DeviceSearchResult(connectedDev, connectedDev.localName);
+      }
+
+      */
 
       for (final scanResult in availableDevices) {
         final serviceUuids = scanResult.advertisementData.serviceUuids
@@ -69,49 +143,54 @@ class BtConnectionHelper {
               (devServiceUuid) =>
                   devServiceUuid.contains(serviceUuid.toLowerCase()),
             ) &&
-            scanResult.advertisementData.localName
-                .toLowerCase()
-                .contains(device.bluetoothName!.toLowerCase()) &&
-            (device.deviceIdentifier == null ||
-                matchDeviceId(
-                  device,
-                  scanResult.advertisementData.localName,
-                ))) {
+            matchDeviceMode(
+              scanResult.advertisementData.localName,
+              device,
+              searchMode,
+            ) &&
+            matchDeviceId(
+              device,
+              scanResult.advertisementData.localName,
+            )) {
           debugPrint('found device');
 
-          await flutterBlue.stopScan();
+          await FlutterBluePlus.stopScan();
 
           return DeviceSearchResult(
             scanResult.device,
-            scanResult.advertisementData,
+            scanResult.advertisementData.localName,
           );
         }
       }
 
-      if (await flutterBlue.isScanning.first == false) {
+      if (FlutterBluePlus.isScanningNow == false) {
         return null;
       }
     }
   }
 
-  static Future<void> searchDevicesByService({
+  Future<void> searchDevicesByService({
     required String serviceUuid,
+    required onlyPairingMode,
     required Function(List<Device> devices) onResult,
   }) async {
-    final flutterBlue = FlutterBluePlus.instance;
-
-    final isScanning = await flutterBlue.isScanning.first;
+    syncMode = false;
+    final isScanning = FlutterBluePlus.isScanningNow;
     if (!isScanning) {
-      flutterBlue.startScan();
+      FlutterBluePlus.startScan();
     }
 
     final supportedBtNames = Constants.supportedDevices
-        .map((supDev) => supDev.bluetoothName!.toLowerCase())
+        .map((supDev) => supDev.bluetoothName ?? '')
+        .toList();
+
+    final supportedBtPairingNames = Constants.supportedDevices
+        .map((supDev) => supDev.bluetoothPairingName ?? '')
         .toList();
 
     while (true) {
       await Future.delayed(const Duration(seconds: 1));
-      final allDevices = await flutterBlue.scanResults.first;
+      final allDevices = await FlutterBluePlus.scanResults.first;
 
       debugPrint('found all ${allDevices.length} devices');
 
@@ -119,11 +198,17 @@ class BtConnectionHelper {
         return scanResult.advertisementData.serviceUuids
                 .map((uuid) => uuid.toLowerCase())
                 .any((uuid) => uuid.contains(serviceUuid.toLowerCase())) &&
-            supportedBtNames.any(
-              (suppBtName) => scanResult.advertisementData.localName
-                  .toLowerCase()
-                  .contains(suppBtName),
-            );
+            ((!onlyPairingMode &&
+                    supportedBtNames.any((suppBtName) {
+                      return scanResult.advertisementData.localName
+                          .toLowerCase()
+                          .contains(suppBtName.toLowerCase());
+                    })) ||
+                (onlyPairingMode &&
+                    supportedBtPairingNames.any((suppBtPairName) {
+                      return scanResult.advertisementData.localName
+                          .contains(suppBtPairName);
+                    })));
       }).toList();
 
       debugPrint('found matching devices ${matchedResults.length}');
@@ -131,8 +216,8 @@ class BtConnectionHelper {
       List<Device> availableDevices = [];
 
       for (final scanResult in matchedResults) {
-        final devState = await scanResult.device.state.first;
-        if (devState == BluetoothDeviceState.connected) {
+        final devState = await scanResult.device.connectionState.first;
+        if (devState == BluetoothConnectionState.connected) {
           availableDevices.add(
             convertToDevice(
               scanResult.advertisementData.localName,
@@ -143,8 +228,8 @@ class BtConnectionHelper {
           try {
             await scanResult.device
                 .connect(timeout: const Duration(seconds: 1));
-            final devState = await scanResult.device.state.first;
-            if (devState == BluetoothDeviceState.connected) {
+            final devState = await scanResult.device.connectionState.first;
+            if (devState == BluetoothConnectionState.connected) {
               availableDevices.add(
                 convertToDevice(
                   scanResult.advertisementData.localName,
@@ -162,13 +247,13 @@ class BtConnectionHelper {
 
       onResult.call(availableDevices);
 
-      if (await flutterBlue.isScanning.first == false) {
+      if (syncMode || FlutterBluePlus.isScanningNow == false) {
         break;
       }
     }
   }
 
-  static Device convertToDevice(
+  Device convertToDevice(
     String advertisementName,
     BluetoothDevice btDevice,
   ) {
@@ -189,7 +274,7 @@ class BtConnectionHelper {
     return supportedDev.copyWith(deviceIdentifier: preferedIdName);
   }
 
-  static Future<DeviceInfo?> requestDeviceInfo(BluetoothDevice device) async {
+  Future<DeviceInfo?> requestDeviceInfo(BluetoothDevice device) async {
     var services = [];
 
     Future.delayed(const Duration(milliseconds: 100));
@@ -237,7 +322,7 @@ class BtConnectionHelper {
   }
   */
 
-  static Future<BatteryInfo?> requestBatteryInfo(BluetoothDevice device) async {
+  Future<BatteryInfo?> requestBatteryInfo(BluetoothDevice device) async {
     final services = await device.discoverServices();
     final batteryInfoService = services.firstWhereOrNull(
       (service) => service.uuid.toString().toLowerCase() == batteryService,
@@ -250,7 +335,7 @@ class BtConnectionHelper {
     }
   }
 
-  static Future<HwMeasurementResult> getHwMeasurementResult(
+  Future<HwMeasurementResult> getHwMeasurementResult(
     BluetoothService bpService, {
     bool? isSecondAttempt,
   }) async {
@@ -278,7 +363,7 @@ class BtConnectionHelper {
     }
   }
 
-  static Future<HwMeasurementResult> requestBPData(
+  Future<HwMeasurementResult> requestBPData(
     BluetoothDevice device,
     bool isMeasurement,
   ) async {
@@ -311,7 +396,7 @@ class BtConnectionHelper {
     }
   }
 
-  static Future<List<int>?> getBPDataFromService(
+  Future<List<int>?> getBPDataFromService(
     BluetoothService service,
     bool? isSecondAttempt,
   ) async {
@@ -330,13 +415,13 @@ class BtConnectionHelper {
 
     //wait for 5 seconds untill device sends necessary measements in stream
     final List<List<int>> results = [];
-    bpCharacteristic.value.listen(results.add);
+    bpCharacteristic.lastValueStream.listen(results.add);
     await Future.delayed(const Duration(seconds: 5));
 
     return results.last;
   }
 
-  static Future<String> readCharData(
+  Future<String> readCharData(
     List<BluetoothCharacteristic> characteristics,
     DeviceChar characteristic,
   ) async {
@@ -355,16 +440,16 @@ class BtConnectionHelper {
     return String.fromCharCodes(charData);
   }
 
-  static void listenOnBloodPressureData(
+  void listenOnBloodPressureData(
     BluetoothCharacteristic speficicChar, {
     required Function(List<int> data)? onData,
   }) async {
-    speficicChar.value.listen((data) {
+    speficicChar.lastValueStream.listen((data) {
       onData?.call(data);
     });
   }
 
-  static BluetoothCharacteristic? getBloodPressureChar(
+  BluetoothCharacteristic? getBloodPressureChar(
     List<BluetoothCharacteristic> characteristics,
   ) {
     String address = measurementCharAddress.entries
@@ -378,7 +463,7 @@ class BtConnectionHelper {
     return speficicChar;
   }
 
-  static Future<DeviceInfo> getDeviceInfoFromService(
+  Future<DeviceInfo> getDeviceInfoFromService(
     BluetoothService service,
   ) async {
     final characteristics = service.characteristics;
@@ -410,7 +495,7 @@ class BtConnectionHelper {
     return deviceInfo;
   }
 
-  static Future<BatteryInfo?> getBatteryInfoFromService(
+  Future<BatteryInfo?> getBatteryInfoFromService(
     BluetoothService service,
   ) async {
     final characteristics = service.characteristics;
@@ -440,7 +525,7 @@ class BtConnectionHelper {
     return null;
   }
 
-  static Future<void> getGenericAccessInfo(BluetoothService service) async {
+  Future<void> getGenericAccessInfo(BluetoothService service) async {
     final characteristics = service.characteristics;
 
     debugPrint('generic access info:\n');
@@ -453,7 +538,7 @@ class BtConnectionHelper {
     }
   }
 
-  static Future<bool> hasPermissionsGranted() async {
+  Future<bool> hasPermissionsGranted() async {
     if (!Platform.isAndroid) {
       return true;
     }

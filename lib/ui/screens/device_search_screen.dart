@@ -14,21 +14,26 @@ import 'package:scalesoft_app/ui/widgets/device_item.dart';
 import 'package:scalesoft_app/ui/widgets/process_item.dart';
 import 'package:scalesoft_app/ui/widgets/warning_item.dart';
 
-class RegisterDeviceSearchScreen extends StatefulWidget {
-  const RegisterDeviceSearchScreen({
+enum DevicePurpose {
+  addDevice, //require pairing process
+  registerDevice,
+}
+
+class DeviceSearchScreen extends StatefulWidget {
+  const DeviceSearchScreen({
     super.key,
     required this.userId,
+    required this.devicePurpose,
   });
 
   final String userId;
+  final DevicePurpose devicePurpose;
 
   @override
-  State<RegisterDeviceSearchScreen> createState() =>
-      _RegisterDeviceSearchScreenState();
+  State<DeviceSearchScreen> createState() => _DeviceSearchScreenState();
 }
 
-class _RegisterDeviceSearchScreenState
-    extends State<RegisterDeviceSearchScreen> {
+class _DeviceSearchScreenState extends State<DeviceSearchScreen> {
   final RegisterDeviceBloc registerDeviceBloc = getIt<RegisterDeviceBloc>();
 
   Future<bool> _onWillPop() async {
@@ -43,9 +48,23 @@ class _RegisterDeviceSearchScreenState
       child: Material(
         child: Stack(
           children: [
-            BlocBuilder<RegisterDeviceBloc, RegisterDeviceBlocState>(
+            BlocConsumer<RegisterDeviceBloc, RegisterDeviceBlocState>(
               bloc: registerDeviceBloc
-                ..add(RegisterDeviceBlocEvent.init(widget.userId, context)),
+                ..add(
+                  RegisterDeviceBlocEvent.init(
+                    userId: widget.userId,
+                    onlyPairingMode:
+                        widget.devicePurpose == DevicePurpose.addDevice,
+                  ),
+                ),
+              listener: (BuildContext context, RegisterDeviceBlocState state) {
+                final devToPop = state.whenOrNull(
+                  popDevice: (device) => device,
+                );
+                if (devToPop != null) {
+                  Navigator.of(context).pop(devToPop);
+                }
+              },
               builder: (context, state) {
                 final header = state.whenOrNull(
                   disabledBt: () => WarningItem(
@@ -117,7 +136,9 @@ class _RegisterDeviceSearchScreenState
                               child: Center(
                                 child: Text(
                                   localization
-                                      .register_device_search_screen_desc,
+                                      .device_search_screen_purpose_desc(
+                                    widget.devicePurpose.name,
+                                  ),
                                   style: ScaleTextStyles.text.apply(
                                     color: Theme.of(context)
                                         .colorScheme
@@ -145,13 +166,8 @@ class _RegisterDeviceSearchScreenState
                             return InkWell(
                               onTap: () {
                                 registerDeviceBloc.add(
-                                  RegisterDeviceBlocEvent.openDeviceDetail(
-                                    params: {
-                                      'userId': widget.userId,
-                                      'localId': '${foundDev.localId!}',
-                                      'deviceIdentifier':
-                                          foundDev.deviceIdentifier!,
-                                    },
+                                  RegisterDeviceBlocEvent.selectDevice(
+                                    foundDev,
                                   ),
                                 );
                               },
@@ -180,7 +196,9 @@ class _RegisterDeviceSearchScreenState
               left: 0,
               right: 0,
               child: BluredScaleAppBar(
-                title: localization.register_device_search_screen_title,
+                title: localization.device_search_screen_purpose_title(
+                  widget.devicePurpose.name,
+                ),
                 showClose: true,
                 onCloseTap: _onWillPop,
               ),
