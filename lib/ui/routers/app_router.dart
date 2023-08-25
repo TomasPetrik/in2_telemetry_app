@@ -18,7 +18,7 @@ import 'package:scalesoft_app/ui/routers/routes/notification_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/offline_results_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/register_device_detail_route.dart';
-import 'package:scalesoft_app/ui/routers/routes/register_device_search_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/device_search_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/register_device_success_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_history_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_route.dart';
@@ -83,7 +83,7 @@ class AppRouter {
             ChartRoute(navigator: navAuthManager).route,
             MeteringFirstRoute(navigator: navAuthManager).route,
             AddDeviceRoute(navigator: navAuthManager).route,
-            RegisterDeviceSearchRoute(navigator: navAuthManager).route,
+            DeviceSearchRoute(navigator: navAuthManager).route,
             RegisterDeviceDetailRoute(navigator: navAuthManager).route,
             RegisterDeviceSuccessRoute(navigator: navAuthManager).route,
             ManualRoute(navigator: navAuthManager).route,

@@ -23,10 +23,10 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
     );
   }
 
-  List<Device> getSuitableDevices(MeasurementType measurementType) {
+  List<Device> getAssignedDevices(MeasurementType measurementType) {
     List<Device> prioritisedDevices = [];
 
-    final allDevices = _pairedDevicesDbProvider.box.values
+    final allPairedDevices = _pairedDevicesDbProvider.box.values
         .where(
           (device) => device.supportedMeasurementTypes!.contains(
             measurementType,
@@ -45,7 +45,7 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
 
         if (suppDev == null) continue;
 
-        bool wasPaired = allDevices.any(
+        bool wasPaired = allPairedDevices.any(
           (dev) =>
               dev.deviceIdentifier?.toLowerCase() ==
               assignedDevice.deviceIdentifier?.toLowerCase(),
@@ -54,6 +54,7 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
         prioritisedDevices.add(
           suppDev.copyWith(
             deviceIdentifier: assignedDevice.deviceIdentifier,
+            assignedIdentifier: assignedDevice.assignedIdentifier,
             wasPaired: wasPaired,
             isLendedDevice: true,
           ),
@@ -61,22 +62,36 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
       }
     }
 
-    final List<String> userAssignedDevicesIds = prioritisedDevices
+    return prioritisedDevices;
+  }
+
+  //Personal devices which are not matching with user devices and user has also permission
+  //for measurements with unknow devices <canMeasureWithUnknowDevice>
+  List<Device> getPersonalDevices(MeasurementType measurementType) {
+    final allPairedDevices = _pairedDevicesDbProvider.box.values
+        .where(
+          (device) => device.supportedMeasurementTypes!.contains(
+            measurementType,
+          ),
+        )
+        .toList();
+
+    final assignedDevices = getAssignedDevices(measurementType);
+
+    final List<String> userAssignedDevicesIds = assignedDevices
         .map((dev) => dev.deviceIdentifier!.toLowerCase())
         .toList();
 
-    //2. Add others device which are not matching with user devices and user has also permission
-    //for measurements with unknow devices <canMeasureWithUnknowDevice>
-    prioritisedDevices.addAll(
-      allDevices.where(
-        (dev) =>
-            userAccount.canMeasureWithUnknowDevice &&
-            !userAssignedDevicesIds
-                .contains(dev.deviceIdentifier?.toLowerCase()),
-      ),
-    );
+    final personalDevices = allPairedDevices
+        .where(
+          (dev) =>
+              userAccount.canMeasureWithUnknowDevice &&
+              !userAssignedDevicesIds
+                  .contains(dev.deviceIdentifier?.toLowerCase()),
+        )
+        .toList();
 
-    return prioritisedDevices;
+    return personalDevices;
   }
 
   DeviceManagementCubit(
@@ -84,7 +99,8 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
     this._pairedDevicesDbProvider,
   ) : super(
           const DeviceManagementState(
-            devices: null,
+            assignedDevices: null,
+            personalDevices: null,
             supportDeviceMeasurement: null,
           ),
         );
@@ -97,7 +113,8 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
     userAccount = _accountDbProvider.get(userId)!;
     final supportDeviceMeasurement =
         supportedDeviceMeasurement(measurementType);
-    final suitableDevices = getSuitableDevices(measurementType);
+    final assignedDevices = getAssignedDevices(measurementType);
+    final personalDevices = getPersonalDevices(measurementType);
     final hasMeasurementTabs =
         allMeasurementTypes != null && allMeasurementTypes.length > 1;
 
@@ -105,7 +122,8 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
       DeviceManagementState(
         selectedMeasurementType: measurementType,
         supportDeviceMeasurement: supportDeviceMeasurement,
-        devices: suitableDevices,
+        assignedDevices: assignedDevices,
+        personalDevices: personalDevices,
         hasMeasurementTabs: hasMeasurementTabs,
         allMeasurementTypes: allMeasurementTypes,
       ),
@@ -115,21 +133,29 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
   void selectMeasurementType(MeasurementType measurementType) {
     final supportDeviceMeasurement =
         supportedDeviceMeasurement(measurementType);
-    final suitableDevices = getSuitableDevices(measurementType);
+    final assignedDevices = getAssignedDevices(measurementType);
+    final personalDevices = getPersonalDevices(measurementType);
 
     emit(
       state.copyWith(
         selectedMeasurementType: measurementType,
         supportDeviceMeasurement: supportDeviceMeasurement,
-        devices: suitableDevices,
+        assignedDevices: assignedDevices,
+        personalDevices: personalDevices,
       ),
     );
   }
 
   void removeDevice(Device device, MeasurementType measurementType) async {
     await _pairedDevicesDbProvider.remove(device);
-    final suitableDevices = getSuitableDevices(measurementType);
+    final assignedDevices = getAssignedDevices(measurementType);
+    final personalDevices = getPersonalDevices(measurementType);
 
-    emit(state.copyWith(devices: suitableDevices));
+    emit(
+      state.copyWith(
+        assignedDevices: assignedDevices,
+        personalDevices: personalDevices,
+      ),
+    );
   }
 }

@@ -172,12 +172,15 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                           ],
                         ],
                       ),
-                      const Spacer(),
                       if (mResult.wasMeasured == false) ...{
-                        Text(
-                          localization.common_not_measured,
-                          style: ScaleTextStyles.text.apply(
-                            color: Theme.of(context).colorScheme.error,
+                        Expanded(
+                          child: Text(
+                            localization.common_not_measured,
+                            textAlign: TextAlign.right,
+                            overflow: TextOverflow.ellipsis,
+                            style: ScaleTextStyles.text.copyWith(
+                              color: Theme.of(context).colorScheme.error,
+                            ),
                           ),
                         ),
                       },

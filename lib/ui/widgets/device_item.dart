@@ -17,11 +17,22 @@ class DeviceItem extends StatelessWidget {
   final VoidCallback? onRemove;
 
   String getSubTitle(BuildContext context) {
-    String subTitle = localization.measurement_dialog_device_desc(
+    String? subTitle = '';
+    /*
+     subTitle += localization.measurement_dialog_device_desc(
       device.deviceModelType!.name,
     );
+    */
 
-    if (device.addedAt != null) {
+    if (device.deviceIdentifier != null) {
+      subTitle += device.deviceIdentifier!;
+    }
+
+    if (device.assignedIdentifier != null) {
+      subTitle +=
+          '\n(${device.assignedIdentifier!})'; //for assigned devices show assigned identifier
+    } else if (device.addedAt != null) {
+      //for own devices show when device was added
       subTitle +=
           '\n${localization.common_addded_at_time(device.addedAt!.toDateFormatLong())}';
     }

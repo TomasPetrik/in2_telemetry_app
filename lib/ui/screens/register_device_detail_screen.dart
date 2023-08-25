@@ -43,7 +43,7 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
           BlocConsumer<RegisterDeviceBloc, RegisterDeviceBlocState>(
             bloc: registerDeviceBloc
               ..add(
-                RegisterDeviceBlocEvent.init(userAccount.user.muid, context),
+                RegisterDeviceBlocEvent.init(userId: userAccount.user.muid),
               ),
             listener: (context, state) {
               state.whenOrNull(

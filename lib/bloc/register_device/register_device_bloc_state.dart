@@ -19,4 +19,7 @@ class RegisterDeviceBlocState with _$RegisterDeviceBlocState {
       _DeviceAlreadyRegistered;
   const factory RegisterDeviceBlocState.failedRegistration(Key key) =
       _FailedRegistration;
+
+  const factory RegisterDeviceBlocState.popDevice(Device device) =
+      _PopDevice;    
 }

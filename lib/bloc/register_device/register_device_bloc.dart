@@ -2,9 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/model/device_to_register.dart';
+import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/api/model/report/report.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_event.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_state.dart';
@@ -12,7 +12,6 @@ import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/repositories/device_repository.dart';
 import 'package:scalesoft_app/services/report_service.dart';
-import 'package:scalesoft_app/ui/routers/routes/register_device_detail_route.dart';
 import 'package:scalesoft_app/utils/events_constants.dart';
 import 'package:scalesoft_app/utils/helpers/bt_connection_helper.dart';
 import 'package:wakelock/wakelock.dart';
@@ -20,29 +19,30 @@ import 'package:wakelock/wakelock.dart';
 @injectable
 class RegisterDeviceBloc
     extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlocState> {
-  final FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
+  final BtConnectionHelper _btConnectionHelper;
   final AccountDbProvider _accountDbProvider;
   final DeviceRepository _deviceRepository;
   final ReportService _reportsService;
 
   late final UserAccount _userAccount;
-  late final BuildContext _context;
+  late final bool _onlyPairingMode;
 
   RegisterDeviceBloc(
+    this._btConnectionHelper,
     this._accountDbProvider,
     this._deviceRepository,
     this._reportsService,
   ) : super(const RegisterDeviceBlocState.init()) {
     on<RegisterDeviceBlocEvent>((event, emit) async {
       await event.when(
-        init: (String userId, BuildContext context) async {
-          _context = context;
+        init: (String userId, bool? onlyPairingMode) async {
           _userAccount = _accountDbProvider.get(userId)!;
+          _onlyPairingMode = onlyPairingMode ?? false;
           await Wakelock.enable();
 
-          final btState = await _flutterBlue.state.first;
+          final btState = await FlutterBluePlus.adapterState.first;
 
-          if (btState == BluetoothState.off) {
+          if (btState == BluetoothAdapterState.off) {
             _reportsService.trackEvent(
               userAccount: _userAccount,
               severity: Severity.warning,
@@ -59,7 +59,7 @@ class RegisterDeviceBloc
           }
 
           final hasPermissionsGranted =
-              await BtConnectionHelper.hasPermissionsGranted();
+              await _btConnectionHelper.hasPermissionsGranted();
           if (!hasPermissionsGranted) {
             _reportsService.trackEvent(
               userAccount: _userAccount,
@@ -71,15 +71,15 @@ class RegisterDeviceBloc
 
           _startCheckingBtState();
         },
-        newBtState: (BluetoothState newBtState) {
-          if (newBtState == BluetoothState.on) {
+        newBtState: (BluetoothAdapterState newBtState) {
+          if (newBtState == BluetoothAdapterState.on) {
             _reportsService.trackEvent(
               userAccount: _userAccount,
               severity: Severity.warning,
               message: EventsConstants.eventBluetoothDisabled,
             );
             add(const RegisterDeviceBlocEvent.searchDevices());
-          } else if (newBtState == BluetoothState.off) {
+          } else if (newBtState == BluetoothAdapterState.off) {
             emit(const RegisterDeviceBlocState.disabledBt());
           } else {
             _reportsService.trackEvent(
@@ -97,8 +97,9 @@ class RegisterDeviceBloc
             message: EventsConstants.eventDeviceSearchingStart,
           );
           emit(const RegisterDeviceBlocState.searching());
-          BtConnectionHelper.searchDevicesByService(
+          _btConnectionHelper.searchDevicesByService(
             serviceUuid: bloodPressureServiceUuid,
+            onlyPairingMode: _onlyPairingMode,
             onResult: (btDevices) {
               add(RegisterDeviceBlocEvent.notifyAboutNewDevices(btDevices));
             },
@@ -118,16 +119,12 @@ class RegisterDeviceBloc
             message: EventsConstants.eventDeviceSearchingStop,
           );
           await Wakelock.disable();
-          _flutterBlue.stopScan();
+          FlutterBluePlus.stopScan();
         },
-        openDeviceDetail: (Map<String, String> params) async {
-          _flutterBlue.stopScan();
-          await Wakelock.disable().then(
-            (_) => GoRouter.of(_context).replaceNamed(
-              RegisterDeviceDetailRoute.name,
-              params: params,
-            ),
-          );
+        selectDevice: (Device device) async {
+          await Wakelock.disable();
+          await FlutterBluePlus.stopScan();
+          emit(RegisterDeviceBlocState.popDevice(device));
         },
         registerDevice: (userAccount, device, assignedIdentifier) async {
           try {
@@ -192,7 +189,7 @@ class RegisterDeviceBloc
     });
   }
   void _startCheckingBtState() {
-    FlutterBluePlus.instance.state.listen((btState) {
+    FlutterBluePlus.adapterState.listen((btState) {
       add(RegisterDeviceBlocEvent.newBtState(btState));
     });
   }
