@@ -421,11 +421,12 @@ class BtConnectionHelper {
     }
 
     debugPrint('sending notification');
-    final BluetoothBondState bondState = await device.bondState.first;
-    if (Platform.isAndroid &&
-        isPairing &&
-        bondState != BluetoothBondState.bonded) {
-      await device.createBond(timeout: 10);
+
+    if (Platform.isAndroid && isPairing) {
+      final BluetoothBondState bondState = await device.bondState.first;
+      if (bondState != BluetoothBondState.bonded) {
+        await device.createBond(timeout: 10);
+      }
     }
     await bpCharacteristic.setNotifyValue(!bpCharacteristic.isNotifying);
     debugPrint('sent notification value');
