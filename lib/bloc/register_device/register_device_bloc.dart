@@ -96,18 +96,28 @@ class RegisterDeviceBloc
             severity: Severity.warning,
             message: EventsConstants.eventDeviceSearchingStart,
           );
-          emit(const RegisterDeviceBlocState.searching());
+          emit(
+            RegisterDeviceBlocState.searching(
+              timestamp: DateTime.now().microsecondsSinceEpoch,
+            ),
+          );
           _btConnectionHelper.searchDevicesByService(
             serviceUuid: bloodPressureServiceUuid,
             onlyPairingMode: _onlyPairingMode,
             onResult: (btDevices) {
-              add(RegisterDeviceBlocEvent.notifyAboutNewDevices(btDevices));
+              add(
+                RegisterDeviceBlocEvent.notifyAboutNewDevices(
+                  timestamp: DateTime.now().microsecondsSinceEpoch,
+                  foundDevices: btDevices,
+                ),
+              );
             },
           );
         },
-        notifyAboutNewDevices: (foundDevices) async {
+        notifyAboutNewDevices: (timestamp, foundDevices) async {
           emit(
             RegisterDeviceBlocState.searching(
+              timestamp: timestamp,
               devices: foundDevices,
             ),
           );

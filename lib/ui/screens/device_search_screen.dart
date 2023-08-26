@@ -103,14 +103,14 @@ class _DeviceSearchScreenState extends State<DeviceSearchScreen> {
                     label: localization.find_device_screen_searching_device,
                     processType: ProcessType.inProgress,
                   ),
-                  searching: (devices) => ProcessItem(
+                  searching: (_, devices) => ProcessItem(
                     label: localization.find_device_screen_searching_device,
                     processType: ProcessType.inProgress,
                   ),
                 );
 
                 final btDevices =
-                    state.whenOrNull(searching: (devices) => devices);
+                    state.whenOrNull(searching: (_, devices) => devices);
 
                 return CustomScrollView(
                   slivers: [

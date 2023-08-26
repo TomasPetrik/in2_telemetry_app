@@ -18,9 +18,10 @@ class RegisterDeviceBlocEvent with _$RegisterDeviceBlocEvent {
   const factory RegisterDeviceBlocEvent.searchDevices() = _SearchDevices;
   const factory RegisterDeviceBlocEvent.stopSearch() = _StopSearch;
 
-  const factory RegisterDeviceBlocEvent.notifyAboutNewDevices(
-    List<Device> foundDevices,
-  ) = _NotifyAboutNewDevices;
+  const factory RegisterDeviceBlocEvent.notifyAboutNewDevices({
+    required int timestamp,
+    required List<Device> foundDevices,
+  }) = _NotifyAboutNewDevices;
 
   const factory RegisterDeviceBlocEvent.selectDevice(Device device) =
       _SelectDevice;

@@ -10,6 +10,7 @@ class RegisterDeviceBlocState with _$RegisterDeviceBlocState {
   const factory RegisterDeviceBlocState.disabledBt() = _DisabledBt;
   const factory RegisterDeviceBlocState.noBtPermissions() = _NoBtPermissions;
   const factory RegisterDeviceBlocState.searching({
+    required int timestamp,
     List<Device>? devices,
   }) = _Searching;
   const factory RegisterDeviceBlocState.registering() = _Registering;
@@ -20,6 +21,5 @@ class RegisterDeviceBlocState with _$RegisterDeviceBlocState {
   const factory RegisterDeviceBlocState.failedRegistration(Key key) =
       _FailedRegistration;
 
-  const factory RegisterDeviceBlocState.popDevice(Device device) =
-      _PopDevice;    
+  const factory RegisterDeviceBlocState.popDevice(Device device) = _PopDevice;
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -189,7 +190,7 @@ class BtConnectionHelper {
         .toList();
 
     while (true) {
-      await Future.delayed(const Duration(seconds: 1));
+      Future.delayed(const Duration(seconds: 1));
       final allDevices = await FlutterBluePlus.scanResults.first;
 
       debugPrint('found all ${allDevices.length} devices');
@@ -213,43 +214,17 @@ class BtConnectionHelper {
 
       debugPrint('found matching devices ${matchedResults.length}');
 
-      List<Device> availableDevices = [];
+      final List<Device> availableDevices = [];
 
       for (final scanResult in matchedResults) {
-        availableDevices.add(
-          convertToDevice(
-            scanResult.advertisementData.localName,
-            scanResult.device,
-          ),
-        );
-
-        /*
-        final devState = await scanResult.device.connectionState.first;
-        if (devState == BluetoothConnectionState.connected) {
+        if (scanResult.rssi < 0 && scanResult.advertisementData.connectable) {
           availableDevices.add(
             convertToDevice(
               scanResult.advertisementData.localName,
               scanResult.device,
             ),
           );
-        } else {
-          try {
-            await scanResult.device
-                .connect(timeout: const Duration(seconds: 1));
-            final devState = await scanResult.device.connectionState.first;
-            if (devState == BluetoothConnectionState.connected) {
-              availableDevices.add(
-                convertToDevice(
-                  scanResult.advertisementData.localName,
-                  scanResult.device,
-                ),
-              );
-            }
-          } catch (e) {
-            debugPrint('device was disconnected yet');
-          }
         }
-        */
       }
 
       debugPrint('available devices ${matchedResults.length}');
@@ -344,23 +319,33 @@ class BtConnectionHelper {
     }
   }
 
-  Future<HwMeasurementResult> getHwMeasurementResult(
-    BluetoothService bpService, {
+  Future<HwMeasurementResult> getHwMeasurementResult({
+    required BluetoothDevice device,
+    required BluetoothService bpService,
+    required bool isPairing,
+    required String devId,
     bool? isSecondAttempt,
   }) async {
     final dtNow = DateTime.now().toUtc();
 
-    var bpData = await getBPDataFromService(bpService, isSecondAttempt);
+    var bpData = await getBPDataFromService(
+      device,
+      bpService,
+      isPairing,
+      isSecondAttempt,
+    );
 
     if (bpData == null) {
       return HwMeasurementResult(
         resultState: ResultState.connectionError,
         measurementDt: dtNow,
+        devId: devId,
       );
     } else if (bpData.isEmpty) {
       return HwMeasurementResult(
-        resultState: ResultState.noData,
+        resultState: isPairing ? ResultState.success : ResultState.noData,
         measurementDt: dtNow,
+        devId: devId,
       );
     } else {
       final measurementInfo = MeasurementInfo.fromIntList(bpData);
@@ -368,6 +353,7 @@ class BtConnectionHelper {
         resultState: ResultState.success,
         measurementInfo: measurementInfo,
         measurementDt: dtNow,
+        devId: devId,
       );
     }
   }
@@ -375,6 +361,7 @@ class BtConnectionHelper {
   Future<HwMeasurementResult> requestBPData(
     BluetoothDevice device,
     bool isMeasurement,
+    String devId,
   ) async {
     final services = await device.discoverServices();
     final bpService = services.firstWhereOrNull(
@@ -382,12 +369,22 @@ class BtConnectionHelper {
     );
 
     if (bpService != null) {
-      final hwMeasurementResult = await getHwMeasurementResult(bpService);
+      final hwMeasurementResult = await getHwMeasurementResult(
+        device: device,
+        bpService: bpService,
+        isPairing: !isMeasurement,
+        devId: devId,
+      );
       if (isMeasurement) {
         await Future.delayed(const Duration(seconds: 2));
         //repeat action in case to get fresh data
-        final hwMeasurementResult2 =
-            await getHwMeasurementResult(bpService, isSecondAttempt: true);
+        final hwMeasurementResult2 = await getHwMeasurementResult(
+          device: device,
+          bpService: bpService,
+          isPairing: !isMeasurement,
+          isSecondAttempt: true,
+          devId: devId,
+        );
         if (hwMeasurementResult2.resultState == ResultState.success) {
           debugPrint('fetched more updated result');
           return hwMeasurementResult2;
@@ -401,12 +398,15 @@ class BtConnectionHelper {
       return HwMeasurementResult(
         resultState: ResultState.connectionError,
         measurementDt: DateTime.now(),
+        devId: devId,
       );
     }
   }
 
   Future<List<int>?> getBPDataFromService(
+    BluetoothDevice device,
     BluetoothService service,
+    bool isPairing,
     bool? isSecondAttempt,
   ) async {
     final characteristics = service.characteristics;
@@ -420,9 +420,17 @@ class BtConnectionHelper {
       return null;
     }
 
+    debugPrint('sending notification');
+    final BluetoothBondState bondState = await device.bondState.first;
+    if (Platform.isAndroid &&
+        isPairing &&
+        bondState != BluetoothBondState.bonded) {
+      await device.createBond(timeout: 10);
+    }
     await bpCharacteristic.setNotifyValue(!bpCharacteristic.isNotifying);
+    debugPrint('sent notification value');
 
-    //wait for 5 seconds untill device sends necessary measements in stream
+    //wait for few seconds until device sends neccessary measurements in stream
     final List<List<int>> results = [];
     bpCharacteristic.lastValueStream.listen(results.add);
     await Future.delayed(const Duration(seconds: 5));
