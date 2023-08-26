@@ -55,6 +55,10 @@
 	<string>Aplikace vyžaduje povolení používat Bluetooth pro komunikaci se zařízeními.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Aplikace vyžaduje právo na lokaci pro komunikaci se zařízeními.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Aplikace vyžaduje právo na lokaci pro komunikaci se zařízeními.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Aplikace vyžaduje právo na lokaci pro komunikaci se zařízeními.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
