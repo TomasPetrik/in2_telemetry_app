@@ -218,8 +218,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                                       child: DeviceItem(
                                         device: assignedDevice,
                                         onRemove:
-                                            assignedDevice.isLendedDevice !=
-                                                    true
+                                            assignedDevice.wasPaired == true
                                                 ? () async {
                                                     final confirmed =
                                                         await showDeviceRemovalConfirmation(
