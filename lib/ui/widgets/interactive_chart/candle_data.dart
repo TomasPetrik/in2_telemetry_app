@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 
 part 'candle_data.freezed.dart';
 
@@ -8,7 +8,7 @@ class CandleData with _$CandleData {
   CandleData._();
 
   factory CandleData({
-    required MeasurementType? measurementType,
+    required MeasurementTypeContract? measurementType,
     required int timestamp,
     required double? high,
     required double? low,
@@ -40,8 +40,8 @@ class CandleData with _$CandleData {
 
   String get resultFormatted {
     if ([
-      MeasurementType.bloodPressure,
-      MeasurementType.globalPosition,
+      MeasurementTypeContract.bloodPressure,
+      MeasurementTypeContract.globalPosition,
     ].contains(measurementType)) {
       return '$highVal/$lowVal';
     } else {
@@ -51,8 +51,8 @@ class CandleData with _$CandleData {
 
   num? get highVal {
     if ([
-      MeasurementType.temperature,
-      MeasurementType.globalPosition,
+      MeasurementTypeContract.temperature,
+      MeasurementTypeContract.globalPosition,
     ].contains(measurementType)) {
       return high;
     } else {
@@ -62,8 +62,8 @@ class CandleData with _$CandleData {
 
   num? get lowVal {
     if ([
-      MeasurementType.temperature,
-      MeasurementType.globalPosition,
+      MeasurementTypeContract.temperature,
+      MeasurementTypeContract.globalPosition,
     ].contains(measurementType)) {
       return low;
     } else {

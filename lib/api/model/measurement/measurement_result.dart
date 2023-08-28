@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/api/model/measurement/composed_double_value.dart';
@@ -24,7 +24,7 @@ class MeasurementResult with _$MeasurementResult {
     @HiveField(2) ComposedDoubleValue? composedValue,
     @HiveField(3) Device? sourceDevice,
     @HiveField(4) bool? isVerified,
-    @JsonKey(name: 'type') @HiveField(5) MeasurementType? measurementType,
+    @JsonKey(name: 'type') @HiveField(5) MeasurementTypeContract? measurementType,
     @JsonKey(includeToJson: false) @HiveField(6) WhenCode? whenCode,
     @JsonKey(includeToJson: false)
     @HiveField(7)

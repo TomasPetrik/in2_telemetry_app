@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 
 part 'device.freezed.dart';
 part 'device.g.dart';
@@ -32,7 +32,7 @@ class Device with _$Device {
         DeviceModelType? deviceModelType,
     @JsonKey(includeToJson: false)
     @HiveField(8)
-        List<MeasurementType>? supportedMeasurementTypes,
+        List<MeasurementTypeContract>? supportedMeasurementTypes,
     @JsonKey(includeToJson: false)
     @HiveField(9)
         String? imagePath,

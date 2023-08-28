@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/model/user_account.dart';
@@ -169,7 +169,7 @@ class SingleDayMeasurementsOfExactType with _$SingleDayMeasurementsOfExactType {
   SingleDayMeasurementsOfExactType._();
 
   factory SingleDayMeasurementsOfExactType(
-    MeasurementType measurementType,
+    MeasurementTypeContract measurementType,
     List<PlannedMeasurement> plannedMeasurements,
     List<Measurement> offlineResults,
     List<MeasurementResult> measurementResults,

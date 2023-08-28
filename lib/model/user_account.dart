@@ -19,7 +19,7 @@ part 'user_account.hive.dart';
 class UserAccount with _$UserAccount {
   const UserAccount._();
 
-  @HiveType(typeId: 2, adapterName: 'UserAccountAdapter')
+  @HiveType(typeId: 2, adapterName: 'UserAccountAdapterV1')
   factory UserAccount({
     @HiveField(0) required User user,
     @HiveField(1) AuthToken? authToken,

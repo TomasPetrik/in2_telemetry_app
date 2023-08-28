@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -17,7 +17,7 @@ class AddDeviceScreen extends StatelessWidget {
   });
 
   final String userId;
-  final MeasurementType measurementType;
+  final MeasurementTypeContract measurementType;
 
   @override
   Widget build(BuildContext context) {

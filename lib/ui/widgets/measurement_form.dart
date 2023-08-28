@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/measurement/composed_int_value.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/model/measurement_config.dart';
@@ -23,7 +23,7 @@ class MeasurementForm extends StatelessWidget {
     required this.userId,
   });
 
-  final MeasurementType measurementType;
+  final MeasurementTypeContract measurementType;
   final String userId;
 
   double? _value1;
@@ -36,11 +36,11 @@ class MeasurementForm extends StatelessWidget {
         measurementType: measurementType,
       );
       switch (measurementType) {
-        case MeasurementType.temperature:
+        case MeasurementTypeContract.temperature:
           return measurement.copyWith(
             temperature: _value1,
           );
-        case MeasurementType.bloodPressure:
+        case MeasurementTypeContract.bloodPressure:
           return measurement.copyWith(
             bloodPressure: BloodPressureValue(
               systolic: _value1?.toInt(),
@@ -48,23 +48,23 @@ class MeasurementForm extends StatelessWidget {
             ),
           );
 
-        case MeasurementType.oxygenSaturation:
+        case MeasurementTypeContract.oxygenSaturation:
           return measurement.copyWith(
             oxygenSaturation: _value1?.toInt(),
           );
-        case MeasurementType.steps:
+        case MeasurementTypeContract.steps:
           return measurement.copyWith();
-        case MeasurementType.globalPosition:
+        case MeasurementTypeContract.globalPosition:
           return measurement.copyWith();
-        case MeasurementType.heartRate:
+        case MeasurementTypeContract.heartRate:
           return measurement.copyWith(
             heartRate: _value1?.toInt(),
           );
-        case MeasurementType.ews:
+        case MeasurementTypeContract.ews:
           return measurement.copyWith(
             heartRate: _value1?.toInt(),
           );
-        case MeasurementType.respiratoryRate:
+        case MeasurementTypeContract.respiratoryRate:
           return measurement.copyWith(
             respiratoryRate: _value1?.toInt(),
           );

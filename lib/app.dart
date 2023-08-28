@@ -13,6 +13,7 @@ import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_bloc.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_event.dart';
+import 'package:scalesoft_app/data/repositories/care_plan_repository.dart';
 import 'package:scalesoft_app/globals.dart';
 import 'package:scalesoft_app/globals_initialization.dart';
 import 'package:scalesoft_app/locales.dart';
@@ -204,5 +205,13 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
         getIt<CarePlanBloc>().add(const RefreshStateEvent());
       },
     );
+
+    // final repo = getIt<CarePlanRepository>();
+    // repo.createPlan(targetUserMuid: "asdasds");
+    //
+    // final plans = await repo.getPlans();
+    //
+    // debugPrint(plans.toString());
+
   }
 }

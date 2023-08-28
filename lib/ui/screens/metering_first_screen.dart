@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/cubit/device_management/device_management_cubit.dart';
 import 'package:scalesoft_app/cubit/device_management/device_management_state.dart';
 import 'package:scalesoft_app/model/user_account.dart';
@@ -31,7 +31,7 @@ class MeteringFirstScreen extends StatefulWidget {
   });
 
   final String userId;
-  final MeasurementType? selectedMeasurementType;
+  final MeasurementTypeContract? selectedMeasurementType;
   final bool showAllMeasurementTypes;
 
   @override
@@ -43,8 +43,8 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
   late UserAccount userAccount;
   final DeviceManagementCubit devManagementCubit =
       getIt<DeviceManagementCubit>();
-  late MeasurementType defaultMeasurementType;
-  late Set<MeasurementType> displayedMeasurementTypes;
+  late MeasurementTypeContract defaultMeasurementType;
+  late Set<MeasurementTypeContract> displayedMeasurementTypes;
 
   @override
   void initState() {

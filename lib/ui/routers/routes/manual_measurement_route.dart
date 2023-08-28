@@ -1,5 +1,5 @@
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
@@ -33,12 +33,12 @@ class ManualMeasurementRoute extends ApplicationRoute with PageBuilderMixin {
           final showAllMeasurementTypes =
               bool.parse(state.params['showAllMeasurementTypes'] ?? 'false');
 
-          final measurementType = MeasurementType.values.firstWhere(
+          final measurementType = MeasurementTypeContract.values.firstWhere(
             (measurementType) => measurementType.name == measurementTypeName,
           );
           final userAccount = getIt<AccountDbProvider>().get(userId)!;
 
-          late List<MeasurementType> displayedMeasurementTypes;
+          late List<MeasurementTypeContract> displayedMeasurementTypes;
 
           final supportedUserMeasurementTypes =
               CarePlanHelper.getMeasurementTypes(userAccount.carePlans!);

@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive/hive.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/api/model/thresholds/blood_pressure_threshold_setting.dart';
 import 'package:scalesoft_app/api/model/thresholds/heart_rate_threshold_setting.dart';
@@ -64,23 +64,23 @@ class MeasurementThresholds with _$MeasurementThresholds {
   bool exceededValues(Measurement measurement) {
     final measurementType = measurement.measurementType!;
     switch (measurementType) {
-      case MeasurementType.bloodPressure:
+      case MeasurementTypeContract.bloodPressure:
         return _exceededBloodPressure(
           measurement.bloodPressure!.systolic!,
           measurement.bloodPressure!.diastolic!,
         );
 
-      case MeasurementType.heartRate:
+      case MeasurementTypeContract.heartRate:
         return _exceededHeartRate(
           measurement.heartRate!,
         );
 
-      case MeasurementType.oxygenSaturation:
+      case MeasurementTypeContract.oxygenSaturation:
         return _exceededOxygenSaturation(
           measurement.oxygenSaturation!,
         );
 
-      case MeasurementType.temperature:
+      case MeasurementTypeContract.temperature:
         return _exceededTemperature(
           measurement.temperature!,
         );

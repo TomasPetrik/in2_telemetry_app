@@ -17,6 +17,8 @@ part 'care_plan_version.hive.dart';
 class CarePlanVersion with _$CarePlanVersion {
   CarePlanVersion._();
 
+  // TODO: Move care plan details here and possibly store only versions?
+
   @HiveType(typeId: 27, adapterName: 'CarePlanVersionAdapter')
   factory CarePlanVersion({
     @HiveField(0) required int versionId,

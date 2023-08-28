@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/model/measurement_config.dart';
 import 'package:scalesoft_app/utils/input_formatters/decimal_text_input_formatter.dart';
@@ -30,8 +30,8 @@ class Constants {
 
   /* Supported Measurements */
 
-  static Map<MeasurementType, MeasurementConfig> supportedMeasurements = {
-    MeasurementType.bloodPressure: MeasurementConfig(
+  static Map<MeasurementTypeContract, MeasurementConfig> supportedMeasurements = {
+    MeasurementTypeContract.bloodPressure: MeasurementConfig(
       MeasurementConfigType.composed,
       ['mmHg', 'mmHg'],
       [UnitName.systolic, UnitName.diastolic],
@@ -44,7 +44,7 @@ class Constants {
         LengthLimitingTextInputFormatter(3),
       ],
     ),
-    MeasurementType.temperature: MeasurementConfig(
+    MeasurementTypeContract.temperature: MeasurementConfig(
       MeasurementConfigType.single,
       ['°C'],
       [UnitName.temperature],
@@ -54,7 +54,7 @@ class Constants {
       ['0'],
       [DecimalTextInputFormatter(1)],
     ),
-    MeasurementType.heartRate: MeasurementConfig(
+    MeasurementTypeContract.heartRate: MeasurementConfig(
       MeasurementConfigType.single,
       ['TF'],
       [UnitName.pulse],
@@ -67,7 +67,7 @@ class Constants {
         LengthLimitingTextInputFormatter(3),
       ],
     ),
-    MeasurementType.oxygenSaturation: MeasurementConfig(
+    MeasurementTypeContract.oxygenSaturation: MeasurementConfig(
       MeasurementConfigType.single,
       ['%'],
       [UnitName.oxygenSaturation],
@@ -77,7 +77,7 @@ class Constants {
       ['0'],
       [DecimalTextInputFormatter(1)],
     ),
-    MeasurementType.respiratoryRate: MeasurementConfig(
+    MeasurementTypeContract.respiratoryRate: MeasurementConfig(
       MeasurementConfigType.single,
       null,
       [UnitName.respiratoryRate],
@@ -90,7 +90,7 @@ class Constants {
         LengthLimitingTextInputFormatter(3),
       ],
     ),
-    MeasurementType.steps: MeasurementConfig(
+    MeasurementTypeContract.steps: MeasurementConfig(
       MeasurementConfigType.single,
       null,
       [UnitName.steps],
@@ -103,7 +103,7 @@ class Constants {
         LengthLimitingTextInputFormatter(10),
       ],
     ),
-    MeasurementType.globalPosition: MeasurementConfig(
+    MeasurementTypeContract.globalPosition: MeasurementConfig(
       MeasurementConfigType.composed,
       null,
       [UnitName.lat, UnitName.lng],
@@ -116,7 +116,7 @@ class Constants {
       ['48.2389', '17.3693'],
       [DecimalTextInputFormatter(12), LengthLimitingTextInputFormatter(15)],
     ),
-    MeasurementType.ews: MeasurementConfig(
+    MeasurementTypeContract.ews: MeasurementConfig(
       MeasurementConfigType.single,
       null,
       [UnitName.ews],
@@ -133,8 +133,8 @@ class Constants {
 
   /* Supported measurement types */
 
-  static const Set<MeasurementType> supportedMeasurementTypes = {
-    MeasurementType.bloodPressure,
+  static const Set<MeasurementTypeContract> supportedMeasurementTypes = {
+    MeasurementTypeContract.bloodPressure,
   };
 
   /* EGoverment authorization */
@@ -151,8 +151,8 @@ class Constants {
       deviceModelType: DeviceModelType.beurerBm77,
       imagePath: 'assets/images/beurer_bm_77.png',
       supportedMeasurementTypes: [
-        MeasurementType.bloodPressure,
-        MeasurementType.heartRate,
+        MeasurementTypeContract.bloodPressure,
+        MeasurementTypeContract.heartRate,
       ],
       reqPairing: false,
       askToActivateBt: true,
@@ -168,8 +168,8 @@ class Constants {
       deviceModelType: DeviceModelType.omronM7,
       imagePath: 'assets/images/omron_m7.png',
       supportedMeasurementTypes: [
-        MeasurementType.bloodPressure,
-        MeasurementType.heartRate,
+        MeasurementTypeContract.bloodPressure,
+        MeasurementTypeContract.heartRate,
       ],
       reqPairing: true,
       actionButtonType: ActionButtonType.startButton,

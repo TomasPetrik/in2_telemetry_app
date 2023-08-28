@@ -6,23 +6,23 @@ part 'care_plan_activity.g.dart';
 part 'care_plan_activity.hive.dart';
 
 @freezed
-class CarePlanActivity with _$CarePlanActivity {
+class CarePlanActivityContract with _$CarePlanActivityContract {
   @HiveType(typeId: 11, adapterName: 'CarePlanActivityAdapter')
-  const factory CarePlanActivity(
-    @HiveField(0) ActivityType activityType,
-    @HiveField(1) MeasurementType measurementType,
+  const factory CarePlanActivityContract(
+    @HiveField(0) ActivityTypeContract activityType,
+    @HiveField(1) MeasurementTypeContract measurementType,
     @HiveField(2) int? goalValue,
   ) = _CarePlanActivity;
 
-  factory CarePlanActivity.fromJson(Map<String, dynamic> json) =>
-      _$CarePlanActivityFromJson(json);
+  factory CarePlanActivityContract.fromJson(Map<String, dynamic> json) =>
+      _$CarePlanActivityContractFromJson(json);
 
   @override
   String toString() => toJson().toString();
 }
 
 @HiveType(typeId: 12)
-enum ActivityType {
+enum ActivityTypeContract {
   @JsonValue('Measurement')
   @HiveField(0)
   measurement,
@@ -32,7 +32,7 @@ enum ActivityType {
 }
 
 @HiveType(typeId: 13)
-enum MeasurementType {
+enum MeasurementTypeContract {
   @JsonValue('Temperature')
   @HiveField(0)
   temperature('Temperature'),
@@ -58,6 +58,6 @@ enum MeasurementType {
   @HiveField(7)
   respiratoryRate('RespiratoryRate');
 
-  const MeasurementType(this.key);
+  const MeasurementTypeContract(this.key);
   final String key;
 }

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/measurement/composed_int_value.dart';
 import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
@@ -33,7 +33,7 @@ class OmronConnectionBloc
 
   Device? _device;
   late final UserAccount _userAccount;
-  late final MeasurementType _measurementType;
+  late final MeasurementTypeContract _measurementType;
 
   bool get reqModelPairing =>
       _device?.reqPairing == true &&

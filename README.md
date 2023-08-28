@@ -251,3 +251,6 @@ Pro kompilaci staging verze se používá následující příkaz:
 flutter build apk --flavor staging -t lib/main_staging.dart
 ```
 Výstupem je apk `build/app/outputs/flutter-apk/app-staging-release.apk`
+
+## Databáze
+Viz [database-readme.md](database-readme.md)

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/api/model/hospital.dart';
 import 'package:scalesoft_app/model/user_account.dart';
@@ -86,7 +86,7 @@ mixin BottomSheetMixin {
 
   Future<bool?> showResultRemovalConfirmation({
     required final BuildContext context,
-    required final MeasurementType measurementType,
+    required final MeasurementTypeContract measurementType,
   }) async {
     final result = await showModalBottomSheet<bool?>(
       context: context,

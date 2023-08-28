@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
@@ -31,7 +31,7 @@ class ResultsHelper {
   static List<PlannedMeasurement> getMeasurements(
     final List<CarePlan> allCarePlans,
     final ResultsWhenPeriod whenPeriod,
-    final MeasurementType? measurementType,
+    final MeasurementTypeContract? measurementType,
     final List<MeasurementResult> offlineResults,
   ) {
     List<PlannedMeasurement> measurements = [];
@@ -249,7 +249,7 @@ class ResultsHelper {
     required final ResultsWhenPeriod whenPeriod,
     required final List<MeasurementResult> allServerResults,
     required final List<MeasurementResult> allOfflineResults,
-    MeasurementType? measurementType,
+    MeasurementTypeContract? measurementType,
   }) {
     final dtNow = DateTime.now();
 
@@ -311,14 +311,14 @@ class ResultsHelper {
     MeasurementResult measurement,
   ) {
     switch (measurement.measurementType!) {
-      case MeasurementType.temperature:
+      case MeasurementTypeContract.temperature:
         return CandleData(
           measurementType: measurement.measurementType!,
           timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
           high: measurement.value,
           low: 0,
         );
-      case MeasurementType.bloodPressure:
+      case MeasurementTypeContract.bloodPressure:
         return CandleData(
           measurementType: measurement.measurementType!,
           timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
@@ -326,30 +326,30 @@ class ResultsHelper {
           low: measurement.composedValue?.secondValue,
         );
 
-      case MeasurementType.oxygenSaturation:
+      case MeasurementTypeContract.oxygenSaturation:
         return CandleData(
           measurementType: measurement.measurementType!,
           timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
           high: measurement.value,
           low: 0,
         );
-      case MeasurementType.heartRate:
+      case MeasurementTypeContract.heartRate:
         return CandleData(
           measurementType: measurement.measurementType!,
           timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
           high: measurement.value,
           low: 0,
         );
-      case MeasurementType.respiratoryRate:
+      case MeasurementTypeContract.respiratoryRate:
         return CandleData(
           measurementType: measurement.measurementType!,
           timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
           high: measurement.value,
           low: 0,
         );
-      case MeasurementType.steps:
-      case MeasurementType.globalPosition:
-      case MeasurementType.ews:
+      case MeasurementTypeContract.steps:
+      case MeasurementTypeContract.globalPosition:
+      case MeasurementTypeContract.ews:
         return CandleData(
           measurementType: measurement.measurementType!,
           timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
@@ -363,14 +363,14 @@ class ResultsHelper {
     Measurement measurement,
   ) {
     switch (measurement.measurementType!) {
-      case MeasurementType.temperature:
+      case MeasurementTypeContract.temperature:
         return CandleData(
           measurementType: measurement.measurementType!,
           timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
           high: measurement.temperature,
           low: 0,
         );
-      case MeasurementType.bloodPressure:
+      case MeasurementTypeContract.bloodPressure:
         return CandleData(
           measurementType: measurement.measurementType!,
           timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
@@ -378,30 +378,30 @@ class ResultsHelper {
           low: measurement.bloodPressure?.diastolic?.toDouble(),
         );
 
-      case MeasurementType.oxygenSaturation:
+      case MeasurementTypeContract.oxygenSaturation:
         return CandleData(
           measurementType: measurement.measurementType!,
           timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
           high: measurement.oxygenSaturation?.toDouble(),
           low: 0,
         );
-      case MeasurementType.heartRate:
+      case MeasurementTypeContract.heartRate:
         return CandleData(
           measurementType: measurement.measurementType!,
           timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
           high: measurement.heartRate?.toDouble(),
           low: 0,
         );
-      case MeasurementType.respiratoryRate:
+      case MeasurementTypeContract.respiratoryRate:
         return CandleData(
           measurementType: measurement.measurementType!,
           timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
           high: measurement.respiratoryRate?.toDouble(),
           low: 0,
         );
-      case MeasurementType.steps:
-      case MeasurementType.globalPosition:
-      case MeasurementType.ews:
+      case MeasurementTypeContract.steps:
+      case MeasurementTypeContract.globalPosition:
+      case MeasurementTypeContract.ews:
         return CandleData(
           measurementType: measurement.measurementType!,
           timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,

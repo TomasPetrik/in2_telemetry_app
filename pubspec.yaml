@@ -98,6 +98,12 @@ dependencies:
   # View pdf
   pdfx: ^2.3.0
 
+  # Database
+  drift: ^2.11.0
+  drift_dev: ^2.11.0
+  sqlite3_flutter_libs: ^0.5.15
+  path_provider: ^2.1.0
+
 dependency_overrides:
   win32: ^5.0.0
 

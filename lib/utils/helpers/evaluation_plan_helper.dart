@@ -1,5 +1,5 @@
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
@@ -160,7 +160,7 @@ class EvaluationPlanHelper {
 
       final List<SingleDayMeasurementsOfExactType> carePlanFulfillments = [];
 
-      Set<MeasurementType> measurementTypes = userAccount.carePlans!
+      Set<MeasurementTypeContract> measurementTypes = userAccount.carePlans!
           .map((carePlan) => carePlan.activity.measurementType)
           .toSet();
 

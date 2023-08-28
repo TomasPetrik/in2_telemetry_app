@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
@@ -22,7 +22,7 @@ class NoContentPlaceholder extends StatelessWidget with BottomSheetMixin {
 
   final UserAccount? userAccount;
   final bool enterMeasurementWithoutPlan;
-  final Set<MeasurementType> supportedMeasurementTypes;
+  final Set<MeasurementTypeContract> supportedMeasurementTypes;
   final NoContentType noContentType;
 
   String _getLabelByType() {

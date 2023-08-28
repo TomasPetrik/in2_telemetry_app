@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/model/measurement/composed_double_value.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
@@ -18,7 +18,7 @@ class MeasurementHelper {
   static void doMeasurement({
     required final BuildContext context,
     required final String userId,
-    final MeasurementType? selectedMeasurementType,
+    final MeasurementTypeContract? selectedMeasurementType,
     final bool showAllMeasurementTypes = false,
   }) async {
     if (selectedMeasurementType == null ||
@@ -122,7 +122,7 @@ class MeasurementHelper {
     List<MeasurementResult> measurementResults,
     List<Measurement> pendingResults,
     List<ResultsWhenPeriod> whenPeriods,
-    MeasurementType? measurementType,
+    MeasurementTypeContract? measurementType,
   ) {
     List<MeasurementResult> results = measurementResults.where((mResult) {
       return ((measurementType == null ||
@@ -149,7 +149,7 @@ class MeasurementHelper {
   static List<MeasurementResult> getOffilneResultsConverted(
     List<Measurement> pendingResults,
     List<ResultsWhenPeriod>? whenPeriods,
-    MeasurementType? measurementType,
+    MeasurementTypeContract? measurementType,
   ) {
     //offline (not synced results)
     final measurementResults = pendingResults
@@ -179,7 +179,7 @@ class MeasurementHelper {
 
   static ComposedDoubleValue? getComposedDoubleValue(Measurement measurement) {
     switch (measurement.measurementType) {
-      case MeasurementType.bloodPressure:
+      case MeasurementTypeContract.bloodPressure:
         return ComposedDoubleValue(
           firstValue: measurement.bloodPressure?.systolic?.toDouble(),
           secondValue: measurement.bloodPressure?.diastolic?.toDouble(),
@@ -192,17 +192,17 @@ class MeasurementHelper {
 
   static double? getValueByMeasurement(Measurement measurement) {
     switch (measurement.measurementType) {
-      case MeasurementType.temperature:
+      case MeasurementTypeContract.temperature:
         return measurement.temperature;
-      case MeasurementType.oxygenSaturation:
+      case MeasurementTypeContract.oxygenSaturation:
         return measurement.oxygenSaturation != null
             ? measurement.oxygenSaturation!.toDouble()
             : null;
-      case MeasurementType.heartRate:
+      case MeasurementTypeContract.heartRate:
         return measurement.heartRate != null
             ? measurement.heartRate!.toDouble()
             : null;
-      case MeasurementType.respiratoryRate:
+      case MeasurementTypeContract.respiratoryRate:
         return measurement.respiratoryRate != null
             ? measurement.respiratoryRate!.toDouble()
             : null;

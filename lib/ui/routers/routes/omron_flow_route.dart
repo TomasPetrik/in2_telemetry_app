@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/device_model.dart';
 import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
@@ -35,8 +35,8 @@ class OmronFlowRoute extends ApplicationRoute with PageBuilderMixin {
           final measurementTypeName = state.queryParams['measurementType']!;
           final modelName = state.queryParams['modelName'];
           final deviceManufacturer = state.queryParams['deviceManufacturer'];
-          final MeasurementType measurementType =
-              MeasurementType.values.firstWhere(
+          final MeasurementTypeContract measurementType =
+              MeasurementTypeContract.values.firstWhere(
             (measurementType) => measurementType.name == measurementTypeName,
           );
 

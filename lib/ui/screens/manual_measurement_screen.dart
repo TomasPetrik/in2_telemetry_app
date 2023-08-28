@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
@@ -27,9 +27,9 @@ class ManualMeasurementScreen extends StatefulWidget {
     required this.enabledMeasurementTypes,
   });
 
-  final MeasurementType measurementType;
+  final MeasurementTypeContract measurementType;
   final String userId;
-  final List<MeasurementType> enabledMeasurementTypes;
+  final List<MeasurementTypeContract> enabledMeasurementTypes;
 
   @override
   State<ManualMeasurementScreen> createState() =>
@@ -38,11 +38,11 @@ class ManualMeasurementScreen extends StatefulWidget {
 
 class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
     with BottomSheetMixin {
-  late MeasurementType dropdownValue;
+  late MeasurementTypeContract dropdownValue;
 
   late TextEditingController timeEditingController;
   late DailyTime measurementTime;
-  late List<MeasurementType> enabledMeasurementTypes;
+  late List<MeasurementTypeContract> enabledMeasurementTypes;
 
   @override
   void initState() {
@@ -96,23 +96,23 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                       ),
                     ),
                     Gaps.gap16,
-                    DropdownButtonFormField<MeasurementType>(
+                    DropdownButtonFormField<MeasurementTypeContract>(
                       value: dropdownValue,
                       icon: SvgPicture.asset('assets/icons/icon_right.svg'),
                       elevation: 0,
                       style: ScaleTextStyles.text.apply(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
-                      onChanged: (MeasurementType? value) {
+                      onChanged: (MeasurementTypeContract? value) {
                         measurementForm.reset;
                         setState(() {
                           dropdownValue = value!;
                         });
                       },
                       items: enabledMeasurementTypes
-                          .map<DropdownMenuItem<MeasurementType>>(
-                              (MeasurementType measurementType) {
-                        return DropdownMenuItem<MeasurementType>(
+                          .map<DropdownMenuItem<MeasurementTypeContract>>(
+                              (MeasurementTypeContract measurementType) {
+                        return DropdownMenuItem<MeasurementTypeContract>(
                           value: measurementType,
                           child: Text(
                             localization

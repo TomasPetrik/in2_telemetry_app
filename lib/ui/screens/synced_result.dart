@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/report/report.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
@@ -35,7 +35,7 @@ class SyncedResult extends StatelessWidget {
   final String userId;
   final String deviceId;
   final HwMeasurementResult hwMeasurementResult;
-  final MeasurementType measurementType;
+  final MeasurementTypeContract measurementType;
   final DeviceInfo? deviceInfo;
 
   String _getDesc(BuildContext context) {
@@ -74,13 +74,13 @@ class SyncedResult extends StatelessWidget {
   String? _getMeasurementValueFormatted() {
     if (hwMeasurementResult.resultState == ResultState.success) {
       switch (measurementType) {
-        case MeasurementType.bloodPressure:
+        case MeasurementTypeContract.bloodPressure:
           final systolic =
               hwMeasurementResult.measurementInfo?.systolic ?? 'N/A';
           final diastolic =
               hwMeasurementResult.measurementInfo?.diastolic ?? 'N/A';
           return '$systolic / $diastolic mmHg';
-        case MeasurementType.heartRate:
+        case MeasurementTypeContract.heartRate:
           final hearthRate =
               hwMeasurementResult.measurementInfo?.pulseRate ?? 'N/A';
           return '$hearthRate ${localization.common_heart_rate_unit}';

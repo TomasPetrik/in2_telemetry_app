@@ -1,6 +1,6 @@
 import 'package:hive_flutter/adapters.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/providers/box_provider.dart';
 
@@ -16,7 +16,7 @@ class MeasurementsDbProvider extends BoxProvider<MeasurementResults> {
 
   MeasurementResults? get(
     String userId,
-    MeasurementType measurementType,
+    MeasurementTypeContract measurementType,
     int year,
     int month,
   ) {
@@ -27,7 +27,7 @@ class MeasurementsDbProvider extends BoxProvider<MeasurementResults> {
 
   Future<void> put(
     String userId,
-    MeasurementType measurementType,
+    MeasurementTypeContract measurementType,
     int year,
     int month,
     MeasurementResults measurementResults,

@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scalesoft_app/api/model/care_plan/author.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_version.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaulation_aggregated.dart';
@@ -25,7 +25,7 @@ class CarePlan with _$CarePlan {
     @HiveField(0) required int id,
     @HiveField(1) String? targetUserMuid,
     @HiveField(2) String? finishedByUserMuid,
-    @HiveField(3) required CarePlanActivity activity,
+    @HiveField(3) required CarePlanActivityContract activity,
     @HiveField(4) required int versionId,
     @HiveField(5) required Author author,
     @JsonKey(fromJson: toLocalDate)

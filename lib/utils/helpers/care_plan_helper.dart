@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_version.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
@@ -54,14 +54,14 @@ class CarePlanHelper {
     return yesterdayMeasurements.isNotEmpty;
   }
 
-  static Set<MeasurementType> getMeasurementTypes(List<CarePlan> carePlans) {
+  static Set<MeasurementTypeContract> getMeasurementTypes(List<CarePlan> carePlans) {
     final measurementTypes = carePlans.map((x) => x.activity.measurementType);
     final result = {...measurementTypes};
 
     return result;
   }
 
-  static Set<MeasurementType> getMeasurementTypesByResults(
+  static Set<MeasurementTypeContract> getMeasurementTypesByResults(
     List<MeasurementResult> results,
   ) {
     final measurementTypes = results.map((x) => x.measurementType!);

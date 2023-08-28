@@ -1,5 +1,5 @@
 import 'package:scalesoft_app/api/model/auth_data.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/hospital.dart';
 import 'package:scalesoft_app/configuration/configuration_base.dart';
 
@@ -15,7 +15,7 @@ class StagingConfiguration extends BaseConfiguration {
         authUrl: 'https://portal-test-auth.nemuh.cz/connect/authorize',
         tokenUrl: 'https://portal-test-auth.nemuh.cz/connect/token',
       ),
-      enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate],
+      enabledMeasurementTypes: [MeasurementTypeContract.bloodPressure, MeasurementTypeContract.heartRate],
     ),
     const Hospital(
       id: 1,
@@ -26,7 +26,7 @@ class StagingConfiguration extends BaseConfiguration {
         authUrl: 'https://portal-test-auth.nem-km.cz/connect/authorize',
         tokenUrl: 'https://portal-test-auth.nem-km.cz/connect/token',
       ),
-      enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate],
+      enabledMeasurementTypes: [MeasurementTypeContract.bloodPressure, MeasurementTypeContract.heartRate],
     ),
     const Hospital(
       id: 2,
@@ -37,7 +37,7 @@ class StagingConfiguration extends BaseConfiguration {
         authUrl: 'https://portal-auth-test.nemocnice-vs.cz/connect/authorize',
         tokenUrl: 'https://portal-auth-test.nemocnice-vs.cz/connect/token',
       ),
-      enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate],
+      enabledMeasurementTypes: [MeasurementTypeContract.bloodPressure, MeasurementTypeContract.heartRate],
     ),
 
     // TODO: Add URLs and uncomment #IN2-8308
@@ -60,7 +60,7 @@ class StagingConfiguration extends BaseConfiguration {
         authUrl: 'https://in2-win-auth.devscale.cz/connect/authorize',
         tokenUrl: 'https://in2-win-auth.devscale.cz/connect/token',
       ),
-      enabledMeasurementTypes: MeasurementType.values,
+      enabledMeasurementTypes: MeasurementTypeContract.values,
     ),
   ];
 

@@ -1,5 +1,5 @@
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
@@ -30,7 +30,7 @@ class ChartRoute extends ApplicationRoute with PageBuilderMixin {
           final dateTimeString = state.params['dateTime']!;
           final initDt = DateTime.parse(dateTimeString);
           final measurementTypeName = state.params['measurementType']!;
-          final measurementType = MeasurementType.values.firstWhere(
+          final measurementType = MeasurementTypeContract.values.firstWhere(
             (measurementType) => measurementType.name == measurementTypeName,
           );
 

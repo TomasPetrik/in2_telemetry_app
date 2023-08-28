@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 
@@ -15,7 +15,7 @@ class ResultsBlocState with _$ResultsBlocState {
     List<CarePlan>? currentCarePlans,
     List<MeasurementResult>? uncategorizedResults,
     List<MeasurementResult>? results,
-    MeasurementType? measurementType,
+    MeasurementTypeContract? measurementType,
     Map<ResultsWhenPeriod, int?>? plansEvaluationPerPeriod,
   }) = _ResultsBlocState;
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
@@ -30,7 +30,7 @@ class CurrentPlansChangeEvent extends CarePlanBlocEvent {
   const CurrentPlansChangeEvent(
     this.measurementType,
   );
-  final MeasurementType? measurementType;
+  final MeasurementTypeContract? measurementType;
 }
 
 class ReloadCarePlansEvent extends CarePlanBlocEvent {

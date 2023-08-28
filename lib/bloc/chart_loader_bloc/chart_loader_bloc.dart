@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/chart_loader_bloc/chart_loader_bloc_event.dart';
@@ -26,7 +26,7 @@ class ChartLoaderBloc extends Bloc<ChartLoaderBlocEvent, ChartLoaderBlocState> {
     this._pendingResultsDbProvider,
   ) : super(const ChartLoaderBlocState()) {
     List<CandleData>? getCandles(
-      MeasurementType measurementType,
+      MeasurementTypeContract measurementType,
       UserAccount userAccount,
       CalendarMonth calendarMonth,
     ) {
@@ -133,7 +133,7 @@ class ChartLoaderBloc extends Bloc<ChartLoaderBlocEvent, ChartLoaderBlocState> {
     }
 
     Future<void> loadMonthMeasurements(
-      MeasurementType measurementType,
+      MeasurementTypeContract measurementType,
       UserAccount userAccount,
       CalendarMonth calendarMonth,
     ) async {

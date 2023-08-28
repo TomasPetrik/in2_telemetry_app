@@ -5,7 +5,7 @@ import 'package:scalesoft_app/api/model/auth_data.dart';
 import 'package:scalesoft_app/api/model/auth_token.dart';
 import 'package:scalesoft_app/api/model/care_plan/author.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_version.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaulation_aggregated.dart';
@@ -35,7 +35,7 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
 
   @override
   void registerAdapters() {
-    Hive.registerAdapter(UserAccountAdapter());
+    Hive.registerAdapter(UserAccountAdapterV1());
     Hive.registerAdapter(UserAdapter());
     Hive.registerAdapter(UserPermissionAdapter());
     Hive.registerAdapter(AuthTokenAdapter());

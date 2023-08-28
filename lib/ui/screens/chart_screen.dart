@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc.dart';
 import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc_event.dart';
@@ -26,7 +26,7 @@ class ChartScreen extends StatefulWidget {
 
   final DateTime initDt;
   final UserAccount userAccount;
-  final MeasurementType measurementType;
+  final MeasurementTypeContract measurementType;
 
   @override
   State<ChartScreen> createState() => _ChartScreenState();
@@ -36,7 +36,7 @@ class _ChartScreenState extends State<ChartScreen> {
   late CalendarMonth calendarMonth;
   final ChartBloc chartBloc = getIt<ChartBloc>();
   late UserAccount userAccount;
-  late MeasurementType measurementType;
+  late MeasurementTypeContract measurementType;
   late DateTime initDt;
   late List<CarePlan> carePlans;
 

@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/cubit/device_management/device_management_state.dart';
 import 'package:scalesoft_app/model/user_account.dart';
@@ -15,7 +15,7 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
   final PairedDevicesDbProvider _pairedDevicesDbProvider;
   late UserAccount userAccount;
 
-  bool supportedDeviceMeasurement(MeasurementType measurementType) {
+  bool supportedDeviceMeasurement(MeasurementTypeContract measurementType) {
     return Constants.supportedDevices.any(
       (device) => device.supportedMeasurementTypes!.contains(
         measurementType,
@@ -23,7 +23,7 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
     );
   }
 
-  List<Device> getSuitableDevices(MeasurementType measurementType) {
+  List<Device> getSuitableDevices(MeasurementTypeContract measurementType) {
     List<Device> prioritisedDevices = [];
 
     final allDevices = _pairedDevicesDbProvider.box.values
@@ -90,8 +90,8 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
         );
 
   void init(
-    MeasurementType measurementType,
-    Set<MeasurementType>? allMeasurementTypes,
+    MeasurementTypeContract measurementType,
+    Set<MeasurementTypeContract>? allMeasurementTypes,
     String userId,
   ) {
     userAccount = _accountDbProvider.get(userId)!;
@@ -112,7 +112,7 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
     );
   }
 
-  void selectMeasurementType(MeasurementType measurementType) {
+  void selectMeasurementType(MeasurementTypeContract measurementType) {
     final supportDeviceMeasurement =
         supportedDeviceMeasurement(measurementType);
     final suitableDevices = getSuitableDevices(measurementType);
@@ -126,7 +126,7 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
     );
   }
 
-  void removeDevice(Device device, MeasurementType measurementType) async {
+  void removeDevice(Device device, MeasurementTypeContract measurementType) async {
     await _pairedDevicesDbProvider.remove(device);
     final suitableDevices = getSuitableDevices(measurementType);
 

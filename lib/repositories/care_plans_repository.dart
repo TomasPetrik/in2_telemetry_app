@@ -2,7 +2,7 @@ import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/care_plan_api_client.dart';
 import 'package:scalesoft_app/api/model/active_care_plans_response.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaulation_aggregated.dart';
 import 'package:scalesoft_app/api/model/care_plan_versions_response.dart';
@@ -57,7 +57,7 @@ class CarePlansRepository {
 
   Future<List<MeasurementResult>> loadResults({
     required UserAccount userAccount,
-    required MeasurementType measurementType,
+    required MeasurementTypeContract measurementType,
     required String startDateTime,
     required String endDateTime,
   }) async {
