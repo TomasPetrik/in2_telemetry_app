@@ -204,7 +204,7 @@ class SyncedResult extends StatelessWidget {
           const SliverGap(Dimensions.padding24),
           SliverToBoxAdapter(
             child: HighlightedElevatedButton(
-              label: localization.common_continue,
+              label: localization.measurement_summary_screen_send_results,
               onPressed: () async {
                 await getIt<PendingResultsDbProvider>()
                     .save(hwMeasurementResult.measurement!)

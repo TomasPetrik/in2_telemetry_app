@@ -321,13 +321,13 @@ class I10n {
     );
   }
 
-  /// `{actionButtonType, select, regular{akčního tlačítka} startButton{tlačítka START} other{ }}`
+  /// `{actionButtonType, select, regular{akčního tlačítka} startButton{START|STOP} other{ }}`
   String common_action_button_label(Object actionButtonType) {
     return Intl.select(
       actionButtonType,
       {
         'regular': 'akčního tlačítka',
-        'startButton': 'tlačítka START',
+        'startButton': 'START|STOP',
         'other': ' ',
       },
       name: 'common_action_button_label',
@@ -1833,6 +1833,16 @@ class I10n {
     );
   }
 
+  /// `Hledání tlakoměru...`
+  String get find_device_screen_searching_tonometer {
+    return Intl.message(
+      'Hledání tlakoměru...',
+      name: 'find_device_screen_searching_tonometer',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Čekáme až se změříte...`
   String get find_device_screen_waiting_on_measurement {
     return Intl.message(
@@ -1843,30 +1853,30 @@ class I10n {
     );
   }
 
-  /// `Zařízení připojeno`
+  /// `Tlakoměr připojen`
   String get find_device_screen_device_connected {
     return Intl.message(
-      'Zařízení připojeno',
+      'Tlakoměr připojen',
       name: 'find_device_screen_device_connected',
       desc: '',
       args: [],
     );
   }
 
-  /// `Probíhá synchronizace výsledků...`
+  /// `Probíhá přenos dat z tlakoměru...`
   String get find_device_screen_sync_results {
     return Intl.message(
-      'Probíhá synchronizace výsledků...',
+      'Probíhá přenos dat z tlakoměru...',
       name: 'find_device_screen_sync_results',
       desc: '',
       args: [],
     );
   }
 
-  /// `Probíhá párování zařízení...`
+  /// `Probíhá párování s tlakoměrem...`
   String get find_device_screen_pairing_device {
     return Intl.message(
-      'Probíhá párování zařízení...',
+      'Probíhá párování s tlakoměrem...',
       name: 'find_device_screen_pairing_device',
       desc: '',
       args: [],
@@ -1883,40 +1893,40 @@ class I10n {
     );
   }
 
-  /// `Počkejte, až vás zařízení vyzve k párování`
+  /// `Počkejte, na výzvu k párování`
   String get find_device_screen_step2_p {
     return Intl.message(
-      'Počkejte, až vás zařízení vyzve k párování',
+      'Počkejte, na výzvu k párování',
       name: 'find_device_screen_step2_p',
       desc: '',
       args: [],
     );
   }
 
-  /// `Párování zařízení`
+  /// `Párování s tlakoměrem`
   String get find_device_screen_step3_p {
     return Intl.message(
-      'Párování zařízení',
+      'Párování s tlakoměrem',
       name: 'find_device_screen_step3_p',
       desc: '',
       args: [],
     );
   }
 
-  /// `Spusťte na zařízení měření pomocí {actionButtonLabel} a počkejte na konec měření`
+  /// `Vypněte tlakoměr pomocí tlačítka {actionButtonLabel}, poté spusťte měření dalším stisknutím tlačítka {actionButtonLabel} a počkejte na jeho dokončení`
   String find_device_screen_step4_p(String actionButtonLabel) {
     return Intl.message(
-      'Spusťte na zařízení měření pomocí $actionButtonLabel a počkejte na konec měření',
+      'Vypněte tlakoměr pomocí tlačítka $actionButtonLabel, poté spusťte měření dalším stisknutím tlačítka $actionButtonLabel a počkejte na jeho dokončení',
       name: 'find_device_screen_step4_p',
       desc: '',
       args: [actionButtonLabel],
     );
   }
 
-  /// `Počkejte na synchronizaci výsledků`
+  /// `Počkejte na přenesení výsledků z tlakoměru`
   String get find_device_screen_step5_p {
     return Intl.message(
-      'Počkejte na synchronizaci výsledků',
+      'Počkejte na přenesení výsledků z tlakoměru',
       name: 'find_device_screen_step5_p',
       desc: '',
       args: [],
@@ -1933,10 +1943,10 @@ class I10n {
     );
   }
 
-  /// `Spusťte na zařízení měření pomocí {actionButtonLabel} a počkejte na konec měření`
+  /// `Spusťte na tlakoměru měření pomocí tlačítka {actionButtonLabel} a počkejte na jeho dokončení`
   String find_device_screen_step2(String actionButtonLabel) {
     return Intl.message(
-      'Spusťte na zařízení měření pomocí $actionButtonLabel a počkejte na konec měření',
+      'Spusťte na tlakoměru měření pomocí tlačítka $actionButtonLabel a počkejte na jeho dokončení',
       name: 'find_device_screen_step2',
       desc: '',
       args: [actionButtonLabel],
@@ -1953,20 +1963,20 @@ class I10n {
     );
   }
 
-  /// `Počkejte na synchronizaci výsledků`
+  /// `Počkejte na přenesení výsledků z tlakoměru`
   String get find_device_screen_step4 {
     return Intl.message(
-      'Počkejte na synchronizaci výsledků',
+      'Počkejte na přenesení výsledků z tlakoměru',
       name: 'find_device_screen_step4',
       desc: '',
       args: [],
     );
   }
 
-  /// `Stránky nemocnice o zařízení`
+  /// `Stránky nemocnice o tlakoměru`
   String get find_device_screen_device_reference {
     return Intl.message(
-      'Stránky nemocnice o zařízení',
+      'Stránky nemocnice o tlakoměru',
       name: 'find_device_screen_device_reference',
       desc: '',
       args: [],
@@ -2098,6 +2108,16 @@ class I10n {
     return Intl.message(
       'Neodeslat výsledky',
       name: 'measurement_summary_screen_disallow_to_send',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Odeslat výsledek měření`
+  String get measurement_summary_screen_send_results {
+    return Intl.message(
+      'Odeslat výsledek měření',
+      name: 'measurement_summary_screen_send_results',
       desc: '',
       args: [],
     );

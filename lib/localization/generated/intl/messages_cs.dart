@@ -30,7 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(actionButtonType) => "${Intl.select(actionButtonType, {
             'regular': 'akčního tlačítka',
-            'startButton': 'tlačítka START',
+            'startButton': 'START|STOP',
             'other': ' ',
           })}";
 
@@ -192,10 +192,10 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m26(deviceName) => "Zapněte ${deviceName} v režimu párování";
 
   static String m27(actionButtonLabel) =>
-      "Spusťte na zařízení měření pomocí ${actionButtonLabel} a počkejte na konec měření";
+      "Spusťte na tlakoměru měření pomocí tlačítka ${actionButtonLabel} a počkejte na jeho dokončení";
 
   static String m28(actionButtonLabel) =>
-      "Spusťte na zařízení měření pomocí ${actionButtonLabel} a počkejte na konec měření";
+      "Vypněte tlakoměr pomocí tlačítka ${actionButtonLabel}, poté spusťte měření dalším stisknutím tlačítka ${actionButtonLabel} a počkejte na jeho dokončení";
 
   static String m29(deviceModel) => "${Intl.select(deviceModel, {
             'beurerBm77': 'Akční tlačítko je pod displejem',
@@ -404,10 +404,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "dialog_req_notifications_title":
             MessageLookupByLibrary.simpleMessage("Povolení notifikací"),
         "find_device_screen_device_connected":
-            MessageLookupByLibrary.simpleMessage("Zařízení připojeno"),
+            MessageLookupByLibrary.simpleMessage("Tlakoměr připojen"),
         "find_device_screen_device_reference":
             MessageLookupByLibrary.simpleMessage(
-                "Stránky nemocnice o zařízení"),
+                "Stránky nemocnice o tlakoměru"),
         "find_device_screen_disabled_bt_btn_settings":
             MessageLookupByLibrary.simpleMessage("Nastavení"),
         "find_device_screen_disabled_bt_desc":
@@ -424,25 +424,27 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Bluetooth zakázán "),
         "find_device_screen_pairing_device":
             MessageLookupByLibrary.simpleMessage(
-                "Probíhá párování zařízení..."),
+                "Probíhá párování s tlakoměrem..."),
         "find_device_screen_searching_device":
             MessageLookupByLibrary.simpleMessage("Hledání zařízení..."),
+        "find_device_screen_searching_tonometer":
+            MessageLookupByLibrary.simpleMessage("Hledání tlakoměru..."),
         "find_device_screen_step1": m25,
         "find_device_screen_step1_p": m26,
         "find_device_screen_step2": m27,
         "find_device_screen_step2_p": MessageLookupByLibrary.simpleMessage(
-            "Počkejte, až vás zařízení vyzve k párování"),
+            "Počkejte, na výzvu k párování"),
         "find_device_screen_step3": MessageLookupByLibrary.simpleMessage(
             "Po meření stiskněte opět akční tlačítko"),
         "find_device_screen_step3_p":
-            MessageLookupByLibrary.simpleMessage("Párování zařízení"),
+            MessageLookupByLibrary.simpleMessage("Párování s tlakoměrem"),
         "find_device_screen_step4": MessageLookupByLibrary.simpleMessage(
-            "Počkejte na synchronizaci výsledků"),
+            "Počkejte na přenesení výsledků z tlakoměru"),
         "find_device_screen_step4_p": m28,
         "find_device_screen_step5_p": MessageLookupByLibrary.simpleMessage(
-            "Počkejte na synchronizaci výsledků"),
+            "Počkejte na přenesení výsledků z tlakoměru"),
         "find_device_screen_sync_results": MessageLookupByLibrary.simpleMessage(
-            "Probíhá synchronizace výsledků..."),
+            "Probíhá přenos dat z tlakoměru..."),
         "find_device_screen_waiting_on_measurement":
             MessageLookupByLibrary.simpleMessage("Čekáme až se změříte..."),
         "hospital_selection_dialog_measurement_for":
@@ -473,6 +475,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "measurement_summary_screen_result_success_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Máte hotovo! Výsledek se připíše po potvrzení."),
+        "measurement_summary_screen_send_results":
+            MessageLookupByLibrary.simpleMessage("Odeslat výsledek měření"),
         "measurement_summary_screen_success_subtitle":
             MessageLookupByLibrary.simpleMessage(
                 "Výsledky budou odeslány po potvrzení"),
