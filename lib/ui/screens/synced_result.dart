@@ -251,17 +251,27 @@ class SyncedResult extends StatelessWidget {
         const SliverGap(Dimensions.padding24),
         if (hwMeasurementResult.resultState == ResultState.success)
           SliverToBoxAdapter(
-            child: HighlightedElevatedButton(
-              label: localization.measurement_summary_screen_disallow_to_send,
-              onPressed: () {
-                getIt<ReportService>().trackEvent(
-                  userId: userId,
-                  severity: Severity.info,
-                  message: EventsConstants.eventMeasurementWontSend,
-                );
-                GoRouter.of(context).goNamed(DashboardRoute.name);
-              },
-              buttonType: ButtonType.secondary,
+            child: Padding(
+              padding: Paddings.horizontal16,
+              child: Center(
+                child: InkWell(
+                  onTap: () {
+                    getIt<ReportService>().trackEvent(
+                      userId: userId,
+                      severity: Severity.info,
+                      message: EventsConstants.eventMeasurementWontSend,
+                    );
+                    GoRouter.of(context).goNamed(DashboardRoute.name);
+                  },
+                  child: Text(
+                    localization.measurement_summary_screen_disallow_to_send,
+                    style: ScaleTextStyles.textAccent.apply(
+                      color: Theme.of(context).colorScheme.primary,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ),
             ),
           )
         else
