@@ -63,9 +63,7 @@ extension DateParse on DateTime {
   }
 
   DateTime getTomorrowMidnight() {
-    final today = DateTime(year, month, day);
-    final tomorrowMidnight = today.add(const Duration(days: 1));
-    return tomorrowMidnight;
+    return DateTime(year, month, day+1);
   }
 
   DateTime getTodayMidnight() {
