@@ -128,10 +128,10 @@ class NotificationsHelper {
       message += localization.notification_periodical_frequency_from_to(
         plannedMeasurement.carePlan.frequency,
         plannedMeasurement.isLongPeriod
-            ? plannedMeasurement.whenStart.toDateFormatLong()
+            ? plannedMeasurement.whenStart.dateFormatLong
             : plannedMeasurement.whenStart.toLocal().toTimeOfDay().toString(),
         plannedMeasurement.isLongPeriod
-            ? plannedMeasurement.whenEnd.toDateFormatLong()
+            ? plannedMeasurement.whenEnd.dateFormatLong
             : plannedMeasurement.whenEnd.toLocal().toTimeOfDay().toString(),
       );
     } else {

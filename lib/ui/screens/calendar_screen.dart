@@ -268,7 +268,7 @@ class _CalendarFooter extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              selectedDay.startDt.toRegularDate(),
+                              selectedDay.startDt.dateFormat,
                               style: ScaleTextStyles.textAccent.apply(
                                 color: Theme.of(context).colorScheme.onPrimary,
                               ),

@@ -88,7 +88,7 @@ class FutureMeasurementsList extends StatelessWidget {
                   Padding(
                     padding: Paddings.left16,
                     child: Text(
-                      dayDt.toRegularDate(),
+                      dayDt.dateFormat,
                       style: ScaleTextStyles.label.apply(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),

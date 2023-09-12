@@ -207,8 +207,8 @@ class SyncService {
       return;
     }
 
-    final yesterdayMidnight = DateTime.now().getYesterdayMidnight();
-    var tomorrowMidnight = DateTime.now().getTomorrowMidnight();
+    final yesterdayMidnight = DateTime.now().yesterday;
+    var tomorrowMidnight = DateTime.now().tomorrow;
 
     for (final carePlan in carePlans) {
       if (carePlan.scheduledEnd?.isBefore(yesterdayMidnight) == true ||
@@ -250,8 +250,8 @@ class SyncService {
 
     const supportedMeasurementTypes = Constants.supportedMeasurementTypes;
 
-    final yesterdayMidnight = DateTime.now().getYesterdayMidnight();
-    final tomorrowMidnight = DateTime.now().getTomorrowMidnight();
+    final yesterdayMidnight = DateTime.now().yesterday;
+    final tomorrowMidnight = DateTime.now().tomorrow;
 
     final List<MeasurementResult> allResults = [];
     for (final mesurementType in supportedMeasurementTypes) {

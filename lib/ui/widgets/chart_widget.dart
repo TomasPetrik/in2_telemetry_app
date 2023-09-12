@@ -80,11 +80,11 @@ class ChartWidget extends StatelessWidget {
                             svgDrawables[0]:
                                 DateTime.fromMillisecondsSinceEpoch(
                               candle.timestamp,
-                            ).toRegularDate(),
+                            ).dateFormat,
                             svgDrawables[1]:
                                 DateTime.fromMillisecondsSinceEpoch(
                               candle.timestamp,
-                            ).toTimeShort(),
+                            ).timeFormatShort,
                             svgDrawables[2]: candle.resultFormatted,
                           },
                         ),

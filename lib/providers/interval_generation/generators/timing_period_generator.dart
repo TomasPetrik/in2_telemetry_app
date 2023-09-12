@@ -65,10 +65,10 @@ class TimingPeriodGenerator {
     // First, align the interval with the start of a period unit (next midnight / start of next month / ...)
     final alignedInterval = switch (periodUnit) {
       TimeUnit.hour => periodStart.add(const Duration(hours: 1)),
-      TimeUnit.day => periodStart.getTomorrowMidnight(),
-      TimeUnit.week => periodStart.nextWeekStart(),
-      TimeUnit.month => periodStart.nextMonthStart(),
-      TimeUnit.year => periodStart.nextYearStart(),
+      TimeUnit.day => periodStart.tomorrow,
+      TimeUnit.week => periodStart.nextWeekStart,
+      TimeUnit.month => periodStart.nextMonthStart,
+      TimeUnit.year => periodStart.nextYearStart,
     };
 
     // We've "used up" one period by aligning with a period unit. Now we'll add the remaining periods.

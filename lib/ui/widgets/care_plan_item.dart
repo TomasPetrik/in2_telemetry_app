@@ -115,11 +115,11 @@ class CarePlanItem extends StatelessWidget {
             Text(
               carePlan.scheduledEnd != null
                   ? localization.user_details_screen_plan_active_from_to_date(
-                      carePlan.scheduledStart.toRegularDate(),
-                      carePlan.scheduledEnd!.toRegularDate(),
+                      carePlan.scheduledStart.dateFormat,
+                      carePlan.scheduledEnd!.dateFormat,
                     )
                   : localization.user_details_screen_plan_active_from_date(
-                      carePlan.scheduledStart.toRegularDate(),
+                      carePlan.scheduledStart.dateFormat,
                     ),
               style: ScaleTextStyles.textAccent.apply(
                 color: Theme.of(context).colorScheme.onSecondary,

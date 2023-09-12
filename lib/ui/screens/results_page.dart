@@ -168,8 +168,8 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                             ResultsList(
                               dayDt: state.selectedWhenPeriod ==
                                       ResultsWhenPeriod.today
-                                  ? DateTime.now().getTodayMidnight()
-                                  : DateTime.now().getYesterdayMidnight(),
+                                  ? DateTime.now().date
+                                  : DateTime.now().yesterday,
                               isMultiUser: getIt<Session>().isMultiUser == true,
                               mResults: state.results!,
                               canOpenChart: true,
@@ -188,8 +188,8 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                                 ResultsList(
                                   dayDt: state.selectedWhenPeriod ==
                                           ResultsWhenPeriod.today
-                                      ? DateTime.now().getTodayMidnight()
-                                      : DateTime.now().getYesterdayMidnight(),
+                                      ? DateTime.now().date
+                                      : DateTime.now().yesterday,
                                   isMultiUser:
                                       getIt<Session>().isMultiUser == true,
                                   mResults: state.results!,

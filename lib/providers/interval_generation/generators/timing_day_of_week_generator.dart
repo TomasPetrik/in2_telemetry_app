@@ -31,10 +31,10 @@ class TimingDayOfWeekGenerator {
 
     var start = currentInterval.start;
     while (start.isBefore(currentInterval.end)) {
-      var nextMidnight = start.getTomorrowMidnight();
+      var nextMidnight = start.tomorrow;
 
       var currentEnd = [currentInterval.end, nextMidnight].min;
-      var dayOfWeek = start.toWeekDay();
+      var dayOfWeek = start.weekDay;
 
       if (dayOfWeek == forDayOfWeek) {
         result.add(DateTimeRange(start: start, end: currentEnd));

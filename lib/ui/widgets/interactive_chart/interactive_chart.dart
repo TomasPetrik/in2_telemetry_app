@@ -302,10 +302,10 @@ class InteractiveChartState extends State<InteractiveChart> {
 
     if (visibleDataCount > 100) {
       // If more than 20 data points are visible, we should show date
-      return date.toDateShort(); // yyyy-mm
+      return date.dateFormatShort; // yyyy-mm
     } else {
       // Otherwise, we should show time
-      return date.toTimeShort(); // mm-dd
+      return date.timeFormatShort; // mm-dd
     }
   }
 

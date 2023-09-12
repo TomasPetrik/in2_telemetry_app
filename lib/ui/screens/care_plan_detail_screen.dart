@@ -133,14 +133,14 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
                   SliverNameValueRow(
                     name:
                         localization.care_plan_detail_screen_active_from_date,
-                    value: widget.carePlan.scheduledStart.toRegularDate(),
+                    value: widget.carePlan.scheduledStart.dateFormat,
                   ),
                   if (widget.carePlan.scheduledEnd != null) ...[
                     const SliverGap(Dimensions.padding8),
                     SliverNameValueRow(
                       name:
                           localization.care_plan_detail_screen_active_to_date,
-                      value: widget.carePlan.scheduledEnd!.toRegularDate(),
+                      value: widget.carePlan.scheduledEnd!.dateFormat,
                     ),
                   ],
                   const SliverGap(Dimensions.padding8),

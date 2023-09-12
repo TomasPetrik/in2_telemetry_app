@@ -126,10 +126,8 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                               mResult.isLongPeriod
                                   ? localization
                                       .dashboard_screen_measurement_periodical_interval(
-                                      mResult.measurementIntervalStart!
-                                          .toDateFormatLong(),
-                                      mResult.measurementIntervalEnd!
-                                          .toDateFormatLong(),
+                                      mResult.measurementIntervalStart!.dateFormatLong,
+                                      mResult.measurementIntervalEnd!.dateFormatLong,
                                     )
                                   : localization
                                       .dashboard_screen_measurement_interval(

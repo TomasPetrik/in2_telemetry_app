@@ -102,7 +102,7 @@ class FutureMeasurementsScreen extends StatelessWidget {
             left: 0,
             right: 0,
             child: BluredScaleAppBar(
-              title: date.toRegularDate(),
+              title: date.dateFormat,
               subTitle:
                   '${userNames.first}${userNames.length > 1 ? ' ${localization.common_plus_n_others(userNames.length - 1)}' : ''}',
               showClose: true,

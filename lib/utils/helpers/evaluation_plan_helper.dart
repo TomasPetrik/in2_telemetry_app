@@ -80,8 +80,8 @@ class EvaluationPlanHelper {
 
     final dtNow = DateTime.now();
     final dayFinishAt = whenPeriod == ResultsWhenPeriod.today
-        ? dtNow.getTomorrowMidnight()
-        : dtNow.getTodayMidnight();
+        ? dtNow.tomorrow
+        : dtNow.date;
 
     //filter out periodical measurement
     //which are not ending within exact day,

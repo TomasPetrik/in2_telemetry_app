@@ -144,7 +144,7 @@ class SyncedResult extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          hwMeasurementResult.measurementDt.toTimeShort(),
+                          hwMeasurementResult.measurementDt.timeFormatShort,
                           style: ScaleTextStyles.label.apply(
                             color: Theme.of(context).colorScheme.onPrimary,
                           ),

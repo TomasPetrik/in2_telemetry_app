@@ -49,7 +49,7 @@ class ResultsHelper {
       case ResultsWhenPeriod.today:
         measurements = Calendar.getMeasurementsOfDay(
           carePlans: carePlans,
-          dayDt: DateTime.now().getTodayMidnight(),
+          dayDt: DateTime.now().date,
           offlineResults: offlineResults,
           all: true,
         );
@@ -57,7 +57,7 @@ class ResultsHelper {
       case ResultsWhenPeriod.yesterday:
         measurements = Calendar.getMeasurementsOfDay(
           carePlans: carePlans,
-          dayDt: DateTime.now().getYesterdayMidnight(),
+          dayDt: DateTime.now().yesterday,
           offlineResults: offlineResults,
           all: true,
         );
@@ -253,9 +253,9 @@ class ResultsHelper {
   }) {
     final dtNow = DateTime.now();
 
-    final yeasterdayMidnight = dtNow.getYesterdayMidnight();
-    final todayMidnight = dtNow.getTodayMidnight();
-    final tomorrowMidnight = dtNow.getTomorrowMidnight();
+    final yesterdayMidnight = dtNow.yesterday;
+    final todayMidnight = dtNow.date;
+    final tomorrowMidnight = dtNow.tomorrow;
 
     final offlineResults = allOfflineResults.where((offlineResult) {
       return (measurementType == null ||
@@ -266,7 +266,7 @@ class ResultsHelper {
                   offlineResult.measurementDateTime.isAfter(todayMidnight)) ||
           (whenPeriod == ResultsWhenPeriod.yesterday &&
               offlineResult.measurementDateTime.isBefore(todayMidnight) &&
-              offlineResult.measurementDateTime.isAfter(yeasterdayMidnight));
+              offlineResult.measurementDateTime.isAfter(yesterdayMidnight));
     }).toList();
 
     final serverResults = allServerResults.where((serverResult) {
@@ -278,7 +278,7 @@ class ResultsHelper {
               (whenPeriod == ResultsWhenPeriod.yesterday &&
                   serverResult.measurementDateTime.isBefore(todayMidnight) &&
                   serverResult.measurementDateTime
-                      .isAfter(yeasterdayMidnight)));
+                      .isAfter(yesterdayMidnight)));
     }).toList();
 
     //1. Get results within current time
@@ -301,7 +301,7 @@ class ResultsHelper {
       offlineResults: offlineResults,
       startOfDay: whenPeriod == ResultsWhenPeriod.today
           ? todayMidnight
-          : yeasterdayMidnight,
+          : yesterdayMidnight,
     );
 
     return resultsOfDay;

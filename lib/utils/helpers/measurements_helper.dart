@@ -128,9 +128,9 @@ class MeasurementHelper {
       return ((measurementType == null ||
               (measurementType == mResult.measurementType)) &&
           ((whenPeriods.contains(ResultsWhenPeriod.today) &&
-                  mResult.measurementDateTime.isToday()) ||
+                  mResult.measurementDateTime.isToday) ||
               (whenPeriods.contains(ResultsWhenPeriod.yesterday) &&
-                  mResult.measurementDateTime.wasYesterday())));
+                  mResult.measurementDateTime.wasYesterday)));
     }).toList();
 
     //include not synced results
@@ -158,9 +158,9 @@ class MeasurementHelper {
                   (measurementType == pResult.measurementType)) &&
               (whenPeriods == null ||
                   (whenPeriods.contains(ResultsWhenPeriod.today) &&
-                      pResult.measurementDateTime?.isToday() == true) ||
+                      pResult.measurementDateTime?.isToday == true) ||
                   (whenPeriods.contains(ResultsWhenPeriod.yesterday) &&
-                      pResult.measurementDateTime?.wasYesterday() == true)));
+                      pResult.measurementDateTime?.wasYesterday == true)));
         })
         .map(
           (pResult) => MeasurementResult(

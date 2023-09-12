@@ -34,7 +34,7 @@ class DeviceItem extends StatelessWidget {
     } else if (device.addedAt != null) {
       //for own devices show when device was added
       subTitle +=
-          '\n${localization.common_addded_at_time(device.addedAt!.toDateFormatLong())}';
+          '\n${localization.common_addded_at_time(device.addedAt!.dateFormatLong)}';
     }
 
     return subTitle;
