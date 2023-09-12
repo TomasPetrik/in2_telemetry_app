@@ -157,7 +157,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                       return DeviceProgress(
                         header: ProcessItem(
                           label: reqModelPairing
-                              ? localization.find_device_screen_searching_device
+                              ? localization.find_device_screen_searching_tonometer
                               : localization
                                   .find_device_screen_waiting_on_measurement,
                           processType: ProcessType.inProgress,
