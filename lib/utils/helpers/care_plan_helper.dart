@@ -232,7 +232,7 @@ class CarePlanHelper {
 
     switch (whenPeriod) {
       case PlanWhenPeriod.today:
-        final from = DateTime.now().date;
+        final from = DateTime.now();
         final to = from.endOfDay;
         measurements = getMeasurements(
           carePlans,
