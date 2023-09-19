@@ -206,7 +206,14 @@ class MeasurementHelper {
         return measurement.respiratoryRate != null
             ? measurement.respiratoryRate!.toDouble()
             : null;
-
+      case MeasurementType.shortnessOfBreath:
+        return measurement.shortnessOfBreath != null
+            ? measurement.shortnessOfBreath!.index.toDouble()
+            : null;
+      case MeasurementType.overallHealth:
+        return measurement.overallHealth != null
+            ? measurement.overallHealth!.index.toDouble()
+            : null;
       default:
         return null;
     }

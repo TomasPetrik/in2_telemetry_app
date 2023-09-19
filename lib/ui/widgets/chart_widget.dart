@@ -18,7 +18,7 @@ import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 class ChartWidget extends StatelessWidget {
   const ChartWidget({
     super.key,
-    required this.measurentType,
+    required this.measurementType,
     required this.userAccount,
     required this.calendarMonth,
     required this.svgDrawables,
@@ -26,7 +26,7 @@ class ChartWidget extends StatelessWidget {
 
   final CalendarMonth calendarMonth;
   final UserAccount userAccount;
-  final MeasurementType measurentType;
+  final MeasurementType measurementType;
   final List<DrawableRoot> svgDrawables;
 
   @override
@@ -36,7 +36,7 @@ class ChartWidget extends StatelessWidget {
       bloc: chartLoaderBloc
         ..add(
           ChartLoaderBlocEvent.init(
-            measurentType,
+            measurementType,
             userAccount,
             calendarMonth,
           ),
@@ -86,6 +86,18 @@ class ChartWidget extends StatelessWidget {
                               candle.timestamp,
                             ).timeFormatShort,
                             svgDrawables[2]: candle.resultFormatted,
+                          },
+                          showGridLines: switch (measurementType) {
+                            MeasurementType.temperature => true,
+                            MeasurementType.bloodPressure => true,
+                            MeasurementType.oxygenSaturation => true,
+                            MeasurementType.steps => true,
+                            MeasurementType.globalPosition => true,
+                            MeasurementType.heartRate => true,
+                            MeasurementType.ews => false,
+                            MeasurementType.respiratoryRate => true,
+                            MeasurementType.shortnessOfBreath => false,
+                            MeasurementType.overallHealth => false,
                           },
                         ),
             ),

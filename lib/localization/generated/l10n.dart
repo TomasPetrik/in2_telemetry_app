@@ -456,7 +456,7 @@ class I10n {
     );
   }
 
-  /// `{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} other{Jiný}}`
+  /// `{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} shortnessOfBreath{Dušnost} overallHealth{Celkový zdravotní stav} other{Jiný}}`
   String common_measurement_types(Object measurementType) {
     return Intl.select(
       measurementType,
@@ -469,6 +469,8 @@ class I10n {
         'heartRate': 'Srdeční tep',
         'ews': 'Ews',
         'respiratoryRate': 'Dechová frekvence',
+        'shortnessOfBreath': 'Dušnost',
+        'overallHealth': 'Celkový zdravotní stav',
         'other': 'Jiný',
       },
       name: 'common_measurement_types',
@@ -477,7 +479,7 @@ class I10n {
     );
   }
 
-  /// `{measurementType, select, temperature{Teploty} bloodPressure{Krevního tlaku} oxygenSaturation{Saturace kyslíku} steps{Kroků} globalPosition{Pozice} heartRate{Srdečního tepu} ews{Ews} respiratoryRate{Dechové frekvence} other{Jiný}}`
+  /// `{measurementType, select, temperature{Teploty} bloodPressure{Krevního tlaku} oxygenSaturation{Saturace kyslíku} steps{Kroků} globalPosition{Pozice} heartRate{Srdečního tepu} ews{Ews} respiratoryRate{Dechové frekvence} shortnessOfBreath{Dušnosti} overallHealth{Celkového zdravotního stavu} other{Jiný}}`
   String common_measurement_types_genitive(Object measurementType) {
     return Intl.select(
       measurementType,
@@ -490,6 +492,8 @@ class I10n {
         'heartRate': 'Srdečního tepu',
         'ews': 'Ews',
         'respiratoryRate': 'Dechové frekvence',
+        'shortnessOfBreath': 'Dušnosti',
+        'overallHealth': 'Celkového zdravotního stavu',
         'other': 'Jiný',
       },
       name: 'common_measurement_types_genitive',
@@ -1442,7 +1446,7 @@ class I10n {
     );
   }
 
-  /// `{measurementUnitName, select, systolic{Systolický} diastolic{Diastolický} temperature{Teplota} pulse{Puls} oxygenSaturation{Saturace kyslíku} respiratoryRate{Dechová frekvence} steps{Kroky} lat{Lat} lng{Lng} ews{Ews} other{Jiný}}`
+  /// `{measurementUnitName, select, systolic{Systolický} diastolic{Diastolický} temperature{Teplota} pulse{Puls} oxygenSaturation{Saturace kyslíku} respiratoryRate{Dechová frekvence} steps{Kroky} lat{Lat} lng{Lng} ews{Ews} shortnessOfBreath{Dušnost} overallHealth{Celkový zdravotní stav} other{Jiný}}`
   String common_measurement_units_names(Object measurementUnitName) {
     return Intl.select(
       measurementUnitName,
@@ -1457,6 +1461,8 @@ class I10n {
         'lat': 'Lat',
         'lng': 'Lng',
         'ews': 'Ews',
+        'shortnessOfBreath': 'Dušnost',
+        'overallHealth': 'Celkový zdravotní stav',
         'other': 'Jiný',
       },
       name: 'common_measurement_units_names',
@@ -1465,16 +1471,16 @@ class I10n {
     );
   }
 
-  /// `{measurementType, select, temperature{°C} bloodPressure{mmHg} oxygenSaturation{%} heartRate{TF} other{ }}`
+  /// `{measurementType, select, temperature{[°C]} bloodPressure{[mmHg]} oxygenSaturation{[%]} heartRate{[tepů/min]} other{}}`
   String common_measurement_units_types(Object measurementType) {
     return Intl.select(
       measurementType,
       {
-        'temperature': '°C',
-        'bloodPressure': 'mmHg',
-        'oxygenSaturation': '%',
-        'heartRate': 'TF',
-        'other': ' ',
+        'temperature': '[°C]',
+        'bloodPressure': '[mmHg]',
+        'oxygenSaturation': '[%]',
+        'heartRate': '[tepů/min]',
+        'other': '',
       },
       name: 'common_measurement_units_types',
       desc: 'Measurement units',
@@ -2143,10 +2149,10 @@ class I10n {
     );
   }
 
-  /// `Výsledky měření {measurementType} v {unitType}`
+  /// `Výsledky měření {measurementType} {unitType}`
   String chart_screen_title(String measurementType, String unitType) {
     return Intl.message(
-      'Výsledky měření $measurementType v $unitType',
+      'Výsledky měření $measurementType $unitType',
       name: 'chart_screen_title',
       desc: '',
       args: [measurementType, unitType],
@@ -2188,13 +2194,13 @@ class I10n {
     );
   }
 
-  /// `{devicePurposeName, select, addDevice{Pro přidání zařízení je potřeba mít Bluetooth v režimu párovaní jenom zařízení, které chcete přidať.} registerDevice{Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.} other{Jiný}}`
+  /// `{devicePurposeName, select, addDevice{Pro přidání zařízení je potřeba mít Bluetooth v režimu párovaní jenom zařízení, které chcete přidat.} registerDevice{Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.} other{Jiný}}`
   String device_search_screen_purpose_desc(Object devicePurposeName) {
     return Intl.select(
       devicePurposeName,
       {
         'addDevice':
-            'Pro přidání zařízení je potřeba mít Bluetooth v režimu párovaní jenom zařízení, které chcete přidať.',
+            'Pro přidání zařízení je potřeba mít Bluetooth v režimu párovaní jenom zařízení, které chcete přidat.',
         'registerDevice':
             'Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.',
         'other': 'Jiný',
@@ -2323,6 +2329,40 @@ class I10n {
       name: 'manual_screen_title',
       desc: '',
       args: [],
+    );
+  }
+
+  /// `{shortnessOfBreathValue, select, none{Dýchání bez problémů} low{Občasná dušnost při fyzické námaze} medium{Častější problémy s dušností} high{Velmi špatně se mi dýchá} other{}}`
+  String shortness_of_breath_values(Object shortnessOfBreathValue) {
+    return Intl.select(
+      shortnessOfBreathValue,
+      {
+        'none': 'Dýchání bez problémů',
+        'low': 'Občasná dušnost při fyzické námaze',
+        'medium': 'Častější problémy s dušností',
+        'high': 'Velmi špatně se mi dýchá',
+        'other': '',
+      },
+      name: 'shortness_of_breath_values',
+      desc: 'Shortness of breath values',
+      args: [shortnessOfBreathValue],
+    );
+  }
+
+  /// `{overallHealthValue, select, good{Velmi dobrý} variable{Mírné/občasné zhoršení při fyzické námaze} bad{Setrvalé zhoršení bez příčiny} veryBad{Cítím se velmi špatně} other{}}`
+  String overall_health_values(Object overallHealthValue) {
+    return Intl.select(
+      overallHealthValue,
+      {
+        'good': 'Velmi dobrý',
+        'variable': 'Mírné/občasné zhoršení při fyzické námaze',
+        'bad': 'Setrvalé zhoršení bez příčiny',
+        'veryBad': 'Cítím se velmi špatně',
+        'other': '',
+      },
+      name: 'overall_health_values',
+      desc: 'Overall health values',
+      args: [overallHealthValue],
     );
   }
 }

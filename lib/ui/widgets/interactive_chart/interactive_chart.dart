@@ -62,6 +62,8 @@ class InteractiveChart extends StatefulWidget {
   /// This provides the width of a candlestick at the current zoom level.
   final ValueChanged<double>? onCandleResize;
 
+  final bool showGridLines;
+
   const InteractiveChart({
     Key? key,
     required this.candles,
@@ -73,6 +75,7 @@ class InteractiveChart extends StatefulWidget {
     required this.overlayInfo,
     this.onTap,
     this.onCandleResize,
+    required this.showGridLines,
   })  : style = style ?? const ChartStyle(),
         assert(
           candles.length >= 3,
@@ -167,6 +170,7 @@ class InteractiveChartState extends State<InteractiveChart> {
               minValue: minValue,
               xShift: xShift,
               tapPosition: _tapPosition,
+              showGridLines: widget.showGridLines,
             ),
           ),
           duration: const Duration(milliseconds: 300),

@@ -17,6 +17,8 @@ import 'package:scalesoft_app/api/model/hospital.dart';
 import 'package:scalesoft_app/api/model/measurement/composed_double_value.dart';
 import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/model/measurement/overall_health_value.dart';
+import 'package:scalesoft_app/api/model/measurement/shortness_of_breath_value.dart';
 import 'package:scalesoft_app/api/model/measurement_thresholds.dart';
 import 'package:scalesoft_app/api/model/settings/time_setting.dart';
 import 'package:scalesoft_app/api/model/template_time_set.dart';
@@ -69,6 +71,8 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
     Hive.registerAdapter(HeartRateThresholdSettingAdapter());
     Hive.registerAdapter(OxygenSaturationThresholdSettingAdapter());
     Hive.registerAdapter(TemperatureThresholdSettingAdapter());
+    Hive.registerAdapter(ShortnessOfBreathValueAdapter());
+    Hive.registerAdapter(OverallHealthValueAdapter());
   }
 
   @override

@@ -347,6 +347,20 @@ class ResultsHelper {
           high: measurement.value,
           low: 0,
         );
+      case MeasurementType.shortnessOfBreath:
+        return CandleData(
+          measurementType: measurement.measurementType!,
+          timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
+          high: measurement.value,
+          low: 0,
+        );
+      case MeasurementType.overallHealth:
+        return CandleData(
+          measurementType: measurement.measurementType!,
+          timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
+          high: measurement.value,
+          low: 0,
+        );
       case MeasurementType.steps:
       case MeasurementType.globalPosition:
       case MeasurementType.ews:
@@ -362,17 +376,17 @@ class ResultsHelper {
   static CandleData getCandleByMeasurement(
     Measurement measurement,
   ) {
-    switch (measurement.measurementType!) {
+    switch (measurement.measurementType) {
       case MeasurementType.temperature:
         return CandleData(
-          measurementType: measurement.measurementType!,
+          measurementType: measurement.measurementType,
           timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
           high: measurement.temperature,
           low: 0,
         );
       case MeasurementType.bloodPressure:
         return CandleData(
-          measurementType: measurement.measurementType!,
+          measurementType: measurement.measurementType,
           timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
           high: measurement.bloodPressure?.systolic?.toDouble(),
           low: measurement.bloodPressure?.diastolic?.toDouble(),
@@ -380,30 +394,44 @@ class ResultsHelper {
 
       case MeasurementType.oxygenSaturation:
         return CandleData(
-          measurementType: measurement.measurementType!,
+          measurementType: measurement.measurementType,
           timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
           high: measurement.oxygenSaturation?.toDouble(),
           low: 0,
         );
       case MeasurementType.heartRate:
         return CandleData(
-          measurementType: measurement.measurementType!,
+          measurementType: measurement.measurementType,
           timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
           high: measurement.heartRate?.toDouble(),
           low: 0,
         );
       case MeasurementType.respiratoryRate:
         return CandleData(
-          measurementType: measurement.measurementType!,
+          measurementType: measurement.measurementType,
           timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
           high: measurement.respiratoryRate?.toDouble(),
+          low: 0,
+        );
+      case MeasurementType.shortnessOfBreath:
+        return CandleData(
+          measurementType: measurement.measurementType,
+          timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
+          high: measurement.shortnessOfBreath?.index.toDouble(),
+          low: 0,
+        );
+      case MeasurementType.overallHealth:
+        return CandleData(
+          measurementType: measurement.measurementType,
+          timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
+          high: measurement.shortnessOfBreath?.index.toDouble(),
           low: 0,
         );
       case MeasurementType.steps:
       case MeasurementType.globalPosition:
       case MeasurementType.ews:
         return CandleData(
-          measurementType: measurement.measurementType!,
+          measurementType: measurement.measurementType,
           timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
           high: null,
           low: null,

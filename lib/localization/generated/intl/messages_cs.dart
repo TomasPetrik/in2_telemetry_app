@@ -26,7 +26,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Plánované měření začíná ${fromTime} v ${atTime}";
 
   static String m2(measurementType, unitType) =>
-      "Výsledky měření ${measurementType} v ${unitType}";
+      "Výsledky měření ${measurementType} ${unitType}";
 
   static String m3(actionButtonType) => "${Intl.select(actionButtonType, {
             'regular': 'akčního tlačítka',
@@ -66,6 +66,8 @@ class MessageLookup extends MessageLookupByLibrary {
             'heartRate': 'Srdeční tep',
             'ews': 'Ews',
             'respiratoryRate': 'Dechová frekvence',
+            'shortnessOfBreath': 'Dušnost',
+            'overallHealth': 'Celkový zdravotní stav',
             'other': 'Jiný',
           })}";
 
@@ -78,6 +80,8 @@ class MessageLookup extends MessageLookupByLibrary {
             'heartRate': 'Srdečního tepu',
             'ews': 'Ews',
             'respiratoryRate': 'Dechové frekvence',
+            'shortnessOfBreath': 'Dušnosti',
+            'overallHealth': 'Celkového zdravotního stavu',
             'other': 'Jiný',
           })}";
 
@@ -93,15 +97,17 @@ class MessageLookup extends MessageLookupByLibrary {
             'lat': 'Lat',
             'lng': 'Lng',
             'ews': 'Ews',
+            'shortnessOfBreath': 'Dušnost',
+            'overallHealth': 'Celkový zdravotní stav',
             'other': 'Jiný',
           })}";
 
   static String m11(measurementType) => "${Intl.select(measurementType, {
-            'temperature': '°C',
-            'bloodPressure': 'mmHg',
-            'oxygenSaturation': '%',
-            'heartRate': 'TF',
-            'other': ' ',
+            'temperature': '[°C]',
+            'bloodPressure': '[mmHg]',
+            'oxygenSaturation': '[%]',
+            'heartRate': '[tepů/min]',
+            'other': '',
           })}";
 
   static String m12(month) => "${Intl.select(month, {
@@ -171,7 +177,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m22(devicePurposeName) => "${Intl.select(devicePurposeName, {
             'addDevice':
-                'Pro přidání zařízení je potřeba mít Bluetooth v režimu párovaní jenom zařízení, které chcete přidať.',
+                'Pro přidání zařízení je potřeba mít Bluetooth v režimu párovaní jenom zařízení, které chcete přidat.',
             'registerDevice':
                 'Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.',
             'other': 'Jiný',
@@ -220,34 +226,51 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m36(name) => "Uživatel ${name} byl úspěšně přidán.";
 
-  static String m37(macAddress) =>
+  static String m37(overallHealthValue) => "${Intl.select(overallHealthValue, {
+            'good': 'Velmi dobrý',
+            'variable': 'Mírné/občasné zhoršení při fyzické námaze',
+            'bad': 'Setrvalé zhoršení bez příčiny',
+            'veryBad': 'Cítím se velmi špatně',
+            'other': '',
+          })}";
+
+  static String m38(macAddress) =>
       "Zařízení s technickým identifikátorem ${macAddress} již existuje.";
 
-  static String m38(name) => "Výsledek měření ${name} bude nevratně odstraněn.";
+  static String m39(name) => "Výsledek měření ${name} bude nevratně odstraněn.";
 
-  static String m39(percentage) => "Plán splněn na ${percentage}%";
+  static String m40(percentage) => "Plán splněn na ${percentage}%";
 
-  static String m40(currentCount, reqCount) =>
+  static String m41(currentCount, reqCount) =>
       "${currentCount} z ${reqCount} měření";
 
-  static String m41(name) =>
+  static String m42(name) =>
       "Je nám líto, ale výsledky pro účet ${name} nejsou dostupné.";
 
-  static String m42(label) => "${label} nebylo plánované žádné měření";
+  static String m43(label) => "${label} nebylo plánované žádné měření";
 
-  static String m43(name) =>
+  static String m44(name) =>
       "Je potřeba, aby se uživatel ${name} znovu přihlásil.";
 
-  static String m44(date, time) => "Poslední synchronizace ${date} ${time}";
+  static String m45(shortnessOfBreathValue) =>
+      "${Intl.select(shortnessOfBreathValue, {
+            'none': 'Dýchání bez problémů',
+            'low': 'Občasná dušnost při fyzické námaze',
+            'medium': 'Častější problémy s dušností',
+            'high': 'Velmi špatně se mi dýchá',
+            'other': '',
+          })}";
 
-  static String m45(date, time) =>
+  static String m46(date, time) => "Poslední synchronizace ${date} ${time}";
+
+  static String m47(date, time) =>
       "Poslední úspěšná synchronizace ${date} ${time}";
 
-  static String m46(fromDate) => "Platný od ${fromDate}";
+  static String m48(fromDate) => "Platný od ${fromDate}";
 
-  static String m47(fromDate, toDate) => "Platný od ${fromDate} do ${toDate}";
+  static String m49(fromDate, toDate) => "Platný od ${fromDate} do ${toDate}";
 
-  static String m48(hospital) => "Měření v ${hospital} pro";
+  static String m50(hospital) => "Měření v ${hospital} pro";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -544,7 +567,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Přidat účet"),
         "open_manual_button": MessageLookupByLibrary.simpleMessage(
             "Otevřít uživatelskou příručku"),
-        "register_device_detail_registration_fail_message": m37,
+        "overall_health_values": m37,
+        "register_device_detail_registration_fail_message": m38,
         "register_device_detail_registration_fail_title":
             MessageLookupByLibrary.simpleMessage("Chyba"),
         "register_device_detail_screen_assigned_id":
@@ -565,7 +589,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "register_device_success_screen_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Zařízení bylo úspěšně registrováno."),
-        "result_removal_confirmation_desc": m38,
+        "result_removal_confirmation_desc": m39,
         "result_removal_confirmation_title":
             MessageLookupByLibrary.simpleMessage("Odstranit výsledek"),
         "result_removal_confirmation_title_button_confirm":
@@ -574,32 +598,33 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Plán měření dne"),
         "results_measurements_when_selector_title":
             MessageLookupByLibrary.simpleMessage("Plnění plánu"),
-        "results_plan_fulfilled_on": m39,
+        "results_plan_fulfilled_on": m40,
         "results_plan_no_measurement_needed":
             MessageLookupByLibrary.simpleMessage(
                 "Plán nevyžadoval žádné měření"),
-        "results_screen_measurements_completed": m40,
+        "results_screen_measurements_completed": m41,
         "results_screen_no_historic_data": MessageLookupByLibrary.simpleMessage(
             "Historie měření neobsahuje žádná data."),
         "results_screen_no_permission_to_see_results":
             MessageLookupByLibrary.simpleMessage(
                 "Na zobrazení údajů nemáte potřebné oprávnění"),
-        "results_screen_no_results": m41,
-        "results_screen_no_results_in_plans": m42,
+        "results_screen_no_results": m42,
+        "results_screen_no_results_in_plans": m43,
         "results_screen_results_title":
             MessageLookupByLibrary.simpleMessage("Výsledky"),
         "server_error_desc": MessageLookupByLibrary.simpleMessage(
             "Zde je něco v nepořádku. Zkuste akci opakovat později."),
         "server_error_title": MessageLookupByLibrary.simpleMessage("Chyba"),
-        "session_expired_description": m43,
+        "session_expired_description": m44,
         "session_expired_title":
             MessageLookupByLibrary.simpleMessage("Problém s přihlášením"),
-        "sync_failed_screen_sub_title": m44,
+        "shortness_of_breath_values": m45,
+        "sync_failed_screen_sub_title": m46,
         "sync_failed_screen_title":
             MessageLookupByLibrary.simpleMessage("Synchronizace"),
         "sync_failed_screen_waiting_on_sync":
             MessageLookupByLibrary.simpleMessage("Čeká na synchronizaci"),
-        "sync_widget_sync_failed_desc": m45,
+        "sync_widget_sync_failed_desc": m47,
         "sync_widget_sync_failed_title":
             MessageLookupByLibrary.simpleMessage("Synchronizace se nepovedla"),
         "sync_widget_sync_in_progress":
@@ -635,8 +660,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Telefon"),
         "user_detail_screen_user_surname":
             MessageLookupByLibrary.simpleMessage("Příjmení"),
-        "user_details_screen_plan_active_from_date": m46,
-        "user_details_screen_plan_active_from_to_date": m47,
-        "user_selection_dialog_measurement_in_hospital": m48
+        "user_details_screen_plan_active_from_date": m48,
+        "user_details_screen_plan_active_from_to_date": m49,
+        "user_selection_dialog_measurement_in_hospital": m50
       };
 }

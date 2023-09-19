@@ -129,6 +129,26 @@ class Constants {
         LengthLimitingTextInputFormatter(2),
       ],
     ),
+    MeasurementType.shortnessOfBreath: MeasurementConfig(
+      MeasurementConfigType.select,
+      null,
+      [UnitName.shortnessOfBreath],
+      null,
+      null,
+      null,
+      null,
+      null,
+    ),
+    MeasurementType.overallHealth: MeasurementConfig(
+      MeasurementConfigType.select,
+      null,
+      [UnitName.overallHealth],
+      null,
+      null,
+      null,
+      null,
+      null,
+    ),
   };
 
   /* Supported measurement types */

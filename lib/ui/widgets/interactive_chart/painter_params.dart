@@ -16,6 +16,7 @@ class PainterParams {
 
   final double xShift;
   final Offset? tapPosition;
+  final bool showGridLines;
 
   PainterParams({
     required this.candles,
@@ -27,6 +28,7 @@ class PainterParams {
     required this.minValue,
     required this.xShift,
     required this.tapPosition,
+    required this.showGridLines,
   });
 
   double get chartWidth => // width without value labels
@@ -58,6 +60,7 @@ class PainterParams {
       minValue: lerpField((p) => p.minValue),
       xShift: b.xShift,
       tapPosition: b.tapPosition,
+      showGridLines: b.showGridLines,
     );
   }
 

@@ -95,14 +95,14 @@
     },
     "server_error_title": "Chyba",
     "server_error_desc": "Zde je něco v nepořádku. Zkuste akci opakovat později.",
-    "common_measurement_types": "{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} other{Jiný}}",
+    "common_measurement_types": "{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} shortnessOfBreath{Dušnost} overallHealth{Celkový zdravotní stav} other{Jiný}}",
     "@common_measurement_types": {
         "description": "Measurement types",
         "placeholders": {
             "measurementType": {}
         }
     },
-    "common_measurement_types_genitive": "{measurementType, select, temperature{Teploty} bloodPressure{Krevního tlaku} oxygenSaturation{Saturace kyslíku} steps{Kroků} globalPosition{Pozice} heartRate{Srdečního tepu} ews{Ews} respiratoryRate{Dechové frekvence} other{Jiný}}",
+    "common_measurement_types_genitive": "{measurementType, select, temperature{Teploty} bloodPressure{Krevního tlaku} oxygenSaturation{Saturace kyslíku} steps{Kroků} globalPosition{Pozice} heartRate{Srdečního tepu} ews{Ews} respiratoryRate{Dechové frekvence} shortnessOfBreath{Dušnosti} overallHealth{Celkového zdravotního stavu} other{Jiný}}",
     "@common_measurement_types_genitive": {
         "description": "Measurement types",
         "placeholders": {
@@ -342,14 +342,14 @@
     "manual_measurement_screen_title": "Vlastní zápis hodnot",
     "manual_measurement_screen_type": "Typ",
     "manual_measurement_screen_measurement_time": "Čas odečtu",
-    "common_measurement_units_names": "{measurementUnitName, select, systolic{Systolický} diastolic{Diastolický} temperature{Teplota} pulse{Puls} oxygenSaturation{Saturace kyslíku} respiratoryRate{Dechová frekvence} steps{Kroky} lat{Lat} lng{Lng} ews{Ews} other{Jiný}}",
+    "common_measurement_units_names": "{measurementUnitName, select, systolic{Systolický} diastolic{Diastolický} temperature{Teplota} pulse{Puls} oxygenSaturation{Saturace kyslíku} respiratoryRate{Dechová frekvence} steps{Kroky} lat{Lat} lng{Lng} ews{Ews} shortnessOfBreath{Dušnost} overallHealth{Celkový zdravotní stav} other{Jiný}}",
     "@common_measurement_units_names": {
         "description": "Measurement unit names",
         "placeholders": {
             "measurementUnitName": {}
         }
     },
-    "common_measurement_units_types": "{measurementType, select, temperature{°C} bloodPressure{mmHg} oxygenSaturation{%} heartRate{TF} other{ }}",
+    "common_measurement_units_types": "{measurementType, select, temperature{[°C]} bloodPressure{[mmHg]} oxygenSaturation{[%]} heartRate{[tepů/min]} other{}}",
     "@common_measurement_units_types": {
         "description": "Measurement units",
         "placeholders": {
@@ -532,7 +532,7 @@
     "measurement_summary_screen_send_results": "Odeslat výsledek měření",
     "measurement_summary_screen_exceeded_values": "Pozor, vaše naměřené hodnoty překročily nastavené meze, kontaktujte vašeho lékaře!",
     "results_history_screen_plan_of_day": "Plán měření dne",
-    "chart_screen_title": "Výsledky měření {measurementType} v {unitType}",
+    "chart_screen_title": "Výsledky měření {measurementType} {unitType}",
     "@chart_screen_title": {
         "placeholders": {
             "measurementType": {
@@ -552,7 +552,7 @@
             "devicePurposeName": {}
         }
     },
-    "device_search_screen_purpose_desc": "{devicePurposeName, select, addDevice{Pro přidání zařízení je potřeba mít Bluetooth v režimu párovaní jenom zařízení, které chcete přidať.} registerDevice{Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.} other{Jiný}}",
+    "device_search_screen_purpose_desc": "{devicePurposeName, select, addDevice{Pro přidání zařízení je potřeba mít Bluetooth v režimu párovaní jenom zařízení, které chcete přidat.} registerDevice{Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.} other{Jiný}}",
     "@device_search_screen_purpose_desc": {
         "description": "Device purpose description",
         "placeholders": {
@@ -590,5 +590,20 @@
             }
         }
     },
-    "manual_screen_title": "Příručka"
+    "manual_screen_title": "Příručka",
+
+    "shortness_of_breath_values": "{shortnessOfBreathValue, select, none{Dýchání bez problémů} low{Občasná dušnost při fyzické námaze} medium{Častější problémy s dušností} high{Velmi špatně se mi dýchá} other{}}",
+    "@shortness_of_breath_values": {
+        "description": "Shortness of breath values",
+        "placeholders": {
+            "shortnessOfBreathValue": {}
+        }
+    },
+    "overall_health_values": "{overallHealthValue, select, good{Velmi dobrý} variable{Mírné/občasné zhoršení při fyzické námaze} bad{Setrvalé zhoršení bez příčiny} veryBad{Cítím se velmi špatně} other{}}",
+    "@overall_health_values": {
+        "description": "Overall health values",
+        "placeholders": {
+            "overallHealthValue": {}
+        }
+    }
 }

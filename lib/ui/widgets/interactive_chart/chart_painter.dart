@@ -86,6 +86,10 @@ class ChartPainter extends CustomPainter {
   }
 
   void _drawValueGridAndLabels(canvas, PainterParams params) {
+    if(!params.showGridLines){
+      return;
+    }
+
     [0.0, 0.25, 0.5, 0.75, 1.0]
         .map((v) => ((params.maxValue - params.minValue) * v) + params.minValue)
         .forEach((y) {

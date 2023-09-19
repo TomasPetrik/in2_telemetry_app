@@ -113,7 +113,7 @@ class _ChartScreenState extends State<ChartScreen> {
                               key: ValueKey(index),
                               padding: Paddings.horizontal16,
                               child: ChartWidget(
-                                measurentType: measurementType,
+                                measurementType: measurementType,
                                 userAccount: userAccount,
                                 calendarMonth: month,
                                 svgDrawables: state.svgDrawables!,
