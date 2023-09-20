@@ -9,12 +9,12 @@ enum OverallHealthValue {
   @HiveField(0)
   good,
   @JsonValue('variable')
-  @HiveField(1)
+  @HiveField(10)
   variable,
   @JsonValue('bad')
-  @HiveField(2)
+  @HiveField(20)
   bad,
   @JsonValue('veryBad')
-  @HiveField(3)
+  @HiveField(30)
   veryBad,
 }

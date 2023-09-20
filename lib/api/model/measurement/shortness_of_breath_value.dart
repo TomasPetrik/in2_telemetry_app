@@ -9,12 +9,12 @@ enum ShortnessOfBreathValue {
   @HiveField(0)
   none,
   @JsonValue('low')
-  @HiveField(1)
+  @HiveField(10)
   low,
   @JsonValue('medium')
-  @HiveField(2)
+  @HiveField(20)
   medium,
   @JsonValue('high')
-  @HiveField(3)
+  @HiveField(30)
   high,
 }
