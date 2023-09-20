@@ -50,6 +50,17 @@ class ProductionConfiguration extends BaseConfiguration {
     //     tokenUrl: '???',
     //   ),
     // ),
+    const Hospital(
+      id: 5,
+      title: 'Oblastní nemocnice Mladá Boleslav',
+      iconPath: 'assets/icons/icon_hospital_onmb.png',
+      authData: AuthData(
+        baseUrl: 'https://pacient.onmb.cz/api-mobile/v1',
+        authUrl: 'https://pacient-auth.onmb.cz/connect/authorize',
+        tokenUrl: 'https://pacient-auth.onmb.cz/connect/token',
+      ),
+      enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate, MeasurementType.temperature, MeasurementType.oxygenSaturation, MeasurementType.shortnessOfBreath, MeasurementType.overallHealth],
+    ),
   ];
 
   @override
