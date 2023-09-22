@@ -59,7 +59,7 @@ class ProductionConfiguration extends BaseConfiguration {
         authUrl: 'https://pacient-auth.onmb.cz/connect/authorize',
         tokenUrl: 'https://pacient-auth.onmb.cz/connect/token',
       ),
-      enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate, MeasurementType.temperature, MeasurementType.oxygenSaturation, MeasurementType.shortnessOfBreath, MeasurementType.overallHealth],
+      enabledMeasurementTypes: [MeasurementType.shortnessOfBreath, MeasurementType.overallHealth],
     ),
   ];
 
