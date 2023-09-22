@@ -52,7 +52,7 @@ class ProductionConfiguration extends BaseConfiguration {
     // ),
     const Hospital(
       id: 5,
-      title: 'Oblastní nemocnice Mladá Boleslav',
+      title: 'Klaudiánova Nemocnice',
       iconPath: 'assets/icons/icon_hospital_onmb.png',
       authData: AuthData(
         baseUrl: 'https://pacient.onmb.cz/api-mobile/v1',
