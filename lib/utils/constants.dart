@@ -121,7 +121,7 @@ class Constants {
       null,
       [UnitName.ews],
       0,
-      10,
+      23,
       TextInputType.number,
       ['0'],
       [
