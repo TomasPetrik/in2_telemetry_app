@@ -2049,6 +2049,36 @@ class I10n {
     );
   }
 
+  /// `Zařízení nenalezeno`
+  String get find_device_not_found_title {
+    return Intl.message(
+      'Zařízení nenalezeno',
+      name: 'find_device_not_found_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pro opětovné vyhledávání stisknete na tlačítko opakovat`
+  String get find_device_not_found_desc {
+    return Intl.message(
+      'Pro opětovné vyhledávání stisknete na tlačítko opakovat',
+      name: 'find_device_not_found_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Opakovat`
+  String get find_device_repeat_search {
+    return Intl.message(
+      'Opakovat',
+      name: 'find_device_repeat_search',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Měření bylo úspěšně dokončeno`
   String get measurement_summary_screen_success_title {
     return Intl.message(

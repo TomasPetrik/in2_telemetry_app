@@ -24,7 +24,9 @@ import 'package:scalesoft_app/api/model/settings/time_setting.dart';
 import 'package:scalesoft_app/api/model/template_time_set.dart';
 import 'package:scalesoft_app/api/model/thresholds/blood_pressure_threshold_setting.dart';
 import 'package:scalesoft_app/api/model/thresholds/heart_rate_threshold_setting.dart';
+import 'package:scalesoft_app/api/model/thresholds/overall_health_threshold_settings.dart';
 import 'package:scalesoft_app/api/model/thresholds/oxygen_saturation_threshold_setting.dart';
+import 'package:scalesoft_app/api/model/thresholds/shortness_of_breath_threshold_settings.dart';
 import 'package:scalesoft_app/api/model/thresholds/temperature_threshold_settings.dart';
 import 'package:scalesoft_app/api/model/user.dart';
 import 'package:scalesoft_app/model/user_account.dart';
@@ -75,6 +77,8 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
     Hive.registerAdapter(HeartRateThresholdSettingAdapter());
     Hive.registerAdapter(OxygenSaturationThresholdSettingAdapter());
     Hive.registerAdapter(TemperatureThresholdSettingAdapter());
+    Hive.registerAdapter(ShortnessOfBreathThresholdSettingAdapter());
+    Hive.registerAdapter(OverallHealthThresholdSettingAdapter());
     Hive.registerAdapter(ShortnessOfBreathValueAdapter());
     Hive.registerAdapter(OverallHealthValueAdapter());
   }

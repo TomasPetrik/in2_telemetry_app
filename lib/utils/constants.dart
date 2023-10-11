@@ -21,6 +21,9 @@ class Constants {
   /* Background service interval fetch */
   static const int autoSyncIntervalMinutes = 15;
 
+  /* Max allowed waiting time for searching device */
+  static const Duration maxAllowedDeviceSearchingTime = Duration(seconds: 10);
+
   /* API */
   static const String privateDioName = 'privateDio';
 

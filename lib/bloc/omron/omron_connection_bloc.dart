@@ -383,6 +383,8 @@ class OmronConnectionBloc
             device: _device!,
             searchMode:
                 reqModelPairing ? SearchMode.pairing : SearchMode.syncing,
+            maxAllowedDeviceSearchingTime:
+                Constants.maxAllowedDeviceSearchingTime,
           );
           if (foundDevice != null) {
             add(
@@ -395,6 +397,12 @@ class OmronConnectionBloc
               OmronConnectionBlocEvent.connectToDevice(
                 foundDevice.device,
                 foundDevice.localName,
+              ),
+            );
+          } else {
+            emit(
+              OmronConnectionState.notFound(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
               ),
             );
           }

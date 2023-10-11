@@ -13,7 +13,7 @@ class ShortnessOfBreathThresholdSetting
     with _$ShortnessOfBreathThresholdSetting {
   const ShortnessOfBreathThresholdSetting._();
 
-  @HiveType(typeId: 51, adapterName: 'ShortnessOfBreathThresholdSettingAdapter')
+  @HiveType(typeId: 53, adapterName: 'ShortnessOfBreathThresholdSettingAdapter')
   factory ShortnessOfBreathThresholdSetting(
     @HiveField(1) ShortnessOfBreathValue? max,
   ) = _ShortnessOfBreathThresholdSetting;

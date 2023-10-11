@@ -96,6 +96,7 @@ class BtConnectionHelper {
     required String serviceUuid,
     required Device device,
     required SearchMode searchMode,
+    Duration? maxAllowedDeviceSearchingTime,
   }) async {
     syncMode = true;
     final isScanning = FlutterBluePlus.isScanningNow;
@@ -110,32 +111,18 @@ class BtConnectionHelper {
       await connectedDevice.disconnect();
     }
 
+    final startSearchAt = DateTime.now();
+
     while (true) {
+      if (maxAllowedDeviceSearchingTime != null &&
+          DateTime.now()
+              .subtract(maxAllowedDeviceSearchingTime)
+              .isAfter(startSearchAt)) {
+        await FlutterBluePlus.stopScan();
+        return null;
+      }
       await Future.delayed(const Duration(seconds: 1));
       final availableDevices = await FlutterBluePlus.scanResults.first;
-
-      /*
-      final List<BluetoothDevice> allDevices = [
-        ...availableDevices.map((availableDevice) => availableDevice.device),
-        ...connectedDevices,
-      ];
-
-      debugPrint('found ${availableDevices.length} devices');
-
-      final connectedDev = allDevices.firstWhereOrNull((connectedDev) {
-        return matchDeviceMode(connectedDev.localName, device, searchMode) &&
-            matchDeviceId(
-              device,
-              connectedDev.localName,
-            );
-      });
-
-      if (connectedDev != null) {
-        await FlutterBluePlus.stopScan();
-        return DeviceSearchResult(connectedDev, connectedDev.localName);
-      }
-
-      */
 
       for (final scanResult in availableDevices) {
         final serviceUuids = scanResult.advertisementData.serviceUuids

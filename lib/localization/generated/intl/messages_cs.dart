@@ -426,6 +426,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Přejít do nastavení"),
         "dialog_req_notifications_title":
             MessageLookupByLibrary.simpleMessage("Povolení notifikací"),
+        "find_device_not_found_desc": MessageLookupByLibrary.simpleMessage(
+            "Pro opětovné vyhledávání stisknete na tlačítko opakovat"),
+        "find_device_not_found_title":
+            MessageLookupByLibrary.simpleMessage("Zařízení nenalezeno"),
+        "find_device_repeat_search":
+            MessageLookupByLibrary.simpleMessage("Opakovat"),
         "find_device_screen_device_connected":
             MessageLookupByLibrary.simpleMessage("Tlakoměr připojen"),
         "find_device_screen_device_reference":

@@ -34,9 +34,9 @@ class ScaleSelectFormField extends StatelessWidget {
           items: ShortnessOfBreathValue.values
               .map<DropdownMenuItem<ShortnessOfBreathValue>>(
                 (ShortnessOfBreathValue value) => DropdownMenuItem(
-                    value: value,
-                    child:
-                        Text(localization.shortness_of_breath_values(value))),
+                  value: value,
+                  child: Text(localization.shortness_of_breath_values(value)),
+                ),
               )
               .toList(),
           onChanged: (ShortnessOfBreathValue? value) {
@@ -54,8 +54,9 @@ class ScaleSelectFormField extends StatelessWidget {
           items: OverallHealthValue.values
               .map<DropdownMenuItem<OverallHealthValue>>(
                 (OverallHealthValue value) => DropdownMenuItem(
-                    value: value,
-                    child: Text(localization.overall_health_values(value))),
+                  value: value,
+                  child: Text(localization.overall_health_values(value)),
+                ),
               )
               .toList(),
           onChanged: (OverallHealthValue? value) {

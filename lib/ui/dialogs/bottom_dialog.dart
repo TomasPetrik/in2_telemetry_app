@@ -165,6 +165,26 @@ class BottomDialog extends StatelessWidget {
     );
   }
 
+  factory BottomDialog.deviceNotFound({
+    Key? key,
+    required BuildContext context,
+  }) {
+    return _BottomDialog(
+      title: localization.find_device_not_found_title,
+      description: localization.find_device_not_found_desc,
+      iconPath: 'assets/icons/icon_triangle_exclamation_big.svg',
+      iconColor: Theme.of(context).colorScheme.error,
+      positiveButtonStyle: ButtonStyle(
+        buttonType: ButtonType.primary,
+        label: localization.find_device_repeat_search,
+      ),
+      negativeButtonStyle: ButtonStyle(
+        buttonType: ButtonType.secondary,
+        label: localization.common_close,
+      ),
+    );
+  }
+
   factory BottomDialog.reportsSent({
     Key? key,
     required BuildContext context,

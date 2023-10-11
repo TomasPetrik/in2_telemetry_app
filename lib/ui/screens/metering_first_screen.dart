@@ -351,7 +351,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                                 },
                               ).then((final Device? device) {
                                 if (device != null) {
-                                  GoRouter.of(context).pushNamed(
+                                  GoRouter.of(context).replaceNamed(
                                     OmronFlowRoute.name,
                                     queryParams: {
                                       'userId': widget.userId,

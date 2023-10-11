@@ -302,6 +302,23 @@ mixin BottomSheetMixin {
 
     return userSelectionResult;
   }
+
+  Future<bool?> showDevNotFound(
+    BuildContext context,
+  ) async {
+    final result = await showModalBottomSheet<bool?>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return BottomDialog.deviceNotFound(
+          context: context,
+        );
+      },
+    );
+    return result;
+  }
 }
 
 enum SwitchUserAction {

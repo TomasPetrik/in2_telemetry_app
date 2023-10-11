@@ -8,6 +8,7 @@ import 'package:scalesoft_app/bloc/omron/omron_connection_bloc.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_bloc_event.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/screens/synced_result.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
@@ -30,7 +31,8 @@ class OmronFlowScreen extends StatefulWidget {
   State<OmronFlowScreen> createState() => _OmronFlowScreenState();
 }
 
-class _OmronFlowScreenState extends State<OmronFlowScreen> {
+class _OmronFlowScreenState extends State<OmronFlowScreen>
+    with BottomSheetMixin {
   late final OmronConnectionBloc omronConnectionBloc;
   late final MeasurementType measurementType;
   late final Device device;
@@ -62,7 +64,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
         child: Stack(
           children: [
             Positioned.fill(
-              child: BlocBuilder<OmronConnectionBloc, OmronConnectionState>(
+              child: BlocConsumer<OmronConnectionBloc, OmronConnectionState>(
                 bloc: omronConnectionBloc
                   ..add(
                     OmronConnectionBlocEvent.init(
@@ -88,6 +90,19 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                       false;
 
                   return showState;
+                },
+                listener: (context, state) async {
+                  final notFound = state.whenOrNull(notFound: (_) => true);
+                  if (notFound == true) {
+                    await showDevNotFound(context).then((searchAgain) {
+                      if (searchAgain == true) {
+                        omronConnectionBloc
+                            .add(const OmronConnectionBlocEvent.searchDevice());
+                      } else if (searchAgain == false) {
+                        Navigator.of(context).pop();
+                      }
+                    });
+                  }
                 },
                 builder: ((context, state) {
                   final deviceStatusWidget = state.whenOrNull(
@@ -157,7 +172,8 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                       return DeviceProgress(
                         header: ProcessItem(
                           label: reqModelPairing
-                              ? localization.find_device_screen_searching_tonometer
+                              ? localization
+                                  .find_device_screen_searching_tonometer
                               : localization
                                   .find_device_screen_waiting_on_measurement,
                           processType: ProcessType.inProgress,
