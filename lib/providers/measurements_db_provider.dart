@@ -6,6 +6,11 @@ import 'package:scalesoft_app/providers/box_provider.dart';
 
 @singleton
 class MeasurementsDbProvider extends BoxProvider<MeasurementResults> {
+
+  @override
+  @PostConstruct(preResolve: true)
+  Future<void> init() async => super.init();
+  
   @override
   final String boxName = 'MeasurementsBox';
 

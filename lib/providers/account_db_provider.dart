@@ -33,6 +33,10 @@ import 'package:scalesoft_app/providers/box_provider.dart';
 @singleton
 class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
   @override
+  @PostConstruct(preResolve: true)
+  Future<void> init() async => super.init();
+
+  @override
   final String boxName = 'accountBox';
 
   @override
@@ -165,7 +169,7 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
               .compareTo(b.lastActiveIn!.millisecondsSinceEpoch),
         );
 
-      return lastActiveAccounts.last;
+      return lastActiveAccounts.lastOrNull;
     } catch (_) {
       return null;
     }

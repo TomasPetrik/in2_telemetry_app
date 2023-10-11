@@ -4,6 +4,11 @@ import 'package:scalesoft_app/providers/box_provider.dart';
 
 @singleton
 class CalendarEvaluationDbProvider extends BoxProvider<FulfillmentEvaluation> {
+
+  @override
+  @PostConstruct(preResolve: true)
+  Future<void> init() async => super.init();
+  
   @override
   final String boxName = 'CalendarEvaluationBox';
 

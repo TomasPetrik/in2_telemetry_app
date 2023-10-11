@@ -71,12 +71,29 @@ Future<_i1.GetIt> init(
     environmentFilter,
   );
   final dioModule = _$DioModule();
-  gh.singleton<_i3.AccountDbProvider>(_i3.AccountDbProvider());
-  gh.singleton<_i4.AppSettingsDbProvider>(_i4.AppSettingsDbProvider());
+  await gh.singletonAsync<_i3.AccountDbProvider>(
+    () {
+      final i = _i3.AccountDbProvider();
+      return i.init().then((_) => i);
+    },
+    preResolve: true,
+  );
+  await gh.singletonAsync<_i4.AppSettingsDbProvider>(
+    () {
+      final i = _i4.AppSettingsDbProvider();
+      return i.init().then((_) => i);
+    },
+    preResolve: true,
+  );
   gh.singleton<_i5.AuthService>(_i5.AuthService());
   gh.singleton<_i6.BtConnectionHelper>(_i6.BtConnectionHelper());
-  gh.singleton<_i7.CalendarEvaluationDbProvider>(
-      _i7.CalendarEvaluationDbProvider());
+  await gh.singletonAsync<_i7.CalendarEvaluationDbProvider>(
+    () {
+      final i = _i7.CalendarEvaluationDbProvider();
+      return i.init().then((_) => i);
+    },
+    preResolve: true,
+  );
   gh.singleton<_i8.CalendarFooterBloc>(_i8.CalendarFooterBloc());
   gh.singleton<_i9.CarePlanBloc>(_i9.CarePlanBloc());
   gh.factory<_i10.ChartBloc>(() => _i10.ChartBloc());
@@ -87,20 +104,50 @@ Future<_i1.GetIt> init(
   gh.singleton<_i12.HospitalSearchCubit>(_i12.HospitalSearchCubit());
   gh.singleton<_i13.InternetService>(_i13.InternetService());
   gh.factory<_i14.LoaderCubit>(() => _i14.LoaderCubit());
-  gh.singleton<_i15.MeasurementsDbProvider>(_i15.MeasurementsDbProvider());
+  await gh.singletonAsync<_i15.MeasurementsDbProvider>(
+    () {
+      final i = _i15.MeasurementsDbProvider();
+      return i.init().then((_) => i);
+    },
+    preResolve: true,
+  );
   gh.singleton<_i16.NotificationsBloc>(_i16.NotificationsBloc(
     gh<_i3.AccountDbProvider>(),
     gh<_i4.AppSettingsDbProvider>(),
   ));
-  gh.singleton<_i17.PairedDevicesDbProvider>(_i17.PairedDevicesDbProvider());
-  gh.singleton<_i18.PendingResultsDbProvider>(_i18.PendingResultsDbProvider());
-  gh.singleton<_i19.ReportsDbProvider>(_i19.ReportsDbProvider());
+  await gh.singletonAsync<_i17.PairedDevicesDbProvider>(
+    () {
+      final i = _i17.PairedDevicesDbProvider();
+      return i.init().then((_) => i);
+    },
+    preResolve: true,
+  );
+  await gh.singletonAsync<_i18.PendingResultsDbProvider>(
+    () {
+      final i = _i18.PendingResultsDbProvider();
+      return i.init().then((_) => i);
+    },
+    preResolve: true,
+  );
+  await gh.singletonAsync<_i19.ReportsDbProvider>(
+    () {
+      final i = _i19.ReportsDbProvider();
+      return i.init().then((_) => i);
+    },
+    preResolve: true,
+  );
   gh.factory<_i20.ResultsBloc>(() => _i20.ResultsBloc());
   gh.singleton<_i21.Session>(_i21.Session(
     gh<_i3.AccountDbProvider>(),
     gh<_i18.PendingResultsDbProvider>(),
   ));
-  gh.singleton<_i22.SessionDbProvider>(_i22.SessionDbProvider());
+  await gh.singletonAsync<_i22.SessionDbProvider>(
+    () {
+      final i = _i22.SessionDbProvider();
+      return i.init().then((_) => i);
+    },
+    preResolve: true,
+  );
   gh.factory<_i23.TimeSettingsApiClient>(() =>
       _i23.TimeSettingsApiClient(gh<_i11.Dio>(instanceName: 'privateDio')));
   gh.singleton<_i24.TimeSettingsRepository>(_i24.TimeSettingsRepository(

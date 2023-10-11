@@ -5,6 +5,11 @@ import 'package:scalesoft_app/providers/box_provider.dart';
 
 @singleton
 class PairedDevicesDbProvider extends BoxProvider<Device> {
+
+  @override
+  @PostConstruct(preResolve: true)
+  Future<void> init() async => super.init();
+  
   @override
   final String boxName = 'pairedDevicesBox';
 

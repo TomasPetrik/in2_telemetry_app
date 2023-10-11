@@ -14,20 +14,19 @@ import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 @singleton
 class Session {
+  final AccountDbProvider _accountDbProvider;
+  final PendingResultsDbProvider _pendingResultsDbProvider;
+
   AuthToken? token;
   List<UserPermission>? userPermissions;
   Hospital? hospital;
   UserAccount? userAccount;
   bool? isMultiUser;
-  final AccountDbProvider _accountDbProvider;
 
   //For history and future details restoration
   List<UserEvaluationDay>? usersEvaluationsDayRestoration;
   //For calendar restoration
   DateTime? preSelectedDtRestoration;
-
-  final PendingResultsDbProvider _pendingResultsDbProvider;
-
   Session(this._accountDbProvider, this._pendingResultsDbProvider);
 
   bool supportMultiUser() {
