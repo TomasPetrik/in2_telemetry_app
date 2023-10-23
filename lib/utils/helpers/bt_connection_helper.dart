@@ -412,9 +412,15 @@ class BtConnectionHelper {
     if (Platform.isAndroid && isPairing) {
       final BluetoothBondState bondState = await device.bondState.first;
       if (bondState != BluetoothBondState.bonded) {
-        await device.createBond(timeout: 10);
+        try {
+          await device.createBond();
+        } catch (e) {
+          debugPrint(e.toString());
+          return null;
+        }
       }
     }
+
     await bpCharacteristic.setNotifyValue(!bpCharacteristic.isNotifying);
     debugPrint('sent notification value');
 
@@ -422,6 +428,31 @@ class BtConnectionHelper {
     final List<List<int>> results = [];
     bpCharacteristic.lastValueStream.listen(results.add);
     await Future.delayed(const Duration(seconds: 5));
+
+    //if iOS device is still connected in pairing process, we can consider that user haven't confirmed
+    //device pair in system dialog, so return null as (connection error)
+    /*
+    if (Platform.isIOS && isPairing) {
+      const iOsPairinAttemptsCheck = 15;
+      for (int i = 1; i <= iOsPairinAttemptsCheck; i++) {
+        final deviceState = await device.connectionState.first;
+
+        if (deviceState == BluetoothConnectionState.connected &&
+            i == iOsPairinAttemptsCheck) {
+          return null;
+        } else if (deviceState == BluetoothConnectionState.disconnected) {
+          final reason = device.disconnectReason;
+          if (reason?.code == 2) {
+            break;
+          } else {
+            return null;
+          }
+        }
+
+        await Future.delayed(const Duration(seconds: 1));
+      }
+    }
+    */
 
     return results.last;
   }

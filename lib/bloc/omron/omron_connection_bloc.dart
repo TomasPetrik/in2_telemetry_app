@@ -146,7 +146,14 @@ class OmronConnectionBloc
 
         await Wakelock.disable();
 
-        if (measurementResult.resultState == ResultState.success) {
+        if (measurementResult.resultState == ResultState.connectionError) {
+          emit(
+            OmronConnectionState.notFound(
+              timestamp: DateTime.now().microsecondsSinceEpoch,
+            ),
+          );
+          return null;
+        } else if (measurementResult.resultState == ResultState.success) {
           debugPrint('device got success data');
           final measurementInfo = measurementResult.measurementInfo;
 
@@ -201,16 +208,6 @@ class OmronConnectionBloc
           }
         } else if (measurementResult.resultState == ResultState.noData) {
           debugPrint('device got empty data');
-          emit(
-            OmronConnectionState.synced(
-              timestamp: DateTime.now().microsecondsSinceEpoch,
-              measurementResult: measurementResult,
-              deviceInfo: deviceInfo,
-            ),
-          );
-        } else if (measurementResult.resultState ==
-            ResultState.connectionError) {
-          debugPrint('device got no data [connection error]');
           emit(
             OmronConnectionState.synced(
               timestamp: DateTime.now().microsecondsSinceEpoch,
@@ -384,7 +381,7 @@ class OmronConnectionBloc
             searchMode:
                 reqModelPairing ? SearchMode.pairing : SearchMode.syncing,
             maxAllowedDeviceSearchingTime:
-                Constants.maxAllowedDeviceSearchingTime,
+                reqModelPairing ? Constants.maxAllowedDeviceSearchingTime : null,
           );
           if (foundDevice != null) {
             add(
