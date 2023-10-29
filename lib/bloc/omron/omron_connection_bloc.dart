@@ -257,27 +257,19 @@ class OmronConnectionBloc
           ),
         );
 
-        final BluetoothConnectionState deviceState =
-            await device.connectionState.first;
-        if (deviceState == BluetoothConnectionState.connected) {
+        try {
+          await device.connect(autoConnect: false);
           emit(
             OmronConnectionState.connected(
               timestamp: DateTime.now().microsecondsSinceEpoch,
             ),
           );
-        } else {
-          try {
-            await device.connect(autoConnect: false);
-            emit(
-              OmronConnectionState.connected(
-                timestamp: DateTime.now().microsecondsSinceEpoch,
-              ),
-            );
-          } catch (e) {
-            debugPrint('dev is already connected');
-            await device.disconnect();
-            await device.connect(autoConnect: false);
-          }
+        } catch (e) {
+          debugPrint('dev is already connected');
+          await device.disconnect();
+          await device.connect(autoConnect: false);
+
+          add(OmronConnectionBlocEvent.verifyDevice(device, localName));
         }
 
         _reportsService.trackEvent(
@@ -380,8 +372,9 @@ class OmronConnectionBloc
             device: _device!,
             searchMode:
                 reqModelPairing ? SearchMode.pairing : SearchMode.syncing,
-            maxAllowedDeviceSearchingTime:
-                reqModelPairing ? Constants.maxAllowedDeviceSearchingTime : null,
+            maxAllowedDeviceSearchingTime: reqModelPairing
+                ? Constants.maxAllowedDeviceSearchingTime
+                : null,
           );
           if (foundDevice != null) {
             add(

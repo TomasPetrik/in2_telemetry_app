@@ -68,7 +68,7 @@ dependencies:
   webview_flutter: ^4.2.2
 
   # Bluetooth Comm
-  flutter_blue_plus: 1.14.11
+  flutter_blue_plus: 1.20.7
 
   flutter_svg: ^1.1.6
   hive: ^2.2.3
