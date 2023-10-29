@@ -177,7 +177,7 @@ class BtConnectionHelper {
         .toList();
 
     while (true) {
-      Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
       final allDevices = await FlutterBluePlus.scanResults.first;
 
       debugPrint('found all ${allDevices.length} devices');
@@ -248,14 +248,14 @@ class BtConnectionHelper {
   Future<DeviceInfo?> requestDeviceInfo(BluetoothDevice device) async {
     var services = [];
 
-    Future.delayed(const Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 100));
     services = await device.discoverServices().timeout(
           const Duration(seconds: 3),
           onTimeout: () => <BluetoothService>[],
         );
 
     debugPrint('found services ${services.length}');
-    Future.delayed(const Duration(milliseconds: 100));
+    await Future.delayed(const Duration(milliseconds: 100));
     services = await device.discoverServices().timeout(
           const Duration(seconds: 3),
           onTimeout: () => <BluetoothService>[],
