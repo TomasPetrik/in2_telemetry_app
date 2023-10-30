@@ -19,13 +19,10 @@ class Authenticate extends AuthEvent {
 }
 
 class HandleAuthResponse extends AuthEvent {
-  final Uri authRespUri;
-  const HandleAuthResponse({
-    required this.authRespUri,
-  });
+  const HandleAuthResponse();
 
   @override
-  List<Object?> get props => [authRespUri];
+  List<Object?> get props => [];
 }
 
 class CancelAuth extends AuthEvent {

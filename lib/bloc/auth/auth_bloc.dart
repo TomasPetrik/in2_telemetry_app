@@ -32,6 +32,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SyncService _syncService;
   final Session _session;
   AuthorizationCodeGrant? _grant;
+  Client? _authClient;
   final Dio _dio;
 
   AuthBloc(
@@ -72,15 +73,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         severity: Severity.info,
         message: EventsConstants.eventUserOpenAuthReqInBrowser,
       );
-      emit(
-        AuthState.openAuthRequest(
-          authUri: _grant!.getAuthorizationUrl(
-            Uri.parse(Config.value.redirectUrl),
-            scopes: Config.value.scopes,
-            state: DateTime.now().toString(),
-          ),
-        ),
+
+      _authClient = await _authService.authorize(
+        _grant!,
+        Config.value.scopes,
+        Config.value.redirectUrl,
       );
+
+      if (_authClient != null) {
+        add(const HandleAuthResponse());
+      }
+
     } on Exception {
       _reportsService.trackEvent(
         severity: Severity.error,
@@ -101,28 +104,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
       emit(const AuthState.handlingResponse());
 
-      final tokenResponse = await _grant!.handleAuthorizationResponse(
-        event.authRespUri.queryParameters,
-      );
-
       _dio.options =
           _dio.options.copyWith(baseUrl: _session.hospital!.authData.baseUrl);
 
       _session.userPermissions =
-          JwtParser(jwtToken: tokenResponse.credentials.accessToken)
+          JwtParser(jwtToken: _authClient!.credentials.accessToken)
               .getUserPermissions();
 
       _session.token = AuthToken(
-        tokenResponse.credentials.accessToken,
-        tokenResponse.credentials.refreshToken!,
-        tokenResponse.credentials.expiration!,
+        _authClient!.credentials.accessToken,
+        _authClient!.credentials.refreshToken!,
+        _authClient!.credentials.expiration!,
       );
 
       _reportsService.trackEvent(
         severity: Severity.info,
         message: EventsConstants.eventUserAuthenticated,
       );
-      emit(AuthState.authenticated(credentials: tokenResponse.credentials));
+      emit(AuthState.authenticated(credentials: _authClient!.credentials));
     } on Exception {
       emit(const AuthState.unauthenticated());
     }

@@ -1,5 +1,7 @@
 import 'package:injectable/injectable.dart';
 import 'package:oauth2/oauth2.dart';
+import 'package:uni_links/uni_links.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 @singleton
 class AuthService {
@@ -17,5 +19,49 @@ class AuthService {
     );
 
     return grant;
+  }
+
+  Future<Client?> authorize(
+    AuthorizationCodeGrant grant,
+    List<String> scopes,
+    String redirectUrl,
+  ) async {
+    final authUri = grant.getAuthorizationUrl(
+      Uri.parse(redirectUrl),
+      scopes: scopes,
+    );
+
+    final newQueryParameters = {
+      '_tstamp': '${DateTime.now().microsecondsSinceEpoch}',
+    };
+
+    final newAuthUri = authUri.replace(
+      queryParameters: Map.from(authUri.queryParameters)
+        ..addAll(newQueryParameters),
+    );
+
+    if (await canLaunchUrl(newAuthUri)) {
+      await launchUrl(
+        newAuthUri,
+        mode: LaunchMode.externalApplication,
+        webOnlyWindowName: '_blank',
+      );
+    }
+
+    linkStream.listen(
+      (String? link) {},
+      onError: (err) {},
+    );
+
+    final responseUrl = await linkStream.first;
+
+    if (responseUrl != null) {
+      final tokenResponse = await grant.handleAuthorizationResponse(
+        Uri.parse(responseUrl).queryParameters,
+      );
+      return tokenResponse;
+    } else {
+      return null;
+    }
   }
 }

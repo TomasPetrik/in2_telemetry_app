@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
@@ -8,11 +6,8 @@ import 'package:scalesoft_app/bloc/auth/auth_state.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/ui/screens/auth_web_screen.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/widgets/loading_indicator.dart';
-import 'package:scalesoft_app/utils/constants.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class AuthManager extends StatelessWidget with BottomSheetMixin {
   const AuthManager({
@@ -22,6 +17,7 @@ class AuthManager extends StatelessWidget with BottomSheetMixin {
 
   final Widget child;
 
+  /*
   Future<void> _goToAppStore() async {
     if (Platform.isAndroid) {
       await launchUrl(
@@ -35,6 +31,7 @@ class AuthManager extends StatelessWidget with BottomSheetMixin {
       );
     }
   }
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -44,44 +41,7 @@ class AuthManager extends StatelessWidget with BottomSheetMixin {
       bloc: authBloc,
       listener: (context, state) {
         state.whenOrNull(
-          openAuthRequest: (authUri) {
-            showDialog(
-              context: context,
-              builder: (context) {
-                return AuthWebScreen(
-                  authUri: authUri,
-                  onRedirect: (redirectUri) {
-                    authBloc.add(
-                      HandleAuthResponse(authRespUri: redirectUri),
-                    );
-                  },
-                  openEGoverment: (redirectUri) async {
-                    try {
-                      if (await canLaunchUrl(redirectUri)) {
-                        await launchUrl(
-                          redirectUri,
-                          mode: LaunchMode.externalApplication,
-                        );
-                      } else {
-                        _goToAppStore();
-                      }
-                    } catch (e) {
-                      _goToAppStore();
-                    }
-                  },
-                  onCancelled: () {
-                    authBloc.add(const CancelAuth());
-                  },
-                  onLoadingError: () {
-                    authBloc.add(const ErrorLoadDataEvent());
-                  },
-                );
-              },
-            );
-          },
-          handlingResponse: () {
-            Navigator.of(context).pop();
-          },
+          handlingResponse: () {},
           authenticated: (credentials) {
             showDialog<void>(
               context: context,
@@ -102,12 +62,9 @@ class AuthManager extends StatelessWidget with BottomSheetMixin {
             showServerError(context);
           },
           unauthenticated: () {
-            Navigator.of(context).pop();
             showServerError(context);
           },
-          cancelled: () {
-            Navigator.of(context).pop();
-          },
+          cancelled: () {},
         );
       },
       child: child,

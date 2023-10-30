@@ -104,10 +104,10 @@ class BtConnectionHelper {
       FlutterBluePlus.startScan();
     }
 
-    final connectedDevices = await FlutterBluePlus.connectedSystemDevices;
+    final connectedDevices = await FlutterBluePlus.systemDevices;
 
     for (final connectedDevice in connectedDevices) {
-      debugPrint('disconecting from ${connectedDevice.localName}');
+      debugPrint('disconecting from ${connectedDevice.platformName}');
       await connectedDevice.disconnect();
     }
 

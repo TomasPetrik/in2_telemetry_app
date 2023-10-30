@@ -42,7 +42,7 @@ class DeviceInfo with _$DeviceInfo {
   @override
   String toString() {
     return 'devId:\n${device?.remoteId.str}\n'
-        'devName:\n${device?.localName}\n\n'
+        'devName:\n${device?.platformName}\n\n'
         'localName:\n${advData?.localName}\n'
         'manufacturerData:\n${getManufacturerData(advData?.manufacturerData)}\n'
         'modelNumber:\n$modelNumber\n\n'

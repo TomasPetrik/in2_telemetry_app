@@ -11,7 +11,6 @@ class AuthState with _$AuthState {
   const factory AuthState.cancelled() = _Cancelled;
   const factory AuthState.authenticated({required Credentials credentials}) = _Authenticated;
   const factory AuthState.unauthenticated() = _Unauthenticated;
-  const factory AuthState.openAuthRequest({required Uri authUri}) = _OpenAuthRequest;
   const factory AuthState.userVerified({required UserAccount userAccount}) = _UserVerified;
   const factory AuthState.inactiveUserRemoved({
     required UserAccount userAccount,
