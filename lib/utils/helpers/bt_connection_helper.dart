@@ -363,21 +363,25 @@ class BtConnectionHelper {
         devId: devId,
       );
       if (isMeasurement) {
-        await Future.delayed(const Duration(seconds: 2));
-        //repeat action in case to get fresh data
-        final hwMeasurementResult2 = await getHwMeasurementResult(
-          device: device,
-          bpService: bpService,
-          isPairing: !isMeasurement,
-          isSecondAttempt: true,
-          devId: devId,
-        );
-        if (hwMeasurementResult2.resultState == ResultState.success) {
-          debugPrint('fetched more updated result');
-          return hwMeasurementResult2;
-        }
+        try {
+          await Future.delayed(const Duration(seconds: 2));
+          //repeat action in case to get fresh data
+          final hwMeasurementResult2 = await getHwMeasurementResult(
+            device: device,
+            bpService: bpService,
+            isPairing: !isMeasurement,
+            isSecondAttempt: true,
+            devId: devId,
+          );
+          if (hwMeasurementResult2.resultState == ResultState.success) {
+            debugPrint('fetched more updated result');
+            return hwMeasurementResult2;
+          }
 
-        await device.disconnect();
+          await device.disconnect();
+        } catch (e) {
+          debugPrint('device was disconnected');
+        }
       }
 
       return hwMeasurementResult;
