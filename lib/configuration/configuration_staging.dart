@@ -39,7 +39,17 @@ class StagingConfiguration extends BaseConfiguration {
       ),
       enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate],
     ),
-
+    const Hospital(
+        id: 3,
+        title: '[Test] Krajská nemocnice T. Bati',
+        iconPath: 'assets/icons/icon_hospital_kntb.svg',
+        authData: AuthData(
+          baseUrl: 'https://e-health-test.bnzlin.cz/api-mobile/v1',
+          authUrl: 'https://e-health-test-auth.bnzlin.cz/connect/authorize',
+          tokenUrl: 'https://e-health-test-auth.bnzlin.cz/connect/token',
+        ),
+        enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate]
+    ),
     // TODO: Add URLs and uncomment #IN2-8308
     // const Hospital(
     //   id: 3,
