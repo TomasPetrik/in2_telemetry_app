@@ -37,7 +37,6 @@ class Device with _$Device {
     @JsonKey(includeToJson: false) @HiveField(17) bool? isLendedDevice,
     @JsonKey(includeToJson: false) @HiveField(18) String? aboutUrl,
     @HiveField(19) String? assignedIdentifier,
-    @JsonKey(includeToJson: false) @HiveField(20) bool? supportsBackgroundMeasurement,
   }) = _Device;
 
   factory Device.fromJson(Map<String, dynamic> json) => _$DeviceFromJson(json);
@@ -58,10 +57,6 @@ enum ActionButtonType {
 enum DeviceModelType {
   @HiveField(0)
   beurerBm77,
-
   @HiveField(1)
   omronM7,
-
-  @HiveField(3)
-  e80,
 }
