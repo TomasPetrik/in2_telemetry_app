@@ -199,6 +199,20 @@ class Constants {
       reqPairing: true,
       actionButtonType: ActionButtonType.startButton,
     ),
+    Device(
+      localId: 2,
+      modelName: 'E86',
+      visibleName: "E86",
+      bluetoothName: "E86",
+      deviceModelType: DeviceModelType.e80,
+      supportedMeasurementTypes: [
+        MeasurementType.temperature,
+        MeasurementType.heartRate,
+        MeasurementType.bloodPressure,
+        MeasurementType.oxygenSaturation,
+        MeasurementType.respiratoryRate,
+      ]
+    )
   ];
 
   static const Map<int, String> monthsInYear = {

@@ -39,16 +39,17 @@ class ProductionConfiguration extends BaseConfiguration {
       ),
       enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate],
     ),
-    // TODO: Add URLs and uncomment #IN2-8308
+    // TODO: Uncomment when KNTB fixes their certificate issues
     // const Hospital(
     //   id: 3,
-    //   title: 'Krajská nemocnice Tomáše Bati ve Zlíně',
+    //   title: 'Krajská nemocnice T. Bati',
     //   iconPath: 'assets/icons/icon_hospital_kntb.svg',
     //   authData: AuthData(
-    //     baseUrl: '???',
-    //     authUrl: '???',
-    //     tokenUrl: '???',
+    //     baseUrl: 'https://e-health.bnzlin.cz/api-mobile/v1',
+    //     authUrl: 'https://e-health-auth.bnzlin.cz/connect/authorize',
+    //     tokenUrl: 'https://e-health-auth.bnzlin.cz/connect/token',
     //   ),
+    //   enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate]
     // ),
     const Hospital(
       id: 5,
