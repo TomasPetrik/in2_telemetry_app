@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive/hive.dart';
 
-part 'overall_health_value.hive.dart';
+part 'overall_health_value.g.dart';
 
 @HiveType(typeId: 29)
 enum OverallHealthValue {

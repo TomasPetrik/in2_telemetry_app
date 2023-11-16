@@ -9,7 +9,6 @@ import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 part 'measurement_result.freezed.dart';
 part 'measurement_result.g.dart';
-part 'measurement_result.hive.dart';
 
 @unfreezed
 class MeasurementResult with _$MeasurementResult {

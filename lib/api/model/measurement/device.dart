@@ -4,7 +4,6 @@ import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
 
 part 'device.freezed.dart';
 part 'device.g.dart';
-part 'device.hive.dart';
 
 @freezed
 class Device with _$Device {

@@ -15,8 +15,6 @@ part 'measurement_thresholds.freezed.dart';
 
 part 'measurement_thresholds.g.dart';
 
-part 'measurement_thresholds.hive.dart';
-
 @freezed
 class MeasurementThresholds with _$MeasurementThresholds {
   const MeasurementThresholds._();

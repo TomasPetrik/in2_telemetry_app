@@ -11,8 +11,6 @@ part 'care_plan_version.freezed.dart';
 
 part 'care_plan_version.g.dart';
 
-part 'care_plan_version.hive.dart';
-
 @freezed
 class CarePlanVersion with _$CarePlanVersion {
   CarePlanVersion._();

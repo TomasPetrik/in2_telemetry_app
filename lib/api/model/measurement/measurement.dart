@@ -8,7 +8,6 @@ import 'package:scalesoft_app/api/model/measurement/source_device_info.dart';
 
 part 'measurement.freezed.dart';
 part 'measurement.g.dart';
-part 'measurement.hive.dart';
 
 @freezed
 class Measurement with _$Measurement {

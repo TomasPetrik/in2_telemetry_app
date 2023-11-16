@@ -5,7 +5,6 @@ import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
 
 part 'hospital.freezed.dart';
 part 'hospital.g.dart';
-part 'hospital.hive.dart';
 
 @freezed
 class Hospital with _$Hospital {

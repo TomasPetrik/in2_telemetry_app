@@ -3,7 +3,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 part 'auth_data.freezed.dart';
 part 'auth_data.g.dart';
-part 'auth_data.hive.dart';
 
 @freezed
 class AuthData with _$AuthData {

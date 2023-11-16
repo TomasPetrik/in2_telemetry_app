@@ -6,8 +6,6 @@ part 'overall_health_threshold_settings.freezed.dart';
 
 part 'overall_health_threshold_settings.g.dart';
 
-part 'overall_health_threshold_settings.hive.dart';
-
 @freezed
 class OverallHealthThresholdSetting with _$OverallHealthThresholdSetting {
   const OverallHealthThresholdSetting._();

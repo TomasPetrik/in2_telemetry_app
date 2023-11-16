@@ -3,7 +3,6 @@ import 'package:hive/hive.dart';
 
 part 'temperature_threshold_settings.freezed.dart';
 part 'temperature_threshold_settings.g.dart';
-part 'temperature_threshold_settings.hive.dart';
 
 @freezed
 class TemperatureThresholdSetting with _$TemperatureThresholdSetting {
