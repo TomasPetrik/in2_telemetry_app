@@ -19,7 +19,7 @@ import 'package:scalesoft_app/services/auth_service.dart';
 import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
 import 'package:scalesoft_app/storage/session.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/events_constants.dart';
 
 @singleton
@@ -42,7 +42,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     this._session,
     this._accountDbProvider,
     this._pendingResultsDbProvider,
-    @Named(Constants.privateDioName) this._dio,
+    @Named(ConfigurationConstants.privateDioName) this._dio,
     this._syncService,
   ) : super(const AuthState.unauthenticated()) {
     on<Authenticate>(_onAuthenticate);

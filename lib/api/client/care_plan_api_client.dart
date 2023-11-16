@@ -7,7 +7,7 @@ import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation_aggrega
 import 'package:scalesoft_app/api/model/care_plan_versions_response.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 
 part 'care_plan_api_client.g.dart';
 
@@ -15,7 +15,7 @@ part 'care_plan_api_client.g.dart';
 @injectable
 abstract class CarePlanApiClient {
   @factoryMethod
-  factory CarePlanApiClient(@Named(Constants.privateDioName) Dio dio) =
+  factory CarePlanApiClient(@Named(ConfigurationConstants.privateDioName) Dio dio) =
       _CarePlanApiClient;
 
   @GET('{apiUrl}/patient/care-plan/active')

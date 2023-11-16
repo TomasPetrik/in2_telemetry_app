@@ -10,7 +10,7 @@ import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/scale_select_form_field.dart';
 import 'package:scalesoft_app/ui/widgets/scale_text_form_field.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/extensions/string_extensions.dart';
 
 final formKey = GlobalKey<FormState>();
@@ -98,7 +98,7 @@ class MeasurementForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final measurementConfig = Constants.supportedMeasurements[measurementType];
+    final measurementConfig = ConfigurationConstants.supportedMeasurements[measurementType];
 
     if (measurementConfig == null) return const SizedBox.shrink();
 

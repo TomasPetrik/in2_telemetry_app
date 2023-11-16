@@ -18,7 +18,7 @@ import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/paired_devices_db_provider.dart';
 import 'package:scalesoft_app/services/report_service.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/events_constants.dart';
 import 'package:scalesoft_app/utils/helpers/bt_connection_helper.dart';
 import 'package:wakelock/wakelock.dart';
@@ -41,7 +41,7 @@ class OmronConnectionBloc
   String getDevIdFromName(String localName) {
     String devId = localName;
 
-    final supportedDev = Constants.supportedDevices.firstWhere(
+    final supportedDev = ConfigurationConstants.supportedDevices.firstWhere(
       (dev) =>
           localName.toLowerCase().contains(dev.bluetoothName!.toLowerCase()),
     );
@@ -157,7 +157,7 @@ class OmronConnectionBloc
           debugPrint('device got success data');
           final measurementInfo = measurementResult.measurementInfo;
 
-          final supportedDev = Constants.supportedDevices.firstWhere(
+          final supportedDev = ConfigurationConstants.supportedDevices.firstWhere(
             (dev) => localName
                 .toLowerCase()
                 .contains(dev.bluetoothName!.toLowerCase()),
@@ -373,7 +373,7 @@ class OmronConnectionBloc
             searchMode:
                 reqModelPairing ? SearchMode.pairing : SearchMode.syncing,
             maxAllowedDeviceSearchingTime: reqModelPairing
-                ? Constants.maxAllowedDeviceSearchingTime
+                ? ConfigurationConstants.maxAllowedDeviceSearchingTime
                 : null,
           );
           if (foundDevice != null) {

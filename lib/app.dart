@@ -31,7 +31,7 @@ import 'package:scalesoft_app/ui/routers/routes/no_user_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_added_route.dart';
 import 'package:scalesoft_app/ui/scale_app.dart';
 import 'package:scalesoft_app/ui/screens/splash_screen.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/extensions/locale_extensions.dart';
 import 'package:scalesoft_app/utils/extensions/theme_mode_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/appearance_helper.dart';
@@ -145,7 +145,7 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
 
     await configureDependencies();
 
-    getIt<Dio>(instanceName: Constants.privateDioName)
+    getIt<Dio>(instanceName: ConfigurationConstants.privateDioName)
         .interceptors
         .add(getIt<TokenInterceptor>());
 

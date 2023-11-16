@@ -12,7 +12,7 @@ import 'package:scalesoft_app/extensions/uint8_list_extension.dart';
 import 'package:scalesoft_app/model/device_info.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/model/measurement_info.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 
 const String deviceInfo = '0000180a-0000-1000-8000-00805f9b34fb';
 const String bloodPressure = '00001810-0000-1000-8000-00805f9b34fb';
@@ -37,11 +37,11 @@ class BtConnectionHelper {
     device,
     SearchMode searchMode,
   ) {
-    final supportedBtNames = Constants.supportedDevices
+    final supportedBtNames = ConfigurationConstants.supportedDevices
         .map((supDev) => supDev.bluetoothName ?? '')
         .toList();
 
-    final supportedBtPairingNames = Constants.supportedDevices
+    final supportedBtPairingNames = ConfigurationConstants.supportedDevices
         .map((supDev) => supDev.bluetoothPairingName ?? '')
         .toList();
 
@@ -67,7 +67,7 @@ class BtConnectionHelper {
       return true;
     }
 
-    final supportedDev = Constants.supportedDevices.firstWhere(
+    final supportedDev = ConfigurationConstants.supportedDevices.firstWhere(
       (dev) {
         return localName
             .toLowerCase()
@@ -168,11 +168,11 @@ class BtConnectionHelper {
       FlutterBluePlus.startScan();
     }
 
-    final supportedBtNames = Constants.supportedDevices
+    final supportedBtNames = ConfigurationConstants.supportedDevices
         .map((supDev) => supDev.bluetoothName ?? '')
         .toList();
 
-    final supportedBtPairingNames = Constants.supportedDevices
+    final supportedBtPairingNames = ConfigurationConstants.supportedDevices
         .map((supDev) => supDev.bluetoothPairingName ?? '')
         .toList();
 

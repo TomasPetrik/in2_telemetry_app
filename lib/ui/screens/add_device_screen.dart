@@ -7,7 +7,7 @@ import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/device_item.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 
 class AddDeviceScreen extends StatelessWidget {
   const AddDeviceScreen({
@@ -32,7 +32,7 @@ class AddDeviceScreen extends StatelessWidget {
                   MediaQuery.of(context).viewPadding.top +
                       Dimensions.appBarHeight,
                 ),
-                ...Constants.supportedDevices
+                ...ConfigurationConstants.supportedDevices
                     .map(
                       (supportedDevice) => InkWell(
                         onTap: () {

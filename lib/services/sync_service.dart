@@ -15,7 +15,7 @@ import 'package:scalesoft_app/repositories/care_plans_repository.dart';
 import 'package:scalesoft_app/repositories/device_repository.dart';
 import 'package:scalesoft_app/repositories/time_settings_repository.dart';
 import 'package:scalesoft_app/storage/session.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/notifications_helper.dart';
 
@@ -248,7 +248,7 @@ class SyncService {
     final carePlans = userAccount.carePlans;
     if (carePlans == null) return;
 
-    const supportedMeasurementTypes = Constants.supportedMeasurementTypes;
+    const supportedMeasurementTypes = ConfigurationConstants.supportedMeasurementTypes;
 
     final yesterdayMidnight = DateTime.now().yesterday;
     final tomorrowMidnight = DateTime.now().tomorrow;

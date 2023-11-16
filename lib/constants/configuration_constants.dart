@@ -4,17 +4,7 @@ import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/model/measurement_config.dart';
 import 'package:scalesoft_app/utils/input_formatters/decimal_text_input_formatter.dart';
 
-class EGoverement {
-  static Uri googlePlayUri = Uri.parse(
-    'https://play.google.com/store/apps/details?id=cz.mojedatovaschranka.mobilniklic',
-  );
-  static Uri appStoreUri = Uri.parse(
-    'https://apps.apple.com/sk/app/mobiln%C3%AD-kl%C3%AD%C4%8D-egovernmentu/id1466762017',
-  );
-  static String scheme = 'isds';
-}
-
-class Constants {
+class ConfigurationConstants {
   /* Keep debug logs max for N days */
   static const int keepLogsDays = 2;
 
@@ -26,10 +16,6 @@ class Constants {
 
   /* API */
   static const String privateDioName = 'privateDio';
-
-  /* Default Location (Prague) to get sunset / sunrise for autoswith appearance */
-  static const double defaultLat = 50.08804;
-  static const double defaultLng = 14.42076;
 
   /* Supported Measurements */
 

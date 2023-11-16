@@ -19,7 +19,7 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
 import 'package:scalesoft_app/storage/session.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/events_constants.dart';
 
 @singleton
@@ -254,7 +254,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
 Future<void> initBackgroundFetch() async {
   int status = await BackgroundFetch.configure(
       BackgroundFetchConfig(
-        minimumFetchInterval: Constants.autoSyncIntervalMinutes,
+        minimumFetchInterval: ConfigurationConstants.autoSyncIntervalMinutes,
         stopOnTerminate: false,
         enableHeadless: true,
         requiresBatteryNotLow: false,
