@@ -28,7 +28,8 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
   @override
   Widget build(BuildContext context) {
     UserAccount? userAccount;
-    if (mResult.userId != null && isMultiUser) {
+    // TODO:
+    if (mResult.userId != null /*&& isMultiUser*/) {
       userAccount = getIt<AccountDbProvider>().get(mResult.userId!);
     }
 
@@ -85,7 +86,7 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (userAccount != null) ...[
+                  if (isMultiUser && userAccount != null) ...[
                     Text(
                       userAccount.user.fullName,
                       style: ScaleTextStyles.textAccent.apply(
@@ -126,8 +127,10 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                               mResult.isLongPeriod
                                   ? localization
                                       .dashboard_screen_measurement_periodical_interval(
-                                      mResult.measurementIntervalStart!.dateFormatLong,
-                                      mResult.measurementIntervalEnd!.dateFormatLong,
+                                      mResult.measurementIntervalStart!
+                                          .dateFormatLong,
+                                      mResult.measurementIntervalEnd!
+                                          .dateFormatLong,
                                     )
                                   : localization
                                       .dashboard_screen_measurement_interval(
@@ -178,6 +181,18 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                             overflow: TextOverflow.ellipsis,
                             style: ScaleTextStyles.text.copyWith(
                               color: Theme.of(context).colorScheme.error,
+                            ),
+                          ),
+                        ),
+                      } else if (userAccount?.viewOwnMeasurementData ==
+                          true) ...{
+                        Expanded(
+                          child: Text(
+                            mResult.getFormattedValue(),
+                            textAlign: TextAlign.right,
+                            overflow: TextOverflow.fade,
+                            style: ScaleTextStyles.text.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                           ),
                         ),

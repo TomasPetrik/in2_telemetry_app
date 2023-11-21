@@ -7,14 +7,17 @@ part 'shortness_of_breath_value.hive.dart';
 enum ShortnessOfBreathValue {
   @JsonValue('none')
   @HiveField(0)
-  none,
+  none(0),
   @JsonValue('low')
   @HiveField(10)
-  low,
+  low(10),
   @JsonValue('medium')
   @HiveField(20)
-  medium,
+  medium(20),
   @JsonValue('high')
   @HiveField(30)
-  high,
+  high(30);
+
+  final num value;
+  const ShortnessOfBreathValue(this.value);
 }

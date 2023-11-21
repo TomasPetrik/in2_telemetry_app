@@ -126,8 +126,8 @@ class ResultsHelper {
               MeasurementResult(
                 measurementDateTime: measurementTime,
                 measurementIntervalStart: plMeasurement.whenStart,
-                measurementIntervalEnd:
-                    null, //because we want to show them separated
+                measurementIntervalEnd: null,
+                //because we want to show them separated
                 evaluationItem: evaluationItem,
                 reqCount: 1,
                 currentCount: 1,
@@ -199,39 +199,37 @@ class ResultsHelper {
       );
     }
 
-    //3. Add other patient/measurement (s) not included in previous ongoing resolved results
+    //3. Add other patient/measurement (s) not included in previous ongoing resolved results;
+    // Add measured values to existing results.
     if (serverResults.isNotEmpty) {
-      final resultsTimes =
-          resultsUntilNow.fold<List<DateTime>>([], (prevTimes, result) {
-        return [
-          ...prevTimes,
-          ...result.evaluationItem!.actualMeasurementTimes,
-        ];
-      });
+      for (final serverResult in serverResults) {
+        final matchingResults = resultsUntilNow.where(
+          (x) =>
+              x.measurementDateTime == serverResult.measurementDateTime &&
+              x.measurementType == serverResult.measurementType,
+        );
 
-      //3.1 First remove already included
-      serverResults.removeWhere(
-        (serverResult) => resultsTimes.any(
-          (resultTime) => resultTime == serverResult.measurementDateTime,
-        ),
-      );
-
-      //3.2 Then convert them and add to all measurements
-      allResults.addAll(
-        serverResults
-            .map(
-              (serverResult) => MeasurementResult(
-                measurementDateTime: serverResult.measurementDateTime,
-                measurementIntervalEnd: null,
-                reqCount: 1,
-                currentCount: 1,
-                measurementType: serverResult.measurementType,
-                userId: serverResult.userId,
-                whenCode: serverResult.whenCode,
-              ),
-            )
-            .toList(),
-      );
+        if (matchingResults.isEmpty) {
+          allResults.add(
+            MeasurementResult(
+              measurementDateTime: serverResult.measurementDateTime,
+              measurementIntervalEnd: null,
+              reqCount: 1,
+              currentCount: 1,
+              measurementType: serverResult.measurementType,
+              userId: serverResult.userId,
+              whenCode: serverResult.whenCode,
+              value: serverResult.value,
+              composedValue: serverResult.composedValue,
+            ),
+          );
+        } else {
+          for (final computedResult in matchingResults) {
+            computedResult.value = serverResult.value;
+            computedResult.composedValue = serverResult.composedValue;
+          }
+        }
+      }
     }
 
     allResults.sort((a, b) {
@@ -277,8 +275,7 @@ class ResultsHelper {
                   serverResult.measurementDateTime.isAfter(todayMidnight)) ||
               (whenPeriod == ResultsWhenPeriod.yesterday &&
                   serverResult.measurementDateTime.isBefore(todayMidnight) &&
-                  serverResult.measurementDateTime
-                      .isAfter(yesterdayMidnight)));
+                  serverResult.measurementDateTime.isAfter(yesterdayMidnight)));
     }).toList();
 
     //1. Get results within current time

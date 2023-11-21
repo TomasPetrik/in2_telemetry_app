@@ -73,21 +73,7 @@ class SyncedResult extends StatelessWidget {
 
   String? _getMeasurementValueFormatted() {
     if (hwMeasurementResult.resultState == ResultState.success) {
-      switch (measurementType) {
-        case MeasurementType.bloodPressure:
-          final systolic =
-              hwMeasurementResult.measurementInfo?.systolic ?? 'N/A';
-          final diastolic =
-              hwMeasurementResult.measurementInfo?.diastolic ?? 'N/A';
-          return '$systolic / $diastolic mmHg';
-        case MeasurementType.heartRate:
-          final hearthRate =
-              hwMeasurementResult.measurementInfo?.pulseRate ?? 'N/A';
-          return '$hearthRate ${localization.common_heart_rate_unit}';
-
-        default:
-          return null;
-      }
+      return hwMeasurementResult.measurement?.getFormattedValue();
     }
     return null;
   }

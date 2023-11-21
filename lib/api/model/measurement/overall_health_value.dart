@@ -7,14 +7,17 @@ part 'overall_health_value.hive.dart';
 enum OverallHealthValue {
   @JsonValue('good')
   @HiveField(0)
-  good,
+  good(0),
   @JsonValue('variable')
   @HiveField(10)
-  variable,
+  variable(10),
   @JsonValue('bad')
   @HiveField(20)
-  bad,
+  bad(20),
   @JsonValue('veryBad')
   @HiveField(30)
-  veryBad,
+  veryBad(30);
+
+  final num value;
+  const OverallHealthValue(this.value);
 }
