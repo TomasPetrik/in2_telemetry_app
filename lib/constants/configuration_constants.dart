@@ -168,6 +168,7 @@ class ConfigurationConstants {
       askToActivateBt: true,
       askToConfirmMeasurement: true,
       actionButtonType: ActionButtonType.regular,
+      measurementFlow: MeasurementFlow.foreground,
     ),
     Device(
       localId: 1,
@@ -184,6 +185,23 @@ class ConfigurationConstants {
       ],
       reqPairing: true,
       actionButtonType: ActionButtonType.startButton,
+      measurementFlow: MeasurementFlow.foreground,
+    ),
+    Device(
+      localId: 2,
+      modelName: 'E86',
+      visibleName: "E86",
+      bluetoothName: "E86",
+      deviceModelType: DeviceModelType.e8x,
+      supportedMeasurementTypes: [
+        MeasurementType.temperature,
+        MeasurementType.heartRate,
+        MeasurementType.bloodPressure,
+        MeasurementType.oxygenSaturation,
+        MeasurementType.respiratoryRate,
+      ],
+      imagePath: 'assets/images/e8x.png',
+      measurementFlow: MeasurementFlow.background,
     ),
   ];
 

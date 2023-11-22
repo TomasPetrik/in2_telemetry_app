@@ -361,6 +361,7 @@ class ResultsHelper {
       case MeasurementType.steps:
       case MeasurementType.globalPosition:
       case MeasurementType.ews:
+      case MeasurementType.battery:
         return CandleData(
           measurementType: measurement.measurementType!,
           timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
@@ -427,6 +428,7 @@ class ResultsHelper {
       case MeasurementType.steps:
       case MeasurementType.globalPosition:
       case MeasurementType.ews:
+      case MeasurementType.battery:
         return CandleData(
           measurementType: measurement.measurementType,
           timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,

@@ -50,11 +50,11 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
               dev.deviceIdentifier?.toLowerCase() ==
               assignedDevice.deviceIdentifier?.toLowerCase(),
         );
-
         prioritisedDevices.add(
           suppDev.copyWith(
             deviceIdentifier: assignedDevice.deviceIdentifier,
             assignedIdentifier: assignedDevice.assignedIdentifier,
+            bluetoothAddress: assignedDevice.bluetoothAddress,
             wasPaired: wasPaired,
             isLendedDevice: true,
           ),

@@ -102,7 +102,7 @@ class RegisterDeviceBloc
             ),
           );
           _btConnectionHelper.searchDevicesByService(
-            serviceUuid: bloodPressureServiceUuid,
+            serviceUuids: [bloodPressureServiceUuid, heartRateServiceUuid],
             onlyPairingMode: _onlyPairingMode,
             onResult: (btDevices) {
               add(
@@ -162,6 +162,7 @@ class RegisterDeviceBloc
               deviceModelId: deviceModelId,
               assignedIdentifier: assignedIdentifier,
               deviceIdentifier: device.deviceIdentifier!,
+              bluetoothAddress: device.bluetoothAddress,
             );
 
             await _deviceRepository.registerDevice(
@@ -198,6 +199,7 @@ class RegisterDeviceBloc
       );
     });
   }
+
   void _startCheckingBtState() {
     FlutterBluePlus.adapterState.listen((btState) {
       add(RegisterDeviceBlocEvent.newBtState(btState));

@@ -89,8 +89,7 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
                         ),
                         const Gap(Dimensions.padding24),
                         Text(
-                          localization
-                              .register_device_detail_screen_identificator,
+                          localization.register_device_detail_screen_identifier,
                           style: ScaleTextStyles.text.apply(
                             color: Theme.of(context)
                                 .colorScheme
@@ -106,6 +105,27 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
                             color: Theme.of(context).colorScheme.tertiary,
                           ),
                         ),
+                        if (device.bluetoothAddress != null) ...[
+                          const Gap(Dimensions.padding24),
+                          Text(
+                            localization
+                                .register_device_detail_screen_bluetooth_address,
+                            style: ScaleTextStyles.text.apply(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onPrimary
+                                  .withOpacity(0.48),
+                            ),
+                          ),
+                          const Gap(Dimensions.padding8),
+                          TextFormField(
+                            enabled: false,
+                            initialValue: device.bluetoothAddress,
+                            style: ScaleTextStyles.text.apply(
+                              color: Theme.of(context).colorScheme.tertiary,
+                            ),
+                          ),
+                        ],
                         const Gap(Dimensions.padding24),
                         Text(
                           localization

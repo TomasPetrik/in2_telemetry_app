@@ -81,6 +81,7 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
     Hive.registerAdapter(OverallHealthThresholdSettingAdapter());
     Hive.registerAdapter(ShortnessOfBreathValueAdapter());
     Hive.registerAdapter(OverallHealthValueAdapter());
+    Hive.registerAdapter(MeasurementFlowAdapter());
   }
 
   @override

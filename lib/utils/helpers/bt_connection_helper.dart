@@ -18,6 +18,7 @@ const String deviceInfo = '0000180a-0000-1000-8000-00805f9b34fb';
 const String bloodPressure = '00001810-0000-1000-8000-00805f9b34fb';
 const String batteryService = '0000180f-0000-1000-8000-00805f9b34fb';
 const String bloodPressureServiceUuid = '1810';
+const String heartRateServiceUuid = '180d';
 
 class DeviceSearchResult {
   BluetoothDevice device;
@@ -157,8 +158,9 @@ class BtConnectionHelper {
     }
   }
 
+  /// Finds devices that support at least one of the services in [serviceUuids].
   Future<void> searchDevicesByService({
-    required String serviceUuid,
+    required List<String> serviceUuids,
     required onlyPairingMode,
     required Function(List<Device> devices) onResult,
   }) async {
@@ -173,7 +175,8 @@ class BtConnectionHelper {
         .toList();
 
     final supportedBtPairingNames = ConfigurationConstants.supportedDevices
-        .map((supDev) => supDev.bluetoothPairingName ?? '')
+        .where((x) => x.bluetoothPairingName != null)
+        .map((supDev) => supDev.bluetoothPairingName!)
         .toList();
 
     while (true) {
@@ -185,7 +188,10 @@ class BtConnectionHelper {
       final matchedResults = allDevices.where((scanResult) {
         return scanResult.advertisementData.serviceUuids
                 .map((uuid) => uuid.toLowerCase())
-                .any((uuid) => uuid.contains(serviceUuid.toLowerCase())) &&
+                .any(
+                  (uuid) =>
+                      serviceUuids.any((x) => uuid.contains(x.toLowerCase())),
+                ) &&
             ((!onlyPairingMode &&
                     supportedBtNames.any((suppBtName) {
                       return scanResult.advertisementData.localName
@@ -228,7 +234,7 @@ class BtConnectionHelper {
     String advertisementName,
     BluetoothDevice btDevice,
   ) {
-    final supportedDev = Constants.supportedDevices.firstWhere(
+    final supportedDev = ConfigurationConstants.supportedDevices.firstWhere(
       (dev) {
         return advertisementName
             .toLowerCase()
@@ -236,13 +242,17 @@ class BtConnectionHelper {
       },
     );
 
-    var preferedIdName = advertisementName;
+    var preferredIdName = advertisementName;
 
     if (supportedDev.deviceModelType == DeviceModelType.omronM7) {
-      preferedIdName = advertisementName.split('_').last;
+      preferredIdName = advertisementName.split('_').last;
     }
 
-    return supportedDev.copyWith(deviceIdentifier: preferedIdName);
+    return supportedDev.copyWith(
+      bluetoothAddress:
+          Platform.isAndroid ? btDevice.remoteId.toString() : null,
+      deviceIdentifier: preferredIdName,
+    );
   }
 
   Future<DeviceInfo?> requestDeviceInfo(BluetoothDevice device) async {

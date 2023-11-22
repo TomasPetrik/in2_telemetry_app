@@ -239,7 +239,8 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                               DeviceSearchRoute.name,
                               params: {
                                 'userId': userAccount.user.muid,
-                                'devicePurpose': DevicePurpose.registerDevice.name,
+                                'devicePurpose':
+                                    DevicePurpose.registerDevice.name,
                               },
                             ).then((final Device? device) {
                               if (device != null) {
@@ -247,10 +248,8 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                                   RegisterDeviceDetailRoute.name,
                                   params: {
                                     'userId': userAccount.user.muid,
-                                    'localId': '${device.localId!}',
-                                    'deviceIdentifier':
-                                        device.deviceIdentifier!,
                                   },
+                                  extra: device,
                                 );
                               }
                             });

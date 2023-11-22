@@ -464,12 +464,11 @@ packages:
   hive_generator:
     dependency: "direct dev"
     description:
-      path: hive_generator
-      ref: master
-      resolved-ref: afa76cc8a7ed1989d9ec6ece6a6ed803a60689e4
-      url: "https://github.com/yura2000/hive.git"
-    source: git
-    version: "2.0.0"
+      name: hive_generator
+      sha256: "06cb8f58ace74de61f63500564931f9505368f45f98958bd7a6c35ba24159db4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   http:
     dependency: transitive
     description:

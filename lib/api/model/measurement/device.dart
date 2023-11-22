@@ -36,6 +36,11 @@ class Device with _$Device {
     @JsonKey(includeToJson: false) @HiveField(17) bool? isLendedDevice,
     @JsonKey(includeToJson: false) @HiveField(18) String? aboutUrl,
     @HiveField(19) String? assignedIdentifier,
+    @JsonKey(includeToJson: false)
+    @HiveField(20) String? bluetoothAddress,
+    @JsonKey(includeToJson: false)
+    @HiveField(21, defaultValue: MeasurementFlow.foreground) @Default(MeasurementFlow.foreground)
+    MeasurementFlow? measurementFlow,
   }) = _Device;
 
   factory Device.fromJson(Map<String, dynamic> json) => _$DeviceFromJson(json);
@@ -58,4 +63,26 @@ enum DeviceModelType {
   beurerBm77,
   @HiveField(1)
   omronM7,
+  @HiveField(3)
+  e8x,
+}
+
+@HiveType(typeId: 38)
+enum MeasurementFlow {
+  @HiveField(0)
+  none(0),
+  @HiveField(1)
+  foreground(1 << 0),
+  @HiveField(1 << 1)
+  background(1 << 2),
+  @HiveField(3)
+  all(0xFF);
+
+  final int value;
+
+  const MeasurementFlow(this.value);
+
+  bool hasFlag(MeasurementFlow flag) {
+    return flag.value & value != 0;
+  }
 }

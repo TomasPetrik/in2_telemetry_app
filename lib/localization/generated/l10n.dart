@@ -2282,10 +2282,20 @@ class I10n {
   }
 
   /// `Technický Identifikátor`
-  String get register_device_detail_screen_identificator {
+  String get register_device_detail_screen_identifier {
     return Intl.message(
       'Technický Identifikátor',
-      name: 'register_device_detail_screen_identificator',
+      name: 'register_device_detail_screen_identifier',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bluetooth adresa`
+  String get register_device_detail_screen_bluetooth_address {
+    return Intl.message(
+      'Bluetooth adresa',
+      name: 'register_device_detail_screen_bluetooth_address',
       desc: '',
       args: [],
     );

@@ -121,7 +121,15 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                     final supportDeviceMeasurement =
                         state.supportDeviceMeasurement;
 
-                    final assignedDevices = state.assignedDevices ?? [];
+                    final assignedDevices = state.assignedDevices
+                            ?.where(
+                              (x) =>
+                                  x.measurementFlow
+                                      ?.hasFlag(MeasurementFlow.foreground) ??
+                                  true,
+                            )
+                            .toList() ??
+                        [];
                     final personalDevices = state.personalDevices ?? [];
 
                     if (selectedMeasurementType == null ||

@@ -582,11 +582,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "register_device_detail_screen_assigned_id_hint":
             MessageLookupByLibrary.simpleMessage(
                 "Například zařízení v kuchyni"),
+        "register_device_detail_screen_bluetooth_address":
+            MessageLookupByLibrary.simpleMessage("Bluetooth adresa"),
         "register_device_detail_screen_button_register":
             MessageLookupByLibrary.simpleMessage("Registrovat"),
         "register_device_detail_screen_device":
             MessageLookupByLibrary.simpleMessage("Zařízení"),
-        "register_device_detail_screen_identificator":
+        "register_device_detail_screen_identifier":
             MessageLookupByLibrary.simpleMessage("Technický Identifikátor"),
         "register_device_detail_screen_not_filled_field":
             MessageLookupByLibrary.simpleMessage("Nevyplněné pole"),
