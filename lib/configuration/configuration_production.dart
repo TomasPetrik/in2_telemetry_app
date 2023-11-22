@@ -39,7 +39,6 @@ class ProductionConfiguration extends BaseConfiguration {
       ),
       enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate],
     ),
-    // TODO: Uncomment when KNTB fixes their certificate issues
     const Hospital(
       id: 3,
       title: 'Krajská nemocnice T. Bati',

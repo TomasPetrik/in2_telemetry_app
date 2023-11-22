@@ -248,9 +248,16 @@ class SyncService {
     final carePlans = userAccount.carePlans;
     if (carePlans == null) return;
 
-    final supportedMeasurementTypes =
-        userAccount.hospital?.enabledMeasurementTypes ??
-            Constants.supportedMeasurementTypes;
+    var supportedMeasurementTypes =
+        (userAccount.carePlans?.map((x) => x.activity.measurementType) ?? [])
+            .toSet();
+
+    if (userAccount.hospital != null) {
+      supportedMeasurementTypes
+          .addAll(userAccount.hospital!.enabledMeasurementTypes);
+    } else {
+      supportedMeasurementTypes.addAll(Constants.supportedMeasurementTypes);
+    }
 
     final yesterdayMidnight = DateTime.now().yesterday;
     final tomorrowMidnight = DateTime.now().tomorrow;
