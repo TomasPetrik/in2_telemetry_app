@@ -248,16 +248,25 @@ class SyncService {
     final carePlans = userAccount.carePlans;
     if (carePlans == null) return;
 
-    const supportedMeasurementTypes = ConfigurationConstants.supportedMeasurementTypes;
+    var supportedMeasurementTypes =
+        (userAccount.carePlans?.map((x) => x.activity.measurementType) ?? [])
+            .toSet();
+
+    if (userAccount.hospital != null) {
+      supportedMeasurementTypes
+          .addAll(userAccount.hospital!.enabledMeasurementTypes);
+    } else {
+      supportedMeasurementTypes.addAll(ConfigurationConstants.supportedMeasurementTypes);
+    }
 
     final yesterdayMidnight = DateTime.now().yesterday;
     final tomorrowMidnight = DateTime.now().tomorrow;
 
     final List<MeasurementResult> allResults = [];
-    for (final mesurementType in supportedMeasurementTypes) {
+    for (final measurementType in supportedMeasurementTypes) {
       final measurementResults = await _carePlansRepository.loadResults(
         userAccount: userAccount,
-        measurementType: mesurementType,
+        measurementType: measurementType,
         startDateTime: yesterdayMidnight.toIso8601String(),
         endDateTime: tomorrowMidnight.toIso8601String(),
       );

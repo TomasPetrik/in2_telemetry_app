@@ -1471,15 +1471,15 @@ class I10n {
     );
   }
 
-  /// `{measurementType, select, temperature{[°C]} bloodPressure{[mmHg]} oxygenSaturation{[%]} heartRate{[tepů/min]} other{}}`
+  /// `{measurementType, select, temperature{°C} bloodPressure{mmHg} oxygenSaturation{%} heartRate{tepů/min} other{}}`
   String common_measurement_units_types(Object measurementType) {
     return Intl.select(
       measurementType,
       {
-        'temperature': '[°C]',
-        'bloodPressure': '[mmHg]',
-        'oxygenSaturation': '[%]',
-        'heartRate': '[tepů/min]',
+        'temperature': '°C',
+        'bloodPressure': 'mmHg',
+        'oxygenSaturation': '%',
+        'heartRate': 'tepů/min',
         'other': '',
       },
       name: 'common_measurement_units_types',

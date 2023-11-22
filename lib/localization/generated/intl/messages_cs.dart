@@ -103,10 +103,10 @@ class MessageLookup extends MessageLookupByLibrary {
           })}";
 
   static String m11(measurementType) => "${Intl.select(measurementType, {
-            'temperature': '[°C]',
-            'bloodPressure': '[mmHg]',
-            'oxygenSaturation': '[%]',
-            'heartRate': '[tepů/min]',
+            'temperature': '°C',
+            'bloodPressure': 'mmHg',
+            'oxygenSaturation': '%',
+            'heartRate': 'tepů/min',
             'other': '',
           })}";
 

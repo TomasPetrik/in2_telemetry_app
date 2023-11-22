@@ -138,9 +138,7 @@ class _ChartScreenState extends State<ChartScreen> {
                             measurementType.name,
                           )
                           .toLowerCase(),
-                      localization.common_measurement_units_types(
-                        measurementType.name,
-                      ),
+                      "[${localization.common_measurement_units_types(measurementType.name)}]",
                     ),
                     subTitle:
                         '${userAccount.user.fullName} - ${localization.common_months(ConfigurationConstants.monthsInYear[state.currentMonth!]!)}',

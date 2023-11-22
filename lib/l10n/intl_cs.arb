@@ -349,7 +349,7 @@
             "measurementUnitName": {}
         }
     },
-    "common_measurement_units_types": "{measurementType, select, temperature{[°C]} bloodPressure{[mmHg]} oxygenSaturation{[%]} heartRate{[tepů/min]} other{}}",
+    "common_measurement_units_types": "{measurementType, select, temperature{°C} bloodPressure{mmHg} oxygenSaturation{%} heartRate{tepů/min} other{}}",
     "@common_measurement_units_types": {
         "description": "Measurement units",
         "placeholders": {
