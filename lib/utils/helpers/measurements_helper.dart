@@ -5,12 +5,13 @@ import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/model/measurement/composed_double_value.dart';
+import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/ui/routers/routes/manual_measurement_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/metering_first_route.dart';
-import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
@@ -22,10 +23,16 @@ class MeasurementHelper {
     final bool showAllMeasurementTypes = false,
   }) async {
     if (selectedMeasurementType == null ||
-        ConfigurationConstants.supportedDevices.any(
-          (supportedDevice) => supportedDevice.supportedMeasurementTypes!
-              .contains(selectedMeasurementType),
-        )) {
+        ConfigurationConstants.supportedDevices
+            .where(
+              (x) =>
+                  x.measurementFlow?.hasFlag(MeasurementFlow.foreground) ??
+                  false,
+            )
+            .any(
+              (supportedDevice) => supportedDevice.supportedMeasurementTypes!
+                  .contains(selectedMeasurementType),
+            )) {
       GoRouter.of(context).pushNamed(
         MeteringFirstRoute.name,
         params: {
