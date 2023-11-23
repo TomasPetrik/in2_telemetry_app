@@ -48,7 +48,7 @@ class ProductionConfiguration extends BaseConfiguration {
         authUrl: 'https://e-health-auth.bnzlin.cz/connect/authorize',
         tokenUrl: 'https://e-health-auth.bnzlin.cz/connect/token',
       ),
-      enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate]
+      enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate],
     ),
     const Hospital(
       id: 5,

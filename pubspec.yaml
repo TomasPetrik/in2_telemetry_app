@@ -20,7 +20,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.127+127
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ">=3.1.0 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -57,7 +57,7 @@ dependencies:
   # MISC
   intl: ^0.18.0
   app_settings: ^5.0.0
-  permission_handler: ^10.3.0
+  permission_handler: ^11.1.0
   collection: ^1.17.0
   pretty_dio_logger: ^1.2.0-beta-1
   path: ^1.8.3
@@ -67,7 +67,7 @@ dependencies:
   jwt_decode: ^0.3.1
 
   # Bluetooth Comm
-  flutter_blue_plus: 1.20.7
+  flutter_blue_plus: 1.29.5
 
   flutter_svg: ^1.1.6
   hive: ^2.2.3
@@ -82,7 +82,7 @@ dependencies:
   background_fetch: ^1.1.5
 
   # Local notifications
-  flutter_local_notifications: ^13.0.0
+  flutter_local_notifications: ^16.0.0
   timezone: ^0.9.1
 
   # Open url in webview

@@ -202,25 +202,15 @@ class MeasurementHelper {
       case MeasurementType.temperature:
         return measurement.temperature;
       case MeasurementType.oxygenSaturation:
-        return measurement.oxygenSaturation != null
-            ? measurement.oxygenSaturation!.toDouble()
-            : null;
+        return measurement.oxygenSaturation?.toDouble();
       case MeasurementType.heartRate:
-        return measurement.heartRate != null
-            ? measurement.heartRate!.toDouble()
-            : null;
+        return measurement.heartRate?.toDouble();
       case MeasurementType.respiratoryRate:
-        return measurement.respiratoryRate != null
-            ? measurement.respiratoryRate!.toDouble()
-            : null;
+        return measurement.respiratoryRate?.toDouble();
       case MeasurementType.shortnessOfBreath:
-        return measurement.shortnessOfBreath != null
-            ? measurement.shortnessOfBreath!.index.toDouble()
-            : null;
+        return measurement.shortnessOfBreath?.value.toDouble();
       case MeasurementType.overallHealth:
-        return measurement.overallHealth != null
-            ? measurement.overallHealth!.index.toDouble()
-            : null;
+        return measurement.overallHealth?.value.toDouble();
       default:
         return null;
     }
