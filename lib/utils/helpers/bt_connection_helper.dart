@@ -14,10 +14,10 @@ import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/model/measurement_info.dart';
 import 'package:scalesoft_app/utils/constants.dart';
 
-const String deviceInfo = '0000180a-0000-1000-8000-00805f9b34fb';
-const String bloodPressure = '00001810-0000-1000-8000-00805f9b34fb';
-const String batteryService = '0000180f-0000-1000-8000-00805f9b34fb';
-const String bloodPressureServiceUuid = '1810';
+final Guid deviceInfo = Guid('0000180a-0000-1000-8000-00805f9b34fb');
+final Guid bloodPressure = Guid('00001810-0000-1000-8000-00805f9b34fb');
+final Guid batteryService = Guid('0000180f-0000-1000-8000-00805f9b34fb');
+final Guid bloodPressureServiceUuid = Guid('1810');
 
 class DeviceSearchResult {
   BluetoothDevice device;
@@ -93,7 +93,7 @@ class BtConnectionHelper {
   }
 
   Future<DeviceSearchResult?> searchDevice({
-    required String serviceUuid,
+    required Guid serviceUuid,
     required Device device,
     required SearchMode searchMode,
     Duration? maxAllowedDeviceSearchingTime,
@@ -125,20 +125,18 @@ class BtConnectionHelper {
       final availableDevices = await FlutterBluePlus.scanResults.first;
 
       for (final scanResult in availableDevices) {
-        final serviceUuids = scanResult.advertisementData.serviceUuids
-            .map((uuid) => uuid.toLowerCase());
+        final serviceUuids = scanResult.advertisementData.serviceUuids;
         if (serviceUuids.any(
-              (devServiceUuid) =>
-                  devServiceUuid.contains(serviceUuid.toLowerCase()),
+              (devServiceUuid) => devServiceUuid == serviceUuid,
             ) &&
             matchDeviceMode(
-              scanResult.advertisementData.localName,
+              scanResult.advertisementData.advName,
               device,
               searchMode,
             ) &&
             matchDeviceId(
               device,
-              scanResult.advertisementData.localName,
+              scanResult.advertisementData.advName,
             )) {
           debugPrint('found device');
 
@@ -146,7 +144,7 @@ class BtConnectionHelper {
 
           return DeviceSearchResult(
             scanResult.device,
-            scanResult.advertisementData.localName,
+            scanResult.advertisementData.advName,
           );
         }
       }
@@ -158,7 +156,7 @@ class BtConnectionHelper {
   }
 
   Future<void> searchDevicesByService({
-    required String serviceUuid,
+    required Guid serviceUuid,
     required onlyPairingMode,
     required Function(List<Device> devices) onResult,
   }) async {
@@ -184,17 +182,16 @@ class BtConnectionHelper {
 
       final matchedResults = allDevices.where((scanResult) {
         return scanResult.advertisementData.serviceUuids
-                .map((uuid) => uuid.toLowerCase())
-                .any((uuid) => uuid.contains(serviceUuid.toLowerCase())) &&
+                .any((uuid) => serviceUuid == uuid) &&
             ((!onlyPairingMode &&
                     supportedBtNames.any((suppBtName) {
-                      return scanResult.advertisementData.localName
+                      return scanResult.advertisementData.advName
                           .toLowerCase()
                           .contains(suppBtName.toLowerCase());
                     })) ||
                 (onlyPairingMode &&
                     supportedBtPairingNames.any((suppBtPairName) {
-                      return scanResult.advertisementData.localName
+                      return scanResult.advertisementData.advName
                           .contains(suppBtPairName);
                     })));
       }).toList();
@@ -207,7 +204,7 @@ class BtConnectionHelper {
         if (scanResult.rssi < 0 && scanResult.advertisementData.connectable) {
           availableDevices.add(
             convertToDevice(
-              scanResult.advertisementData.localName,
+              scanResult.advertisementData.advName,
               scanResult.device,
             ),
           );
@@ -246,7 +243,7 @@ class BtConnectionHelper {
   }
 
   Future<DeviceInfo?> requestDeviceInfo(BluetoothDevice device) async {
-    var services = [];
+    List<BluetoothService> services = [];
 
     await Future.delayed(const Duration(milliseconds: 100));
     services = await device.discoverServices().timeout(
@@ -264,7 +261,7 @@ class BtConnectionHelper {
     debugPrint('found services2 ${services.length}');
 
     final deviceInfoService = services.firstWhereOrNull(
-      (service) => service.uuid.toString().toLowerCase() == deviceInfo,
+      (service) => service.serviceUuid == deviceInfo,
     );
     if (deviceInfoService != null) {
       final deviceInfo = await getDeviceInfoFromService(deviceInfoService);
@@ -296,7 +293,7 @@ class BtConnectionHelper {
   Future<BatteryInfo?> requestBatteryInfo(BluetoothDevice device) async {
     final services = await device.discoverServices();
     final batteryInfoService = services.firstWhereOrNull(
-      (service) => service.uuid.toString().toLowerCase() == batteryService,
+      (service) => service.serviceUuid == batteryService,
     );
     if (batteryInfoService != null) {
       final batteryInfo = await getBatteryInfoFromService(batteryInfoService);
@@ -352,7 +349,7 @@ class BtConnectionHelper {
   ) async {
     final services = await device.discoverServices();
     final bpService = services.firstWhereOrNull(
-      (service) => service.uuid.toString().toLowerCase() == bloodPressure,
+      (service) => service.serviceUuid == bloodPressure,
     );
 
     if (bpService != null) {
@@ -465,26 +462,26 @@ class BtConnectionHelper {
     List<BluetoothCharacteristic> characteristics,
     DeviceChar characteristic,
   ) async {
-    String address = deviceCharAddress.entries
+    final address = deviceCharAddress.entries
         .firstWhere((entry) => entry.key == characteristic)
         .value;
-    final speficicChar = characteristics.firstWhereOrNull(
-      (char) => char.uuid.toString().toUpperCase().substring(4, 8) == address,
+    final specificChar = characteristics.firstWhereOrNull(
+      (char) => char.characteristicUuid == address,
     );
 
-    if (speficicChar == null) {
+    if (specificChar == null) {
       return '';
     }
 
-    final List<int> charData = await speficicChar.read();
+    final List<int> charData = await specificChar.read();
     return String.fromCharCodes(charData);
   }
 
   void listenOnBloodPressureData(
-    BluetoothCharacteristic speficicChar, {
+    BluetoothCharacteristic specificChar, {
     required Function(List<int> data)? onData,
   }) async {
-    speficicChar.lastValueStream.listen((data) {
+    specificChar.lastValueStream.listen((data) {
       onData?.call(data);
     });
   }
@@ -492,15 +489,15 @@ class BtConnectionHelper {
   BluetoothCharacteristic? getBloodPressureChar(
     List<BluetoothCharacteristic> characteristics,
   ) {
-    String address = measurementCharAddress.entries
+    final address = measurementCharAddress.entries
         .firstWhere(
           (entry) => entry.key == MeasurementChar.bloodPressureMeasurement,
         )
         .value;
-    final speficicChar = characteristics.firstWhereOrNull(
-      (char) => char.uuid.toString().toUpperCase().substring(4, 8) == address,
+    final specificChar = characteristics.firstWhereOrNull(
+      (char) => char.uuid == address,
     );
-    return speficicChar;
+    return specificChar;
   }
 
   Future<DeviceInfo> getDeviceInfoFromService(
@@ -540,14 +537,12 @@ class BtConnectionHelper {
   ) async {
     final characteristics = service.characteristics;
 
-    String batteryLevelAdress = deviceCharAddress.entries
+    final batteryLevelAddress = deviceCharAddress.entries
         .firstWhere((entry) => entry.key == DeviceChar.batteryLevel)
         .value;
 
     final batteryLevelChar = characteristics.firstWhereOrNull(
-      (char) =>
-          char.uuid.toString().toUpperCase().substring(4, 8) ==
-          batteryLevelAdress,
+      (char) => char.characteristicUuid == batteryLevelAddress,
     );
 
     if (batteryLevelChar != null) {
@@ -572,8 +567,7 @@ class BtConnectionHelper {
     for (final characteristic in characteristics) {
       final List<int> charInfo = await characteristic.read();
       String charInfoString = String.fromCharCodes(charInfo);
-      debugPrint(
-          '0x${characteristic.uuid.toString().toUpperCase().substring(4, 8)}\n'
+      debugPrint('0x${characteristic.uuid.toString().toUpperCase()}\n'
           ' $charInfoString');
     }
   }

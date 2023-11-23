@@ -48,7 +48,7 @@ class StagingConfiguration extends BaseConfiguration {
           authUrl: 'https://e-health-test-auth.bnzlin.cz/connect/authorize',
           tokenUrl: 'https://e-health-test-auth.bnzlin.cz/connect/token',
         ),
-        enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate]
+        enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate],
     ),
     // TODO: Add URLs and uncomment #IN2-8308
     // const Hospital(
