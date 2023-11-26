@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 import 'package:oauth2/oauth2.dart';
 import 'package:scalesoft_app/api/model/auth_token.dart';
@@ -21,6 +22,7 @@ import 'package:scalesoft_app/services/sync_service.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/utils/constants.dart';
 import 'package:scalesoft_app/utils/events_constants.dart';
+import 'package:scalesoft_app/utils/helpers/notifications_helper.dart';
 
 @singleton
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
@@ -83,7 +85,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (_authClient != null) {
         add(const HandleAuthResponse());
       }
-
     } on Exception {
       _reportsService.trackEvent(
         severity: Severity.error,
@@ -203,6 +204,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     try {
+      NotificationsHelper.removeUserNotifications(
+        notificationsPlugin: FlutterLocalNotificationsPlugin(),
+        userAccount: event.userAccount,
+      );
       await _accountDbProvider.remove(event.userAccount);
       await _pendingResultsDbProvider
           .removeUserResults(event.userAccount.user.muid);

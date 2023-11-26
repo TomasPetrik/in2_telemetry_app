@@ -38,6 +38,8 @@ class UserAccount with _$UserAccount {
     @HiveField(14) TemplateTimeSet? templateTimeSet,
     @HiveField(15) List<TimeSetting>? timeSettingItems,
     @HiveField(16) List<DeviceModel>? supportedDeviceModels,
+    @HiveField(17) int? notificationBaseId,
+    @HiveField(18) List<int>? notificationsIds,
   }) = _UserAccount;
 
   factory UserAccount.fromJson(Map<String, dynamic> json) =>

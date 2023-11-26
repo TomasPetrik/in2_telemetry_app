@@ -8,13 +8,32 @@ import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class NotificationsHelper {
+  static Future<void> removeUserNotifications({
+    required final FlutterLocalNotificationsPlugin notificationsPlugin,
+    required final UserAccount userAccount,
+  }) async {
+    if (userAccount.notificationsIds == null ||
+        userAccount.notificationsIds?.isEmpty == true) {
+      return;
+    }
+    for (final notificationId in userAccount.notificationsIds!) {
+      await notificationsPlugin.cancel(notificationId);
+      debugPrint('cancelled $notificationId');
+    }
+  }
+
   static Future<void> setNotifications({
     required final FlutterLocalNotificationsPlugin notificationsPlugin,
     required final List<UserAccount> userAccounts,
     required final AppSettings? appSettings,
   }) async {
+    int getNotificationId(int base, int offset) {
+      return base + offset;
+    }
+
     //clear all notifications set first
-    notificationsPlugin.cancelAll();
+    await notificationsPlugin.cancelAll();
+    debugPrint('cancelled all notifications');
 
     if (appSettings?.enabledNotifications != true) {
       return;
@@ -31,8 +50,13 @@ class NotificationsHelper {
 
     //set notifications for all active / no active users for following 30 measurements per each plan
 
-    int notificationId = 100;
     for (final userAccount in userAccounts) {
+      final notificationId =
+          DateTime.now().millisecondsSinceEpoch.toUnsigned(32);
+      userAccount.notificationBaseId ??= notificationId;
+      int notificationIdOffset = 0;
+      final List<int> notificationIds = [];
+
       for (final carePlan in userAccount.carePlans!) {
         //only for current active plans
         if (carePlan.wasExpired != true &&
@@ -46,16 +70,26 @@ class NotificationsHelper {
 
           for (final nextMeasurement in nextMeasurements) {
             if (notifyAtStartOfMeasurement) {
+              final notificationId = getNotificationId(
+                userAccount.notificationBaseId!,
+                notificationIdOffset++,
+              );
+              notificationIds.add(notificationId);
               await _zonedSchedule(
-                notificationId += 1,
+                notificationId,
                 notificationsPlugin,
                 nextMeasurement,
                 userAccount,
               );
             }
             if (notify10minBeforeMeasurement) {
+              final notificationId = getNotificationId(
+                userAccount.notificationBaseId!,
+                notificationIdOffset++,
+              );
+              notificationIds.add(notificationId);
               await _zonedSchedule(
-                notificationId += 1,
+                notificationId,
                 notificationsPlugin,
                 nextMeasurement,
                 userAccount,
@@ -65,6 +99,11 @@ class NotificationsHelper {
           }
         }
       }
+
+      userAccount.notificationsIds = notificationIds;
+       debugPrint(
+        'created ${userAccount.notificationsIds!.length} notifications for ${userAccount.user.fullName}',
+      );
     }
   }
 
