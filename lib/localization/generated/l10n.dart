@@ -738,10 +738,10 @@ class I10n {
     );
   }
 
-  /// `Odstranit účet`
+  /// `Odstranit účet z aplikace`
   String get user_detail_screen_remove_account {
     return Intl.message(
-      'Odstranit účet',
+      'Odstranit účet z aplikace',
       name: 'user_detail_screen_remove_account',
       desc: '',
       args: [],
@@ -1038,10 +1038,10 @@ class I10n {
     );
   }
 
-  /// `Odstranit účet`
+  /// `Odstranit účet z aplikace`
   String get dialog_account_removal_confirmation_title {
     return Intl.message(
-      'Odstranit účet',
+      'Odstranit účet z aplikace',
       name: 'dialog_account_removal_confirmation_title',
       desc: '',
       args: [],
