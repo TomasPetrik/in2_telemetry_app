@@ -201,6 +201,16 @@ class I10n {
     );
   }
 
+  /// `Vyšší než systolický`
+  String get common_diastolic_gt_systolic {
+    return Intl.message(
+      'Vyšší než systolický',
+      name: 'common_diastolic_gt_systolic',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Nenaměřeno`
   String get common_not_measured {
     return Intl.message(

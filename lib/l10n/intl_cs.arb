@@ -24,6 +24,7 @@
     "common_log_in": "Přihlásit se",
     "common_save": "Uložit",
     "common_wrong_value": "Nesprávná hodnota",
+    "common_diastolic_gt_systolic": "Vyšší než systolický",
     "common_not_measured": "Nenaměřeno",
     "common_do_sync": "Synchronizovat",
     "common_all_accounts": "Všechny účty",

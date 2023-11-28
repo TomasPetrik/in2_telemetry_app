@@ -315,6 +315,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "common_confirm": MessageLookupByLibrary.simpleMessage("Potvrdit"),
         "common_continue": MessageLookupByLibrary.simpleMessage("Pokračovat"),
         "common_days_in_week_short": m6,
+        "common_diastolic_gt_systolic":
+            MessageLookupByLibrary.simpleMessage("Vyšší než systolický"),
         "common_do_sync":
             MessageLookupByLibrary.simpleMessage("Synchronizovat"),
         "common_from": MessageLookupByLibrary.simpleMessage("Od"),

@@ -125,7 +125,11 @@ class MeasurementForm extends StatelessWidget {
                     ),
                     Gaps.gap8,
                     if (measurementConfig.type == MeasurementConfigType.select)
-                      ScaleSelectFormField(textFormKey: fieldGlobalKeys[0], onChanged: (double? value)=>{_value1 = value}, measurementType: measurementType)
+                      ScaleSelectFormField(
+                        textFormKey: fieldGlobalKeys[0],
+                        onChanged: (double? value) => {_value1 = value},
+                        measurementType: measurementType,
+                      )
                     else
                       ScaleTextFormField(
                         key: ObjectKey(measurementConfig.type),
@@ -142,6 +146,7 @@ class MeasurementForm extends StatelessWidget {
                               )
                             : null,
                         validator: (value) {
+                          _value1 = null;
                           if (value == null || value.isEmpty) {
                             return localization.common_wrong_value;
                           }
@@ -180,7 +185,7 @@ class MeasurementForm extends StatelessWidget {
                       Gaps.gap8,
                       ScaleTextFormField(
                         textFormKey: fieldGlobalKeys[1],
-                        hintText: measurementConfig.hintText?[1]??'',
+                        hintText: measurementConfig.hintText?[1] ?? '',
                         keyboardType: measurementConfig.textInputType,
                         suffixIcon: measurementConfig.units?.isNotEmpty == true
                             ? Text(
@@ -192,6 +197,7 @@ class MeasurementForm extends StatelessWidget {
                               )
                             : null,
                         validator: (value) {
+                          _value2 = null;
                           if (value == null || value.isEmpty) {
                             return localization.common_wrong_value;
                           }
@@ -199,14 +205,20 @@ class MeasurementForm extends StatelessWidget {
                           final parsedValue = value.toDouble();
 
                           if (measurementConfig.min != null &&
-                              measurementConfig.min! > parsedValue ||
+                                  measurementConfig.min! > parsedValue ||
                               measurementConfig.max != null &&
                                   measurementConfig.max! < parsedValue) {
                             return localization.common_wrong_value;
-                          } else {
-                            _value2 = parsedValue;
-                            return null;
                           }
+                          if (measurementType ==
+                                  MeasurementType.bloodPressure &&
+                              _value1 != null &&
+                              _value1! < parsedValue) {
+                            return localization.common_diastolic_gt_systolic;
+                          }
+
+                          _value2 = parsedValue;
+                          return null;
                         },
                         inputFormatters: measurementConfig.inputFormatters,
                       ),
