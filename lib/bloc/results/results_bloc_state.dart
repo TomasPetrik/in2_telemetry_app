@@ -16,6 +16,7 @@ class ResultsBlocState with _$ResultsBlocState {
     List<MeasurementResult>? uncategorizedResults,
     List<MeasurementResult>? results,
     MeasurementType? measurementType,
+    Set<MeasurementType>? allMeasurementTypes,
     Map<ResultsWhenPeriod, int?>? plansEvaluationPerPeriod,
   }) = _ResultsBlocState;
 }
