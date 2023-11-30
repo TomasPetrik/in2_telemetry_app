@@ -8,13 +8,37 @@ import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class NotificationsHelper {
+  static Future<void> removeUserNotifications({
+    required final FlutterLocalNotificationsPlugin notificationsPlugin,
+    required final UserAccount userAccount,
+  }) async {
+    if (userAccount.notificationsIds == null ||
+        userAccount.notificationsIds?.isEmpty == true) {
+      return;
+    }
+    for (final notificationId in userAccount.notificationsIds!) {
+      await notificationsPlugin.cancel(notificationId);
+      debugPrint('cancelled $notificationId');
+    }
+
+    if (userAccount.representedPeople?.isNotEmpty == true) {
+      for (final representedPerson in userAccount.representedPeople!) {
+        for (final notificationId in representedPerson.notificationsIds!) {
+          await notificationsPlugin.cancel(notificationId);
+          debugPrint('cancelled $notificationId');
+        }
+      }
+    }
+  }
+
   static Future<void> setNotifications({
     required final FlutterLocalNotificationsPlugin notificationsPlugin,
     required final List<UserAccount> userAccounts,
     required final AppSettings? appSettings,
   }) async {
     //clear all notifications set first
-    notificationsPlugin.cancelAll();
+    await notificationsPlugin.cancelAll();
+    debugPrint('cancelled all notifications');
 
     if (appSettings?.enabledNotifications != true) {
       return;
@@ -33,6 +57,8 @@ class NotificationsHelper {
 
     int notificationId = 100;
     for (final userAccount in userAccounts) {
+      final List<int> notificationIds = [];
+
       for (final carePlan in userAccount.carePlans!) {
         //only for current active plans
         if (carePlan.wasExpired != true &&
@@ -46,16 +72,18 @@ class NotificationsHelper {
 
           for (final nextMeasurement in nextMeasurements) {
             if (notifyAtStartOfMeasurement) {
-              await _zonedSchedule(
-                notificationId += 1,
+              notificationIds.add(notificationId += 1);
+              _zonedSchedule(
+                notificationIds.last,
                 notificationsPlugin,
                 nextMeasurement,
                 userAccount,
               );
             }
             if (notify10minBeforeMeasurement) {
-              await _zonedSchedule(
-                notificationId += 1,
+              notificationIds.add(notificationId += 1);
+              _zonedSchedule(
+                notificationIds.last,
                 notificationsPlugin,
                 nextMeasurement,
                 userAccount,
@@ -65,6 +93,11 @@ class NotificationsHelper {
           }
         }
       }
+
+      userAccount.notificationsIds = notificationIds;
+      debugPrint(
+        'created ${userAccount.notificationsIds!.length} notifications for ${userAccount.user.fullName}',
+      );
     }
   }
 

@@ -85,6 +85,10 @@ Future<void> _main({
       );
     },
     (error, stackTrace) {
+      if (!getIt.isRegistered<ReportService>()) {
+        debugPrintStack(stackTrace: stackTrace, label: error.toString());
+        return;
+      }
       getIt<ReportService>()
           .trackEvent(severity: Severity.error, message: stackTrace.toString());
     },

@@ -201,6 +201,16 @@ class I10n {
     );
   }
 
+  /// `Vyšší než systolický`
+  String get common_diastolic_gt_systolic {
+    return Intl.message(
+      'Vyšší než systolický',
+      name: 'common_diastolic_gt_systolic',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Nenaměřeno`
   String get common_not_measured {
     return Intl.message(
@@ -728,10 +738,10 @@ class I10n {
     );
   }
 
-  /// `Odstranit účet`
+  /// `Odstranit účet z aplikace`
   String get user_detail_screen_remove_account {
     return Intl.message(
-      'Odstranit účet',
+      'Odstranit účet z aplikace',
       name: 'user_detail_screen_remove_account',
       desc: '',
       args: [],
@@ -1028,10 +1038,10 @@ class I10n {
     );
   }
 
-  /// `Odstranit účet`
+  /// `Odstranit účet z aplikace`
   String get dialog_account_removal_confirmation_title {
     return Intl.message(
-      'Odstranit účet',
+      'Odstranit účet z aplikace',
       name: 'dialog_account_removal_confirmation_title',
       desc: '',
       args: [],

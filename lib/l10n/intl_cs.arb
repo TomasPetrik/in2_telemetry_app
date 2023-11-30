@@ -24,6 +24,7 @@
     "common_log_in": "Přihlásit se",
     "common_save": "Uložit",
     "common_wrong_value": "Nesprávná hodnota",
+    "common_diastolic_gt_systolic": "Vyšší než systolický",
     "common_not_measured": "Nenaměřeno",
     "common_do_sync": "Synchronizovat",
     "common_all_accounts": "Všechny účty",
@@ -142,7 +143,7 @@
     "configuration_screen_dark": "Tmavý",
     "configuration_screen_good_in_night": "Skvělý v noci",
     "appearance_screen_title": "Vzhled",
-    "user_detail_screen_remove_account": "Odstranit účet",
+    "user_detail_screen_remove_account": "Odstranit účet z aplikace",
     "user_detail_screen_measurement_plans": "Plány měření",
     "user_detail_screen_user_info": "Informace o uživateli",
     "user_detail_screen_user_name": "Jméno",
@@ -207,7 +208,7 @@
     "dialog_req_notifications_title": "Povolení notifikací",
     "dialog_req_notifications_description": "Aplikace vyžaduje povolení notifikací, pokud chcete dostávat upozornění.",
     "dialog_req_notifications_go_to_settings": "Přejít do nastavení",
-    "dialog_account_removal_confirmation_title": "Odstranit účet",
+    "dialog_account_removal_confirmation_title": "Odstranit účet z aplikace",
     "dialog_account_removal_confirmation_description": "Všechna data účtu {accountName}\nbudou z aplikace nevratně\nodstraněna.",
     "@dialog_account_removal_confirmation_description": {
         "placeholders": {

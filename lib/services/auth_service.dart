@@ -33,6 +33,7 @@ class AuthService {
 
     final newQueryParameters = {
       '_tstamp': '${DateTime.now().microsecondsSinceEpoch}',
+      'prompt': 'login',
     };
 
     final newAuthUri = authUri.replace(

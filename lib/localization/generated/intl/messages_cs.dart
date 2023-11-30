@@ -315,6 +315,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "common_confirm": MessageLookupByLibrary.simpleMessage("Potvrdit"),
         "common_continue": MessageLookupByLibrary.simpleMessage("Pokračovat"),
         "common_days_in_week_short": m6,
+        "common_diastolic_gt_systolic":
+            MessageLookupByLibrary.simpleMessage("Vyšší než systolický"),
         "common_do_sync":
             MessageLookupByLibrary.simpleMessage("Synchronizovat"),
         "common_from": MessageLookupByLibrary.simpleMessage("Od"),
@@ -418,7 +420,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Pro tento typ měření není podporováno žádné zařízení. Hodnoty odečtěte z manuálního měření."),
         "dialog_account_removal_confirmation_description": m24,
         "dialog_account_removal_confirmation_title":
-            MessageLookupByLibrary.simpleMessage("Odstranit účet"),
+            MessageLookupByLibrary.simpleMessage("Odstranit účet z aplikace"),
         "dialog_req_notifications_description":
             MessageLookupByLibrary.simpleMessage(
                 "Aplikace vyžaduje povolení notifikací, pokud chcete dostávat upozornění."),
@@ -655,7 +657,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "user_detail_screen_register_device_button":
             MessageLookupByLibrary.simpleMessage("Registrovat zařízení"),
         "user_detail_screen_remove_account":
-            MessageLookupByLibrary.simpleMessage("Odstranit účet"),
+            MessageLookupByLibrary.simpleMessage("Odstranit účet z aplikace"),
         "user_detail_screen_send_debug_logs":
             MessageLookupByLibrary.simpleMessage("Odeslat vývojářská data"),
         "user_detail_screen_user_email":

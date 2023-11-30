@@ -96,6 +96,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                           return ListView.separated(
                             padding: EdgeInsets.zero,
                             shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
                               final hospital =
                                   hospitalUserEntries.toList()[index];
