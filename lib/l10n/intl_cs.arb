@@ -1,4 +1,5 @@
 {
+    "@@locale": "cs",
     "appTitle": "FONS Care",
     "@appTitle": {
         "description": "FONS Care je inovativní řešení v komunikaci lékařů s pacientem modernizující české zdravotnictví."
@@ -595,7 +596,10 @@
         }
     },
     "manual_screen_title": "Příručka",
-
+    "licenses_screen_title": "Použité licence",
+    "license_detail_screen_title": "Detail licence",
+    "licenses_menu_title": "Použité licence",
+    "licenses_menu_subtitle": "Licence použitých knihoven",
     "shortness_of_breath_values": "{shortnessOfBreathValue, select, none{Dýchání bez problémů} low{Občasná dušnost při fyzické námaze} medium{Častější problémy s dušností} high{Velmi špatně se mi dýchá} other{}}",
     "@shortness_of_breath_values": {
         "description": "Shortness of breath values",

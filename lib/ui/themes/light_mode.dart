@@ -66,6 +66,12 @@ class LightMode {
         cardColor: paperAccent,
         hintColor: colorContent80,
         colorScheme: colorScheme,
+        dividerTheme: DividerThemeData(color: colorContent20),
+        listTileTheme: ListTileThemeData(
+          titleTextStyle: ScaleTextStyles.textAccent.apply(color: fontColor),
+          subtitleTextStyle: ScaleTextStyles.label.apply(color: colorContent80),
+          iconColor: primary,
+        ),
         cardTheme: CardTheme(
           elevation: Dimensions.cardElevation,
           shadowColor: cardShadow,

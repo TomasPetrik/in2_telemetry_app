@@ -482,6 +482,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Měření pro"),
         "hospital_selector_search_for_account":
             MessageLookupByLibrary.simpleMessage("Název účtu..."),
+        "license_detail_screen_title":
+            MessageLookupByLibrary.simpleMessage("Detail licence"),
+        "licenses_menu_subtitle":
+            MessageLookupByLibrary.simpleMessage("Licence použitých knihoven"),
+        "licenses_menu_title":
+            MessageLookupByLibrary.simpleMessage("Použité licence"),
+        "licenses_screen_title":
+            MessageLookupByLibrary.simpleMessage("Použité licence"),
         "manual_measurement_screen_measurement_time":
             MessageLookupByLibrary.simpleMessage("Čas odečtu"),
         "manual_measurement_screen_title":
