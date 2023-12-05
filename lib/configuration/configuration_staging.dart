@@ -72,6 +72,17 @@ class StagingConfiguration extends BaseConfiguration {
       ),
       enabledMeasurementTypes: MeasurementType.values,
     ),
+    Hospital(
+      id: 4,
+      title: '[Test] in2',
+      iconPath: 'assets/icons/icon_hospital_user.svg',
+      authData: const AuthData(
+        baseUrl: 'https://in2.devscale.cz/api-mobile/v1',
+        authUrl: 'https://in2-auth.devscale.cz/connect/authorize',
+        tokenUrl: 'https://in2-auth.devscale.cz/connect/token',
+      ),
+      enabledMeasurementTypes: MeasurementType.values.where((x) => x != MeasurementType.globalPosition).toList(),
+    ),
   ];
 
   @override

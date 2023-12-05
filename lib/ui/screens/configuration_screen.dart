@@ -17,6 +17,7 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/appearance_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/hospital_detail_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/licenses_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/manual_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/notification_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_detail_route.dart';
@@ -235,6 +236,18 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                               GoRouter.of(context).pushNamed(ManualRoute.name);
                             },
                           );
+                        },
+                      ),
+                      Gaps.gap24,
+                      SettingsItem(
+                        label: localization.licenses_menu_title,
+                        subLabel: localization.licenses_menu_subtitle,
+                        iconWidget: SvgPicture.asset(
+                          'assets/icons/icon_licence.svg',
+                          color: Theme.of(context).colorScheme.onSecondary,
+                        ),
+                        onTap: () {
+                          GoRouter.of(context).pushNamed(LicensesRoute.name);
                         },
                       ),
                       FutureBuilder(

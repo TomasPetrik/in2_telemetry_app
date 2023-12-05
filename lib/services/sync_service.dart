@@ -165,6 +165,10 @@ class SyncService {
 
   Future<void> updateUserData(UserAccount userAccount) async {
     //check changes for root user and his represented people
+
+    //update only root users but not representing people specifically
+    if (!userAccount.isParentAccount) return;
+
     final userInfo = await _accountRepository.loadUserInfo(
       authToken: userAccount.authToken!,
       apiUrl: userAccount.hospital!.authData.baseUrl,

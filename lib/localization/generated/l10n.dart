@@ -2382,6 +2382,46 @@ class I10n {
     );
   }
 
+  /// `Použité licence`
+  String get licenses_screen_title {
+    return Intl.message(
+      'Použité licence',
+      name: 'licenses_screen_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Detail licence`
+  String get license_detail_screen_title {
+    return Intl.message(
+      'Detail licence',
+      name: 'license_detail_screen_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Použité licence`
+  String get licenses_menu_title {
+    return Intl.message(
+      'Použité licence',
+      name: 'licenses_menu_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Licence použitých knihoven`
+  String get licenses_menu_subtitle {
+    return Intl.message(
+      'Licence použitých knihoven',
+      name: 'licenses_menu_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `{shortnessOfBreathValue, select, none{Dýchání bez problémů} low{Občasná dušnost při fyzické námaze} medium{Častější problémy s dušností} high{Velmi špatně se mi dýchá} other{}}`
   String shortness_of_breath_values(Object shortnessOfBreathValue) {
     return Intl.select(

@@ -94,10 +94,13 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                     state.currentCarePlans == null) {
                   return const SizedBox.shrink();
                 } else {
+                  /*
                   final supportedMeasurementTypes =
                       CarePlanHelper.getMeasurementTypesByResults(
                     state.results!,
                   );
+                  */
+                  final allMeasurementTypes = state.allMeasurementTypes!;
 
                   return NavigationScreen(
                     onTabSelected: (tabIndex) {
@@ -110,7 +113,7 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                       } else {
                         resultsBloc.add(
                           ResultsBlocEvent.curentPlansChange(
-                            supportedMeasurementTypes.toList()[tabIndex - 1],
+                            allMeasurementTypes.toList()[tabIndex - 1],
                           ),
                         );
                       }
@@ -136,14 +139,14 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                               openWhenSelector: openWhenSelector,
                             ),
                     ],
-                    noContentWidget: supportedMeasurementTypes.isEmpty
+                    noContentWidget: allMeasurementTypes.isEmpty
                         ? NoContentPlaceholder(
                             userAccount: session.isMultiUser != true
                                 ? sessionAccounts[0]
                                 : null,
                             enterMeasurementWithoutPlan: false,
                             supportedMeasurementTypes:
-                                supportedMeasurementTypes,
+                                allMeasurementTypes,
                             noContentType: session.isMultiUser != true &&
                                     !sessionAccounts[0].viewOwnMeasurementData
                                 ? NoContentType.notAllowedSeeOwnMeasurements
@@ -161,7 +164,7 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                       ],
                     ),
                     tabs: [
-                      if (supportedMeasurementTypes.length > 1) ...{
+                      if (allMeasurementTypes.length > 1) ...{
                         NavigationTabBarItem(
                           label: localization.dashboard_screen_all,
                           slivers: [
@@ -178,7 +181,7 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                           bottomSlivers: [],
                         ),
                       },
-                      ...supportedMeasurementTypes
+                      ...allMeasurementTypes
                           .map(
                             (measurementType) => NavigationTabBarItem(
                               label: localization.common_measurement_types(

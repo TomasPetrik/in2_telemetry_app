@@ -62,6 +62,8 @@ class UserAccount with _$UserAccount {
     return null;
   }
 
+  bool get isParentAccount => parentId == null;
+
   bool get enterMeasurementWithoutPlan =>
       userPermissions?.contains(
         UserPermission.enterMeasurementWithoutPlan,

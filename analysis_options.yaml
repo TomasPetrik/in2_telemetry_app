@@ -8,6 +8,7 @@ analyzer:
       "lib/localization/generated/**",
       "lib/service_locator/get_it.config.dart",
       "lib/unused_keys_finder.dart",
+      "lib/oss_licenses.dart",
     ]
   errors:
     asset_does_not_exist: ignore
