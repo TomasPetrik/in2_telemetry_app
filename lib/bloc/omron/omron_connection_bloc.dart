@@ -65,12 +65,6 @@ class OmronConnectionBloc
       ) async {
         final deviceInfo =
             await _btConnectionHelper.requestDeviceInfo(blDevice);
-        //deviceInfo?.advData = advertisementData;
-
-        final batteryInfo =
-            await _btConnectionHelper.requestBatteryInfo(blDevice);
-
-        deviceInfo?.batteryInfo = batteryInfo;
 
         if (deviceInfo != null) {
           _reportsService.trackEvent(
@@ -138,6 +132,8 @@ class OmronConnectionBloc
         }
 
         debugPrint('request device for data');
+        final batteryInfo =
+            await _btConnectionHelper.requestBatteryInfo(blDevice);
         final measurementResult = await _btConnectionHelper.requestBPData(
           blDevice,
           !reqModelPairing,
@@ -175,13 +171,13 @@ class OmronConnectionBloc
                 modelName: supportedDev.modelName,
                 deviceManufacturer: supportedDev.deviceManufacturer,
               ),
-              batteryPercentage: deviceInfo.batteryInfo?.batteryLevel,
             ),
             bloodPressure: BloodPressureValue(
               systolic: measurementInfo?.systolic,
               diastolic: measurementInfo?.diastolic,
             ),
             heartRate: measurementInfo?.pulseRate,
+            batteryPercentage: batteryInfo?.batteryLevel,
           );
 
           emit(

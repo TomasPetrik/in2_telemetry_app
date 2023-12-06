@@ -61,7 +61,9 @@ enum MeasurementType {
   shortnessOfBreath('ShortnessOfBreath'),
   @JsonValue('OverallHealth')
   @HiveField(9)
-  overallHealth('OverallHealth');
+  overallHealth('OverallHealth'),
+  @HiveField(10)
+  battery('Battery');
 
   const MeasurementType(this.key);
   final String key;

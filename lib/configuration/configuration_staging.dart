@@ -81,7 +81,12 @@ class StagingConfiguration extends BaseConfiguration {
         authUrl: 'https://in2-auth.devscale.cz/connect/authorize',
         tokenUrl: 'https://in2-auth.devscale.cz/connect/token',
       ),
-      enabledMeasurementTypes: MeasurementType.values.where((x) => x != MeasurementType.globalPosition).toList(),
+      enabledMeasurementTypes: MeasurementType.values
+          .where(
+            (x) => ![MeasurementType.globalPosition, MeasurementType.battery]
+                .any((y) => y == x),
+          )
+          .toList(),
     ),
   ];
 

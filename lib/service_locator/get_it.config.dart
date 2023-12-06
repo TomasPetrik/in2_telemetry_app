@@ -17,28 +17,29 @@ import '../api/client/auth_api_client.dart' as _i29;
 import '../api/client/care_plan_api_client.dart' as _i31;
 import '../api/client/device_api_client.dart' as _i34;
 import '../api/client/time_settings_api_client.dart' as _i23;
-import '../api/dio_module.dart' as _i47;
+import '../api/dio_module.dart' as _i48;
 import '../api/interceptors/token_interceptor.dart' as _i39;
 import '../bloc/auth/auth_bloc.dart' as _i40;
 import '../bloc/calendar/calendar_bloc.dart' as _i30;
 import '../bloc/calendar_footer/calendar_footer_bloc.dart' as _i8;
 import '../bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc.dart'
-    as _i41;
+    as _i42;
 import '../bloc/care_plan/care_plan_bloc.dart' as _i9;
 import '../bloc/chart_bloc/chart_bloc.dart' as _i10;
 import '../bloc/chart_loader_bloc/chart_loader_bloc.dart' as _i33;
 import '../bloc/daily_times_settings/times_settings_bloc.dart' as _i25;
 import '../bloc/notifications/notifications_bloc.dart' as _i16;
-import '../bloc/omron/omron_connection_bloc.dart' as _i43;
-import '../bloc/register_device/register_device_bloc.dart' as _i44;
-import '../bloc/report/report_bloc.dart' as _i45;
+import '../bloc/omron/omron_connection_bloc.dart' as _i44;
+import '../bloc/register_device/register_device_bloc.dart' as _i45;
+import '../bloc/report/report_bloc.dart' as _i46;
 import '../bloc/results/results_bloc.dart' as _i20;
 import '../bloc/settings/app_settings_bloc.dart' as _i28;
-import '../bloc/sync/sync_bloc.dart' as _i46;
-import '../bloc/user_content/content_bloc.dart' as _i42;
+import '../bloc/sync/sync_bloc.dart' as _i47;
+import '../bloc/user_content/content_bloc.dart' as _i43;
 import '../cubit/device_management/device_management_cubit.dart' as _i35;
 import '../cubit/hospital_search/hospital_search_cubit.dart' as _i12;
 import '../cubit/loader/loader_cubit.dart' as _i14;
+import '../managers/background_measurement_manager.dart' as _i41;
 import '../providers/account_db_provider.dart' as _i3;
 import '../providers/calendar_evaluation_db_provider.dart' as _i7;
 import '../providers/measurements_db_provider.dart' as _i15;
@@ -228,8 +229,10 @@ Future<_i1.GetIt> init(
     gh<_i11.Dio>(instanceName: 'privateDio'),
     gh<_i38.SyncService>(),
   ));
-  gh.factory<_i41.CalendarFulfillmentServiceBloc>(
-      () => _i41.CalendarFulfillmentServiceBloc(
+  gh.singleton<_i41.BackgroundMeasurementManager>(
+      _i41.BackgroundMeasurementManager(gh<_i38.SyncService>()));
+  gh.factory<_i42.CalendarFulfillmentServiceBloc>(
+      () => _i42.CalendarFulfillmentServiceBloc(
             gh<_i3.AccountDbProvider>(),
             gh<_i8.CalendarFooterBloc>(),
             gh<_i32.CarePlansRepository>(),
@@ -237,27 +240,27 @@ Future<_i1.GetIt> init(
             gh<_i15.MeasurementsDbProvider>(),
             gh<_i18.PendingResultsDbProvider>(),
           ));
-  gh.singleton<_i42.ContentBloc>(_i42.ContentBloc(
+  gh.singleton<_i43.ContentBloc>(_i43.ContentBloc(
     gh<_i3.AccountDbProvider>(),
     gh<_i22.SessionDbProvider>(),
     gh<_i21.Session>(),
     gh<_i9.CarePlanBloc>(),
     gh<_i37.ReportService>(),
   ));
-  gh.factory<_i43.OmronConnectionBloc>(() => _i43.OmronConnectionBloc(
+  gh.factory<_i44.OmronConnectionBloc>(() => _i44.OmronConnectionBloc(
         gh<_i6.BtConnectionHelper>(),
         gh<_i3.AccountDbProvider>(),
         gh<_i17.PairedDevicesDbProvider>(),
         gh<_i37.ReportService>(),
       ));
-  gh.factory<_i44.RegisterDeviceBloc>(() => _i44.RegisterDeviceBloc(
+  gh.factory<_i45.RegisterDeviceBloc>(() => _i45.RegisterDeviceBloc(
         gh<_i6.BtConnectionHelper>(),
         gh<_i3.AccountDbProvider>(),
         gh<_i36.DeviceRepository>(),
         gh<_i37.ReportService>(),
       ));
-  gh.factory<_i45.ReportBloc>(() => _i45.ReportBloc(gh<_i37.ReportService>()));
-  gh.singleton<_i46.SyncBloc>(_i46.SyncBloc(
+  gh.factory<_i46.ReportBloc>(() => _i46.ReportBloc(gh<_i37.ReportService>()));
+  gh.singleton<_i47.SyncBloc>(_i47.SyncBloc(
     gh<_i3.AccountDbProvider>(),
     gh<_i38.SyncService>(),
     gh<_i21.Session>(),
@@ -265,4 +268,4 @@ Future<_i1.GetIt> init(
   return getIt;
 }
 
-class _$DioModule extends _i47.DioModule {}
+class _$DioModule extends _i48.DioModule {}

@@ -36,7 +36,6 @@ class DeviceInfo with _$DeviceInfo {
     required String manufacturerName, //0x2A29
     BluetoothDevice? device,
     AdvertisementData? advData,
-    BatteryInfo? batteryInfo,
   }) = _DeviceInfo;
 
   @override
@@ -50,8 +49,7 @@ class DeviceInfo with _$DeviceInfo {
         'firmwareRevision:\n$firmwareRevision\n'
         'hardwareRevision:\n$hardwareRevision\n'
         'softwareRevision:\n$softwareRevision\n'
-        'manufacturerName:\n$manufacturerName\n'
-        'battery:\n${batteryInfo?.batteryLevel ?? 'N/A'}';
+        'manufacturerName:\n$manufacturerName\n';
   }
 
   String getManufacturerData(Map<int, List<int>>? manufacturerData) {

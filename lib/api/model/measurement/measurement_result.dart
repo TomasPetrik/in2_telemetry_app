@@ -89,7 +89,8 @@ class MeasurementResult with _$MeasurementResult {
             )
           : "",
       MeasurementType.steps ||
-      MeasurementType.globalPosition =>
+      MeasurementType.globalPosition ||
+      MeasurementType.battery =>
         "",
     };
 

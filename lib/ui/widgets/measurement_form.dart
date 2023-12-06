@@ -83,6 +83,10 @@ class MeasurementForm extends StatelessWidget {
                 ? null
                 : OverallHealthValue.values[_value1!.toInt()],
           );
+        case MeasurementType.battery:
+          return measurement.copyWith(
+              batteryPercentage: _value1?.toInt(),
+          );
       }
     }
 

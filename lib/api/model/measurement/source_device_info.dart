@@ -12,7 +12,6 @@ class SourceDeviceInfo with _$SourceDeviceInfo {
   @HiveType(typeId: 36, adapterName: 'SourceDeviceInfoAdapter')
   const factory SourceDeviceInfo({
     @HiveField(0) Device? sourceDevice,
-    @HiveField(1) int? batteryPercentage,
   }) = _SourceDeviceInfo;
 
   factory SourceDeviceInfo.fromJson(Map<String, dynamic> json) =>
