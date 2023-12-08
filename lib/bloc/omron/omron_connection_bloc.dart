@@ -144,7 +144,9 @@ class OmronConnectionBloc
           getDevIdFromName(localName),
         );
 
-        await Wakelock.disable();
+        if (!reqModelPairing) {
+          await Wakelock.disable();
+        }
 
         if (measurementResult.resultState == ResultState.connectionError) {
           emit(
