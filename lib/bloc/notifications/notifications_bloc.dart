@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_event.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_state.dart';
 import 'package:scalesoft_app/globals.dart';
@@ -24,6 +25,8 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
   final StreamController<bool> notificationsStreamController =
       StreamController<bool>.broadcast();
+
+  bool requestedForPermission = false;
 
   NotificationsBloc(
     this._accountDbProvider,
@@ -60,8 +63,45 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
               userAccounts: _accountDbProvider.getAll(),
             );
           },
-          initSettings: () {
-            emit(NotificationsState.loaded(appSettings: _getAppSettings()));
+          initSettings: () async {
+            AppSettings appSettings = _getAppSettings();
+            //get most recent permission status of notification
+            bool isGranted = await Permission.notification.isGranted;
+
+            AppSettings newAppSettings =
+                appSettings.copyWith(enabledNotifications: isGranted);
+
+            await _appSettingsDbProvider.write(newAppSettings);
+
+            emit(
+              NotificationsState.loaded(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
+                appSettings: newAppSettings,
+                allowedInSystem: isGranted,
+              ),
+            );
+          },
+          setNotificationsBySystemSettings: () async {
+            bool isGranted = await Permission.notification.isGranted;
+            AppSettings appSettings = _getAppSettings();
+            AppSettings newAppSettings =
+                appSettings.copyWith(enabledNotifications: isGranted);
+
+            await _appSettingsDbProvider.write(newAppSettings);
+
+            if (requestedForPermission == false) {
+              requestedForPermission = true;
+              add(
+                const NotificationsEvent.requestNotificationPermissionIfNeed(),
+              );
+            }
+          },
+          requestNotificationPermissionIfNeed: () async {
+            await Permission.notification.request().then((status) {
+              if (status != PermissionStatus.granted) {
+                emit(const NotificationsState.denied());
+              }
+            });
           },
           setNotifications: () {
             final appSettings = _appSettingsDbProvider.read();
@@ -77,8 +117,20 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
             if (appSettings == null) return;
 
-            final newAppSettings =
-                appSettings.copyWith(enabledNotifications: enabled);
+            AppSettings newAppSettings = appSettings;
+
+            bool isGranted = await Permission.notification.isGranted;
+
+            if (isGranted) {
+              newAppSettings =
+                  appSettings.copyWith(enabledNotifications: enabled);
+              emit(const NotificationsState.granted());
+            } else {
+              newAppSettings =
+                  appSettings.copyWith(enabledNotifications: false);
+              emit(const NotificationsState.denied());
+            }
+
             await _appSettingsDbProvider.write(newAppSettings);
 
             NotificationsHelper.setNotifications(
@@ -87,7 +139,13 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
               userAccounts: _accountDbProvider.getAll(),
             );
 
-            emit(NotificationsState.loaded(appSettings: newAppSettings));
+            emit(
+              NotificationsState.loaded(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
+                appSettings: newAppSettings,
+                allowedInSystem: isGranted,
+              ),
+            );
           },
           notifyAtStartOfMeasurement: (bool enabled) async {
             final appSettings = _appSettingsDbProvider.read();
@@ -104,7 +162,12 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
               userAccounts: _accountDbProvider.getAll(),
             );
 
-            emit(NotificationsState.loaded(appSettings: newAppSettings));
+            emit(
+              NotificationsState.loaded(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
+                appSettings: newAppSettings,
+              ),
+            );
           },
           notify10MinBeforeMeasurement: (bool enabled) async {
             final appSettings = _appSettingsDbProvider.read();
@@ -120,7 +183,12 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
               userAccounts: _accountDbProvider.getAll(),
             );
 
-            emit(NotificationsState.loaded(appSettings: newAppSettings));
+            emit(
+              NotificationsState.loaded(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
+                appSettings: newAppSettings,
+              ),
+            );
           },
         );
       },

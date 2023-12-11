@@ -17,22 +17,6 @@ class AuthManager extends StatelessWidget with BottomSheetMixin {
 
   final Widget child;
 
-  /*
-  Future<void> _goToAppStore() async {
-    if (Platform.isAndroid) {
-      await launchUrl(
-        EGoverement.googlePlayUri,
-        mode: LaunchMode.externalApplication,
-      );
-    } else {
-      await launchUrl(
-        EGoverement.appStoreUri,
-        mode: LaunchMode.externalApplication,
-      );
-    }
-  }
-  */
-
   @override
   Widget build(BuildContext context) {
     final ContentBloc userContentBloc = getIt<ContentBloc>();
