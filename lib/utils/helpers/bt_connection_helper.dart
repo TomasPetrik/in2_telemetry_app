@@ -57,14 +57,8 @@ class BtConnectionHelper {
       return true;
     } else {
       debugPrint(
-        '$localName is not in ${searchMode.name} mode, stopping scan..',
+        '$localName is not in ${searchMode.name} mode',
       );
-
-      await FlutterBluePlus.stopScan();
-      await Future.delayed(const Duration(seconds: 2));
-      debugPrint('starting scan..');
-      await FlutterBluePlus.startScan();
-      debugPrint('started scan again');
       return false;
     }
   }
@@ -129,7 +123,7 @@ class BtConnectionHelper {
         return null;
       }
       await Future.delayed(const Duration(seconds: 1));
-      final availableDevices = await FlutterBluePlus.scanResults.first;
+      final availableDevices = await FlutterBluePlus.onScanResults.first;
 
       debugPrint('found all ${availableDevices.length} devices');
 
@@ -188,7 +182,7 @@ class BtConnectionHelper {
 
     while (true) {
       await Future.delayed(const Duration(seconds: 1));
-      final allDevices = await FlutterBluePlus.scanResults.first;
+      final allDevices = await FlutterBluePlus.onScanResults.first;
 
       debugPrint('found all ${allDevices.length} devices');
 
