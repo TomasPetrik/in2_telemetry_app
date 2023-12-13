@@ -8,7 +8,7 @@ class ScaleSwitch extends StatefulWidget {
     required this.value,
   });
 
-  final Function(bool turnedOn) onChanged;
+  final ValueChanged<bool>? onChanged;
   final bool value;
 
   @override
@@ -24,18 +24,28 @@ class _ScaleSwitchState extends State<ScaleSwitch> {
     super.initState();
   }
 
+  @override void didUpdateWidget(covariant ScaleSwitch oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if(oldWidget.value != widget.value){
+      value = widget.value;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoSwitch(
       trackColor: Theme.of(context).colorScheme.tertiary,
       activeColor: Theme.of(context).colorScheme.primary,
       thumbColor: Theme.of(context).colorScheme.background,
-      onChanged: (newValue) {
-        widget.onChanged.call(newValue);
-        setState(() {
-          value = newValue;
-        });
-      },
+      onChanged: widget.onChanged == null
+          ? null
+          : (newValue) {
+              widget.onChanged!(newValue);
+              setState(() {
+                value = newValue;
+              });
+            },
       value: value,
     );
   }
