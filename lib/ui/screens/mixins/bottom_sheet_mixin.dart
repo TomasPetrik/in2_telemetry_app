@@ -118,6 +118,21 @@ mixin BottomSheetMixin {
     return result;
   }
 
+  Future<bool?> showLocalizationSettings({
+    required final BuildContext context,
+  }) async {
+    final result = await showModalBottomSheet<bool?>(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return BottomDialog.openLocalizationSettings(context: context);
+      },
+    );
+    return result;
+  }
+
   Future<bool?> showDeviceRemovalConfirmation({
     required final BuildContext context,
   }) async {

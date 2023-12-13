@@ -11,6 +11,7 @@ class RegisterDeviceBlocEvent with _$RegisterDeviceBlocEvent {
     required String userId,
     bool? onlyPairingMode,
   }) = _Init;
+  const factory RegisterDeviceBlocEvent.checkHwState() = _CheckHwState;
   const factory RegisterDeviceBlocEvent.newBtState(
     BluetoothAdapterState newBtState,
   ) = _NewBtState;

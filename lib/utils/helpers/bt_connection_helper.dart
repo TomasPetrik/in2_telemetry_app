@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -32,11 +33,11 @@ enum SearchMode { pairing, syncing }
 class BtConnectionHelper {
   bool syncMode = false;
 
-  bool matchDeviceMode(
+  Future<bool> matchDeviceMode(
     String localName,
     device,
     SearchMode searchMode,
-  ) {
+  ) async {
     final supportedBtNames = Constants.supportedDevices
         .map((supDev) => supDev.bluetoothName ?? '')
         .toList();
@@ -56,8 +57,14 @@ class BtConnectionHelper {
       return true;
     } else {
       debugPrint(
-        '$localName is not in ${searchMode.name} mode',
+        '$localName is not in ${searchMode.name} mode, stopping scan..',
       );
+
+      await FlutterBluePlus.stopScan();
+      await Future.delayed(const Duration(seconds: 2));
+      debugPrint('starting scan..');
+      await FlutterBluePlus.startScan();
+      debugPrint('started scan again');
       return false;
     }
   }
@@ -124,19 +131,24 @@ class BtConnectionHelper {
       await Future.delayed(const Duration(seconds: 1));
       final availableDevices = await FlutterBluePlus.scanResults.first;
 
+      debugPrint('found all ${availableDevices.length} devices');
+
       for (final scanResult in availableDevices) {
         final serviceUuids = scanResult.advertisementData.serviceUuids;
-        if (serviceUuids.any(
-              (devServiceUuid) => devServiceUuid == serviceUuid,
-            ) &&
-            matchDeviceMode(
-              scanResult.advertisementData.advName,
+        final services = scanResult.device.servicesList;
+        if ((serviceUuids
+                    .any((btServiceUuid) => btServiceUuid == serviceUuid) ||
+                services.any(
+                  (btService) => btService.serviceUuid == serviceUuid,
+                )) &&
+            await matchDeviceMode(
+              scanResult.device.advName,
               device,
               searchMode,
             ) &&
             matchDeviceId(
               device,
-              scanResult.advertisementData.advName,
+              scanResult.device.advName,
             )) {
           debugPrint('found device');
 
@@ -144,7 +156,7 @@ class BtConnectionHelper {
 
           return DeviceSearchResult(
             scanResult.device,
-            scanResult.advertisementData.advName,
+            scanResult.device.advName,
           );
         }
       }
@@ -271,24 +283,6 @@ class BtConnectionHelper {
       return null;
     }
   }
-
-/*
-  static Future<DeviceInfo?> requestDeviceInfo2(BluetoothDevice device) async {
-    device.se
-
-    final services = await device.discoverServices();
-    final deviceInfoService = services.firstWhereOrNull(
-      (service) => service.uuid.toString().toLowerCase() == deviceInfo,
-    );
-    if (deviceInfoService != null) {
-      final deviceInfo = await getDeviceInfoFromService(deviceInfoService);
-      deviceInfo.device = device;
-      return deviceInfo;
-    } else {
-      return null;
-    }
-  }
-  */
 
   Future<BatteryInfo?> requestBatteryInfo(BluetoothDevice device) async {
     final services = await device.discoverServices();
@@ -430,31 +424,6 @@ class BtConnectionHelper {
     bpCharacteristic.lastValueStream.listen(results.add);
     await Future.delayed(const Duration(seconds: 5));
 
-    //if iOS device is still connected in pairing process, we can consider that user haven't confirmed
-    //device pair in system dialog, so return null as (connection error)
-    /*
-    if (Platform.isIOS && isPairing) {
-      const iOsPairinAttemptsCheck = 15;
-      for (int i = 1; i <= iOsPairinAttemptsCheck; i++) {
-        final deviceState = await device.connectionState.first;
-
-        if (deviceState == BluetoothConnectionState.connected &&
-            i == iOsPairinAttemptsCheck) {
-          return null;
-        } else if (deviceState == BluetoothConnectionState.disconnected) {
-          final reason = device.disconnectReason;
-          if (reason?.code == 2) {
-            break;
-          } else {
-            return null;
-          }
-        }
-
-        await Future.delayed(const Duration(seconds: 1));
-      }
-    }
-    */
-
     return results.last;
   }
 
@@ -572,7 +541,34 @@ class BtConnectionHelper {
     }
   }
 
-  Future<bool> hasPermissionsGranted() async {
+  Future<bool> isBTPermissionsPermanentylDenied() async {
+    if (!Platform.isAndroid) {
+      return false;
+    }
+
+    final isBtScanStatusPermanentlyDenied =
+        await Permission.bluetoothScan.status.isPermanentlyDenied;
+    final isBtConnectStatusPermanentlyDenied =
+        await Permission.bluetoothConnect.status.isPermanentlyDenied;
+
+    return isBtScanStatusPermanentlyDenied ||
+        isBtConnectStatusPermanentlyDenied;
+  }
+
+  Future<bool> isBTPermissionsGranted() async {
+    if (!Platform.isAndroid) {
+      return false;
+    }
+
+    final isBtScanStatusGranted =
+        await Permission.bluetoothScan.status.isGranted;
+    final isBtConnectStatusGranted =
+        await Permission.bluetoothConnect.status.isGranted;
+
+    return isBtScanStatusGranted && isBtConnectStatusGranted;
+  }
+
+  Future<bool> requestForBTPermissions() async {
     if (!Platform.isAndroid) {
       return true;
     }
@@ -581,7 +577,6 @@ class BtConnectionHelper {
       //Permission.bluetooth, // -> is handled by flutter blue plus
       Permission.bluetoothScan,
       Permission.bluetoothConnect,
-      Permission.bluetoothAdvertise,
     ].request();
 
     if (statuses.values.any((permission) => permission.isGranted == false)) {
@@ -589,5 +584,24 @@ class BtConnectionHelper {
     }
 
     return true;
+  }
+
+  Future<bool> hasLocationServiceEnabled() async {
+    if (!Platform.isAndroid) {
+      return true;
+    }
+
+    //Check if localization service is enabled only for Android 11 and lower
+    DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+    final androidInfo = await deviceInfoPlugin.androidInfo;
+    if (androidInfo.version.sdkInt > 30) {
+      return true;
+    }
+
+    if (await Permission.locationWhenInUse.serviceStatus.isEnabled) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

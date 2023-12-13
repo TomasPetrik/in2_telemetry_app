@@ -13,6 +13,7 @@ class OmronConnectionBlocEvent with _$OmronConnectionBlocEvent {
     MeasurementType measurementType,
     Device device,
   ) = _Init;
+  const factory OmronConnectionBlocEvent.checkHwState() = _CheckHwState;
   const factory OmronConnectionBlocEvent.newBtState(
     BluetoothAdapterState newBtState,
   ) = _NewBtState;

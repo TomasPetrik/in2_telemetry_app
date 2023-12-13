@@ -69,6 +69,26 @@ class BottomDialog extends StatelessWidget {
     );
   }
 
+  factory BottomDialog.openLocalizationSettings({
+    Key? key,
+    required BuildContext context,
+  }) {
+    return _BottomDialog(
+      title: localization.dialog_req_localization_service_title,
+      description: localization.dialog_req_localization_service_description,
+      iconPath: 'assets/icons/icon_triangle_exclamation_big.svg',
+      iconColor: Theme.of(context).colorScheme.tertiary,
+      positiveButtonStyle: ButtonStyle(
+        buttonType: ButtonType.primary,
+        label: localization.dialog_req_localization_service_go_to_settings,
+      ),
+      negativeButtonStyle: ButtonStyle(
+        buttonType: ButtonType.secondary,
+        label: localization.common_close,
+      ),
+    );
+  }
+
   factory BottomDialog.deviceConfirmationRemoval({
     Key? key,
     required BuildContext context,

@@ -26,6 +26,8 @@ class RegisterDeviceBloc
 
   late final UserAccount _userAccount;
   late final bool _onlyPairingMode;
+  bool shouldRequestPermission = true;
+  bool? _searchStarted;
 
   RegisterDeviceBloc(
     this._btConnectionHelper,
@@ -36,42 +38,89 @@ class RegisterDeviceBloc
     on<RegisterDeviceBlocEvent>((event, emit) async {
       await event.when(
         init: (String userId, bool? onlyPairingMode) async {
+          await Wakelock.enable();
           _userAccount = _accountDbProvider.get(userId)!;
           _onlyPairingMode = onlyPairingMode ?? false;
-          await Wakelock.enable();
+
+          add(const RegisterDeviceBlocEvent.checkHwState());
+        },
+        checkHwState: () async {
+          if (_searchStarted == true) {
+            return;
+          }
 
           final btState = await FlutterBluePlus.adapterState.first;
 
-          if (btState == BluetoothAdapterState.off) {
+          if (btState == BluetoothAdapterState.off ||
+              btState == BluetoothAdapterState.unauthorized ||
+              btState == BluetoothAdapterState.turningOff) {
             _reportsService.trackEvent(
               userAccount: _userAccount,
               severity: Severity.warning,
               message: EventsConstants.eventBluetoothDisabled,
             );
-            emit(const RegisterDeviceBlocState.disabledBt());
+            emit(
+              RegisterDeviceBlocState.disabledBt(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
+              ),
+            );
+            return;
+          }
+
+          final isBTPermissionsPermanentylDenied =
+              await _btConnectionHelper.isBTPermissionsPermanentylDenied();
+
+          if (isBTPermissionsPermanentylDenied) {
+            shouldRequestPermission = true;
+            emit(
+              RegisterDeviceBlocState.noBtPermissions(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
+              ),
+            );
+            return;
+          } else if (await _btConnectionHelper.isBTPermissionsGranted()) {
+            shouldRequestPermission = false;
           } else {
+            shouldRequestPermission = true;
+            final hasPermissionsGranted =
+                await _btConnectionHelper.requestForBTPermissions();
+            if (!hasPermissionsGranted) {
+              _reportsService.trackEvent(
+                userAccount: _userAccount,
+                severity: Severity.warning,
+                message: EventsConstants.eventNoBTPermissionsGranted,
+              );
+              emit(
+                RegisterDeviceBlocState.noBtPermissions(
+                  timestamp: DateTime.now().microsecondsSinceEpoch,
+                ),
+              );
+              return;
+            }
+          }
+
+          final hasLocationServiceEnabled =
+              await _btConnectionHelper.hasLocationServiceEnabled();
+          if (!hasLocationServiceEnabled) {
+            debugPrint('disabled location service !');
             _reportsService.trackEvent(
               userAccount: _userAccount,
               severity: Severity.warning,
-              message: EventsConstants.eventNoBTPermissionsGranted,
+              message: EventsConstants.eventDisabledLocalizationService,
             );
-            emit(const RegisterDeviceBlocState.noBtPermissions());
-          }
-
-          final hasPermissionsGranted =
-              await _btConnectionHelper.hasPermissionsGranted();
-          if (!hasPermissionsGranted) {
-            _reportsService.trackEvent(
-              userAccount: _userAccount,
-              severity: Severity.warning,
-              message: EventsConstants.eventNoBTPermissionsGranted,
+            emit(
+              RegisterDeviceBlocState.disabledLocalizationService(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
+              ),
             );
-            emit(const RegisterDeviceBlocState.noBtPermissions());
+            shouldRequestPermission = true;
+            _searchStarted = false;
+          } else {
+            _searchStarted = false;
+            _startCheckingBtState();
           }
-
-          _startCheckingBtState();
         },
-        newBtState: (BluetoothAdapterState newBtState) {
+        newBtState: (BluetoothAdapterState newBtState) async {
           if (newBtState == BluetoothAdapterState.on) {
             _reportsService.trackEvent(
               userAccount: _userAccount,
@@ -80,14 +129,22 @@ class RegisterDeviceBloc
             );
             add(const RegisterDeviceBlocEvent.searchDevices());
           } else if (newBtState == BluetoothAdapterState.off) {
-            emit(const RegisterDeviceBlocState.disabledBt());
+            emit(
+              RegisterDeviceBlocState.disabledBt(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
+              ),
+            );
           } else {
             _reportsService.trackEvent(
               userAccount: _userAccount,
               severity: Severity.warning,
               message: EventsConstants.eventNoBTPermissionsGranted,
             );
-            emit(const RegisterDeviceBlocState.noBtPermissions());
+            emit(
+              RegisterDeviceBlocState.noBtPermissions(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
+              ),
+            );
           }
         },
         searchDevices: () async {
@@ -129,7 +186,7 @@ class RegisterDeviceBloc
             message: EventsConstants.eventDeviceSearchingStop,
           );
           await Wakelock.disable();
-          FlutterBluePlus.stopScan();
+          await FlutterBluePlus.stopScan();
         },
         selectDevice: (Device device) async {
           await Wakelock.disable();

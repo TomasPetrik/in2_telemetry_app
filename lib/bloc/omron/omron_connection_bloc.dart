@@ -34,6 +34,8 @@ class OmronConnectionBloc
   Device? _device;
   late final UserAccount _userAccount;
   late final MeasurementType _measurementType;
+  bool shouldRequestPermission = true;
+  bool? _searchStarted;
 
   bool get reqModelPairing =>
       _device?.reqPairing == true && _device?.wasPaired != true;
@@ -65,7 +67,6 @@ class OmronConnectionBloc
       ) async {
         final deviceInfo =
             await _btConnectionHelper.requestDeviceInfo(blDevice);
-        //deviceInfo?.advData = advertisementData;
 
         final batteryInfo =
             await _btConnectionHelper.requestBatteryInfo(blDevice);
@@ -186,14 +187,7 @@ class OmronConnectionBloc
             heartRate: measurementInfo?.pulseRate,
           );
 
-          emit(
-            OmronConnectionState.synced(
-              timestamp: DateTime.now().microsecondsSinceEpoch,
-              measurementResult:
-                  measurementResult.copyWith(measurement: measurement),
-              deviceInfo: deviceInfo,
-            ),
-          );
+         
 
           if (reqModelPairing) {
             _reportsService.trackEvent(
@@ -206,6 +200,14 @@ class OmronConnectionBloc
               userAccount: _userAccount,
               severity: Severity.info,
               message: EventsConstants.eventDeviceSynced,
+            );
+             emit(
+              OmronConnectionState.synced(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
+                measurementResult:
+                    measurementResult.copyWith(measurement: measurement),
+                deviceInfo: deviceInfo,
+              ),
             );
           }
         } else if (measurementResult.resultState == ResultState.noData) {
@@ -290,43 +292,86 @@ class OmronConnectionBloc
           _device = device;
           _userAccount = _accountDbProvider.get(userId)!;
           _measurementType = measurementType;
+
+          add(const OmronConnectionBlocEvent.checkHwState());
+        },
+        checkHwState: () async {
+          if (_searchStarted == true) {
+            return;
+          }
+
           final btState = await FlutterBluePlus.adapterState.first;
 
-          if (btState == BluetoothAdapterState.off) {
-            emit(
-              OmronConnectionState.disabledBt(
-                timestamp: DateTime.now().microsecondsSinceEpoch,
-              ),
-            );
+          if (btState == BluetoothAdapterState.off ||
+              btState == BluetoothAdapterState.unauthorized ||
+              btState == BluetoothAdapterState.turningOff) {
             _reportsService.trackEvent(
               userAccount: _userAccount,
               severity: Severity.warning,
               message: EventsConstants.eventBluetoothDisabled,
             );
-          } else {
+            emit(
+              OmronConnectionState.disabledBt(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
+              ),
+            );
+            return;
+          }
+
+          final isBTPermissionsPermanentylDenied =
+              await _btConnectionHelper.isBTPermissionsPermanentylDenied();
+
+          if (isBTPermissionsPermanentylDenied) {
+            shouldRequestPermission = false;
             emit(
               OmronConnectionState.noBtPermissions(
                 timestamp: DateTime.now().microsecondsSinceEpoch,
               ),
             );
+            return;
+          } else if (await _btConnectionHelper.isBTPermissionsGranted()) {
+            shouldRequestPermission = false;
+          } else {
+            shouldRequestPermission = true;
+            final hasPermissionsGranted =
+                await _btConnectionHelper.requestForBTPermissions();
+            if (!hasPermissionsGranted) {
+              _reportsService.trackEvent(
+                userAccount: _userAccount,
+                severity: Severity.warning,
+                message: EventsConstants.eventNoBTPermissionsGranted,
+              );
+              emit(
+                OmronConnectionState.noBtPermissions(
+                  timestamp: DateTime.now().microsecondsSinceEpoch,
+                ),
+              );
+              return;
+            }
           }
 
-          final hasPermissionsGranted =
-              await _btConnectionHelper.hasPermissionsGranted();
-          if (!hasPermissionsGranted) {
+          shouldRequestPermission = false;
+
+          final hasLocationServiceEnabled =
+              await _btConnectionHelper.hasLocationServiceEnabled();
+          if (!hasLocationServiceEnabled) {
+            debugPrint('disabled location service !');
             _reportsService.trackEvent(
               userAccount: _userAccount,
               severity: Severity.warning,
-              message: EventsConstants.eventNoBTPermissionsGranted,
+              message: EventsConstants.eventDisabledLocalizationService,
             );
             emit(
-              OmronConnectionState.noBtPermissions(
+              OmronConnectionState.disabledLocalizationService(
                 timestamp: DateTime.now().microsecondsSinceEpoch,
               ),
             );
+            shouldRequestPermission = true;
+            _searchStarted = false;
+          } else {
+            _searchStarted = true;
+            _startCheckingBtState();
           }
-
-          _startCheckingBtState();
         },
         newBtState: (newBtState) async {
           if (newBtState == BluetoothAdapterState.on) {
@@ -406,7 +451,7 @@ class OmronConnectionBloc
             message: EventsConstants.eventDeviceSearchingStop,
           );
           await Wakelock.disable();
-          FlutterBluePlus.stopScan();
+          await FlutterBluePlus.stopScan();
         },
         connectToDevice: (device, localName) async {
           await connectToDevice(device, localName);
