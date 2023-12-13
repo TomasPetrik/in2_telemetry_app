@@ -17,7 +17,7 @@ import 'package:scalesoft_app/ui/screens/device_search_screen.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
-import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
+import 'package:scalesoft_app/ui/widgets/blurred_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/device_item.dart';
 import 'package:scalesoft_app/ui/widgets/navigation_tab_chip.dart';
 import 'package:scalesoft_app/ui/widgets/settings_item.dart';
@@ -423,7 +423,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
             top: 0,
             left: 0,
             right: 0,
-            child: BluredScaleAppBar(
+            child: BlurredScaleAppBar(
               title: getTitle(),
               showClose: true,
             ),

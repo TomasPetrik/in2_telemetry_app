@@ -11,7 +11,7 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/screens/synced_result.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
-import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
+import 'package:scalesoft_app/ui/widgets/blurred_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/device_progress.dart';
 import 'package:scalesoft_app/ui/widgets/process_item.dart';
 import 'package:scalesoft_app/ui/widgets/warning_item.dart';
@@ -265,7 +265,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
               top: 0,
               left: 0,
               right: 0,
-              child: BluredScaleAppBar(
+              child: BlurredScaleAppBar(
                 title: device.visibleName ?? '',
                 subTitle: '${localization.common_measurement} '
                     '${localization.common_measurement_types_genitive(measurementType.name).toLowerCase()}',

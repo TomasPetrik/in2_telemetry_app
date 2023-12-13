@@ -13,8 +13,8 @@ import 'package:scalesoft_app/ui/routers/routes/calendar_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
-import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
-import 'package:scalesoft_app/ui/widgets/fullplan_evaluation_widget.dart';
+import 'package:scalesoft_app/ui/widgets/blurred_scale_app_bart.dart';
+import 'package:scalesoft_app/ui/widgets/full_plan_evaluation_widget.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/sliver_name_value_row.dart';
 import 'package:scalesoft_app/ui/widgets/times_settings_form.dart';
@@ -177,7 +177,7 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
                 top: 0,
                 left: 0,
                 right: 0,
-                child: BluredScaleAppBar(
+                child: BlurredScaleAppBar(
                   title: localization.common_measurement_types(
                     widget.carePlan.activity.measurementType.name,
                   ),

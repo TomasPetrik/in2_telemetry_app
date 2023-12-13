@@ -16,7 +16,7 @@ import 'package:scalesoft_app/ui/routers/routes/manual_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
-import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
+import 'package:scalesoft_app/ui/widgets/blurred_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/onboarding_item_desc.dart';
 
@@ -151,7 +151,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 top: 0,
                 left: 0,
                 right: 0,
-                child: BluredScaleAppBar(
+                child: BlurredScaleAppBar(
                   title: localization
                       .onboarding_add_account_screen_add_account_title,
                 ),

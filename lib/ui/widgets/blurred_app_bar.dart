@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-class BluredAppBar extends StatelessWidget {
-  const BluredAppBar({
+class BlurredAppBar extends StatelessWidget {
+  const BlurredAppBar({
     super.key,
     required this.child,
   });

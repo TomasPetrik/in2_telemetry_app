@@ -11,7 +11,7 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_detail_route.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
-import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
+import 'package:scalesoft_app/ui/widgets/blurred_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/user_item_compound.dart';
 
 class HospitalDetailScreen extends StatelessWidget {
@@ -91,7 +91,7 @@ class HospitalDetailScreen extends StatelessWidget {
                     top: 0,
                     left: 0,
                     right: 0,
-                    child: BluredScaleAppBar(
+                    child: BlurredScaleAppBar(
                       title: hospitalTitle,
                       onBackTap: () {},
                     ),

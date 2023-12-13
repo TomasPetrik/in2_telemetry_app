@@ -4,7 +4,7 @@ import 'package:scalesoft_app/oss_licenses.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
-import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
+import 'package:scalesoft_app/ui/widgets/blurred_scale_app_bart.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LicenceDetailScreen extends StatelessWidget {
@@ -90,7 +90,7 @@ class LicenceDetailScreen extends StatelessWidget {
             top: 0,
             left: 0,
             right: 0,
-            child: BluredScaleAppBar(
+            child: BlurredScaleAppBar(
               title: localization.license_detail_screen_title,
               showClose: true,
               onBackTap: () {},
