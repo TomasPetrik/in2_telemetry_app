@@ -1008,6 +1008,36 @@ class I10n {
     );
   }
 
+  /// `Povolení lokalizační služby`
+  String get dialog_req_localization_service_title {
+    return Intl.message(
+      'Povolení lokalizační služby',
+      name: 'dialog_req_localization_service_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aplikace vyžaduje povolení používat lokalizační službu na vyhledávaní zažírení v okolí.`
+  String get dialog_req_localization_service_description {
+    return Intl.message(
+      'Aplikace vyžaduje povolení používat lokalizační službu na vyhledávaní zažírení v okolí.',
+      name: 'dialog_req_localization_service_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Přejít do nastavení`
+  String get dialog_req_localization_service_go_to_settings {
+    return Intl.message(
+      'Přejít do nastavení',
+      name: 'dialog_req_localization_service_go_to_settings',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Povolení notifikací`
   String get dialog_req_notifications_title {
     return Intl.message(

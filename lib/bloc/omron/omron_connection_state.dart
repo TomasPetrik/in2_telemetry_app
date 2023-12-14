@@ -11,6 +11,9 @@ class OmronConnectionState with _$OmronConnectionState {
   const factory OmronConnectionState.disabledBt({
     required int timestamp,
   }) = _DisabledBt;
+  const factory OmronConnectionState.disabledLocalizationService({
+    required int timestamp,
+  }) = _DisabledLocalizationService;
   factory OmronConnectionState.noBtPermissions({
     required int timestamp,
   }) = _NoBtPermissions;

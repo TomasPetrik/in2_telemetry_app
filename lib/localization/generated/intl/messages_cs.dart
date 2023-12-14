@@ -421,6 +421,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "dialog_account_removal_confirmation_description": m24,
         "dialog_account_removal_confirmation_title":
             MessageLookupByLibrary.simpleMessage("Odstranit účet z aplikace"),
+        "dialog_req_localization_service_description":
+            MessageLookupByLibrary.simpleMessage(
+                "Aplikace vyžaduje povolení používat lokalizační službu na vyhledávaní zažírení v okolí."),
+        "dialog_req_localization_service_go_to_settings":
+            MessageLookupByLibrary.simpleMessage("Přejít do nastavení"),
+        "dialog_req_localization_service_title":
+            MessageLookupByLibrary.simpleMessage("Povolení lokalizační služby"),
         "dialog_req_notifications_description":
             MessageLookupByLibrary.simpleMessage(
                 "Aplikace vyžaduje povolení notifikací, pokud chcete dostávat upozornění."),

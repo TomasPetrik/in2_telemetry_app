@@ -7,6 +7,7 @@ import 'package:scalesoft_app/bloc/register_device/register_device_bloc.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_event.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blurred_scale_app_bart.dart';
@@ -33,12 +34,34 @@ class DeviceSearchScreen extends StatefulWidget {
   State<DeviceSearchScreen> createState() => _DeviceSearchScreenState();
 }
 
-class _DeviceSearchScreenState extends State<DeviceSearchScreen> {
+class _DeviceSearchScreenState extends State<DeviceSearchScreen>
+    with BottomSheetMixin, WidgetsBindingObserver {
   final RegisterDeviceBloc registerDeviceBloc = getIt<RegisterDeviceBloc>();
 
   Future<bool> _onWillPop() async {
     registerDeviceBloc.add(const RegisterDeviceBlocEvent.stopSearch());
     return true;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed) {
+      if (registerDeviceBloc.shouldRequestPermission == true) {
+        registerDeviceBloc.add(const RegisterDeviceBlocEvent.checkHwState());
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
@@ -58,16 +81,25 @@ class _DeviceSearchScreenState extends State<DeviceSearchScreen> {
                   ),
                 ),
               listener: (BuildContext context, RegisterDeviceBlocState state) {
-                final devToPop = state.whenOrNull(
-                  popDevice: (device) => device,
+                state.whenOrNull(
+                  popDevice: (devToPop) => Navigator.of(context).pop(devToPop),
+                  disabledLocalizationService: (_) {
+                    showLocalizationSettings(context: context)
+                        .then((openLocationSettings) async {
+                      if (openLocationSettings == true) {
+                        await AppSettings.openAppSettings(
+                          type: AppSettingsType.location,
+                        );
+                      } else {
+                        Navigator.of(context).pop();
+                      }
+                    });
+                  },
                 );
-                if (devToPop != null) {
-                  Navigator.of(context).pop(devToPop);
-                }
               },
               builder: (context, state) {
                 final header = state.whenOrNull(
-                  disabledBt: () => WarningItem(
+                  disabledBt: (_) => WarningItem(
                     title: localization.find_device_screen_disabled_bt_title,
                     description:
                         localization.find_device_screen_disabled_bt_desc,
@@ -83,7 +115,7 @@ class _DeviceSearchScreenState extends State<DeviceSearchScreen> {
                       );
                     },
                   ),
-                  noBtPermissions: () => WarningItem(
+                  noBtPermissions: (_) => WarningItem(
                     title: localization.find_device_screen_not_granted_bt_title,
                     description:
                         localization.find_device_screen_not_granted_bt_desc,

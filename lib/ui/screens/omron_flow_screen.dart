@@ -32,8 +32,8 @@ class OmronFlowScreen extends StatefulWidget {
 }
 
 class _OmronFlowScreenState extends State<OmronFlowScreen>
-    with BottomSheetMixin {
-  late final OmronConnectionBloc omronConnectionBloc;
+    with BottomSheetMixin, WidgetsBindingObserver {
+  final OmronConnectionBloc omronConnectionBloc = getIt<OmronConnectionBloc>();
   late final MeasurementType measurementType;
   late final Device device;
 
@@ -42,13 +42,35 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
       (device.deviceIdentifier == null || device.wasPaired != true);
 
   @override
-  void initState() {
-    omronConnectionBloc = getIt<OmronConnectionBloc>();
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    debugPrint('didChangeAppLifecycleState ${state.toString()}');
 
+    if (state == AppLifecycleState.resumed) {
+      if (omronConnectionBloc.shouldRequestPermission == true) {
+        omronConnectionBloc.add(const OmronConnectionBlocEvent.checkHwState());
+      }
+    }
+  }
+
+  @override
+  void initState() {
     device = widget.device;
     measurementType = widget.measurementType;
-
+    omronConnectionBloc.add(
+      OmronConnectionBlocEvent.init(
+        widget.userId,
+        measurementType,
+        device,
+      ),
+    );
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   Future<bool> _onWillPop() async {
@@ -65,14 +87,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
           children: [
             Positioned.fill(
               child: BlocConsumer<OmronConnectionBloc, OmronConnectionState>(
-                bloc: omronConnectionBloc
-                  ..add(
-                    OmronConnectionBlocEvent.init(
-                      widget.userId,
-                      measurementType,
-                      device,
-                    ),
-                  ),
+                bloc: omronConnectionBloc,
                 buildWhen: (previous, current) {
                   final showState = current.whenOrNull(
                         init: () => true,
@@ -92,17 +107,31 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                   return showState;
                 },
                 listener: (context, state) async {
-                  final notFound = state.whenOrNull(notFound: (_) => true);
-                  if (notFound == true) {
-                    await showDevNotFound(context).then((searchAgain) {
-                      if (searchAgain == true) {
-                        omronConnectionBloc
-                            .add(const OmronConnectionBlocEvent.searchDevice());
-                      } else if (searchAgain == false) {
-                        Navigator.of(context).pop();
-                      }
-                    });
-                  }
+                  state.whenOrNull(
+                    notFound: (_) async {
+                      await showDevNotFound(context).then((searchAgain) {
+                        if (searchAgain == true) {
+                          omronConnectionBloc.add(
+                            const OmronConnectionBlocEvent.searchDevice(),
+                          );
+                        } else if (searchAgain == false) {
+                          Navigator.of(context).pop();
+                        }
+                      });
+                    },
+                    disabledLocalizationService: (_) {
+                      showLocalizationSettings(context: context)
+                          .then((openLocationSettings) async {
+                        if (openLocationSettings == true) {
+                          await AppSettings.openAppSettings(
+                            type: AppSettingsType.location,
+                          );
+                        } else {
+                          Navigator.of(context).pop();
+                        }
+                      });
+                    },
+                  );
                 },
                 builder: ((context, state) {
                   final deviceStatusWidget = state.whenOrNull(
@@ -197,6 +226,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                     },
                     notVerified: (_, hwMeasurementResult) {
                       return SyncedResult(
+                        key: ValueKey(hwMeasurementResult.hashCode),
                         userId: widget.userId,
                         deviceId: hwMeasurementResult.devId,
                         hwMeasurementResult: hwMeasurementResult,
@@ -245,6 +275,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                       deviceInfo,
                     ) {
                       return SyncedResult(
+                        key: ValueKey(timestamp),
                         userId: widget.userId,
                         deviceId: hwMeasurementResult.devId,
                         hwMeasurementResult: hwMeasurementResult,

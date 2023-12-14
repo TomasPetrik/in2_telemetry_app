@@ -7,8 +7,15 @@ part 'register_device_bloc_state.freezed.dart';
 @freezed
 class RegisterDeviceBlocState with _$RegisterDeviceBlocState {
   const factory RegisterDeviceBlocState.init() = _Init;
-  const factory RegisterDeviceBlocState.disabledBt() = _DisabledBt;
-  const factory RegisterDeviceBlocState.noBtPermissions() = _NoBtPermissions;
+  const factory RegisterDeviceBlocState.disabledBt({
+    required int timestamp,
+  }) = _DisabledBt;
+  const factory RegisterDeviceBlocState.noBtPermissions({
+    required int timestamp,
+  }) = _NoBtPermissions;
+  const factory RegisterDeviceBlocState.disabledLocalizationService({
+    required int timestamp,
+  }) = _DisabledLocalizationService;
   const factory RegisterDeviceBlocState.searching({
     required int timestamp,
     List<Device>? devices,
