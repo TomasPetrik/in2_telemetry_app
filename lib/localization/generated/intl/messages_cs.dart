@@ -234,25 +234,42 @@ class MessageLookup extends MessageLookupByLibrary {
             'other': '',
           })}";
 
-  static String m38(macAddress) =>
+  static String m38(permission) => "${Intl.select(permission, {
+            'notification':
+                'Oprávnění k odesílání oznámení je nutné pro průběžnou komunikaci aplikace s hodinkami.',
+            'bluetoothConnect':
+                'Oprávnění k připojování k Bluetooth zařízením je nutné pro přenos měření z hodinek.',
+            'ignoreBatteryOptimizations':
+                'Oprávnění běžet na pozadí nám pomáhá zajistit, aby přenos dat správně pracoval, i když aplikace není spuštěná.',
+            'other': ' ',
+          })}";
+
+  static String m39(permission) => "${Intl.select(permission, {
+            'notification': 'Odesílání oznámení',
+            'bluetoothConnect': 'Připojování k Bluetooth zařízením',
+            'ignoreBatteryOptimizations': 'Běh aplikace na pozadí',
+            'other': ' ',
+          })}";
+
+  static String m40(macAddress) =>
       "Zařízení s technickým identifikátorem ${macAddress} již existuje.";
 
-  static String m39(name) => "Výsledek měření ${name} bude nevratně odstraněn.";
+  static String m41(name) => "Výsledek měření ${name} bude nevratně odstraněn.";
 
-  static String m40(percentage) => "Plán splněn na ${percentage}%";
+  static String m42(percentage) => "Plán splněn na ${percentage}%";
 
-  static String m41(currentCount, reqCount) =>
+  static String m43(currentCount, reqCount) =>
       "${currentCount} z ${reqCount} měření";
 
-  static String m42(name) =>
+  static String m44(name) =>
       "Je nám líto, ale výsledky pro účet ${name} nejsou dostupné.";
 
-  static String m43(label) => "${label} nebylo plánované žádné měření";
+  static String m45(label) => "${label} nebylo plánované žádné měření";
 
-  static String m44(name) =>
+  static String m46(name) =>
       "Je potřeba, aby se uživatel ${name} znovu přihlásil.";
 
-  static String m45(shortnessOfBreathValue) =>
+  static String m47(shortnessOfBreathValue) =>
       "${Intl.select(shortnessOfBreathValue, {
             'none': 'Dýchání bez problémů',
             'low': 'Občasná dušnost při fyzické námaze',
@@ -261,16 +278,16 @@ class MessageLookup extends MessageLookupByLibrary {
             'other': '',
           })}";
 
-  static String m46(date, time) => "Poslední synchronizace ${date} ${time}";
+  static String m48(date, time) => "Poslední synchronizace ${date} ${time}";
 
-  static String m47(date, time) =>
+  static String m49(date, time) =>
       "Poslední úspěšná synchronizace ${date} ${time}";
 
-  static String m48(fromDate) => "Platný od ${fromDate}";
+  static String m50(fromDate) => "Platný od ${fromDate}";
 
-  static String m49(fromDate, toDate) => "Platný od ${fromDate} do ${toDate}";
+  static String m51(fromDate, toDate) => "Platný od ${fromDate} do ${toDate}";
 
-  static String m50(hospital) => "Měření v ${hospital} pro";
+  static String m52(hospital) => "Měření v ${hospital} pro";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -381,6 +398,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Dle plánu měření"),
         "configuration_screen_settings":
             MessageLookupByLibrary.simpleMessage("Nastavení"),
+        "configuration_screen_setup_watch":
+            MessageLookupByLibrary.simpleMessage(
+                "Nastavit synchronizaci hodinek"),
         "configuration_screen_system_appearance_sublabel":
             MessageLookupByLibrary.simpleMessage("Vzhled dle systému"),
         "daily_when_time_reset_confirmation_confirm":
@@ -591,7 +611,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "open_manual_button": MessageLookupByLibrary.simpleMessage(
             "Otevřít uživatelskou příručku"),
         "overall_health_values": m37,
-        "register_device_detail_registration_fail_message": m38,
+        "permission_explanations": m38,
+        "permission_names": m39,
+        "register_device_detail_registration_fail_message": m40,
         "register_device_detail_registration_fail_title":
             MessageLookupByLibrary.simpleMessage("Chyba"),
         "register_device_detail_screen_assigned_id":
@@ -614,7 +636,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "register_device_success_screen_desc":
             MessageLookupByLibrary.simpleMessage(
                 "Zařízení bylo úspěšně registrováno."),
-        "result_removal_confirmation_desc": m39,
+        "result_removal_confirmation_desc": m41,
         "result_removal_confirmation_title":
             MessageLookupByLibrary.simpleMessage("Odstranit výsledek"),
         "result_removal_confirmation_title_button_confirm":
@@ -623,33 +645,33 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Plán měření dne"),
         "results_measurements_when_selector_title":
             MessageLookupByLibrary.simpleMessage("Plnění plánu"),
-        "results_plan_fulfilled_on": m40,
+        "results_plan_fulfilled_on": m42,
         "results_plan_no_measurement_needed":
             MessageLookupByLibrary.simpleMessage(
                 "Plán nevyžadoval žádné měření"),
-        "results_screen_measurements_completed": m41,
+        "results_screen_measurements_completed": m43,
         "results_screen_no_historic_data": MessageLookupByLibrary.simpleMessage(
             "Historie měření neobsahuje žádná data."),
         "results_screen_no_permission_to_see_results":
             MessageLookupByLibrary.simpleMessage(
                 "Na zobrazení údajů nemáte potřebné oprávnění"),
-        "results_screen_no_results": m42,
-        "results_screen_no_results_in_plans": m43,
+        "results_screen_no_results": m44,
+        "results_screen_no_results_in_plans": m45,
         "results_screen_results_title":
             MessageLookupByLibrary.simpleMessage("Výsledky"),
         "server_error_desc": MessageLookupByLibrary.simpleMessage(
             "Zde je něco v nepořádku. Zkuste akci opakovat později."),
         "server_error_title": MessageLookupByLibrary.simpleMessage("Chyba"),
-        "session_expired_description": m44,
+        "session_expired_description": m46,
         "session_expired_title":
             MessageLookupByLibrary.simpleMessage("Problém s přihlášením"),
-        "shortness_of_breath_values": m45,
-        "sync_failed_screen_sub_title": m46,
+        "shortness_of_breath_values": m47,
+        "sync_failed_screen_sub_title": m48,
         "sync_failed_screen_title":
             MessageLookupByLibrary.simpleMessage("Synchronizace"),
         "sync_failed_screen_waiting_on_sync":
             MessageLookupByLibrary.simpleMessage("Čeká na synchronizaci"),
-        "sync_widget_sync_failed_desc": m47,
+        "sync_widget_sync_failed_desc": m49,
         "sync_widget_sync_failed_title":
             MessageLookupByLibrary.simpleMessage("Synchronizace se nepovedla"),
         "sync_widget_sync_in_progress":
@@ -685,8 +707,19 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Telefon"),
         "user_detail_screen_user_surname":
             MessageLookupByLibrary.simpleMessage("Příjmení"),
-        "user_details_screen_plan_active_from_date": m48,
-        "user_details_screen_plan_active_from_to_date": m49,
-        "user_selection_dialog_measurement_in_hospital": m50
+        "user_details_screen_plan_active_from_date": m50,
+        "user_details_screen_plan_active_from_to_date": m51,
+        "user_selection_dialog_measurement_in_hospital": m52,
+        "watch_setup_explanation": MessageLookupByLibrary.simpleMessage(
+            "Pro správnou funkčnost přenosu dat z hodinek je nutné udělit aplikaci následující oprávnění:"),
+        "watch_setup_menu_title": MessageLookupByLibrary.simpleMessage(
+            "Nastavit přenos dat z hodinek"),
+        "watch_setup_screen_title":
+            MessageLookupByLibrary.simpleMessage("Nastavení hodinek"),
+        "watch_setup_turn_on_devices": MessageLookupByLibrary.simpleMessage(
+            "Pro aktivaci přenosu dat musí být přiřazené zařízení zapnuté a v dosahu telefonu."),
+        "watch_synchronization_toggle_label":
+            MessageLookupByLibrary.simpleMessage(
+                "Aktivovat periodický přenos dat")
       };
 }

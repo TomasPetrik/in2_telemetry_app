@@ -608,6 +608,16 @@ class I10n {
     );
   }
 
+  /// `Nastavit synchronizaci hodinek`
+  String get configuration_screen_setup_watch {
+    return Intl.message(
+      'Nastavit synchronizaci hodinek',
+      name: 'configuration_screen_setup_watch',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Nastavení`
   String get configuration_screen_settings {
     return Intl.message(
@@ -2483,6 +2493,91 @@ class I10n {
       name: 'overall_health_values',
       desc: 'Overall health values',
       args: [overallHealthValue],
+    );
+  }
+
+  /// `Nastavit přenos dat z hodinek`
+  String get watch_setup_menu_title {
+    return Intl.message(
+      'Nastavit přenos dat z hodinek',
+      name: 'watch_setup_menu_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nastavení hodinek`
+  String get watch_setup_screen_title {
+    return Intl.message(
+      'Nastavení hodinek',
+      name: 'watch_setup_screen_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pro správnou funkčnost přenosu dat z hodinek je nutné udělit aplikaci následující oprávnění:`
+  String get watch_setup_explanation {
+    return Intl.message(
+      'Pro správnou funkčnost přenosu dat z hodinek je nutné udělit aplikaci následující oprávnění:',
+      name: 'watch_setup_explanation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{permission, select, notification{Odesílání oznámení} bluetoothConnect{Připojování k Bluetooth zařízením} ignoreBatteryOptimizations{Běh aplikace na pozadí} other{ }}`
+  String permission_names(Object permission) {
+    return Intl.select(
+      permission,
+      {
+        'notification': 'Odesílání oznámení',
+        'bluetoothConnect': 'Připojování k Bluetooth zařízením',
+        'ignoreBatteryOptimizations': 'Běh aplikace na pozadí',
+        'other': ' ',
+      },
+      name: 'permission_names',
+      desc: 'Permission names',
+      args: [permission],
+    );
+  }
+
+  /// `{permission, select, notification{Oprávnění k odesílání oznámení je nutné pro průběžnou komunikaci aplikace s hodinkami.} bluetoothConnect{Oprávnění k připojování k Bluetooth zařízením je nutné pro přenos měření z hodinek.} ignoreBatteryOptimizations{Oprávnění běžet na pozadí nám pomáhá zajistit, aby přenos dat správně pracoval, i když aplikace není spuštěná.} other{ }}`
+  String permission_explanations(Object permission) {
+    return Intl.select(
+      permission,
+      {
+        'notification':
+            'Oprávnění k odesílání oznámení je nutné pro průběžnou komunikaci aplikace s hodinkami.',
+        'bluetoothConnect':
+            'Oprávnění k připojování k Bluetooth zařízením je nutné pro přenos měření z hodinek.',
+        'ignoreBatteryOptimizations':
+            'Oprávnění běžet na pozadí nám pomáhá zajistit, aby přenos dat správně pracoval, i když aplikace není spuštěná.',
+        'other': ' ',
+      },
+      name: 'permission_explanations',
+      desc: 'Permission explanations',
+      args: [permission],
+    );
+  }
+
+  /// `Pro aktivaci přenosu dat musí být přiřazené zařízení zapnuté a v dosahu telefonu.`
+  String get watch_setup_turn_on_devices {
+    return Intl.message(
+      'Pro aktivaci přenosu dat musí být přiřazené zařízení zapnuté a v dosahu telefonu.',
+      name: 'watch_setup_turn_on_devices',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aktivovat periodický přenos dat`
+  String get watch_synchronization_toggle_label {
+    return Intl.message(
+      'Aktivovat periodický přenos dat',
+      name: 'watch_synchronization_toggle_label',
+      desc: '',
+      args: [],
     );
   }
 }

@@ -20,6 +20,7 @@ import 'package:scalesoft_app/ui/routers/routes/hospital_detail_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/licenses_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/manual_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/notification_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/setup_watch_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_detail_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_colors_light.dart';
@@ -180,6 +181,17 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                         style: ScaleTextStyles.textAccent.apply(
                           color: Theme.of(context).colorScheme.onSecondary,
                         ),
+                      ),
+                      Gaps.gap24,
+                      SettingsItem(
+                        label: localization.configuration_screen_setup_watch,
+                        iconWidget: SvgPicture.asset(
+                          'assets/icons/icon_watch_alt.svg',
+                          color: Theme.of(context).colorScheme.onSecondary,
+                        ),
+                        onTap: () {
+                          GoRouter.of(context).pushNamed(SetupWatchRoute.name);
+                        },
                       ),
                       Gaps.gap24,
                       SettingsItem(

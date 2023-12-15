@@ -131,6 +131,7 @@
     "tabs_more": "Více",
     "configuration_screen_logged_accounts": "Přihlášené účty",
     "configuration_screen_add_account": "Přidat účet",
+    "configuration_screen_setup_watch": "Nastavit synchronizaci hodinek",
     "configuration_screen_settings": "Nastavení",
     "configuration_screen_notification_label": "Notifikace",
     "configuration_screen_notification_sublabel": "Dle plánu měření",
@@ -617,5 +618,24 @@
         "placeholders": {
             "overallHealthValue": {}
         }
-    }
+    },
+    "watch_setup_menu_title": "Nastavit přenos dat z hodinek",
+    "watch_setup_screen_title": "Nastavení hodinek",
+    "watch_setup_explanation": "Pro správnou funkčnost přenosu dat z hodinek je nutné udělit aplikaci následující oprávnění:",
+    "permission_names": "{permission, select, notification{Odesílání oznámení} bluetoothConnect{Připojování k Bluetooth zařízením} ignoreBatteryOptimizations{Běh aplikace na pozadí} other{ }}",
+    "@permission_names": {
+        "description": "Permission names",
+        "placeholders": {
+            "permission": {}
+        }
+    },
+    "permission_explanations": "{permission, select, notification{Oprávnění k odesílání oznámení je nutné pro průběžnou komunikaci aplikace s hodinkami.} bluetoothConnect{Oprávnění k připojování k Bluetooth zařízením je nutné pro přenos měření z hodinek.} ignoreBatteryOptimizations{Oprávnění běžet na pozadí nám pomáhá zajistit, aby přenos dat správně pracoval, i když aplikace není spuštěná.} other{ }}",
+    "@permission_explanations": {
+        "description": "Permission explanations",
+        "placeholders": {
+            "permission": {}
+        }
+    },
+    "watch_setup_turn_on_devices": "Pro aktivaci přenosu dat musí být přiřazené zařízení zapnuté a v dosahu telefonu.",
+    "watch_synchronization_toggle_label": "Aktivovat periodický přenos dat"
 }

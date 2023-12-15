@@ -24,6 +24,7 @@ import 'package:scalesoft_app/ui/routers/routes/device_search_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/register_device_success_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_history_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/setup_watch_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_added_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_detail_route.dart';
 import 'package:scalesoft_app/ui/screens/home_screen.dart';
@@ -70,6 +71,7 @@ class AppRouter {
                     UserDetailRoute(navigator: navTabBar).route,
                     HospitalDetailRoute(navigator: navTabBar).route,
                     CarePlanDetailRoute(navigator: navTabBar).route,
+                    SetupWatchRoute(navigator: navTabBar).route,
                   ],
                 ).route,
               ],
