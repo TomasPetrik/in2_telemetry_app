@@ -230,7 +230,10 @@ Future<_i1.GetIt> init(
     gh<_i38.SyncService>(),
   ));
   gh.singleton<_i41.BackgroundMeasurementManager>(
-      _i41.BackgroundMeasurementManager(gh<_i38.SyncService>()));
+      _i41.BackgroundMeasurementManager(
+    gh<_i38.SyncService>(),
+    gh<_i3.AccountDbProvider>(),
+  ));
   gh.factory<_i42.CalendarFulfillmentServiceBloc>(
       () => _i42.CalendarFulfillmentServiceBloc(
             gh<_i3.AccountDbProvider>(),

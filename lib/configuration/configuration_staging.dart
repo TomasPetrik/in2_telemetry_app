@@ -40,15 +40,15 @@ class StagingConfiguration extends BaseConfiguration {
       enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate],
     ),
     const Hospital(
-        id: 3,
-        title: '[Test] Krajská nemocnice T. Bati',
-        iconPath: 'assets/icons/icon_hospital_kntb.svg',
-        authData: AuthData(
-          baseUrl: 'https://e-health-test.bnzlin.cz/api-mobile/v1',
-          authUrl: 'https://e-health-test-auth.bnzlin.cz/connect/authorize',
-          tokenUrl: 'https://e-health-test-auth.bnzlin.cz/connect/token',
-        ),
-        enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate],
+      id: 3,
+      title: '[Test] Krajská nemocnice T. Bati',
+      iconPath: 'assets/icons/icon_hospital_kntb.svg',
+      authData: AuthData(
+        baseUrl: 'https://e-health-test.bnzlin.cz/api-mobile/v1',
+        authUrl: 'https://e-health-test-auth.bnzlin.cz/connect/authorize',
+        tokenUrl: 'https://e-health-test-auth.bnzlin.cz/connect/token',
+      ),
+      enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate],
     ),
     // TODO: Add URLs and uncomment #IN2-8308
     // const Hospital(
@@ -61,16 +61,20 @@ class StagingConfiguration extends BaseConfiguration {
     //     tokenUrl: '???',
     //   ),
     // ),
-    const Hospital(
+    Hospital(
       id: 4,
       title: '[Test] in2-win',
       iconPath: 'assets/icons/icon_hospital_user.svg',
-      authData: AuthData(
+      authData: const AuthData(
         baseUrl: 'https://in2-win.devscale.cz/api-mobile/v1',
         authUrl: 'https://in2-win-auth.devscale.cz/connect/authorize',
         tokenUrl: 'https://in2-win-auth.devscale.cz/connect/token',
       ),
-      enabledMeasurementTypes: MeasurementType.values,
+      enabledMeasurementTypes: MeasurementType.values
+          .where(
+            (x) => x != MeasurementType.battery,
+          )
+          .toList(),
     ),
     Hospital(
       id: 4,
@@ -83,8 +87,7 @@ class StagingConfiguration extends BaseConfiguration {
       ),
       enabledMeasurementTypes: MeasurementType.values
           .where(
-            (x) => ![MeasurementType.globalPosition, MeasurementType.battery]
-                .any((y) => y == x),
+            (x) => ![MeasurementType.globalPosition, MeasurementType.battery].any((y) => y == x),
           )
           .toList(),
     ),

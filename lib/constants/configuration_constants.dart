@@ -150,7 +150,7 @@ class ConfigurationConstants {
 
   /* Supported Devices */
 
-  static const List<Device> supportedDevices = [
+  static final List<Device> supportedDevices = [
     Device(
       localId: 0,
       modelName: 'BM77',
