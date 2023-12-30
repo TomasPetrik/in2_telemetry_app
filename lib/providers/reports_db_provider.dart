@@ -6,11 +6,10 @@ import 'package:scalesoft_app/providers/box_provider.dart';
 
 @singleton
 class ReportsDbProvider extends BoxProvider<Report> {
-
   @override
   @PostConstruct(preResolve: true)
   Future<void> init() async => super.init();
-  
+
   @override
   final String boxName = 'reportsBox';
 
@@ -26,6 +25,10 @@ class ReportsDbProvider extends BoxProvider<Report> {
       return box.values.toList();
     }
     return [];
+  }
+
+  Future<int> removeAll() async {
+    return box.clear();
   }
 
   List<Report> getPerUser(String userId) {

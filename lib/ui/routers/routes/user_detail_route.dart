@@ -2,8 +2,8 @@ import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
+import 'package:scalesoft_app/ui/screens/blank_screen.dart';
 import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
-import 'package:scalesoft_app/ui/screens/not_found_screen.dart';
 import 'package:scalesoft_app/ui/screens/user_details_screen.dart';
 
 class UserDetailRoute extends ApplicationRoute with PageBuilderMixin {
@@ -32,7 +32,7 @@ class UserDetailRoute extends ApplicationRoute with PageBuilderMixin {
               userAccount: userAccount,
             );
           } else {
-            return const NotFoundScreen();
+            return const BlankScreen();
           }
         },
       ),

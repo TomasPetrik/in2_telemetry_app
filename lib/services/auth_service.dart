@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:injectable/injectable.dart';
 import 'package:oauth2/oauth2.dart';
 import 'package:uni_links/uni_links.dart';
@@ -9,13 +11,15 @@ class AuthService {
     String clientId,
     String clientSecret,
     String authorizationEndpoint,
-    String tokenEndpoint,
-  ) {
+    String tokenEndpoint, [
+    String? codeVerifier,
+  ]) {
     final grant = AuthorizationCodeGrant(
       clientId,
       Uri.parse(authorizationEndpoint),
       Uri.parse(tokenEndpoint),
       secret: clientSecret,
+      codeVerifier: codeVerifier,
     );
 
     return grant;
@@ -65,4 +69,12 @@ class AuthService {
       return null;
     }
   }
+
+  static const String _charset =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+
+  String createCodeVerifier() => List.generate(
+        128,
+        (i) => _charset[Random.secure().nextInt(_charset.length)],
+      ).join();
 }

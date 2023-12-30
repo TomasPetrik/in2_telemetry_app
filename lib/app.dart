@@ -25,6 +25,7 @@ import 'package:scalesoft_app/services/sync_service.dart';
 import 'package:scalesoft_app/ui/managers/content_manager.dart';
 import 'package:scalesoft_app/ui/routers/app_router.dart';
 import 'package:scalesoft_app/ui/routers/routes/appearance_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/blank_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/configuration_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/no_user_route.dart';
@@ -133,6 +134,7 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
               '/${ConfigurationRoute.name}/${AppearanceRoute.name}',
           onDaylightAppearanceChanged: (originalLocation) => originalLocation,
           activeMode: (key) => '/${DashboardRoute.name}',
+          tryCompleteAuth: (uri) => '/${BlankRoute.name}',
         );
 
         if (path != null) {

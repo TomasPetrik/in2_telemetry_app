@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 
 abstract class ContentEvent extends Equatable {
@@ -10,8 +9,7 @@ abstract class ContentEvent extends Equatable {
 }
 
 class CheckLastLoggedUserContentEvent extends ContentEvent {
-  final GoRouter goRouter;
-  const CheckLastLoggedUserContentEvent(this.goRouter);
+  const CheckLastLoggedUserContentEvent();
 
   @override
   List<Object?> get props => [];

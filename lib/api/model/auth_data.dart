@@ -14,6 +14,7 @@ class AuthData with _$AuthData {
     @HiveField(0) required String baseUrl,
     @HiveField(1) required String authUrl,
     @HiveField(2) required String tokenUrl,
+    @HiveField(3) String? codeVerifier,
   }) = _AuthData;
 
   factory AuthData.fromJson(Map<String, dynamic> json) =>

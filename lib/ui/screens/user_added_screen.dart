@@ -1,12 +1,7 @@
-import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
-import 'package:scalesoft_app/bloc/notifications/notifications_bloc.dart';
-import 'package:scalesoft_app/bloc/notifications/notifications_event.dart';
-import 'package:scalesoft_app/bloc/notifications/notifications_state.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/model/user_account.dart';
@@ -28,8 +23,6 @@ class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
 
   @override
   Widget build(BuildContext context) {
-    final notificationsBloc = getIt<NotificationsBloc>()
-      ..add(const NotificationsEvent.initSettings());
     return Scaffold(
       body: Stack(
         children: [
@@ -72,69 +65,12 @@ class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
                   ),
                 ),
                 Gaps.gap24,
-                BlocConsumer<NotificationsBloc, NotificationsState>(
-                  bloc: notificationsBloc,
-                  listener: (context, state) {
-                    if (state == const NotificationsState.denied()) {
-                      showNotificationsSettings(context: context)
-                          .then((openNotificationSettings) async {
-                        if (openNotificationSettings == true) {
-                          await AppSettings.openAppSettings(
-                            type: AppSettingsType.notification,
-                          );
-                          notificationsBloc.add(
-                            const NotificationsEvent.enableNotifications(
-                              true,
-                            ),
-                          );
-                        } else {
-                          getIt<ContentBloc>().add(
-                            SwitchUserContentEvent(userAccount: userAccount),
-                          );
-                        }
-                      });
-                    } else if (state == const NotificationsState.granted()) {
-                      getIt<ContentBloc>().add(
-                        SwitchUserContentEvent(userAccount: userAccount),
-                      );
-                    }
-                  },
-                  builder: (context, state) {
-                    final appSettings = state.whenOrNull(
-                      loaded: (_, appSettings, __) => appSettings,
-                    );
-                    final timeStamp = state.whenOrNull(
-                          loaded: (timeStamp, _, __) => timeStamp,
-                        ) ??
-                        0;
-
-                    final notificationsGranted = state.whenOrNull(
-                          loaded: (timeStamp, _, notificationsGranted) =>
-                              notificationsGranted == true,
-                        ) ??
-                        false;
-
-                    if (appSettings == null) {
-                      return const SizedBox.shrink();
-                    }
-
-                    return HighlightedElevatedButton(
-                      key: ValueKey(timeStamp),
-                      label: localization
-                          .onboarding_account_added_screen_continue_to_app,
-                      onPressed: () async {
-                        if (!notificationsGranted) {
-                          notificationsBloc.add(
-                            const NotificationsEvent.enableNotifications(
-                              true,
-                            ),
-                          );
-                        } else {
-                          getIt<ContentBloc>().add(
-                            SwitchUserContentEvent(userAccount: userAccount),
-                          );
-                        }
-                      },
+                HighlightedElevatedButton(
+                  label: localization
+                      .onboarding_account_added_screen_continue_to_app,
+                  onPressed: () async {
+                    getIt<ContentBloc>().add(
+                      SwitchUserContentEvent(userAccount: userAccount),
                     );
                   },
                 ),
