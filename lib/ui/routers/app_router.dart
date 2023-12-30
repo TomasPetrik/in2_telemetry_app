@@ -14,7 +14,6 @@ import 'package:scalesoft_app/ui/routers/routes/future_measurements_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/hospital_detail_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/license_detail_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/licenses_route.dart';
-import 'package:scalesoft_app/ui/routers/routes/logs_detail_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/manual_measurement_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/manual_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/metering_first_route.dart';
@@ -94,7 +93,6 @@ class AppRouter {
             ManualRoute(navigator: navAuthManager).route,
             LicensesRoute(navigator: navAuthManager).route,
             LicenseDetailRoute(navigator: navAuthManager).route,
-            LogsDetailRoute(navigator: navAuthManager).route,
           ],
         ),
       ],
