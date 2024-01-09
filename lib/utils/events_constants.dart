@@ -27,6 +27,7 @@ class EventsConstants {
 
   static const eventUserOpenAuthReqInBrowser =
       'EVENT_USER_OPEN_AUTH_REQ_IN_BROWSER';
+  static const eventUserAuthByColdStart = 'EVENT_USER_OPEN_AUTH_BY_COLD_START';
 
   static const eventUserAuthenticating = 'EVENT_USER_AUTHENTICATICATING';
   static const eventUserUnauthenticated = 'EVENT_USER_UNAUTHENTICATED';

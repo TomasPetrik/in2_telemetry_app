@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
-import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
@@ -33,7 +32,6 @@ class AuthManager extends StatelessWidget with BottomSheetMixin {
               useRootNavigator: true,
               builder: (context) => const LoadingIndicator(),
             );
-            authBloc.add(const VerifyUser());
           },
           userVerified: (userAccount) => {
             Navigator.of(context).pop(),
@@ -45,8 +43,9 @@ class AuthManager extends StatelessWidget with BottomSheetMixin {
             Navigator.of(context).pop();
             showServerError(context);
           },
-          unauthenticated: () {
-            showServerError(context);
+          unauthenticated: () async {
+            await showServerError(context);
+            userContentBloc.add(const CheckLastLoggedUserContentEvent());
           },
           cancelled: () {},
         );

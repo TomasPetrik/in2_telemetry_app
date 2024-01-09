@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 import 'package:oauth2/oauth2.dart';
+import 'package:scalesoft_app/api/model/auth_data.dart';
 import 'package:scalesoft_app/api/model/auth_token.dart';
 import 'package:scalesoft_app/api/model/report/report.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
@@ -13,6 +14,7 @@ import 'package:scalesoft_app/config.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/parsers/jwt_parser.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
+import 'package:scalesoft_app/providers/hospital_db_provider.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/repositories/account_repository.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -31,6 +33,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AccountRepository _accountRepository;
   final AccountDbProvider _accountDbProvider;
   final PendingResultsDbProvider _pendingResultsDbProvider;
+  final HospitalDbProvider _hospitalDbProvider;
   final SyncService _syncService;
   final Session _session;
   AuthorizationCodeGrant? _grant;
@@ -44,15 +47,60 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     this._session,
     this._accountDbProvider,
     this._pendingResultsDbProvider,
+    this._hospitalDbProvider,
     @Named(ConfigurationConstants.privateDioName) this._dio,
     this._syncService,
   ) : super(const AuthState.unauthenticated()) {
+    on<AuthFromColdStart>(_onAuthFromColdStart);
     on<Authenticate>(_onAuthenticate);
     on<HandleAuthResponse>(_onHandleAuthResponse);
     on<VerifyUser>(_verifyUser);
     on<LogoutUser>(_removeUser);
     on<CancelAuth>(_cancelAuth);
     on<ErrorLoadDataEvent>(_onErrorLoadDataEvent);
+  }
+
+  Future<void> _onAuthFromColdStart(
+    AuthFromColdStart event,
+    Emitter<AuthState> emit,
+  ) async {
+    final hospital = _hospitalDbProvider.read();
+    if (hospital == null) {
+      return;
+    }
+
+    _grant = _authService.getAuthGrant(
+      Config.value.clientId,
+      Config.value.clientSecret,
+      hospital.authData.authUrl,
+      hospital.authData.tokenUrl,
+      hospital.authData.codeVerifier,
+    );
+
+    _session.hospital = hospital.copyWith(
+      authData: AuthData(
+        baseUrl: hospital.authData.baseUrl,
+        authUrl: hospital.authData.authUrl,
+        tokenUrl: hospital.authData.tokenUrl,
+      ),
+    );
+
+    _grant!.getAuthorizationUrl(
+      Uri.parse(Config.value.redirectUrl),
+      scopes: Config.value.scopes,
+    );
+
+    _authClient = await _grant!.handleAuthorizationResponse(
+      event.authUri.queryParameters,
+    );
+
+    if (_authClient != null) {
+      _reportsService.trackEvent(
+        severity: Severity.info,
+        message: EventsConstants.eventUserAuthByColdStart,
+      );
+      add(const HandleAuthResponse());
+    }
   }
 
   Future<void> _onAuthenticate(
@@ -62,12 +110,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(const AuthState.authenticating());
 
+      final codeVerifier = _authService.createCodeVerifier();
+
       _grant = _authService.getAuthGrant(
         Config.value.clientId,
         Config.value.clientSecret,
         event.hospital.authData.authUrl,
         event.hospital.authData.tokenUrl,
+        codeVerifier,
       );
+
+      final hospital = event.hospital.copyWith(
+        authData: event.hospital.authData.copyWith(codeVerifier: codeVerifier),
+      );
+      await _hospitalDbProvider.write(hospital);
 
       _session.hospital = event.hospital;
 
@@ -123,6 +179,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         message: EventsConstants.eventUserAuthenticated,
       );
       emit(AuthState.authenticated(credentials: _authClient!.credentials));
+      add(const VerifyUser());
     } on Exception {
       emit(const AuthState.unauthenticated());
     }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class NotFoundScreen extends StatelessWidget {
-  const NotFoundScreen({super.key});
+class BlankScreen extends StatelessWidget {
+  const BlankScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

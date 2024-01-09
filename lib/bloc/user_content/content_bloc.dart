@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/model/report/report.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
@@ -21,6 +21,7 @@ import 'package:scalesoft_app/services/sync_service.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/events_constants.dart';
+import 'package:uni_links/uni_links.dart';
 
 @singleton
 class ContentBloc extends Bloc<ContentEvent, ContentState> {
@@ -29,8 +30,8 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
   final Session _session;
   final CarePlanBloc _carePlanBloc;
   final ReportService _reportsService;
+  bool _initialUriIsHandled = false;
   Timer? _watchDogTimer;
-  GoRouter? goRouter;
 
   ContentBloc(
     this._accountDbProvider,
@@ -76,14 +77,34 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     });
   }
 
+  Future<Uri?> _getInitialUri() async {
+    if (!_initialUriIsHandled) {
+      _initialUriIsHandled = true;
+      try {
+        final uri = await getInitialUri();
+        return uri;
+      } on PlatformException {
+        return null;
+      } on FormatException catch (_) {
+        return null;
+      }
+    }
+    return null;
+  }
+
   Future<void> _checkLastLoggedUserContentEvent(
     CheckLastLoggedUserContentEvent event,
     Emitter<ContentState> emit,
   ) async {
-    goRouter = event.goRouter;
     initBackgroundFetch();
 
     await _reportsService.removeOldLogs();
+
+    final initialUri = await _getInitialUri();
+    if (initialUri != null) {
+      emit(ContentState.tryCompleteAuth(initialUri));
+      return;
+    }
 
     final userAccount = _accountDbProvider.getLast();
     final isMultiUser = _sessionDbProvider.isMultiUser();
@@ -108,8 +129,10 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
         message: EventsConstants.eventUserContentDefaultAutoSet,
       );
 
-      //Do all sync always when start app
-      getIt<SyncBloc>().add(const SyncEvent.syncAll());
+      //Do all sync always when start app but not from cold start
+      if (initialUri == null) {
+        getIt<SyncBloc>().add(const SyncEvent.syncAll());
+      }
 
       //If is logged-in atleast one user , then try periodically fetching data for update
       BackgroundFetch.start().then((int status) {
