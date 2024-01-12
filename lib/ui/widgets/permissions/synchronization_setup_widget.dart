@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:scalesoft_app/cubit/loader/loader_cubit.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/permissions/permission_grant_widget.dart';
-import 'package:scalesoft_app/ui/widgets/scale_switch.dart';
 
 class PermissionState {
   Permission permission;
@@ -20,8 +21,9 @@ class PermissionState {
 
 class SynchronizationSetupWidget extends StatefulWidget {
   final int androidSdk;
+  final LoaderCubit loaderCubit;
 
-  const SynchronizationSetupWidget({super.key, required this.androidSdk});
+  const SynchronizationSetupWidget({super.key, required this.androidSdk, required this.loaderCubit});
 
   @override
   State<SynchronizationSetupWidget> createState() => _SynchronizationSetupWidgetState();
@@ -30,6 +32,7 @@ class SynchronizationSetupWidget extends StatefulWidget {
 class _SynchronizationSetupWidgetState extends State<SynchronizationSetupWidget> {
   late List<PermissionState> permissionStatusList;
   bool toggleValue = false;
+  late LoaderCubit loaderCubit = widget.loaderCubit;
 
   List<PermissionState> createPermissionStatusList() {
     return [
@@ -54,6 +57,16 @@ class _SynchronizationSetupWidgetState extends State<SynchronizationSetupWidget>
   void initState() {
     super.initState();
     permissionStatusList = createPermissionStatusList();
+  }
+
+  Future<void> toggleSynchronization(bool value) async {
+    loaderCubit.loading();
+    loaderCubit.loaded();
+  }
+
+  void updateBackgroundSynchronizationState() async {
+    loaderCubit.loading();
+    loaderCubit.loaded();
   }
 
   @override

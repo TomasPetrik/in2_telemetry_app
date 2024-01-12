@@ -5,7 +5,7 @@ import 'package:scalesoft_app/ui/screens/setup_watch_screen.dart';
 
 class SetupWatchRoute extends ApplicationRoute with PageBuilderMixin {
   static const name = 'setup-watch';
-  static const path = 'setup-watch';
+  static const path = '/setup-watch';
 
   SetupWatchRoute({
     required super.navigator,
@@ -22,7 +22,7 @@ class SetupWatchRoute extends ApplicationRoute with PageBuilderMixin {
       pageBuilder: pageBuilder(
         withTransition: false,
         builder: (state) {
-          return const SetupWatchScreen();
+          return SetupWatchScreen();
         },
       ),
     );

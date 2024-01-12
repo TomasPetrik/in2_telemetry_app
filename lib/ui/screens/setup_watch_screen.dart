@@ -1,25 +1,27 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:scalesoft_app/cubit/loader/loader_cubit.dart';
+import 'package:scalesoft_app/cubit/loader/loader_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blurred_scale_app_bart.dart';
+import 'package:scalesoft_app/ui/widgets/loading_indicator.dart';
 import 'package:scalesoft_app/ui/widgets/permissions/synchronization_setup_widget.dart';
 
-class SetupWatchScreen extends StatefulWidget {
-  const SetupWatchScreen({super.key});
+class SetupWatchScreen extends StatelessWidget {
+  final DeviceInfoPlugin _deviceInfoPlugin = DeviceInfoPlugin();
+  final loaderCubit = getIt<LoaderCubit>()..loading();
 
-  @override
-  State<SetupWatchScreen> createState() => _SetupWatchScreenState();
-}
+  SetupWatchScreen({Key? key}) : super(key: key);
 
-class _SetupWatchScreenState extends State<SetupWatchScreen> {
-  late DeviceInfoPlugin _deviceInfoPlugin;
-
-  @override
-  void initState() {
-    super.initState();
-    _deviceInfoPlugin = DeviceInfoPlugin();
+  Future<AndroidDeviceInfo> getDeviceInfo() async {
+    loaderCubit.loading();
+    await Future.delayed(const Duration(seconds: 1));
+    final androidInfo = await _deviceInfoPlugin.androidInfo;
+    loaderCubit.loaded();
+    return androidInfo;
   }
 
   @override
@@ -39,13 +41,16 @@ class _SetupWatchScreenState extends State<SetupWatchScreen> {
                       ),
                       Gaps.gap16,
                       FutureBuilder<AndroidDeviceInfo>(
-                        future: _deviceInfoPlugin.androidInfo,
+                        future: getDeviceInfo(),
                         builder: (BuildContext context, AsyncSnapshot<AndroidDeviceInfo> snapshot) {
                           if (!snapshot.hasData) {
-                            return const CircularProgressIndicator();
+                            return const SizedBox.shrink();
                           }
                           final int androidSdk = snapshot.data!.version.sdkInt;
-                          return SynchronizationSetupWidget(androidSdk: androidSdk);
+                          return SynchronizationSetupWidget(
+                            androidSdk: androidSdk,
+                            loaderCubit: loaderCubit,
+                          );
                         },
                       ),
                     ],
@@ -62,6 +67,26 @@ class _SetupWatchScreenState extends State<SetupWatchScreen> {
               title: localization.watch_setup_screen_title,
               onBackTap: () {},
             ),
+          ),
+          BlocBuilder<LoaderCubit, LoaderState>(
+            bloc: loaderCubit,
+            builder: ((context, state) {
+              final widget = state.when(
+                loaded: SizedBox.shrink,
+                loading: () {
+                  return Stack(
+                    children: [
+                      SizedBox.expand(
+                        child: ColoredBox(color: Colors.black.withOpacity(0.4)),
+                      ),
+                      const Align(alignment: Alignment.center, child: LoadingIndicator()),
+                    ],
+                  );
+                },
+              );
+
+              return widget;
+            }),
           ),
         ],
       ),
