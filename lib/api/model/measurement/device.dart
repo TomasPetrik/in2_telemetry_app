@@ -30,7 +30,7 @@ class Device with _$Device {
     @JsonKey(includeToJson: false) @HiveField(17) bool? isLendedDevice,
     @JsonKey(includeToJson: false) @HiveField(18) String? aboutUrl,
     @HiveField(19) String? assignedIdentifier,
-    @JsonKey(includeToJson: false) @HiveField(20) String? bluetoothAddress,
+    @HiveField(20) String? bluetoothAddress,
     @JsonKey(includeToJson: false)
     @HiveField(21, defaultValue: MeasurementFlow.foreground)
     @Default(MeasurementFlow.foreground)
