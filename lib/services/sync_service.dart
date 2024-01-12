@@ -175,8 +175,36 @@ class SyncService {
     );
 
     //1. Update assigned devices
-    userAccount.assignedDevices = userInfo.assignedDevices;
+    userAccount.assignedDevices = parseAssignedDevices(userInfo.assignedDevices);
     userAccount.user = userInfo.currentUser;
+  }
+
+  List<Device>? parseAssignedDevices(List<Device>? devices) {
+    if(devices == null){
+      return null;
+    }
+
+    final List<Device> result =[];
+
+    for (final device in devices) {
+      final devicePrototype = ConfigurationConstants.supportedDevices.firstWhereOrNull(
+        (suppDev) => suppDev.modelName == device.modelName && suppDev.deviceManufacturer == device.deviceManufacturer,
+      );
+
+      if (devicePrototype == null) continue;
+
+
+      result.add(
+        devicePrototype.copyWith(
+          deviceIdentifier: device.deviceIdentifier,
+          assignedIdentifier: device.assignedIdentifier,
+          bluetoothAddress: device.bluetoothAddress,
+          isLendedDevice: true,
+        ),
+      );
+    }
+
+    return result;
   }
 
   Future<void> loadFulFillmentEvaluation(final UserAccount userAccount) async {
