@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:scalesoft_app/cubit/background_measurement/background_measurement_cubit.dart';
+import 'package:scalesoft_app/cubit/background_measurement/background_measurement_state.dart';
 import 'package:scalesoft_app/cubit/loader/loader_cubit.dart';
+import 'package:scalesoft_app/managers/background_measurement_manager.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/permissions/permission_grant_widget.dart';
@@ -31,8 +34,10 @@ class SynchronizationSetupWidget extends StatefulWidget {
 
 class _SynchronizationSetupWidgetState extends State<SynchronizationSetupWidget> {
   late List<PermissionState> permissionStatusList;
-  bool toggleValue = false;
   late LoaderCubit loaderCubit = widget.loaderCubit;
+
+  final BackgroundMeasurementCubit backgroundMeasurementCubit = getIt<BackgroundMeasurementCubit>();
+  final BackgroundMeasurementManager backgroundMeasurementManager = getIt<BackgroundMeasurementManager>();
 
   List<PermissionState> createPermissionStatusList() {
     return [
@@ -61,11 +66,19 @@ class _SynchronizationSetupWidgetState extends State<SynchronizationSetupWidget>
 
   Future<void> toggleSynchronization(bool value) async {
     loaderCubit.loading();
+
+    value
+        ? await backgroundMeasurementManager.activateBackgroundSynchronization()
+        : await backgroundMeasurementManager.deactivateBackgroundSynchronization();
+
+    await backgroundMeasurementManager.updateBackgroundSynchronizationState();
+
     loaderCubit.loaded();
   }
 
   void updateBackgroundSynchronizationState() async {
     loaderCubit.loading();
+    await backgroundMeasurementManager.updateBackgroundSynchronizationState();
     loaderCubit.loaded();
   }
 

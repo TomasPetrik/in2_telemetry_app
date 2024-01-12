@@ -1,9 +1,11 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/api/model/measurement/source_device_info.dart';
+import 'package:scalesoft_app/cubit/background_measurement/background_measurement_cubit.dart';
 import 'package:scalesoft_app/managers/ble_e8x_manager.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
@@ -15,18 +17,42 @@ import 'package:scalesoft_app/services/sync_service.dart';
 class BackgroundMeasurementManager {
   final SyncService _syncService;
   final AccountDbProvider _accountDbProvider;
+  final BackgroundMeasurementCubit _backgroundMeasurementCubit;
 
   BackgroundMeasurementManager(this._syncService, this._accountDbProvider);
+  final List<String> _associatedDevices = [];
 
-  Future<bool> isBackgroundSynchronizationSetup() async {
-    final assignedDevices = _getUsersWithWatches().map((x) => x.value.bluetoothAddress!);
+  BackgroundMeasurementManager(this._syncService, this._accountDbProvider, this._backgroundMeasurementCubit);
+
+  Future<void> updateBackgroundSynchronizationState() async {
+    final assignedDevices = _getAssignedDevices();
     final associatedDevices = (await getAssociatedMacAddresses()).toSet();
 
-    return associatedDevices.containsAll(assignedDevices);
+    debugPrint("assigned devices count: ${assignedDevices.length}");
+    debugPrint("associated devices count: ${associatedDevices.length}");
+
+    if(associatedDevices.isEmpty || assignedDevices.isEmpty){
+      _backgroundMeasurementCubit.disabled();
+    } else if(associatedDevices.containsAll(assignedDevices)){
+      _backgroundMeasurementCubit.enabled();
+    } else {
+      _backgroundMeasurementCubit.partial();
+    }
+  }
+
+  Future<void> activateBackgroundSynchronization() async{
+    final assignedDevices = _getAssignedDevices();
+
+    associateDevices(assignedDevices);
+  }
+
+  Future<void> deactivateBackgroundSynchronization() async {
+    final associatedDevices = await getAssociatedMacAddresses();
+    disassociateDevices(associatedDevices);
   }
 
   Future<void> removeUnassignedDevices() async {
-    final assignedDevices = _getUsersWithWatches().map((x) => x.value.bluetoothAddress!).toList();
+    final assignedDevices = _getAssignedDevices().toList();
     final associatedDevices = (await getAssociatedMacAddresses()).toSet();
 
     final unassignedDevices = associatedDevices.whereNot(assignedDevices.contains);
@@ -45,14 +71,23 @@ class BackgroundMeasurementManager {
     return accountDevicePairs;
   }
 
-  Future<void> disassociateDevices(Iterable<String> macAddresses) async {
-    // TODO: Call native code, delete background service if no associated devices left?
+  Iterable<String> _getAssignedDevices(){
+    return _getUsersWithWatches().map((x) => x.value.bluetoothAddress!);
   }
 
-  /// Uses CompanionDeviceManager to associate a device with the specified [macAddress].
+  Future<void> disassociateDevices(Iterable<String> macAddresses) async {
+    await Future.delayed(const Duration(seconds: 1));
+    // TODO: Call native code, delete background service if no associated devices left?
+    _associatedDevices.clear();
+  }
+
+  /// Uses CompanionDeviceManager to associate devices with the specified [macAddresses].
   /// Reschedules (or creates) a background service that periodically calls [syncArmbandMeasurements]
-  Future<bool> associateDevice(String macAddress) async {
+  Future<bool> associateDevices(Iterable<String> macAddresses) async {
+    await Future.delayed(const Duration(seconds: 1));
     // TODO: Call native code, create background service
+
+    _associatedDevices.addAll(macAddresses);
 
     return true;
   }
@@ -82,8 +117,9 @@ class BackgroundMeasurementManager {
   }
 
   Future<List<String>> getAssociatedMacAddresses() async {
+    await Future.delayed(const Duration(seconds: 1));
     // TODO: Call native code, get associated devices.
-    return [];
+    return _associatedDevices;
   }
 
   Future<Iterable<Measurement>> _getMeasurementsFromDevice(
