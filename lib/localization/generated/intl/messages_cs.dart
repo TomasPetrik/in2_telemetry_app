@@ -236,9 +236,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m38(permission) => "${Intl.select(permission, {
             'notification':
-                'Oprávnění k odesílání oznámení je nutné pro průběžnou komunikaci aplikace s hodinkami.',
+                'Oprávnění odesílat oznámení je nutné pro průběžnou komunikaci aplikace s hodinkami.',
             'bluetoothConnect':
-                'Oprávnění k připojování k Bluetooth zařízením je nutné pro přenos měření z hodinek.',
+                'Oprávnění připojovat se k Bluetooth zařízením je nutné pro přenos měření z hodinek.',
             'ignoreBatteryOptimizations':
                 'Oprávnění běžet na pozadí nám pomáhá zajistit, aby přenos dat správně pracoval, i když aplikace není spuštěná.',
             'other': ' ',
