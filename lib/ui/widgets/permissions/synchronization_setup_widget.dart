@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -62,6 +63,7 @@ class _SynchronizationSetupWidgetState extends State<SynchronizationSetupWidget>
   void initState() {
     super.initState();
     permissionStatusList = createPermissionStatusList();
+    loaderCubit = widget.loaderCubit;
   }
 
   Future<void> toggleSynchronization(bool value) async {
@@ -113,26 +115,37 @@ class _SynchronizationSetupWidgetState extends State<SynchronizationSetupWidget>
                 .toList(),
           ),
           Gaps.gap16,
-          InkWell(
-            onTap: () {
-              if (areMandatoryPermissionsGranted) {
-                setState(() {
-                  toggleValue = !toggleValue;
-                });
-              }
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(localization.watch_synchronization_toggle_label),
-                ScaleSwitch(
-                  value: toggleValue,
-                  onChanged: areMandatoryPermissionsGranted
-                      ? (value) => setState(() => toggleValue = value)
-                      : null, // Disable the switch if permissions not granted
+          BlocBuilder<BackgroundMeasurementCubit, BackgroundMeasurementState>(
+            bloc: backgroundMeasurementCubit,
+            builder: ((context, state) {
+              final toggleState = state != BackgroundMeasurementState.disabled;
+
+              // TODO: Show a yellow warning icon that provides an explanation snackbar on tap.
+              final showWarning = state == BackgroundMeasurementState.partial;
+
+              final widget = InkWell(
+                onTap: () {
+                  if (areMandatoryPermissionsGranted) {
+                    toggleSynchronization(!toggleState);
+                  }
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(localization.watch_synchronization_toggle_label),
+                    CupertinoSwitch(
+                      trackColor: Theme.of(context).colorScheme.tertiary,
+                      activeColor: Theme.of(context).colorScheme.primary,
+                      thumbColor: Theme.of(context).colorScheme.background,
+                      onChanged: areMandatoryPermissionsGranted ? toggleSynchronization : null,
+                      value: toggleState,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              );
+
+              return widget;
+            }),
           ),
         ],
       ),
