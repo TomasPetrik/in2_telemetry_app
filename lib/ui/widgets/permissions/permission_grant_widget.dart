@@ -1,7 +1,6 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
@@ -42,57 +41,48 @@ class _PermissionGrantState extends State<PermissionGrantWidget> with BottomShee
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      // Workaround: PopScope does not work correctly with GoRouter. Pop manually.
-      // https://github.com/flutter/flutter/issues/138737
-      canPop: false,
-      onPopInvoked: (_) {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        GoRouter.of(context).pop();
-      },
-      child: InkWell(
-        onTap: () => requestPermission(context),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start, // Changed from MainAxisAlignment.spaceBetween
-          children: [
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              child: _permissionStatus == PermissionStatus.granted
-                  ? SvgPicture.asset(
-                      'assets/icons/icon_circle_check_big.svg',
-                      color: Theme.of(context).colorScheme.primary,
-                      height: 50,
-                      key: const Key("Check"),
-                    )
-                  : SvgPicture.asset(
-                      'assets/icons/icon_circle.svg',
-                      color: Theme.of(context).colorScheme.secondary,
-                      key: const Key("Circle"),
-                      height: 50,
-                    ),
+    return InkWell(
+      onTap: () => requestPermission(context),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start, // Changed from MainAxisAlignment.spaceBetween
+        children: [
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: _permissionStatus == PermissionStatus.granted
+                ? SvgPicture.asset(
+                    'assets/icons/icon_circle_check_big.svg',
+                    color: Theme.of(context).colorScheme.primary,
+                    height: 50,
+                    key: const Key("Check"),
+                  )
+                : SvgPicture.asset(
+                    'assets/icons/icon_circle.svg',
+                    color: Theme.of(context).colorScheme.secondary,
+                    key: const Key("Circle"),
+                    height: 50,
+                  ),
+          ),
+          Gaps.gap16,
+          Expanded(
+            // Replaced Flexible with Expanded
+            child: Text(
+              localization.permission_names(_permission),
+              softWrap: true,
+              style: Theme.of(context).textTheme.bodyLarge,
+              textAlign: TextAlign.left, // Added TextAlign.left
             ),
-            Gaps.gap16,
-            Expanded(
-              // Replaced Flexible with Expanded
-              child: Text(
-                localization.permission_names(_permission),
-                softWrap: true,
-                style: Theme.of(context).textTheme.bodyLarge,
-                textAlign: TextAlign.left, // Added TextAlign.left
-              ),
+          ),
+          IconButton(
+            icon: SvgPicture.asset(
+              'assets/icons/icon_circle_information.svg',
+              color: Theme.of(context).hintColor,
+              height: 30,
+              key: const Key("Check"),
             ),
-            IconButton(
-              icon: SvgPicture.asset(
-                'assets/icons/icon_circle_information.svg',
-                color: Theme.of(context).hintColor,
-                height: 30,
-                key: const Key("Check"),
-              ),
-              onPressed: showPermissionReason,
-            ),
-          ],
-        ),
+            onPressed: showPermissionReason,
+          ),
+        ],
       ),
     );
   }

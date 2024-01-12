@@ -62,6 +62,8 @@ class _SynchronizationSetupWidgetState extends State<SynchronizationSetupWidget>
       canPop: false,
       onPopInvoked: (_) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        // Workaround: PopScope does not work correctly with GoRouter. Pop manually.
+        // https://github.com/flutter/flutter/issues/138737
         GoRouter.of(context).pop();
       },
       child: Column(
