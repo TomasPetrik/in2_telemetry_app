@@ -22,7 +22,6 @@ class ScaleApp extends StatelessWidget {
     final themeMode =
         appSettings?.themeModeLocal.themeMode ?? buildConfig.themeMode;
     return MaterialApp.router(
-      restorationScopeId: 'app',
       title: 'Telemetry App',
       debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
