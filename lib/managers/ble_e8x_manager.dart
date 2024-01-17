@@ -315,7 +315,15 @@ class BleE8xManager {
           //int hrv = subData[11];
           int tempI = subData[13];
           int tempD = subData[14];
-          double temp = double.parse('$tempI.$tempD');
+
+          // The watches often send an incorrect temperature of 0.15 degrees celsius for unknown reasons. Ignore such values.
+          double? temp;
+          if (tempI == 0 && tempD == 15) {
+            temp = null;
+          } else {
+            temp = double.parse('$tempI.$tempD');
+          }
+
           // We only create one measurement instance with an arbitrarily chosen measurementType
           // - db only supports one measurement at any given instant.
           results.add(
