@@ -187,6 +187,7 @@ class BleE8xManager {
         final measurement = Measurement(
           measurementType: MeasurementType.battery,
           batteryPercentage: batteryState,
+          measurementDateTime: DateTime.now().toUtc(),
         );
         _measurementCompleter.complete([measurement]);
       }

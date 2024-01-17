@@ -126,6 +126,6 @@ class E8xHelper {
       asUtc.second,
     );
 
-    return measurementTimeAsLocal;
+    return measurementTimeAsLocal.toUtc();
   }
 }
