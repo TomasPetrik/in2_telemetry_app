@@ -2580,6 +2580,16 @@ class I10n {
       args: [],
     );
   }
+
+  /// `Přenos dat z hodinek se nezdařil. Je aktivní bluetooth telefonu, jsou hodinky zapnuté a v dosahu?`
+  String get watch_synchronization_failed {
+    return Intl.message(
+      'Přenos dat z hodinek se nezdařil. Je aktivní bluetooth telefonu, jsou hodinky zapnuté a v dosahu?',
+      name: 'watch_synchronization_failed',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I10n> {

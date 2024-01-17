@@ -247,6 +247,7 @@ Future<_i1.GetIt> init(
     gh<_i40.SyncService>(),
     gh<_i3.AccountDbProvider>(),
     gh<_i6.BackgroundMeasurementCubit>(),
+    gh<_i39.ReportService>(),
   ));
   gh.factory<_i44.CalendarFulfillmentServiceBloc>(
       () => _i44.CalendarFulfillmentServiceBloc(

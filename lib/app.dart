@@ -16,6 +16,7 @@ import 'package:scalesoft_app/bloc/notifications/notifications_event.dart';
 import 'package:scalesoft_app/globals.dart';
 import 'package:scalesoft_app/globals_initialization.dart';
 import 'package:scalesoft_app/locales.dart';
+import 'package:scalesoft_app/managers/background_measurement_manager.dart';
 import 'package:scalesoft_app/model/app_settings.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/settings_db_provider.dart';
@@ -65,6 +66,14 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
 
 Future<void> run() async {
   await _main(themeMode: ThemeMode.dark, locale: cs);
+}
+
+Future<void> watchSyncBackgroundTaskImpl() async {
+  await Hive.initFlutter();
+
+  await configureDependencies();
+
+  getIt<BackgroundMeasurementManager>().configureBackgroundServiceMethodCallHandler();
 }
 
 Future<void> _main({

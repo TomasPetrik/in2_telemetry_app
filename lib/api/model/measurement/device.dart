@@ -42,6 +42,12 @@ class Device with _$Device {
 
   @override
   String toString() => toJson().toString();
+
+  bool isEquivalentTo(Device other) {
+    return (deviceIdentifier == other.deviceIdentifier &&
+        modelName == other.modelName &&
+        deviceManufacturer == other.deviceManufacturer);
+  }
 }
 
 @HiveType(typeId: 37)

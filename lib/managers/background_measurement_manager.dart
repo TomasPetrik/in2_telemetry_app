@@ -1,28 +1,51 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/api/model/measurement/source_device_info.dart';
+import 'package:scalesoft_app/api/model/report/report.dart';
+import 'package:scalesoft_app/constants/native_code_constants.dart';
 import 'package:scalesoft_app/cubit/background_measurement/background_measurement_cubit.dart';
 import 'package:scalesoft_app/managers/ble_e8x_manager.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
+import 'package:scalesoft_app/utils/helpers/mac_address_helper.dart';
 
 @singleton
 class BackgroundMeasurementManager {
   final SyncService _syncService;
   final AccountDbProvider _accountDbProvider;
   final BackgroundMeasurementCubit _backgroundMeasurementCubit;
+  final ReportService _reportService;
+  final FlutterLocalNotificationsPlugin _notificationsPlugin = FlutterLocalNotificationsPlugin();
+  static const nativeCode = MethodChannel(NativeCodeConstants.methodChannelName);
 
-  BackgroundMeasurementManager(this._syncService, this._accountDbProvider);
-  final List<String> _associatedDevices = [];
+  BackgroundMeasurementManager(
+    this._syncService,
+    this._accountDbProvider,
+    this._backgroundMeasurementCubit,
+    this._reportService,
+  );
 
-  BackgroundMeasurementManager(this._syncService, this._accountDbProvider, this._backgroundMeasurementCubit);
+  void configureBackgroundServiceMethodCallHandler() {
+    nativeCode.setMethodCallHandler((call) async {
+      if (call.method != NativeCodeConstants.bluetoothSyncMethod) {
+        debugPrint("Unsupported method called: ${call.method}");
+        return Future.error("Unsupported method");
+      }
+
+      final devices = call.arguments[NativeCodeConstants.macAddressesKey] as List;
+      await syncArmbandMeasurements(devices.map((x) => x.toString()));
+    });
+  }
 
   Future<void> updateBackgroundSynchronizationState() async {
     final assignedDevices = _getAssignedDevices();
@@ -31,19 +54,19 @@ class BackgroundMeasurementManager {
     debugPrint("assigned devices count: ${assignedDevices.length}");
     debugPrint("associated devices count: ${associatedDevices.length}");
 
-    if(associatedDevices.isEmpty || assignedDevices.isEmpty){
+    if (associatedDevices.isEmpty || assignedDevices.isEmpty) {
       _backgroundMeasurementCubit.disabled();
-    } else if(associatedDevices.containsAll(assignedDevices)){
+    } else if (associatedDevices.containsAll(assignedDevices)) {
       _backgroundMeasurementCubit.enabled();
     } else {
       _backgroundMeasurementCubit.partial();
     }
   }
 
-  Future<void> activateBackgroundSynchronization() async{
+  Future<void> activateBackgroundSynchronization() async {
     final assignedDevices = _getAssignedDevices();
 
-    associateDevices(assignedDevices);
+    await associateDevices(assignedDevices);
   }
 
   Future<void> deactivateBackgroundSynchronization() async {
@@ -71,33 +94,51 @@ class BackgroundMeasurementManager {
     return accountDevicePairs;
   }
 
-  Iterable<String> _getAssignedDevices(){
-    return _getUsersWithWatches().map((x) => x.value.bluetoothAddress!);
+  Iterable<String> _getAssignedDevices() {
+    return _getUsersWithWatches().map((x) => x.value.bluetoothAddress!).map(MacAddressHelper.normalizeFormat);
   }
 
-  Future<void> disassociateDevices(Iterable<String> macAddresses) async {
-    await Future.delayed(const Duration(seconds: 1));
-    // TODO: Call native code, delete background service if no associated devices left?
-    _associatedDevices.clear();
+  /// Uses CompanionDeviceManager to disassociate devices with the specified [macAddresses].
+  /// Removes background service if no associated devices are left.
+  Future<bool> disassociateDevices(Iterable<String> macAddresses) async {
+    try {
+      await nativeCode.invokeMethod(
+        NativeCodeConstants.disassociateDevices,
+        {NativeCodeConstants.macAddressesKey: macAddresses.toList()},
+      );
+      return true;
+    } on PlatformException catch (e) {
+      debugPrint("Disassociate devices: native code invocation failed: $e");
+      _reportService.trackEvent(
+        severity: Severity.error,
+        message: e.toString(),
+      );
+      return false;
+    }
   }
 
   /// Uses CompanionDeviceManager to associate devices with the specified [macAddresses].
   /// Reschedules (or creates) a background service that periodically calls [syncArmbandMeasurements]
   Future<bool> associateDevices(Iterable<String> macAddresses) async {
-    await Future.delayed(const Duration(seconds: 1));
-    // TODO: Call native code, create background service
-
-    _associatedDevices.addAll(macAddresses);
-
-    return true;
+    try {
+      await nativeCode.invokeMethod(
+        NativeCodeConstants.associateDevices,
+        {NativeCodeConstants.macAddressesKey: macAddresses.toList()},
+      );
+      return true;
+    } on PlatformException catch (e) {
+      debugPrint("Associate devices: native code invocation failed: $e");
+      _reportService.trackEvent(
+        severity: Severity.error,
+        message: e.toString(),
+      );
+      return false;
+    }
   }
 
-  Future<void> syncArmbandMeasurements() async {
-    final associatedAddresses = await getAssociatedMacAddresses();
-
+  Future<void> syncArmbandMeasurements(Iterable<String> associatedAddresses) async {
     final accountDevicePairs = _getUsersWithWatches().where(
-      (pair) =>
-          associatedAddresses.any((address) => address.toLowerCase() == pair.value.bluetoothAddress!.toLowerCase()),
+      (pair) => associatedAddresses.any((address) => MacAddressHelper.compare(address, pair.value.bluetoothAddress)),
     );
 
     final results = await Future.wait([
@@ -116,10 +157,18 @@ class BackgroundMeasurementManager {
     await _syncService.syncResults();
   }
 
-  Future<List<String>> getAssociatedMacAddresses() async {
-    await Future.delayed(const Duration(seconds: 1));
-    // TODO: Call native code, get associated devices.
-    return _associatedDevices;
+  Future<Iterable<String>> getAssociatedMacAddresses() async {
+    try {
+      final addresses = await nativeCode.invokeListMethod<String>(NativeCodeConstants.getAssociatedDevices);
+      return addresses?.map(MacAddressHelper.normalizeFormat) ?? [];
+    } on PlatformException catch (e) {
+      debugPrint("Associate devices: native code invocation failed: $e");
+      _reportService.trackEvent(
+        severity: Severity.error,
+        message: e.toString(),
+      );
+      return [];
+    }
   }
 
   Future<Iterable<Measurement>> _getMeasurementsFromDevice(
@@ -131,8 +180,27 @@ class BackgroundMeasurementManager {
     List<Measurement> results = [];
 
     final btDevice = BluetoothDevice(
-      remoteId: DeviceIdentifier(device.bluetoothAddress!),
+      remoteId: DeviceIdentifier(MacAddressHelper.normalizeFormat(device.bluetoothAddress!)),
     );
+
+    try {
+      await btDevice.connect(timeout: const Duration(seconds: 30));
+    } catch (e) {
+      await _notificationsPlugin.show(
+        1,
+        localization.common_app_name,
+        localization.watch_synchronization_failed,
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'scalesoft_android',
+            'scalesoft_android_channel',
+            channelDescription: 'scalesoft_android_channel_description',
+            color: Color.fromARGB(255, 33, 100, 123),
+            icon: "ic_notification_foreground",
+          ),
+        ),
+      );
+    }
 
     await watchManager.registerNotifications(btDevice);
     await watchManager.setTime(btDevice);

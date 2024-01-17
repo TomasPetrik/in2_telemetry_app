@@ -718,6 +718,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Nastavení hodinek"),
         "watch_setup_turn_on_devices": MessageLookupByLibrary.simpleMessage(
             "Pro aktivaci přenosu dat musí být přiřazené zařízení zapnuté a v dosahu telefonu."),
+        "watch_synchronization_failed": MessageLookupByLibrary.simpleMessage(
+            "Přenos dat z hodinek se nezdařil. Je aktivní bluetooth telefonu, jsou hodinky zapnuté a v dosahu?"),
         "watch_synchronization_toggle_label":
             MessageLookupByLibrary.simpleMessage(
                 "Aktivovat periodický přenos dat")

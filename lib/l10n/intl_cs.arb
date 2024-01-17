@@ -637,5 +637,6 @@
         }
     },
     "watch_setup_turn_on_devices": "Pro aktivaci přenosu dat musí být přiřazené zařízení zapnuté a v dosahu telefonu.",
-    "watch_synchronization_toggle_label": "Aktivovat periodický přenos dat"
+    "watch_synchronization_toggle_label": "Aktivovat periodický přenos dat",
+    "watch_synchronization_failed": "Přenos dat z hodinek se nezdařil. Je aktivní bluetooth telefonu, jsou hodinky zapnuté a v dosahu?"
 }

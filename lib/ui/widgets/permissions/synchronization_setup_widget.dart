@@ -86,6 +86,7 @@ class _SynchronizationSetupWidgetState extends State<SynchronizationSetupWidget>
 
   @override
   Widget build(BuildContext context) {
+    updateBackgroundSynchronizationState();
     return PopScope(
       canPop: false,
       onPopInvoked: (_) {
