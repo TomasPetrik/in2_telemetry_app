@@ -176,11 +176,11 @@ class SyncService {
     );
 
     //1. Update assigned devices
-    userAccount.assignedDevices = parseAssignedDevices(userInfo.assignedDevices);
+    userAccount.assignedDevices = parseAssignedDevices(userInfo.assignedDevices, userAccount.assignedDevices);
     userAccount.user = userInfo.currentUser;
   }
 
-  List<Device>? parseAssignedDevices(List<Device>? devices) {
+  List<Device>? parseAssignedDevices(List<Device>? devices, List<Device>? originalDevices) {
     if(devices == null){
       return null;
     }
@@ -194,6 +194,8 @@ class SyncService {
 
       if (devicePrototype == null) continue;
 
+      final existingDevice = originalDevices?.firstWhereOrNull((x)=>x.isEquivalentTo(device));
+
 
       result.add(
         devicePrototype.copyWith(
@@ -201,6 +203,7 @@ class SyncService {
           assignedIdentifier: device.assignedIdentifier,
           bluetoothAddress: device.bluetoothAddress,
           isLendedDevice: true,
+          lastMeasurementTime: existingDevice?.lastMeasurementTime,
         ),
       );
     }
