@@ -66,12 +66,15 @@ class BackgroundMeasurementManager {
   Future<void> activateBackgroundSynchronization() async {
     final assignedDevices = _getAssignedDevices();
 
-    await associateDevices(assignedDevices);
+    final result = await associateDevices(assignedDevices);
+    if(!result) {
+      _backgroundMeasurementCubit.setupError();
+    }
   }
 
   Future<void> deactivateBackgroundSynchronization() async {
     final associatedDevices = await getAssociatedMacAddresses();
-    disassociateDevices(associatedDevices);
+    await disassociateDevices(associatedDevices);
   }
 
   Future<void> removeUnassignedDevices() async {

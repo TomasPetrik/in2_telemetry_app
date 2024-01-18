@@ -21,4 +21,9 @@ class BackgroundMeasurementCubit extends Cubit<BackgroundMeasurementState> {
     debugPrint("Background measurement partially enabled");
     emit(BackgroundMeasurementState.partial);
   }
+
+  void setupError() {
+    debugPrint("Background measurement setup failed");
+    emit(BackgroundMeasurementState.setupError);
+  }
 }

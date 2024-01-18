@@ -712,8 +712,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "user_selection_dialog_measurement_in_hospital": m52,
         "watch_setup_explanation": MessageLookupByLibrary.simpleMessage(
             "Pro správnou funkčnost přenosu dat z hodinek je nutné udělit aplikaci následující oprávnění:"),
+        "watch_setup_failed": MessageLookupByLibrary.simpleMessage(
+            "Nastavení hodinek se nezdařilo. Ujistěte se, že aplikace má potřebná oprávnění, je aktivní bluetooth telefonu a hodinky jsou zapnuté a v dosahu. Potom zkuste akci opakovat."),
         "watch_setup_menu_title": MessageLookupByLibrary.simpleMessage(
             "Nastavit přenos dat z hodinek"),
+        "watch_setup_partial": MessageLookupByLibrary.simpleMessage(
+            "Je aktivní přenos dat pouze z některých hodinek. Zkuste prosím aktivaci provést znovu. Ujistěte se, že všechny Vaše přiřazené hodinky jsou v dosahu."),
         "watch_setup_screen_title":
             MessageLookupByLibrary.simpleMessage("Nastavení hodinek"),
         "watch_setup_turn_on_devices": MessageLookupByLibrary.simpleMessage(

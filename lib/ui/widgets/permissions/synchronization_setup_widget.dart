@@ -8,6 +8,7 @@ import 'package:scalesoft_app/cubit/background_measurement/background_measuremen
 import 'package:scalesoft_app/cubit/loader/loader_cubit.dart';
 import 'package:scalesoft_app/managers/background_measurement_manager.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/permissions/permission_grant_widget.dart';
 
@@ -33,7 +34,7 @@ class SynchronizationSetupWidget extends StatefulWidget {
   State<SynchronizationSetupWidget> createState() => _SynchronizationSetupWidgetState();
 }
 
-class _SynchronizationSetupWidgetState extends State<SynchronizationSetupWidget> {
+class _SynchronizationSetupWidgetState extends State<SynchronizationSetupWidget> with BottomSheetMixin {
   late List<PermissionState> permissionStatusList;
   late LoaderCubit loaderCubit = widget.loaderCubit;
 
@@ -87,68 +88,92 @@ class _SynchronizationSetupWidgetState extends State<SynchronizationSetupWidget>
   @override
   Widget build(BuildContext context) {
     updateBackgroundSynchronizationState();
-    return PopScope(
-      canPop: false,
-      onPopInvoked: (_) {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        // Workaround: PopScope does not work correctly with GoRouter. Pop manually.
-        // https://github.com/flutter/flutter/issues/138737
-        GoRouter.of(context).pop();
+    return BlocListener<BackgroundMeasurementCubit, BackgroundMeasurementState>(
+      bloc: backgroundMeasurementCubit,
+      listener: (context, state) {
+        if (state == BackgroundMeasurementState.setupError) {
+          showWatchSetupFailed(context);
+        }
       },
-      child: Column(
-        children: [
-          Center(
-            child: Text(localization.watch_setup_explanation),
-          ),
-          Gaps.gap16,
-          Column(
-            children: permissionStatusList
-                .map(
-                  (entry) => PermissionGrantWidget(
-                    permission: entry.permission,
-                    onStatusChanged: (status) {
-                      setState(() {
-                        entry.isGranted = status == PermissionStatus.granted;
-                      });
-                    },
-                  ),
-                )
-                .toList(),
-          ),
-          Gaps.gap16,
-          BlocBuilder<BackgroundMeasurementCubit, BackgroundMeasurementState>(
-            bloc: backgroundMeasurementCubit,
-            builder: ((context, state) {
-              final toggleState = state != BackgroundMeasurementState.disabled;
-
-              // TODO: Show a yellow warning icon that provides an explanation snackbar on tap.
-              final showWarning = state == BackgroundMeasurementState.partial;
-
-              final widget = InkWell(
-                onTap: () {
-                  if (areMandatoryPermissionsGranted) {
-                    toggleSynchronization(!toggleState);
-                  }
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(localization.watch_synchronization_toggle_label),
-                    CupertinoSwitch(
-                      trackColor: Theme.of(context).colorScheme.tertiary,
-                      activeColor: Theme.of(context).colorScheme.primary,
-                      thumbColor: Theme.of(context).colorScheme.background,
-                      onChanged: areMandatoryPermissionsGranted ? toggleSynchronization : null,
-                      value: toggleState,
+      child: PopScope(
+        canPop: false,
+        onPopInvoked: (_) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          // Workaround: PopScope does not work correctly with GoRouter. Pop manually.
+          // https://github.com/flutter/flutter/issues/138737
+          GoRouter.of(context).pop();
+        },
+        child: Column(
+          children: [
+            Center(
+              child: Text(localization.watch_setup_explanation),
+            ),
+            Gaps.gap16,
+            Column(
+              children: permissionStatusList
+                  .map(
+                    (entry) => PermissionGrantWidget(
+                      permission: entry.permission,
+                      onStatusChanged: (status) {
+                        setState(() {
+                          entry.isGranted = status == PermissionStatus.granted;
+                        });
+                      },
                     ),
-                  ],
-                ),
-              );
+                  )
+                  .toList(),
+            ),
+            Gaps.gap16,
+            BlocBuilder<BackgroundMeasurementCubit, BackgroundMeasurementState>(
+              bloc: backgroundMeasurementCubit,
+              builder: ((context, state) {
+                final toggleState =
+                    state == BackgroundMeasurementState.enabled || state == BackgroundMeasurementState.partial;
 
-              return widget;
-            }),
-          ),
-        ],
+                final showWarning = state != BackgroundMeasurementState.partial;
+
+                final widget = InkWell(
+                  onTap: () {
+                    if (areMandatoryPermissionsGranted) {
+                      toggleSynchronization(!toggleState);
+                    }
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(localization.watch_synchronization_toggle_label),
+                      Row(
+                        children: [
+                          if (showWarning)
+                            IconButton(
+                              icon: const Icon(Icons.warning, color: Colors.yellow),
+                              onPressed: () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(localization.watch_setup_partial),
+                                    showCloseIcon: true,
+                                  ),
+                                );
+                              },
+                            ),
+                          CupertinoSwitch(
+                            trackColor: Theme.of(context).colorScheme.tertiary,
+                            activeColor: Theme.of(context).colorScheme.primary,
+                            thumbColor: Theme.of(context).colorScheme.background,
+                            onChanged: areMandatoryPermissionsGranted ? toggleSynchronization : null,
+                            value: toggleState,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+
+                return widget;
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }

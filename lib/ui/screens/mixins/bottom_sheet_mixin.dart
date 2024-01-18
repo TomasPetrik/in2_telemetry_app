@@ -334,6 +334,22 @@ mixin BottomSheetMixin {
     );
     return result;
   }
+
+  Future<void> showWatchSetupFailed(
+    BuildContext context,
+  ) async {
+    await showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return BottomDialog.watchSetupFailed(
+          context: context,
+        );
+      },
+    );
+  }
 }
 
 enum SwitchUserAction {

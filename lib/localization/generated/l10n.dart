@@ -2590,6 +2590,26 @@ class I10n {
       args: [],
     );
   }
+
+  /// `Nastavení hodinek se nezdařilo. Ujistěte se, že aplikace má potřebná oprávnění, je aktivní bluetooth telefonu a hodinky jsou zapnuté a v dosahu. Potom zkuste akci opakovat.`
+  String get watch_setup_failed {
+    return Intl.message(
+      'Nastavení hodinek se nezdařilo. Ujistěte se, že aplikace má potřebná oprávnění, je aktivní bluetooth telefonu a hodinky jsou zapnuté a v dosahu. Potom zkuste akci opakovat.',
+      name: 'watch_setup_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Je aktivní přenos dat pouze z některých hodinek. Zkuste prosím aktivaci provést znovu. Ujistěte se, že všechny Vaše přiřazené hodinky jsou v dosahu.`
+  String get watch_setup_partial {
+    return Intl.message(
+      'Je aktivní přenos dat pouze z některých hodinek. Zkuste prosím aktivaci provést znovu. Ujistěte se, že všechny Vaše přiřazené hodinky jsou v dosahu.',
+      name: 'watch_setup_partial',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I10n> {

@@ -221,6 +221,23 @@ class BottomDialog extends StatelessWidget {
     );
   }
 
+  factory BottomDialog.watchSetupFailed({
+    Key? key,
+    required BuildContext context,
+  }) {
+    return _BottomDialog(
+      title: localization.server_error_title,
+      description: localization.watch_setup_failed,
+      iconPath: 'assets/icons/icon_triangle_exclamation_big.svg',
+      iconColor: Theme.of(context).colorScheme.error,
+      positiveButtonStyle: ButtonStyle(
+        buttonType: ButtonType.secondary,
+        label: localization.common_close,
+      ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return _BottomDialog(
