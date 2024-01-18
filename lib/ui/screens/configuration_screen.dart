@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,6 +13,7 @@ import 'package:scalesoft_app/bloc/settings/app_settings_bloc.dart';
 import 'package:scalesoft_app/bloc/settings/app_settings_bloc_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
+import 'package:scalesoft_app/managers/background_measurement_manager.dart';
 import 'package:scalesoft_app/model/app_settings.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -37,6 +40,10 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
   Widget build(BuildContext context) {
     final AccountDbProvider accountDbProvider = getIt<AccountDbProvider>();
     final hospitalUserEntries = accountDbProvider.getHospitalUsersMap().entries;
+
+    final BackgroundMeasurementManager backgroundMeasurementManager = getIt<BackgroundMeasurementManager>();
+    final shouldDisplayWatchSetupButton =
+        backgroundMeasurementManager.anyUserWatchAssignmentExists() && Platform.isAndroid;
 
     return Scaffold(
       body: BlocBuilder<AuthBloc, AuthState>(
@@ -183,16 +190,17 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                         ),
                       ),
                       Gaps.gap24,
-                      SettingsItem(
-                        label: localization.configuration_screen_setup_watch,
-                        iconWidget: SvgPicture.asset(
-                          'assets/icons/icon_watch_alt.svg',
-                          color: Theme.of(context).colorScheme.onSecondary,
+                      if (shouldDisplayWatchSetupButton)
+                        SettingsItem(
+                          label: localization.configuration_screen_setup_watch,
+                          iconWidget: SvgPicture.asset(
+                            'assets/icons/icon_watch_alt.svg',
+                            color: Theme.of(context).colorScheme.onSecondary,
+                          ),
+                          onTap: () {
+                            GoRouter.of(context).pushNamed(SetupWatchRoute.name);
+                          },
                         ),
-                        onTap: () {
-                          GoRouter.of(context).pushNamed(SetupWatchRoute.name);
-                        },
-                      ),
                       Gaps.gap24,
                       SettingsItem(
                         label: localization

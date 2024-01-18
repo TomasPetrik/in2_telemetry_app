@@ -98,6 +98,10 @@ class BackgroundMeasurementManager {
     return _getUsersWithWatches().map((x) => x.value.bluetoothAddress!).map(MacAddressHelper.normalizeFormat);
   }
 
+  bool anyUserWatchAssignmentExists() {
+    return _getUsersWithWatches().isNotEmpty;
+  }
+
   /// Uses CompanionDeviceManager to disassociate devices with the specified [macAddresses].
   /// Removes background service if no associated devices are left.
   Future<bool> disassociateDevices(Iterable<String> macAddresses) async {

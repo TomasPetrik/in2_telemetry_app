@@ -43,6 +43,7 @@ class Device with _$Device {
   @override
   String toString() => toJson().toString();
 
+  /// Checks if [this] and [other] device refer to the same real-world device
   bool isEquivalentTo(Device other) {
     return (deviceIdentifier == other.deviceIdentifier &&
         modelName == other.modelName &&
