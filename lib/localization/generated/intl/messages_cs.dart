@@ -570,6 +570,10 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Na měření bez zapůjčeného přístroje nemáte oprávnění"),
         "metering_screen_personal_devices":
             MessageLookupByLibrary.simpleMessage("Vlastní zařízení"),
+        "new_watch_assigned_description": MessageLookupByLibrary.simpleMessage(
+            "Máte přiřazené hodinky. Aktivujte prosím automatický přenos naměřených dat z hodinek v nastavení aplikace."),
+        "new_watch_assigned_title":
+            MessageLookupByLibrary.simpleMessage("Konfigurace hodinek"),
         "notification_periodical_frequency_from_to": m33,
         "notification_widget_plan_changed_desc": m34,
         "notification_widget_plan_changed_for_user_desc": m35,
@@ -722,6 +726,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Nastavení hodinek"),
         "watch_setup_turn_on_devices": MessageLookupByLibrary.simpleMessage(
             "Pro aktivaci přenosu dat musí být přiřazené zařízení zapnuté a v dosahu telefonu."),
+        "watch_setup_turn_on_synchronization":
+            MessageLookupByLibrary.simpleMessage(
+                "Po udělení oprávnění prosím aktivujte periodický přenos dat:"),
         "watch_synchronization_failed": MessageLookupByLibrary.simpleMessage(
             "Přenos dat z hodinek se nezdařil. Je aktivní bluetooth telefonu, jsou hodinky zapnuté a v dosahu?"),
         "watch_synchronization_toggle_label":

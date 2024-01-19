@@ -8,6 +8,7 @@ import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/offline_results_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/setup_watch_route.dart';
 import 'package:scalesoft_app/ui/widgets/process_item.dart';
 import 'package:scalesoft_app/ui/widgets/warning_item.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
@@ -148,6 +149,19 @@ class SyncItem extends StatelessWidget {
         buttonType: SmallButtonType.none,
         onTap: () {
           getIt<SyncBloc>().add(SyncEvent.resolveUpdatedUserPlan(carePlan));
+        },
+      ),
+      newWatchAssigned: () => WarningItem(
+        title: localization.new_watch_assigned_title,
+        description: localization.new_watch_assigned_description,
+        buttonLabel: localization.dialog_req_localization_service_go_to_settings,
+        icon: SvgPicture.asset(
+          'assets/icons/icon_circle_exclamation_medium.svg',
+          color: Theme.of(context).colorScheme.tertiary,
+        ),
+        // buttonType: SmallButtonType.none,
+        onTap: () {
+          GoRouter.of(context).pushNamed(SetupWatchRoute.name);
         },
       ),
     );

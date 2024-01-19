@@ -2571,6 +2571,16 @@ class I10n {
     );
   }
 
+  /// `Po udělení oprávnění prosím aktivujte periodický přenos dat:`
+  String get watch_setup_turn_on_synchronization {
+    return Intl.message(
+      'Po udělení oprávnění prosím aktivujte periodický přenos dat:',
+      name: 'watch_setup_turn_on_synchronization',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Aktivovat periodický přenos dat`
   String get watch_synchronization_toggle_label {
     return Intl.message(
@@ -2606,6 +2616,26 @@ class I10n {
     return Intl.message(
       'Je aktivní přenos dat pouze z některých hodinek. Zkuste prosím aktivaci provést znovu. Ujistěte se, že všechny Vaše přiřazené hodinky jsou v dosahu.',
       name: 'watch_setup_partial',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Konfigurace hodinek`
+  String get new_watch_assigned_title {
+    return Intl.message(
+      'Konfigurace hodinek',
+      name: 'new_watch_assigned_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Máte přiřazené hodinky. Aktivujte prosím automatický přenos naměřených dat z hodinek v nastavení aplikace.`
+  String get new_watch_assigned_description {
+    return Intl.message(
+      'Máte přiřazené hodinky. Aktivujte prosím automatický přenos naměřených dat z hodinek v nastavení aplikace.',
+      name: 'new_watch_assigned_description',
       desc: '',
       args: [],
     );

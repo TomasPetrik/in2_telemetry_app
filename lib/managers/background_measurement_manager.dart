@@ -47,8 +47,20 @@ class BackgroundMeasurementManager {
     });
   }
 
+  Future<bool> isSetupRequired() async {
+    final assignedDevices = _getRelevantAssignedDevices();
+
+    if (assignedDevices.isEmpty) {
+      return false;
+    }
+
+    final associatedDevices = (await getAssociatedMacAddresses()).toSet();
+
+    return !associatedDevices.containsAll(assignedDevices);
+  }
+
   Future<void> updateBackgroundSynchronizationState() async {
-    final assignedDevices = _getAssignedDevices();
+    final assignedDevices = _getRelevantAssignedDevices();
     final associatedDevices = (await getAssociatedMacAddresses()).toSet();
 
     debugPrint("assigned devices count: ${assignedDevices.length}");
@@ -64,10 +76,10 @@ class BackgroundMeasurementManager {
   }
 
   Future<void> activateBackgroundSynchronization() async {
-    final assignedDevices = _getAssignedDevices();
+    final assignedDevices = _getRelevantAssignedDevices();
 
     final result = await associateDevices(assignedDevices);
-    if(!result) {
+    if (!result) {
       _backgroundMeasurementCubit.setupError();
     }
   }
@@ -78,7 +90,7 @@ class BackgroundMeasurementManager {
   }
 
   Future<void> removeUnassignedDevices() async {
-    final assignedDevices = _getAssignedDevices().toList();
+    final assignedDevices = _getRelevantAssignedDevices().toList();
     final associatedDevices = (await getAssociatedMacAddresses()).toSet();
 
     final unassignedDevices = associatedDevices.whereNot(assignedDevices.contains);
@@ -97,7 +109,7 @@ class BackgroundMeasurementManager {
     return accountDevicePairs;
   }
 
-  Iterable<String> _getAssignedDevices() {
+  Iterable<String> _getRelevantAssignedDevices() {
     return _getUsersWithWatches().map((x) => x.value.bluetoothAddress!).map(MacAddressHelper.normalizeFormat);
   }
 

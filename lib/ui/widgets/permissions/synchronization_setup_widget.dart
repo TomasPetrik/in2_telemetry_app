@@ -123,6 +123,10 @@ class _SynchronizationSetupWidgetState extends State<SynchronizationSetupWidget>
                   )
                   .toList(),
             ),
+            Gaps.gap24,
+            Center(
+              child: Text(localization.watch_setup_turn_on_synchronization),
+            ),
             Gaps.gap16,
             BlocBuilder<BackgroundMeasurementCubit, BackgroundMeasurementState>(
               bloc: backgroundMeasurementCubit,
