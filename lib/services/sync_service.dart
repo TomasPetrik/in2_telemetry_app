@@ -7,6 +7,7 @@ import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation_aggregated.dart';
 import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/managers/background_measurement_manager.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
@@ -15,6 +16,7 @@ import 'package:scalesoft_app/repositories/account_repository.dart';
 import 'package:scalesoft_app/repositories/care_plans_repository.dart';
 import 'package:scalesoft_app/repositories/device_repository.dart';
 import 'package:scalesoft_app/repositories/time_settings_repository.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
@@ -177,6 +179,8 @@ class SyncService {
 
     //1. Update assigned devices
     userAccount.assignedDevices = parseAssignedDevices(userInfo.assignedDevices, userAccount.assignedDevices);
+    getIt<BackgroundMeasurementManager>().removeUnassignedDevices();
+
     userAccount.user = userInfo.currentUser;
   }
 
