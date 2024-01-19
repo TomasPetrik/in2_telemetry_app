@@ -5,9 +5,9 @@ import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
-import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
+import 'package:scalesoft_app/ui/widgets/blurred_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/device_item.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 
 class AddDeviceScreen extends StatelessWidget {
   const AddDeviceScreen({
@@ -32,7 +32,7 @@ class AddDeviceScreen extends StatelessWidget {
                   MediaQuery.of(context).viewPadding.top +
                       Dimensions.appBarHeight,
                 ),
-                ...Constants.supportedDevices
+                ...ConfigurationConstants.supportedDevices
                     .map(
                       (supportedDevice) => InkWell(
                         onTap: () {
@@ -63,7 +63,7 @@ class AddDeviceScreen extends StatelessWidget {
             top: 0,
             left: 0,
             right: 0,
-            child: BluredScaleAppBar(
+            child: BlurredScaleAppBar(
               title: localization.add_device_screen_title,
               showClose: true,
               onBackTap: () {},

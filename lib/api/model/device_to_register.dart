@@ -3,7 +3,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 part 'device_to_register.freezed.dart';
 part 'device_to_register.g.dart';
-part 'device_to_register.hive.dart';
 
 @freezed
 class DeviceToRegister with _$DeviceToRegister {

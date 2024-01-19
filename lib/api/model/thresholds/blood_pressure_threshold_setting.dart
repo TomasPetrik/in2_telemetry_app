@@ -3,7 +3,6 @@ import 'package:hive/hive.dart';
 
 part 'blood_pressure_threshold_setting.freezed.dart';
 part 'blood_pressure_threshold_setting.g.dart';
-part 'blood_pressure_threshold_setting.hive.dart';
 
 @freezed
 class BloodPressureThresholdSetting with _$BloodPressureThresholdSetting {

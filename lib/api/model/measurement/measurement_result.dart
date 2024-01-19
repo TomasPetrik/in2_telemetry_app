@@ -11,10 +11,7 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 part 'measurement_result.freezed.dart';
-
 part 'measurement_result.g.dart';
-
-part 'measurement_result.hive.dart';
 
 @unfreezed
 class MeasurementResult with _$MeasurementResult {
@@ -92,7 +89,8 @@ class MeasurementResult with _$MeasurementResult {
             )
           : "",
       MeasurementType.steps ||
-      MeasurementType.globalPosition =>
+      MeasurementType.globalPosition ||
+      MeasurementType.battery =>
         "",
     };
 

@@ -3,7 +3,6 @@ import 'package:hive/hive.dart';
 
 part 'oxygen_saturation_threshold_setting.freezed.dart';
 part 'oxygen_saturation_threshold_setting.g.dart';
-part 'oxygen_saturation_threshold_setting.hive.dart';
 
 @freezed
 class OxygenSaturationThresholdSetting with _$OxygenSaturationThresholdSetting {

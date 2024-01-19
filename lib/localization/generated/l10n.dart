@@ -608,6 +608,16 @@ class I10n {
     );
   }
 
+  /// `Nastavit synchronizaci hodinek`
+  String get configuration_screen_setup_watch {
+    return Intl.message(
+      'Nastavit synchronizaci hodinek',
+      name: 'configuration_screen_setup_watch',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Nastavení`
   String get configuration_screen_settings {
     return Intl.message(
@@ -2322,10 +2332,20 @@ class I10n {
   }
 
   /// `Technický Identifikátor`
-  String get register_device_detail_screen_identificator {
+  String get register_device_detail_screen_identifier {
     return Intl.message(
       'Technický Identifikátor',
-      name: 'register_device_detail_screen_identificator',
+      name: 'register_device_detail_screen_identifier',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bluetooth adresa`
+  String get register_device_detail_screen_bluetooth_address {
+    return Intl.message(
+      'Bluetooth adresa',
+      name: 'register_device_detail_screen_bluetooth_address',
       desc: '',
       args: [],
     );
@@ -2473,6 +2493,151 @@ class I10n {
       name: 'overall_health_values',
       desc: 'Overall health values',
       args: [overallHealthValue],
+    );
+  }
+
+  /// `Nastavit přenos dat z hodinek`
+  String get watch_setup_menu_title {
+    return Intl.message(
+      'Nastavit přenos dat z hodinek',
+      name: 'watch_setup_menu_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nastavení hodinek`
+  String get watch_setup_screen_title {
+    return Intl.message(
+      'Nastavení hodinek',
+      name: 'watch_setup_screen_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pro správnou funkčnost přenosu dat z hodinek je nutné udělit aplikaci následující oprávnění:`
+  String get watch_setup_explanation {
+    return Intl.message(
+      'Pro správnou funkčnost přenosu dat z hodinek je nutné udělit aplikaci následující oprávnění:',
+      name: 'watch_setup_explanation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{permission, select, notification{Odesílání oznámení} bluetoothConnect{Připojování k Bluetooth zařízením} ignoreBatteryOptimizations{Běh aplikace na pozadí} other{ }}`
+  String permission_names(Object permission) {
+    return Intl.select(
+      permission,
+      {
+        'notification': 'Odesílání oznámení',
+        'bluetoothConnect': 'Připojování k Bluetooth zařízením',
+        'ignoreBatteryOptimizations': 'Běh aplikace na pozadí',
+        'other': ' ',
+      },
+      name: 'permission_names',
+      desc: 'Permission names',
+      args: [permission],
+    );
+  }
+
+  /// `{permission, select, notification{Oprávnění odesílat oznámení je nutné pro průběžnou komunikaci aplikace s hodinkami.} bluetoothConnect{Oprávnění připojovat se k Bluetooth zařízením je nutné pro přenos měření z hodinek.} ignoreBatteryOptimizations{Oprávnění běžet na pozadí nám pomáhá zajistit, aby přenos dat správně pracoval, i když aplikace není spuštěná.} other{ }}`
+  String permission_explanations(Object permission) {
+    return Intl.select(
+      permission,
+      {
+        'notification':
+            'Oprávnění odesílat oznámení je nutné pro průběžnou komunikaci aplikace s hodinkami.',
+        'bluetoothConnect':
+            'Oprávnění připojovat se k Bluetooth zařízením je nutné pro přenos měření z hodinek.',
+        'ignoreBatteryOptimizations':
+            'Oprávnění běžet na pozadí nám pomáhá zajistit, aby přenos dat správně pracoval, i když aplikace není spuštěná.',
+        'other': ' ',
+      },
+      name: 'permission_explanations',
+      desc: 'Permission explanations',
+      args: [permission],
+    );
+  }
+
+  /// `Pro aktivaci přenosu dat musí být přiřazené zařízení zapnuté a v dosahu telefonu.`
+  String get watch_setup_turn_on_devices {
+    return Intl.message(
+      'Pro aktivaci přenosu dat musí být přiřazené zařízení zapnuté a v dosahu telefonu.',
+      name: 'watch_setup_turn_on_devices',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Po udělení oprávnění prosím aktivujte periodický přenos dat:`
+  String get watch_setup_turn_on_synchronization {
+    return Intl.message(
+      'Po udělení oprávnění prosím aktivujte periodický přenos dat:',
+      name: 'watch_setup_turn_on_synchronization',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aktivovat periodický přenos dat`
+  String get watch_synchronization_toggle_label {
+    return Intl.message(
+      'Aktivovat periodický přenos dat',
+      name: 'watch_synchronization_toggle_label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Přenos dat z hodinek se nezdařil. Je aktivní bluetooth telefonu, jsou hodinky zapnuté a v dosahu?`
+  String get watch_synchronization_failed {
+    return Intl.message(
+      'Přenos dat z hodinek se nezdařil. Je aktivní bluetooth telefonu, jsou hodinky zapnuté a v dosahu?',
+      name: 'watch_synchronization_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nastavení hodinek se nezdařilo. Ujistěte se, že aplikace má potřebná oprávnění, je aktivní bluetooth telefonu a hodinky jsou zapnuté a v dosahu. Potom zkuste akci opakovat.`
+  String get watch_setup_failed {
+    return Intl.message(
+      'Nastavení hodinek se nezdařilo. Ujistěte se, že aplikace má potřebná oprávnění, je aktivní bluetooth telefonu a hodinky jsou zapnuté a v dosahu. Potom zkuste akci opakovat.',
+      name: 'watch_setup_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Je aktivní přenos dat pouze z některých hodinek. Zkuste prosím aktivaci provést znovu. Ujistěte se, že všechny Vaše přiřazené hodinky jsou v dosahu.`
+  String get watch_setup_partial {
+    return Intl.message(
+      'Je aktivní přenos dat pouze z některých hodinek. Zkuste prosím aktivaci provést znovu. Ujistěte se, že všechny Vaše přiřazené hodinky jsou v dosahu.',
+      name: 'watch_setup_partial',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Konfigurace hodinek`
+  String get new_watch_assigned_title {
+    return Intl.message(
+      'Konfigurace hodinek',
+      name: 'new_watch_assigned_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Máte přiřazené hodinky. Aktivujte prosím automatický přenos naměřených dat z hodinek v nastavení aplikace.`
+  String get new_watch_assigned_description {
+    return Intl.message(
+      'Máte přiřazené hodinky. Aktivujte prosím automatický přenos naměřených dat z hodinek v nastavení aplikace.',
+      name: 'new_watch_assigned_description',
+      desc: '',
+      args: [],
     );
   }
 }

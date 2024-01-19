@@ -10,7 +10,7 @@ import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/reports_db_provider.dart';
 import 'package:scalesoft_app/repositories/account_repository.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:unique_identifier/unique_identifier.dart';
 
 @preResolve
@@ -101,7 +101,7 @@ class ReportService {
   Future<void> removeOldLogs() async {
     final dtNow = DateTime.now();
     final dtOfRemoval =
-        dtNow.subtract(const Duration(days: Constants.keepLogsDays));
+        dtNow.subtract(const Duration(days: ConfigurationConstants.keepLogsDays));
 
     await _reportsDbProvider.removeBeforeDateTime(dtOfRemoval);
   }

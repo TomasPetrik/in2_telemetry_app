@@ -21,12 +21,12 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
   ) : super(const SyncState.none()) {
     on<SyncEvent>((event, emit) async {
       await event.when(
-        init: () {
+        init: () async {
           if (state == const SyncState.inProgress()) {
             return;
           }
 
-          final syncState = _session.detectSyncState();
+          final syncState = await _session.detectSyncState();
 
           if (syncState != const SyncState.synced()) {
             emit(syncState);
@@ -41,7 +41,7 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
 
           await _syncService.syncAllData();
 
-          final currentSyncState = _session.detectSyncState();
+          final currentSyncState = await _session.detectSyncState();
           emit(currentSyncState);
 
           if (currentSyncState == const SyncState.synced()) {
@@ -54,7 +54,7 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
 
           await _syncService.syncResults();
 
-          final currentSyncState = _session.detectSyncState();
+          final currentSyncState = await _session.detectSyncState();
           emit(currentSyncState);
 
           if (currentSyncState == const SyncState.synced()) {
@@ -65,9 +65,9 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
         userSessionExpired: (String refreshToken) async {
           await _accountDbProvider.setExpiredUserByToken(refreshToken);
 
-          emit(_session.detectSyncState());
+          emit(await _session.detectSyncState());
         },
-        resolveUpdatedUserPlan: (CarePlan carePlanToUpdate) {
+        resolveUpdatedUserPlan: (CarePlan carePlanToUpdate) async {
           final userAccount = _accountDbProvider.get(carePlanToUpdate.userId!);
           if (userAccount == null) return;
 
@@ -77,7 +77,7 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
 
           _accountDbProvider.save(userAccount);
 
-          final syncState = _session.detectSyncState();
+          final syncState = await _session.detectSyncState();
 
           if (syncState != const SyncState.synced()) {
             emit(syncState);
@@ -87,7 +87,7 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
         },
         removeOfflineResult: (MeasurementResult measurementResult) async {
           await _syncService.removeOfflineResult(measurementResult);
-          final syncState = _session.detectSyncState();
+          final syncState = await _session.detectSyncState();
 
           if (syncState != const SyncState.synced()) {
             emit(syncState);

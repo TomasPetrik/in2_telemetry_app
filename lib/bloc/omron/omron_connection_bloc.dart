@@ -18,7 +18,7 @@ import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/paired_devices_db_provider.dart';
 import 'package:scalesoft_app/services/report_service.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/events_constants.dart';
 import 'package:scalesoft_app/utils/helpers/bt_connection_helper.dart';
 import 'package:wakelock/wakelock.dart';
@@ -43,7 +43,7 @@ class OmronConnectionBloc
   String getDevIdFromName(String localName) {
     String devId = localName;
 
-    final supportedDev = Constants.supportedDevices.firstWhere(
+    final supportedDev = ConfigurationConstants.supportedDevices.firstWhere(
       (dev) =>
           localName.toLowerCase().contains(dev.bluetoothName!.toLowerCase()),
     );
@@ -67,11 +67,6 @@ class OmronConnectionBloc
       ) async {
         final deviceInfo =
             await _btConnectionHelper.requestDeviceInfo(blDevice);
-
-        final batteryInfo =
-            await _btConnectionHelper.requestBatteryInfo(blDevice);
-
-        deviceInfo?.batteryInfo = batteryInfo;
 
         if (deviceInfo != null) {
           _reportsService.trackEvent(
@@ -139,6 +134,8 @@ class OmronConnectionBloc
         }
 
         debugPrint('request device for data');
+        final batteryInfo =
+            await _btConnectionHelper.requestBatteryInfo(blDevice);
         final measurementResult = await _btConnectionHelper.requestBPData(
           blDevice,
           !reqModelPairing,
@@ -160,7 +157,7 @@ class OmronConnectionBloc
           debugPrint('device got success data');
           final measurementInfo = measurementResult.measurementInfo;
 
-          final supportedDev = Constants.supportedDevices.firstWhere(
+          final supportedDev = ConfigurationConstants.supportedDevices.firstWhere(
             (dev) => localName
                 .toLowerCase()
                 .contains(dev.bluetoothName!.toLowerCase()),
@@ -178,16 +175,16 @@ class OmronConnectionBloc
                 modelName: supportedDev.modelName,
                 deviceManufacturer: supportedDev.deviceManufacturer,
               ),
-              batteryPercentage: deviceInfo.batteryInfo?.batteryLevel,
             ),
             bloodPressure: BloodPressureValue(
               systolic: measurementInfo?.systolic,
               diastolic: measurementInfo?.diastolic,
             ),
             heartRate: measurementInfo?.pulseRate,
+            batteryPercentage: batteryInfo?.batteryLevel,
           );
 
-         
+
 
           if (reqModelPairing) {
             _reportsService.trackEvent(
@@ -420,7 +417,7 @@ class OmronConnectionBloc
             searchMode:
                 reqModelPairing ? SearchMode.pairing : SearchMode.syncing,
             maxAllowedDeviceSearchingTime: reqModelPairing
-                ? Constants.maxAllowedDeviceSearchingTime
+                ? ConfigurationConstants.maxAllowedDeviceSearchingTime
                 : null,
           );
           if (foundDevice != null) {

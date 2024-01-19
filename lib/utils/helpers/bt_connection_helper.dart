@@ -9,16 +9,17 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:scalesoft_app/api/model/measurement/device.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/extensions/uint8_list_extension.dart';
 import 'package:scalesoft_app/model/device_info.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/model/measurement_info.dart';
-import 'package:scalesoft_app/utils/constants.dart';
 
 final Guid deviceInfo = Guid('0000180a-0000-1000-8000-00805f9b34fb');
 final Guid bloodPressure = Guid('00001810-0000-1000-8000-00805f9b34fb');
 final Guid batteryService = Guid('0000180f-0000-1000-8000-00805f9b34fb');
 final Guid bloodPressureServiceUuid = Guid('1810');
+final Guid heartRateServiceUuid = Guid('180d');
 
 class DeviceSearchResult {
   BluetoothDevice device;
@@ -38,11 +39,11 @@ class BtConnectionHelper {
     device,
     SearchMode searchMode,
   ) async {
-    final supportedBtNames = Constants.supportedDevices
+    final supportedBtNames = ConfigurationConstants.supportedDevices
         .map((supDev) => supDev.bluetoothName ?? '')
         .toList();
 
-    final supportedBtPairingNames = Constants.supportedDevices
+    final supportedBtPairingNames = ConfigurationConstants.supportedDevices
         .map((supDev) => supDev.bluetoothPairingName ?? '')
         .toList();
 
@@ -68,7 +69,7 @@ class BtConnectionHelper {
       return true;
     }
 
-    final supportedDev = Constants.supportedDevices.firstWhere(
+    final supportedDev = ConfigurationConstants.supportedDevices.firstWhere(
       (dev) {
         return localName
             .toLowerCase()
@@ -161,8 +162,9 @@ class BtConnectionHelper {
     }
   }
 
+  /// Finds devices that support at least one of the services in [serviceUuids].
   Future<void> searchDevicesByService({
-    required Guid serviceUuid,
+    required List<Guid> serviceUuids,
     required onlyPairingMode,
     required Function(List<Device> devices) onResult,
   }) async {
@@ -172,12 +174,13 @@ class BtConnectionHelper {
       FlutterBluePlus.startScan();
     }
 
-    final supportedBtNames = Constants.supportedDevices
+    final supportedBtNames = ConfigurationConstants.supportedDevices
         .map((supDev) => supDev.bluetoothName ?? '')
         .toList();
 
-    final supportedBtPairingNames = Constants.supportedDevices
-        .map((supDev) => supDev.bluetoothPairingName ?? '')
+    final supportedBtPairingNames = ConfigurationConstants.supportedDevices
+        .where((x) => x.bluetoothPairingName != null)
+        .map((supDev) => supDev.bluetoothPairingName!)
         .toList();
 
     while (true) {
@@ -187,8 +190,9 @@ class BtConnectionHelper {
       debugPrint('found all ${allDevices.length} devices');
 
       final matchedResults = allDevices.where((scanResult) {
-        return scanResult.advertisementData.serviceUuids
-                .any((uuid) => serviceUuid == uuid) &&
+        return scanResult.advertisementData.serviceUuids.any(
+              (uuid) => serviceUuids.any((x) => x == uuid),
+            ) &&
             ((!onlyPairingMode &&
                     supportedBtNames.any((suppBtName) {
                       return scanResult.advertisementData.advName
@@ -231,7 +235,7 @@ class BtConnectionHelper {
     String advertisementName,
     BluetoothDevice btDevice,
   ) {
-    final supportedDev = Constants.supportedDevices.firstWhere(
+    final supportedDev = ConfigurationConstants.supportedDevices.firstWhere(
       (dev) {
         return advertisementName
             .toLowerCase()
@@ -239,13 +243,17 @@ class BtConnectionHelper {
       },
     );
 
-    var preferedIdName = advertisementName;
+    var preferredIdName = advertisementName;
 
     if (supportedDev.deviceModelType == DeviceModelType.omronM7) {
-      preferedIdName = advertisementName.split('_').last;
+      preferredIdName = advertisementName.split('_').last;
     }
 
-    return supportedDev.copyWith(deviceIdentifier: preferedIdName);
+    return supportedDev.copyWith(
+      bluetoothAddress:
+          Platform.isAndroid ? btDevice.remoteId.toString() : null,
+      deviceIdentifier: preferredIdName,
+    );
   }
 
   Future<DeviceInfo?> requestDeviceInfo(BluetoothDevice device) async {

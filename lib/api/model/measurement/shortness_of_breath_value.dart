@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive/hive.dart';
 
-part 'shortness_of_breath_value.hive.dart';
+part 'shortness_of_breath_value.g.dart';
 
 @HiveType(typeId: 28)
 enum ShortnessOfBreathValue {

@@ -4,8 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaulation_aggregated.dart';
+import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation_aggregated.dart';
+import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/managers/background_measurement_manager.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
@@ -14,8 +16,9 @@ import 'package:scalesoft_app/repositories/account_repository.dart';
 import 'package:scalesoft_app/repositories/care_plans_repository.dart';
 import 'package:scalesoft_app/repositories/device_repository.dart';
 import 'package:scalesoft_app/repositories/time_settings_repository.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/notifications_helper.dart';
 
@@ -175,8 +178,41 @@ class SyncService {
     );
 
     //1. Update assigned devices
-    userAccount.assignedDevices = userInfo.assignedDevices;
+    userAccount.assignedDevices = parseAssignedDevices(userInfo.assignedDevices, userAccount.assignedDevices);
+    getIt<BackgroundMeasurementManager>().removeUnassignedDevices();
+
     userAccount.user = userInfo.currentUser;
+  }
+
+  List<Device>? parseAssignedDevices(List<Device>? devices, List<Device>? originalDevices) {
+    if(devices == null){
+      return null;
+    }
+
+    final List<Device> result =[];
+
+    for (final device in devices) {
+      final devicePrototype = ConfigurationConstants.supportedDevices.firstWhereOrNull(
+        (suppDev) => suppDev.modelName == device.modelName && suppDev.deviceManufacturer == device.deviceManufacturer,
+      );
+
+      if (devicePrototype == null) continue;
+
+      final existingDevice = originalDevices?.firstWhereOrNull((x)=>x.isEquivalentTo(device));
+
+
+      result.add(
+        devicePrototype.copyWith(
+          deviceIdentifier: device.deviceIdentifier,
+          assignedIdentifier: device.assignedIdentifier,
+          bluetoothAddress: device.bluetoothAddress,
+          isLendedDevice: true,
+          lastMeasurementTime: existingDevice?.lastMeasurementTime,
+        ),
+      );
+    }
+
+    return result;
   }
 
   Future<void> loadFulFillmentEvaluation(final UserAccount userAccount) async {
@@ -260,7 +296,7 @@ class SyncService {
       supportedMeasurementTypes
           .addAll(userAccount.hospital!.enabledMeasurementTypes);
     } else {
-      supportedMeasurementTypes.addAll(Constants.supportedMeasurementTypes);
+      supportedMeasurementTypes.addAll(ConfigurationConstants.supportedMeasurementTypes);
     }
 
     final yesterdayMidnight = DateTime.now().yesterday;

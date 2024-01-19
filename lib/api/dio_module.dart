@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 
 @module
 abstract class DioModule {
-  @Named(Constants.privateDioName)
+  @Named(ConfigurationConstants.privateDioName)
   @singleton
   Dio get privateDio => Dio(
         BaseOptions(

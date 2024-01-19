@@ -2,9 +2,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
-part 'fulfillment_evaulation_aggregated.freezed.dart';
-part 'fulfillment_evaulation_aggregated.g.dart';
-part 'fulfillment_evaulation_aggregated.hive.dart';
+part 'fulfillment_evaluation_aggregated.freezed.dart';
+part 'fulfillment_evaluation_aggregated.g.dart';
 
 @freezed
 class FulfillmentEvaluationAggregated with _$FulfillmentEvaluationAggregated {

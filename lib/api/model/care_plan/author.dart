@@ -3,7 +3,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 part 'author.freezed.dart';
 part 'author.g.dart';
-part 'author.hive.dart';
 
 @freezed
 class Author with _$Author {

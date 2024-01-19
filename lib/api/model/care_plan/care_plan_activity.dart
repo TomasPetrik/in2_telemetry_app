@@ -3,7 +3,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 part 'care_plan_activity.freezed.dart';
 part 'care_plan_activity.g.dart';
-part 'care_plan_activity.hive.dart';
 
 @freezed
 class CarePlanActivity with _$CarePlanActivity {
@@ -62,7 +61,9 @@ enum MeasurementType {
   shortnessOfBreath('ShortnessOfBreath'),
   @JsonValue('OverallHealth')
   @HiveField(9)
-  overallHealth('OverallHealth');
+  overallHealth('OverallHealth'),
+  @HiveField(10)
+  battery('Battery');
 
   const MeasurementType(this.key);
   final String key;

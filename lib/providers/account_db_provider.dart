@@ -8,7 +8,7 @@ import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_version.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
-import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaulation_aggregated.dart';
+import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation_aggregated.dart';
 import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/api/model/care_plan/when_time_value.dart';
 import 'package:scalesoft_app/api/model/device_model.dart';
@@ -81,6 +81,9 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
     Hive.registerAdapter(OverallHealthThresholdSettingAdapter());
     Hive.registerAdapter(ShortnessOfBreathValueAdapter());
     Hive.registerAdapter(OverallHealthValueAdapter());
+    Hive.registerAdapter(MeasurementFlowAdapter());
+    Hive.registerAdapter(ActionButtonTypeAdapter());
+    Hive.registerAdapter(DeviceModelTypeAdapter());
   }
 
   @override

@@ -17,11 +17,11 @@ import 'package:scalesoft_app/ui/screens/device_search_screen.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
-import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
+import 'package:scalesoft_app/ui/widgets/blurred_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/device_item.dart';
 import 'package:scalesoft_app/ui/widgets/navigation_tab_chip.dart';
 import 'package:scalesoft_app/ui/widgets/settings_item.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 class MeteringFirstScreen extends StatefulWidget {
@@ -59,7 +59,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
         supportedUserMeasurementTypes.isEmpty) {
       displayedMeasurementTypes =
           userAccount.hospital?.enabledMeasurementTypes.toSet() ??
-              Constants.supportedMeasurementTypes;
+              ConfigurationConstants.supportedMeasurementTypes;
     } else {
       displayedMeasurementTypes = supportedUserMeasurementTypes;
     }
@@ -121,7 +121,15 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
                     final supportDeviceMeasurement =
                         state.supportDeviceMeasurement;
 
-                    final assignedDevices = state.assignedDevices ?? [];
+                    final assignedDevices = state.assignedDevices
+                            ?.where(
+                              (x) =>
+                                  x.measurementFlow
+                                      ?.hasFlag(MeasurementFlow.foreground) ??
+                                  true,
+                            )
+                            .toList() ??
+                        [];
                     final personalDevices = state.personalDevices ?? [];
 
                     if (selectedMeasurementType == null ||
@@ -415,7 +423,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
             top: 0,
             left: 0,
             right: 0,
-            child: BluredScaleAppBar(
+            child: BlurredScaleAppBar(
               title: getTitle(),
               showClose: true,
             ),

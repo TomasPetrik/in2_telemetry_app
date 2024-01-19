@@ -7,7 +7,7 @@ import 'package:scalesoft_app/cubit/device_management/device_management_state.da
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/paired_devices_db_provider.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 
 @injectable
 class DeviceManagementCubit extends Cubit<DeviceManagementState> {
@@ -16,7 +16,7 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
   late UserAccount userAccount;
 
   bool supportedDeviceMeasurement(MeasurementType measurementType) {
-    return Constants.supportedDevices.any(
+    return ConfigurationConstants.supportedDevices.any(
       (device) => device.supportedMeasurementTypes!.contains(
         measurementType,
       ),
@@ -37,7 +37,7 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
     //1. Add all user assigned devices with flag if was previously paired
     if (userAccount.assignedDevices?.isNotEmpty == true) {
       for (final assignedDevice in userAccount.assignedDevices!) {
-        final suppDev = Constants.supportedDevices.firstWhereOrNull(
+        final suppDev = ConfigurationConstants.supportedDevices.firstWhereOrNull(
           (suppDev) =>
               suppDev.modelName == assignedDevice.modelName &&
               suppDev.deviceManufacturer == assignedDevice.deviceManufacturer,
@@ -50,11 +50,11 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
               dev.deviceIdentifier?.toLowerCase() ==
               assignedDevice.deviceIdentifier?.toLowerCase(),
         );
-
         prioritisedDevices.add(
           suppDev.copyWith(
             deviceIdentifier: assignedDevice.deviceIdentifier,
             assignedIdentifier: assignedDevice.assignedIdentifier,
+            bluetoothAddress: assignedDevice.bluetoothAddress,
             wasPaired: wasPaired,
             isLendedDevice: true,
           ),

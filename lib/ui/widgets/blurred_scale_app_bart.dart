@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
 
-class BluredScaleAppBar extends StatelessWidget {
-  const BluredScaleAppBar({
+class BlurredScaleAppBar extends StatelessWidget {
+  const BlurredScaleAppBar({
     super.key,
     required this.title,
     this.subTitle,

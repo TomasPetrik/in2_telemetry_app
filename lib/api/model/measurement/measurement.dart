@@ -8,10 +8,7 @@ import 'package:scalesoft_app/api/model/measurement/source_device_info.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 
 part 'measurement.freezed.dart';
-
 part 'measurement.g.dart';
-
-part 'measurement.hive.dart';
 
 @freezed
 class Measurement with _$Measurement {
@@ -33,6 +30,7 @@ class Measurement with _$Measurement {
     required MeasurementType measurementType,
     @HiveField(10) ShortnessOfBreathValue? shortnessOfBreath,
     @HiveField(11) OverallHealthValue? overallHealth,
+    @HiveField(12) int? batteryPercentage,
   }) = _Measurement;
 
   factory Measurement.fromJson(Map<String, dynamic> json) =>
@@ -57,7 +55,8 @@ class Measurement with _$Measurement {
           : "",
       MeasurementType.ews ||
       MeasurementType.steps ||
-      MeasurementType.globalPosition =>
+      MeasurementType.globalPosition ||
+      MeasurementType.battery =>
         "",
     };
 

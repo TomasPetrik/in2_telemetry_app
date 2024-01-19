@@ -25,6 +25,7 @@ import 'package:scalesoft_app/ui/routers/routes/register_device_detail_route.dar
 import 'package:scalesoft_app/ui/routers/routes/register_device_success_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_history_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/setup_watch_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_added_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_detail_route.dart';
 import 'package:scalesoft_app/ui/screens/blank_screen.dart';
@@ -93,6 +94,7 @@ class AppRouter {
             ManualRoute(navigator: navAuthManager).route,
             LicensesRoute(navigator: navAuthManager).route,
             LicenseDetailRoute(navigator: navAuthManager).route,
+            SetupWatchRoute(navigator: navAuthManager).route,
           ],
         ),
       ],

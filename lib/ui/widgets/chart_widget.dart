@@ -98,6 +98,7 @@ class ChartWidget extends StatelessWidget {
                             MeasurementType.respiratoryRate => true,
                             MeasurementType.shortnessOfBreath => false,
                             MeasurementType.overallHealth => false,
+                            MeasurementType.battery => false,
                           },
                         ),
             ),

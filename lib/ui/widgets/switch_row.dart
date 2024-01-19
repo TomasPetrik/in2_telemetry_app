@@ -18,7 +18,7 @@ class SwitchRow extends StatelessWidget {
   final double height;
   final String title;
   final String? label;
-  final Function(bool turnedOn) onChanged;
+  final void Function(bool turnedOn)? onChanged;
   final bool? defaultValue;
 
   factory SwitchRow.title({

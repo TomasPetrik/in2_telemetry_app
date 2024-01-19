@@ -4,7 +4,6 @@ import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
 
 part 'when_time_value.freezed.dart';
 part 'when_time_value.g.dart';
-part 'when_time_value.hive.dart';
 
 @freezed
 class WhenTimeValue with _$WhenTimeValue {

@@ -4,7 +4,6 @@ import 'package:scalesoft_app/api/model/report/report.dart';
 
 part 'report_request.freezed.dart';
 part 'report_request.g.dart';
-part 'report_request.hive.dart';
 
 @freezed
 class ReportRequest with _$ReportRequest {

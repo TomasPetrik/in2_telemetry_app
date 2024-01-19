@@ -14,10 +14,7 @@ class PairedDevicesDbProvider extends BoxProvider<Device> {
   final String boxName = 'pairedDevicesBox';
 
   @override
-  void registerAdapters() {
-    Hive.registerAdapter(DeviceModelTypeAdapter());
-    Hive.registerAdapter(ActionButtonTypeAdapter());
-  }
+  void registerAdapters() {}
 
   Device? get(String deviceIdentifier) {
     final foundDevice = box.get(deviceIdentifier.toLowerCase());

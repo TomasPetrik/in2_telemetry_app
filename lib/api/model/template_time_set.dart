@@ -4,7 +4,6 @@ import 'package:scalesoft_app/api/model/care_plan/when_time_value.dart';
 
 part 'template_time_set.freezed.dart';
 part 'template_time_set.g.dart';
-part 'template_time_set.hive.dart';
 
 @freezed
 class TemplateTimeSet with _$TemplateTimeSet {
