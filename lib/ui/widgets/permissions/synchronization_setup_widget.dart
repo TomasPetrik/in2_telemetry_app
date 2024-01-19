@@ -134,7 +134,7 @@ class _SynchronizationSetupWidgetState extends State<SynchronizationSetupWidget>
                 final toggleState =
                     state == BackgroundMeasurementState.enabled || state == BackgroundMeasurementState.partial;
 
-                final showWarning = state != BackgroundMeasurementState.partial;
+                final showWarning = state == BackgroundMeasurementState.partial;
 
                 final widget = InkWell(
                   onTap: () {

@@ -94,7 +94,10 @@ class BackgroundMeasurementManager {
     final associatedDevices = (await getAssociatedMacAddresses()).toSet();
 
     final unassignedDevices = associatedDevices.whereNot(assignedDevices.contains);
-    await disassociateDevices(unassignedDevices);
+
+    if(unassignedDevices.isNotEmpty) {
+      await disassociateDevices(unassignedDevices);
+    }
   }
 
   Iterable<MapEntry<UserAccount, Device>> _getUsersWithWatches() {
