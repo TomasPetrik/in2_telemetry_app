@@ -30,12 +30,7 @@ const val SELECT_DEVICE_REQUEST_CODE = 923919
 class MainActivity() : FlutterActivity() {
     private var deviceManagerCompletable: CompletableDeferred<Boolean>? = null
 
-    init {
-        println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-    }
-
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
-        println("Kotlin: launch")
         super.configureFlutterEngine(flutterEngine)
 
         val guiMethodChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, METHOD_CHANNEL_NAME)
@@ -46,29 +41,25 @@ class MainActivity() : FlutterActivity() {
                 DISASSOCIATE_DEVICES -> {
                     val macAddresses = call.argument<List<String>>(MAC_ADDRESS_KEY);
                     if (macAddresses != null) {
-                        println("disassociating devices")
                         disassociateDevices(macAddresses)
-                    };
+                    }
                     result.success(null)
                 }
 
                 ASSOCIATE_DEVICES -> {
-                    println("associate devices called")
                     val scope = CoroutineScope(Dispatchers.IO)
                     val macAddresses = call.argument<List<String>>(MAC_ADDRESS_KEY);
-                    if(macAddresses.isNullOrEmpty()){
+                    if (macAddresses.isNullOrEmpty()) {
                         result.success(null);
                         return@setMethodCallHandler
                     }
                     scope.launch {
-                        println("scope.launch")
                         try {
                             associateDevices(macAddresses)
                             result.success(null)
-                        } catch(e: RuntimeException){
+                        } catch (e: RuntimeException) {
                             result.error("associate-failed", e.toString(), null)
                         }
-                        println("done")
                     }
                 }
 
@@ -105,13 +96,10 @@ class MainActivity() : FlutterActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             for (association in deviceManager.myAssociations) {
                 println(association.deviceMacAddress)
-                if(macAddresses.any{x->x.lowercase() == association.deviceMacAddress.toString().lowercase()}){
-                    println("Disassociating $association")
+                if (macAddresses.any { x -> x.lowercase() == association.deviceMacAddress.toString().lowercase() }) {
+                    println("Kotlin: Disassociating $association")
                     deviceManager.disassociate(association.id)
                 }
-//                if(macAddresses.any(association.deviceMacAddress.toString())){
-//
-//                }
 
             }
 
@@ -127,16 +115,16 @@ class MainActivity() : FlutterActivity() {
         }
 
         if (associationsEmpty) {
-            println("deactivating bg service")
+            println("Kotlin: Deactivating background service")
             val wm = WorkManager.getInstance(applicationContext)
             wm.cancelUniqueWork(UNIQUE_WORK_NAME)
         }
     }
 
-    private suspend fun associateDevices(macAddresses: List<String>){
+    private suspend fun associateDevices(macAddresses: List<String>) {
         val deviceManager = getSystemService(Context.COMPANION_DEVICE_SERVICE) as CompanionDeviceManager
 
-        for(address in macAddresses){
+        for (address in macAddresses) {
             val macAddressFilter = ScanFilter.Builder()
                 .setDeviceAddress(address)
                 .build()
@@ -204,11 +192,11 @@ class MainActivity() : FlutterActivity() {
             object : CompanionDeviceManager.Callback() {
                 override fun onAssociationPending(intentSender: IntentSender) {
                     startIntentSenderForResult(intentSender, SELECT_DEVICE_REQUEST_CODE, null, 0, 0, 0)
-                    println("kotlin: Found device")
+                    println("Kotlin: Found device")
                 }
 
                 override fun onAssociationCreated(associationInfo: AssociationInfo) {
-                    println("kotlin: Association created: ${associationInfo.deviceMacAddress}")
+                    println("Kotlin: Association created: ${associationInfo.deviceMacAddress}")
                     deviceManagerCompletable?.complete(true)
                 }
 
@@ -230,12 +218,12 @@ class MainActivity() : FlutterActivity() {
         when (requestCode) {
             SELECT_DEVICE_REQUEST_CODE -> when (resultCode) {
                 Activity.RESULT_OK -> {
-                    println("kotlin: Successfully associated with device")
+                    println("Kotlin: Successfully associated with device")
                     deviceManagerCompletable?.complete(true)
                 }
 
                 else -> {
-                    println("kotlin: Failed to associate with device")
+                    println("Kotlin: Failed to associate with device")
                     deviceManagerCompletable?.completeExceptionally(RuntimeException())
                 }
             }
