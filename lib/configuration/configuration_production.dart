@@ -65,4 +65,7 @@ class ProductionConfiguration extends BaseConfiguration {
 
   @override
   final String clientSecret = 'urHw0u2395TVg7lfEhKe';
+
+  @override
+  final String logEndpointSecret = 'zvqoz0vA#agIA0rsIzYSuk7kU1sCfKK6hsVYP3dW6!AOj**^31';
 }

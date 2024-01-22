@@ -23,5 +23,6 @@ abstract class AccountApiClient {
   Future<void> sendUserAppReports(
     @Path('apiUrl') String apiUrl,
     @Body() ReportRequest reportRequest,
+    @Header("X-Custom-Authentication") String authHeader,
   );
 }

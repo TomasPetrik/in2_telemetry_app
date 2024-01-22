@@ -95,4 +95,7 @@ class StagingConfiguration extends BaseConfiguration {
 
   @override
   final String clientSecret = 'cqWFWo9zYQHFh38kS8VC';
+
+  @override
+  final String logEndpointSecret = 'zvqoz0vA#agIA0rsIzYSuk7kU1sCfKK6hsVYP3dW6!AOj**^31';
 }
