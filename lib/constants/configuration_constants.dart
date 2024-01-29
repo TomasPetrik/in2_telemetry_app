@@ -4,29 +4,18 @@ import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/model/measurement_config.dart';
 import 'package:scalesoft_app/utils/input_formatters/decimal_text_input_formatter.dart';
 
-class EGoverement {
-  static Uri googlePlayUri = Uri.parse(
-    'https://play.google.com/store/apps/details?id=cz.mojedatovaschranka.mobilniklic',
-  );
-  static Uri appStoreUri = Uri.parse(
-    'https://apps.apple.com/sk/app/mobiln%C3%AD-kl%C3%AD%C4%8D-egovernmentu/id1466762017',
-  );
-  static String scheme = 'isds';
-}
-
-class Constants {
+class ConfigurationConstants {
   /* Keep debug logs max for N days */
   static const int keepLogsDays = 2;
 
   /* Background service interval fetch */
   static const int autoSyncIntervalMinutes = 15;
 
+  /* Max allowed waiting time for searching device */
+  static const Duration maxAllowedDeviceSearchingTime = Duration(seconds: 10);
+
   /* API */
   static const String privateDioName = 'privateDio';
-
-  /* Default Location (Prague) to get sunset / sunrise for autoswith appearance */
-  static const double defaultLat = 50.08804;
-  static const double defaultLng = 14.42076;
 
   /* Supported Measurements */
 
@@ -121,13 +110,33 @@ class Constants {
       null,
       [UnitName.ews],
       0,
-      10,
+      23,
       TextInputType.number,
       ['0'],
       [
         FilteringTextInputFormatter.digitsOnly,
         LengthLimitingTextInputFormatter(2),
       ],
+    ),
+    MeasurementType.shortnessOfBreath: MeasurementConfig(
+      MeasurementConfigType.select,
+      null,
+      [UnitName.shortnessOfBreath],
+      null,
+      null,
+      null,
+      null,
+      null,
+    ),
+    MeasurementType.overallHealth: MeasurementConfig(
+      MeasurementConfigType.select,
+      null,
+      [UnitName.overallHealth],
+      null,
+      null,
+      null,
+      null,
+      null,
     ),
   };
 
@@ -141,13 +150,14 @@ class Constants {
 
   /* Supported Devices */
 
-  static const List<Device> supportedDevices = [
+  static final List<Device> supportedDevices = [
     Device(
       localId: 0,
       modelName: 'BM77',
       deviceManufacturer: 'Beurer',
       visibleName: 'Beurer BM 77',
       bluetoothName: 'BM77',
+      bluetoothPairingName: 'BM77',
       deviceModelType: DeviceModelType.beurerBm77,
       imagePath: 'assets/images/beurer_bm_77.png',
       supportedMeasurementTypes: [
@@ -158,6 +168,7 @@ class Constants {
       askToActivateBt: true,
       askToConfirmMeasurement: true,
       actionButtonType: ActionButtonType.regular,
+      measurementFlow: MeasurementFlow.foreground,
     ),
     Device(
       localId: 1,
@@ -165,6 +176,7 @@ class Constants {
       deviceManufacturer: "Omron",
       visibleName: 'Omron M7',
       bluetoothName: 'BLESmart',
+      bluetoothPairingName: 'BLEsmart',
       deviceModelType: DeviceModelType.omronM7,
       imagePath: 'assets/images/omron_m7.png',
       supportedMeasurementTypes: [
@@ -173,6 +185,23 @@ class Constants {
       ],
       reqPairing: true,
       actionButtonType: ActionButtonType.startButton,
+      measurementFlow: MeasurementFlow.foreground,
+    ),
+    Device(
+      localId: 2,
+      modelName: 'E86',
+      visibleName: "E86",
+      bluetoothName: "E86",
+      deviceModelType: DeviceModelType.e8x,
+      supportedMeasurementTypes: [
+        MeasurementType.temperature,
+        MeasurementType.heartRate,
+        MeasurementType.bloodPressure,
+        MeasurementType.oxygenSaturation,
+        MeasurementType.respiratoryRate,
+      ],
+      imagePath: 'assets/images/e8x.png',
+      measurementFlow: MeasurementFlow.background,
     ),
   ];
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
+import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_state.dart';
@@ -28,13 +30,14 @@ class ContentManager extends StatelessWidget {
   Widget build(BuildContext context) {
     final ContentBloc userContentBloc = getIt<ContentBloc>();
 
-    return BlocBuilder<ContentBloc, ContentState>(
-      bloc: userContentBloc
-        ..add(
-          CheckLastLoggedUserContentEvent(
-            goRouter,
-          ),
-        ),
+    return BlocConsumer<ContentBloc, ContentState>(
+      bloc: userContentBloc..add(const CheckLastLoggedUserContentEvent()),
+      listener: (context, state) {
+        final authUri = state.whenOrNull(tryCompleteAuth: (uri) => uri);
+        if (authUri != null) {
+          getIt<AuthBloc>().add(AuthFromColdStart(authUri: authUri));
+        }
+      },
       buildWhen: (previous, current) => previous != current,
       builder: (context, state) {
         final initialWidget = state.when(
@@ -53,6 +56,7 @@ class ContentManager extends StatelessWidget {
           onUserAdded: (_) => onInit(context, state),
           activeMode: (key) => onInit(context, state),
           onDaylightAppearanceChanged: (_) => onInit(context, state),
+          tryCompleteAuth: (_) => onInit(context, state),
         );
 
         return initialWidget;

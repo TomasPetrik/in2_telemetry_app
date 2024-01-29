@@ -49,6 +49,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final session = getIt<Session>();
+    session.detectSyncState();
+
     return Scaffold(
       body: Center(
         child: child,
@@ -56,9 +59,8 @@ class HomeScreen extends StatelessWidget {
       bottomNavigationBar: BlocBuilder<SyncBloc, SyncState>(
         bloc: getIt<SyncBloc>(),
         builder: (context, state) {
-          final session = getIt<Session>();
           final showWarning =
-              session.detectSyncState() != const SyncState.synced();
+          ![const SyncState.none(), const SyncState.synced(), const SyncState.inProgress()].contains(state);
 
           return BottomNavigationBar(
             elevation: 0,

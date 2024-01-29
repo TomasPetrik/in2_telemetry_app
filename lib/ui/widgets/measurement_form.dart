@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/measurement/composed_int_value.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
+import 'package:scalesoft_app/api/model/measurement/overall_health_value.dart';
+import 'package:scalesoft_app/api/model/measurement/shortness_of_breath_value.dart';
 import 'package:scalesoft_app/model/measurement_config.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
+import 'package:scalesoft_app/ui/widgets/scale_select_form_field.dart';
 import 'package:scalesoft_app/ui/widgets/scale_text_form_field.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/extensions/string_extensions.dart';
 
 final formKey = GlobalKey<FormState>();
@@ -68,6 +71,22 @@ class MeasurementForm extends StatelessWidget {
           return measurement.copyWith(
             respiratoryRate: _value1?.toInt(),
           );
+        case MeasurementType.shortnessOfBreath:
+          return measurement.copyWith(
+            shortnessOfBreath: _value1 == null
+                ? null
+                : ShortnessOfBreathValue.values[_value1!.toInt()],
+          );
+        case MeasurementType.overallHealth:
+          return measurement.copyWith(
+            overallHealth: _value1 == null
+                ? null
+                : OverallHealthValue.values[_value1!.toInt()],
+          );
+        case MeasurementType.battery:
+          return measurement.copyWith(
+              batteryPercentage: _value1?.toInt(),
+          );
       }
     }
 
@@ -83,7 +102,7 @@ class MeasurementForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final measurementConfig = Constants.supportedMeasurements[measurementType];
+    final measurementConfig = ConfigurationConstants.supportedMeasurements[measurementType];
 
     if (measurementConfig == null) return const SizedBox.shrink();
 
@@ -109,32 +128,47 @@ class MeasurementForm extends StatelessWidget {
                       ),
                     ),
                     Gaps.gap8,
-                    ScaleTextFormField(
-                      key: ObjectKey(measurementConfig.type),
-                      textFormKey: fieldGlobalKeys[0],
-                      hintText: measurementConfig.hintText[0],
-                      keyboardType: measurementConfig.textInputType,
-                      suffixIcon: measurementConfig.units?.isNotEmpty == true
-                          ? Text(
-                              measurementConfig.units![0],
-                              style: ScaleTextStyles.text.apply(
-                                color: Theme.of(context).colorScheme.onPrimary,
-                              ),
-                            )
-                          : null,
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty == true ||
-                            measurementConfig.min > value.toDouble() ||
-                            measurementConfig.max < value.toDouble()) {
-                          return localization.common_wrong_value;
-                        } else {
-                          _value1 = value.toDouble();
-                          return null;
-                        }
-                      },
-                      inputFormatters: measurementConfig.inputFormatters,
-                    ),
+                    if (measurementConfig.type == MeasurementConfigType.select)
+                      ScaleSelectFormField(
+                        textFormKey: fieldGlobalKeys[0],
+                        onChanged: (double? value) => {_value1 = value},
+                        measurementType: measurementType,
+                      )
+                    else
+                      ScaleTextFormField(
+                        key: ObjectKey(measurementConfig.type),
+                        textFormKey: fieldGlobalKeys[0],
+                        hintText: measurementConfig.hintText?[0] ?? "",
+                        keyboardType: measurementConfig.textInputType,
+                        suffixIcon: measurementConfig.units?.isNotEmpty == true
+                            ? Text(
+                                measurementConfig.units![0],
+                                style: ScaleTextStyles.text.apply(
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
+                                ),
+                              )
+                            : null,
+                        validator: (value) {
+                          _value1 = null;
+                          if (value == null || value.isEmpty) {
+                            return localization.common_wrong_value;
+                          }
+
+                          final parsedValue = value.toDouble();
+
+                          if (measurementConfig.min != null &&
+                                  measurementConfig.min! > parsedValue ||
+                              measurementConfig.max != null &&
+                                  measurementConfig.max! < parsedValue) {
+                            return localization.common_wrong_value;
+                          } else {
+                            _value1 = parsedValue;
+                            return null;
+                          }
+                        },
+                        inputFormatters: measurementConfig.inputFormatters,
+                      ),
                   ],
                 ),
               ),
@@ -155,7 +189,7 @@ class MeasurementForm extends StatelessWidget {
                       Gaps.gap8,
                       ScaleTextFormField(
                         textFormKey: fieldGlobalKeys[1],
-                        hintText: measurementConfig.hintText[1],
+                        hintText: measurementConfig.hintText?[1] ?? '',
                         keyboardType: measurementConfig.textInputType,
                         suffixIcon: measurementConfig.units?.isNotEmpty == true
                             ? Text(
@@ -167,15 +201,28 @@ class MeasurementForm extends StatelessWidget {
                               )
                             : null,
                         validator: (value) {
-                          if (value == null ||
-                              value.isEmpty == true ||
-                              measurementConfig.min > value.toDouble() ||
-                              measurementConfig.max < value.toDouble()) {
+                          _value2 = null;
+                          if (value == null || value.isEmpty) {
                             return localization.common_wrong_value;
-                          } else {
-                            _value2 = value.toDouble();
-                            return null;
                           }
+
+                          final parsedValue = value.toDouble();
+
+                          if (measurementConfig.min != null &&
+                                  measurementConfig.min! > parsedValue ||
+                              measurementConfig.max != null &&
+                                  measurementConfig.max! < parsedValue) {
+                            return localization.common_wrong_value;
+                          }
+                          if (measurementType ==
+                                  MeasurementType.bloodPressure &&
+                              _value1 != null &&
+                              _value1! < parsedValue) {
+                            return localization.common_diastolic_gt_systolic;
+                          }
+
+                          _value2 = parsedValue;
+                          return null;
                         },
                         inputFormatters: measurementConfig.inputFormatters,
                       ),

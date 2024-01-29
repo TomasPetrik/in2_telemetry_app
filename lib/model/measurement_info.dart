@@ -1,14 +1,15 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scalesoft_app/extensions/uint8_list_extension.dart';
 
 part 'measurement_info.freezed.dart';
 part 'measurement_info.g.dart';
 
-const Map<MeasurementChar, String> measurementCharAddress = {
-  MeasurementChar.bloodPressureMeasurement: '2A35',
-  MeasurementChar.intermediateCuffPressure: '2A36',
-  MeasurementChar.bloodPressureFeature: '2A49',
+final Map<MeasurementChar, Guid> measurementCharAddress = {
+  MeasurementChar.bloodPressureMeasurement: Guid('2A35'),
+  MeasurementChar.intermediateCuffPressure: Guid('2A36'),
+  MeasurementChar.bloodPressureFeature: Guid('2A49'),
 };
 
 enum MeasurementChar {

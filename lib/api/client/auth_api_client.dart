@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:scalesoft_app/api/model/refresh_token_response.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 
 part 'auth_api_client.g.dart';
 
@@ -10,7 +10,7 @@ part 'auth_api_client.g.dart';
 @injectable
 abstract class AuthApiClient {
   @factoryMethod
-  factory AuthApiClient(@Named(Constants.privateDioName) Dio dio) =
+  factory AuthApiClient(@Named(ConfigurationConstants.privateDioName) Dio dio) =
       _AuthApiClient;
 
   @POST('{tokenUrl}')

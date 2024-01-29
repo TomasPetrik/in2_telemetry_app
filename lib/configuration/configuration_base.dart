@@ -13,4 +13,5 @@ abstract class BaseConfiguration {
     'mobile_api.Default',
   ];
   final String redirectUrl = 'cz.scalesoft.tlm://auth-callback';
+  abstract final String logEndpointSecret;
 }

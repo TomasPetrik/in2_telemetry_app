@@ -3,14 +3,14 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'device_info.freezed.dart';
 
-const Map<DeviceChar, String> deviceCharAddress = {
-  DeviceChar.modelNumber: '2A24',
-  DeviceChar.serialNumber: '2A25',
-  DeviceChar.firmwareRevision: '2A26',
-  DeviceChar.hardwareRevision: '2A27',
-  DeviceChar.softwareRevision: '2A28',
-  DeviceChar.manufacturerName: '2A29',
-  DeviceChar.batteryLevel: '2A19',
+final Map<DeviceChar, Guid> deviceCharAddress = {
+  DeviceChar.modelNumber: Guid('2A24'),
+  DeviceChar.serialNumber: Guid('2A25'),
+  DeviceChar.firmwareRevision: Guid('2A26'),
+  DeviceChar.hardwareRevision: Guid('2A27'),
+  DeviceChar.softwareRevision: Guid('2A28'),
+  DeviceChar.manufacturerName: Guid('2A29'),
+  DeviceChar.batteryLevel: Guid('2A19'),
 };
 
 enum DeviceChar {
@@ -36,23 +36,20 @@ class DeviceInfo with _$DeviceInfo {
     required String manufacturerName, //0x2A29
     BluetoothDevice? device,
     AdvertisementData? advData,
-    BatteryInfo? batteryInfo,
   }) = _DeviceInfo;
 
   @override
   String toString() {
-    return 'devId:\n${device?.id.id}\n'
-        'devName:\n${device?.name}\n\n'
-        'localName:\n${advData?.localName}\n'
+    return 'devId:\n${device?.remoteId.str}\n'
+        'devName:\n${device?.platformName}\n\n'
+        'localName:\n${advData?.advName}\n'
         'manufacturerData:\n${getManufacturerData(advData?.manufacturerData)}\n'
-        'devName:\n${device?.name}\n\n'
-        'modelNumber:\n$modelNumber\n'
+        'modelNumber:\n$modelNumber\n\n'
         'serialNumber:\n${serialNumber.isEmpty ? 'EMPTY' : serialNumber}\n'
         'firmwareRevision:\n$firmwareRevision\n'
         'hardwareRevision:\n$hardwareRevision\n'
         'softwareRevision:\n$softwareRevision\n'
-        'manufacturerName:\n$manufacturerName\n'
-        'battery:\n${batteryInfo?.batteryLevel ?? 'N/A'}';
+        'manufacturerName:\n$manufacturerName\n';
   }
 
   String getManufacturerData(Map<int, List<int>>? manufacturerData) {

@@ -7,7 +7,8 @@ part 'device_management_state.freezed.dart';
 @freezed
 class DeviceManagementState with _$DeviceManagementState {
   const factory DeviceManagementState({
-    List<Device>? devices,
+    List<Device>? assignedDevices,
+    List<Device>? personalDevices,
     bool? supportDeviceMeasurement,
     bool? hasMeasurementTabs,
     MeasurementTypeContract? selectedMeasurementType,

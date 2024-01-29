@@ -13,8 +13,10 @@ class OmronConnectionBlocEvent with _$OmronConnectionBlocEvent {
     MeasurementTypeContract measurementType,
     Device device,
   ) = _Init;
-  const factory OmronConnectionBlocEvent.newBtState(BluetoothState newBtState) =
-      _NewBtState;
+  const factory OmronConnectionBlocEvent.checkHwState() = _CheckHwState;
+  const factory OmronConnectionBlocEvent.newBtState(
+    BluetoothAdapterState newBtState,
+  ) = _NewBtState;
   const factory OmronConnectionBlocEvent.checkDeviceAvailability() =
       _CheckDeviceAvailability;
   const factory OmronConnectionBlocEvent.stopSearch() = _StopSearch;
@@ -23,21 +25,22 @@ class OmronConnectionBlocEvent with _$OmronConnectionBlocEvent {
 
   const factory OmronConnectionBlocEvent.connectToDevice(
     BluetoothDevice device,
-    AdvertisementData? advertisementData,
+    String localName,
   ) = _ConnectToDevice;
 
   const factory OmronConnectionBlocEvent.verifyDevice(
     BluetoothDevice device,
-    AdvertisementData? advertisementData,
+    String localName,
   ) = _VerifyDevice;
 
   const factory OmronConnectionBlocEvent.measureAndSync(
     BluetoothDevice device,
     DeviceInfo deviceInfo,
+    String localName,
   ) = _MeasureAndSync;
 
   factory OmronConnectionBlocEvent.foundDevice(
     BluetoothDevice device,
-    AdvertisementData advertisementData,
+    String localName,
   ) = _FoundDevice;
 }

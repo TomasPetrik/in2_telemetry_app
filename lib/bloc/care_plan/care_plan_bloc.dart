@@ -54,7 +54,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
 
       final allTodayMeasurements = Calendar.getMeasurementsOfDay(
         carePlans: event.carePlans,
-        dayDt: DateTime.now().getTodayMidnight(),
+        dayDt: DateTime.now().date,
         offlineResults: todayOfflineResults,
         all: true,
       );
@@ -96,7 +96,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
 
       final allTodayMeasurements = Calendar.getMeasurementsOfDay(
         carePlans: state.currentCarePlans!,
-        dayDt: DateTime.now().getTodayMidnight(),
+        dayDt: DateTime.now().date,
         offlineResults: todayOfflineResults,
         all: true,
       );
@@ -143,7 +143,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
 
       final allTodayMeasurements = Calendar.getMeasurementsOfDay(
         carePlans: carePlans,
-        dayDt: DateTime.now().getTodayMidnight(),
+        dayDt: DateTime.now().date,
         offlineResults: todayOfflineResults,
         all: true,
       );
@@ -194,7 +194,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
 
           final allTodayMeasurements = Calendar.getMeasurementsOfDay(
             carePlans: carePlans,
-            dayDt: DateTime.now().getTodayMidnight(),
+            dayDt: DateTime.now().date,
             offlineResults: todayOfflineResults,
             all: true,
           );

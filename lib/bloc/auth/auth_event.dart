@@ -8,6 +8,16 @@ abstract class AuthEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+class AuthFromColdStart extends AuthEvent {
+  final Uri authUri;
+  const AuthFromColdStart({
+    required this.authUri,
+  });
+
+  @override
+  List<Object?> get props => [authUri];
+}
+
 class Authenticate extends AuthEvent {
   final Hospital hospital;
   const Authenticate({
@@ -19,13 +29,10 @@ class Authenticate extends AuthEvent {
 }
 
 class HandleAuthResponse extends AuthEvent {
-  final Uri authRespUri;
-  const HandleAuthResponse({
-    required this.authRespUri,
-  });
+  const HandleAuthResponse();
 
   @override
-  List<Object?> get props => [authRespUri];
+  List<Object?> get props => [];
 }
 
 class CancelAuth extends AuthEvent {

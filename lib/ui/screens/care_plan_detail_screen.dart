@@ -13,8 +13,8 @@ import 'package:scalesoft_app/ui/routers/routes/calendar_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
-import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
-import 'package:scalesoft_app/ui/widgets/fullplan_evaluation_widget.dart';
+import 'package:scalesoft_app/ui/widgets/blurred_scale_app_bart.dart';
+import 'package:scalesoft_app/ui/widgets/full_plan_evaluation_widget.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/sliver_name_value_row.dart';
 import 'package:scalesoft_app/ui/widgets/times_settings_form.dart';
@@ -133,14 +133,14 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
                   SliverNameValueRow(
                     name:
                         localization.care_plan_detail_screen_active_from_date,
-                    value: widget.carePlan.scheduledStart.toRegularDate(),
+                    value: widget.carePlan.scheduledStart.dateFormat,
                   ),
                   if (widget.carePlan.scheduledEnd != null) ...[
                     const SliverGap(Dimensions.padding8),
                     SliverNameValueRow(
                       name:
                           localization.care_plan_detail_screen_active_to_date,
-                      value: widget.carePlan.scheduledEnd!.toRegularDate(),
+                      value: widget.carePlan.scheduledEnd!.dateFormat,
                     ),
                   ],
                   const SliverGap(Dimensions.padding8),
@@ -177,7 +177,7 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
                 top: 0,
                 left: 0,
                 right: 0,
-                child: BluredScaleAppBar(
+                child: BlurredScaleAppBar(
                   title: localization.common_measurement_types(
                     widget.carePlan.activity.measurementType.name,
                   ),

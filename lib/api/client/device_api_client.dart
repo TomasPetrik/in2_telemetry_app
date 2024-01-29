@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:scalesoft_app/api/model/device_model.dart';
 import 'package:scalesoft_app/api/model/device_to_register.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 
 part 'device_api_client.g.dart';
 
@@ -11,7 +11,7 @@ part 'device_api_client.g.dart';
 @injectable
 abstract class DeviceApiClient {
   @factoryMethod
-  factory DeviceApiClient(@Named(Constants.privateDioName) Dio dio) =
+  factory DeviceApiClient(@Named(ConfigurationConstants.privateDioName) Dio dio) =
       _DeviceApiClient;
 
   @POST('{apiUrl}/device')

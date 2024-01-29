@@ -15,7 +15,8 @@ class ResultsBlocState with _$ResultsBlocState {
     List<CarePlan>? currentCarePlans,
     List<MeasurementResult>? uncategorizedResults,
     List<MeasurementResult>? results,
-    MeasurementTypeContract? measurementType,
+    MeasurementType? measurementType,
+    Set<MeasurementTypeContract>? allMeasurementTypes,
     Map<ResultsWhenPeriod, int?>? plansEvaluationPerPeriod,
   }) = _ResultsBlocState;
 }

@@ -5,11 +5,13 @@ import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/api/model/measurement/composed_double_value.dart';
 import 'package:scalesoft_app/api/model/measurement/device.dart';
+import 'package:scalesoft_app/api/model/measurement/overall_health_value.dart';
+import 'package:scalesoft_app/api/model/measurement/shortness_of_breath_value.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 part 'measurement_result.freezed.dart';
 part 'measurement_result.g.dart';
-part 'measurement_result.hive.dart';
 
 @unfreezed
 class MeasurementResult with _$MeasurementResult {
@@ -19,7 +21,7 @@ class MeasurementResult with _$MeasurementResult {
   factory MeasurementResult({
     @JsonKey(fromJson: toLocalDate)
     @HiveField(0)
-        required DateTime measurementDateTime,
+    required DateTime measurementDateTime,
     @HiveField(1) double? value,
     @HiveField(2) ComposedDoubleValue? composedValue,
     @HiveField(3) Device? sourceDevice,
@@ -28,16 +30,16 @@ class MeasurementResult with _$MeasurementResult {
     @JsonKey(includeToJson: false) @HiveField(6) WhenCode? whenCode,
     @JsonKey(includeToJson: false)
     @HiveField(7)
-        FulfillmentEvaluationItem? evaluationItem,
+    FulfillmentEvaluationItem? evaluationItem,
     @JsonKey(includeToJson: false)
     @HiveField(8)
-        DateTime? measurementIntervalEnd,
+    DateTime? measurementIntervalEnd,
     @JsonKey(includeToJson: false) @HiveField(9) String? userId,
     @JsonKey(includeToJson: false) @HiveField(10) int? reqCount,
     @JsonKey(includeToJson: false) @HiveField(11) int? currentCount,
     @JsonKey(includeToJson: false)
     @HiveField(12)
-        DateTime? measurementIntervalStart,
+    DateTime? measurementIntervalStart,
   }) = _MeasurementResult;
 
   factory MeasurementResult.fromJson(Map<String, dynamic> json) =>
@@ -57,6 +59,43 @@ class MeasurementResult with _$MeasurementResult {
 
   bool get wasMeasured =>
       currentCount != null && reqCount != null && (currentCount! >= reqCount!);
+
+  // TODO: Deduplicate this and the same method in measurement.dart
+  // Ideally change the API and replace MeasurementResult with Measurement
+  String getFormattedValue() {
+    if (measurementType == null) {
+      return "";
+    }
+
+    final stringValue = switch (measurementType!) {
+      MeasurementType.temperature => value?.toStringAsFixed(1),
+      MeasurementType.bloodPressure =>
+        "${composedValue?.firstValue?.toStringAsFixed(0) ?? '?'}/${composedValue?.secondValue?.toStringAsFixed(0) ?? '?'}",
+      MeasurementType.oxygenSaturation ||
+      MeasurementType.heartRate ||
+      MeasurementType.respiratoryRate ||
+      MeasurementType.ews =>
+        value?.toInt().toString(),
+      MeasurementType.shortnessOfBreath => value != null
+          ? localization.shortness_of_breath_values(
+              ShortnessOfBreathValue.values
+                  .firstWhere((x) => x.value == value!.toInt()),
+            )
+          : "",
+      MeasurementType.overallHealth => value != null
+          ? localization.overall_health_values(
+              OverallHealthValue.values
+                  .firstWhere((x) => x.value == value!.toInt()),
+            )
+          : "",
+      MeasurementType.steps ||
+      MeasurementType.globalPosition ||
+      MeasurementType.battery =>
+        "",
+    };
+
+    return "$stringValue ${localization.common_measurement_units_types(measurementType!)}";
+  }
 }
 
 @freezed

@@ -8,6 +8,10 @@ import 'package:scalesoft_app/providers/box_provider.dart';
 @singleton
 class AppSettingsDbProvider extends BoxProvider<AppSettings> {
   @override
+  @PostConstruct(preResolve: true)
+  Future<void> init() async => super.init();
+
+  @override
   final String boxName = 'appSettingsBox';
 
   @override

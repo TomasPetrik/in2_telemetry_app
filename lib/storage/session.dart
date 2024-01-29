@@ -7,27 +7,28 @@ import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
+import 'package:scalesoft_app/managers/background_measurement_manager.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 @singleton
 class Session {
+  final AccountDbProvider _accountDbProvider;
+  final PendingResultsDbProvider _pendingResultsDbProvider;
+
   AuthToken? token;
   List<UserPermission>? userPermissions;
   Hospital? hospital;
   UserAccount? userAccount;
   bool? isMultiUser;
-  final AccountDbProvider _accountDbProvider;
 
   //For history and future details restoration
   List<UserEvaluationDay>? usersEvaluationsDayRestoration;
   //For calendar restoration
   DateTime? preSelectedDtRestoration;
-
-  final PendingResultsDbProvider _pendingResultsDbProvider;
-
   Session(this._accountDbProvider, this._pendingResultsDbProvider);
 
   bool supportMultiUser() {
@@ -111,7 +112,7 @@ class Session {
     return offlineResultsConverted;
   }
 
-  SyncState detectSyncState() {
+  Future<SyncState> detectSyncState() async {
     List<UserAccount> userAccounts = getSessionAccounts();
 
     //1. check if any user session was expired
@@ -171,6 +172,10 @@ class Session {
         userAccount,
         changedCarePlans[0],
       );
+    }
+
+    if(await (getIt<BackgroundMeasurementManager>().isSetupRequired())){
+      return const SyncState.newWatchAssigned();
     }
 
     return const SyncState.synced();

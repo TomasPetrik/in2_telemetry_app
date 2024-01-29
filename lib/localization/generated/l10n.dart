@@ -201,6 +201,16 @@ class I10n {
     );
   }
 
+  /// `Vyšší než systolický`
+  String get common_diastolic_gt_systolic {
+    return Intl.message(
+      'Vyšší než systolický',
+      name: 'common_diastolic_gt_systolic',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Nenaměřeno`
   String get common_not_measured {
     return Intl.message(
@@ -321,13 +331,13 @@ class I10n {
     );
   }
 
-  /// `{actionButtonType, select, regular{akčního tlačítka} startButton{tlačítka START} other{ }}`
+  /// `{actionButtonType, select, regular{akčního tlačítka} startButton{START|STOP} other{ }}`
   String common_action_button_label(Object actionButtonType) {
     return Intl.select(
       actionButtonType,
       {
         'regular': 'akčního tlačítka',
-        'startButton': 'tlačítka START',
+        'startButton': 'START|STOP',
         'other': ' ',
       },
       name: 'common_action_button_label',
@@ -456,7 +466,7 @@ class I10n {
     );
   }
 
-  /// `{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} other{Jiný}}`
+  /// `{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} shortnessOfBreath{Dušnost} overallHealth{Celkový zdravotní stav} other{Jiný}}`
   String common_measurement_types(Object measurementType) {
     return Intl.select(
       measurementType,
@@ -469,6 +479,8 @@ class I10n {
         'heartRate': 'Srdeční tep',
         'ews': 'Ews',
         'respiratoryRate': 'Dechová frekvence',
+        'shortnessOfBreath': 'Dušnost',
+        'overallHealth': 'Celkový zdravotní stav',
         'other': 'Jiný',
       },
       name: 'common_measurement_types',
@@ -477,7 +489,7 @@ class I10n {
     );
   }
 
-  /// `{measurementType, select, temperature{Teploty} bloodPressure{Krevního tlaku} oxygenSaturation{Saturace kyslíku} steps{Kroků} globalPosition{Pozice} heartRate{Srdečního tepu} ews{Ews} respiratoryRate{Dechové frekvence} other{Jiný}}`
+  /// `{measurementType, select, temperature{Teploty} bloodPressure{Krevního tlaku} oxygenSaturation{Saturace kyslíku} steps{Kroků} globalPosition{Pozice} heartRate{Srdečního tepu} ews{Ews} respiratoryRate{Dechové frekvence} shortnessOfBreath{Dušnosti} overallHealth{Celkového zdravotního stavu} other{Jiný}}`
   String common_measurement_types_genitive(Object measurementType) {
     return Intl.select(
       measurementType,
@@ -490,6 +502,8 @@ class I10n {
         'heartRate': 'Srdečního tepu',
         'ews': 'Ews',
         'respiratoryRate': 'Dechové frekvence',
+        'shortnessOfBreath': 'Dušnosti',
+        'overallHealth': 'Celkového zdravotního stavu',
         'other': 'Jiný',
       },
       name: 'common_measurement_types_genitive',
@@ -589,6 +603,16 @@ class I10n {
     return Intl.message(
       'Přidat účet',
       name: 'configuration_screen_add_account',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nastavit synchronizaci hodinek`
+  String get configuration_screen_setup_watch {
+    return Intl.message(
+      'Nastavit synchronizaci hodinek',
+      name: 'configuration_screen_setup_watch',
       desc: '',
       args: [],
     );
@@ -724,10 +748,10 @@ class I10n {
     );
   }
 
-  /// `Odstranit účet`
+  /// `Odstranit účet z aplikace`
   String get user_detail_screen_remove_account {
     return Intl.message(
-      'Odstranit účet',
+      'Odstranit účet z aplikace',
       name: 'user_detail_screen_remove_account',
       desc: '',
       args: [],
@@ -994,6 +1018,36 @@ class I10n {
     );
   }
 
+  /// `Povolení lokalizační služby`
+  String get dialog_req_localization_service_title {
+    return Intl.message(
+      'Povolení lokalizační služby',
+      name: 'dialog_req_localization_service_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aplikace vyžaduje povolení používat lokalizační službu na vyhledávaní zažírení v okolí.`
+  String get dialog_req_localization_service_description {
+    return Intl.message(
+      'Aplikace vyžaduje povolení používat lokalizační službu na vyhledávaní zažírení v okolí.',
+      name: 'dialog_req_localization_service_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Přejít do nastavení`
+  String get dialog_req_localization_service_go_to_settings {
+    return Intl.message(
+      'Přejít do nastavení',
+      name: 'dialog_req_localization_service_go_to_settings',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Povolení notifikací`
   String get dialog_req_notifications_title {
     return Intl.message(
@@ -1024,10 +1078,10 @@ class I10n {
     );
   }
 
-  /// `Odstranit účet`
+  /// `Odstranit účet z aplikace`
   String get dialog_account_removal_confirmation_title {
     return Intl.message(
-      'Odstranit účet',
+      'Odstranit účet z aplikace',
       name: 'dialog_account_removal_confirmation_title',
       desc: '',
       args: [],
@@ -1382,6 +1436,26 @@ class I10n {
     );
   }
 
+  /// `Zapůjčené zařízení`
+  String get metering_screen_lended_devices {
+    return Intl.message(
+      'Zapůjčené zařízení',
+      name: 'metering_screen_lended_devices',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vlastní zařízení`
+  String get metering_screen_personal_devices {
+    return Intl.message(
+      'Vlastní zařízení',
+      name: 'metering_screen_personal_devices',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Přidat zařízení`
   String get add_device_screen_title {
     return Intl.message(
@@ -1422,7 +1496,7 @@ class I10n {
     );
   }
 
-  /// `{measurementUnitName, select, systolic{Systolický} diastolic{Diastolický} temperature{Teplota} pulse{Puls} oxygenSaturation{Saturace kyslíku} respiratoryRate{Dechová frekvence} steps{Kroky} lat{Lat} lng{Lng} ews{Ews} other{Jiný}}`
+  /// `{measurementUnitName, select, systolic{Systolický} diastolic{Diastolický} temperature{Teplota} pulse{Puls} oxygenSaturation{Saturace kyslíku} respiratoryRate{Dechová frekvence} steps{Kroky} lat{Lat} lng{Lng} ews{Ews} shortnessOfBreath{Dušnost} overallHealth{Celkový zdravotní stav} other{Jiný}}`
   String common_measurement_units_names(Object measurementUnitName) {
     return Intl.select(
       measurementUnitName,
@@ -1437,6 +1511,8 @@ class I10n {
         'lat': 'Lat',
         'lng': 'Lng',
         'ews': 'Ews',
+        'shortnessOfBreath': 'Dušnost',
+        'overallHealth': 'Celkový zdravotní stav',
         'other': 'Jiný',
       },
       name: 'common_measurement_units_names',
@@ -1445,7 +1521,7 @@ class I10n {
     );
   }
 
-  /// `{measurementType, select, temperature{°C} bloodPressure{mmHg} oxygenSaturation{%} heartRate{TF} other{ }}`
+  /// `{measurementType, select, temperature{°C} bloodPressure{mmHg} oxygenSaturation{%} heartRate{tepů/min} other{}}`
   String common_measurement_units_types(Object measurementType) {
     return Intl.select(
       measurementType,
@@ -1453,8 +1529,8 @@ class I10n {
         'temperature': '°C',
         'bloodPressure': 'mmHg',
         'oxygenSaturation': '%',
-        'heartRate': 'TF',
-        'other': ' ',
+        'heartRate': 'tepů/min',
+        'other': '',
       },
       name: 'common_measurement_units_types',
       desc: 'Measurement units',
@@ -1813,6 +1889,16 @@ class I10n {
     );
   }
 
+  /// `Hledání tlakoměru...`
+  String get find_device_screen_searching_tonometer {
+    return Intl.message(
+      'Hledání tlakoměru...',
+      name: 'find_device_screen_searching_tonometer',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Čekáme až se změříte...`
   String get find_device_screen_waiting_on_measurement {
     return Intl.message(
@@ -1823,30 +1909,30 @@ class I10n {
     );
   }
 
-  /// `Zařízení připojeno`
+  /// `Tlakoměr připojen`
   String get find_device_screen_device_connected {
     return Intl.message(
-      'Zařízení připojeno',
+      'Tlakoměr připojen',
       name: 'find_device_screen_device_connected',
       desc: '',
       args: [],
     );
   }
 
-  /// `Probíhá synchronizace výsledků...`
+  /// `Probíhá přenos dat z tlakoměru...`
   String get find_device_screen_sync_results {
     return Intl.message(
-      'Probíhá synchronizace výsledků...',
+      'Probíhá přenos dat z tlakoměru...',
       name: 'find_device_screen_sync_results',
       desc: '',
       args: [],
     );
   }
 
-  /// `Probíhá párování zařízení...`
+  /// `Probíhá párování s tlakoměrem...`
   String get find_device_screen_pairing_device {
     return Intl.message(
-      'Probíhá párování zařízení...',
+      'Probíhá párování s tlakoměrem...',
       name: 'find_device_screen_pairing_device',
       desc: '',
       args: [],
@@ -1863,40 +1949,40 @@ class I10n {
     );
   }
 
-  /// `Počkejte, až vás zařízení vyzve k párování`
+  /// `Počkejte, na výzvu k párování`
   String get find_device_screen_step2_p {
     return Intl.message(
-      'Počkejte, až vás zařízení vyzve k párování',
+      'Počkejte, na výzvu k párování',
       name: 'find_device_screen_step2_p',
       desc: '',
       args: [],
     );
   }
 
-  /// `Párování zařízení`
+  /// `Párování s tlakoměrem`
   String get find_device_screen_step3_p {
     return Intl.message(
-      'Párování zařízení',
+      'Párování s tlakoměrem',
       name: 'find_device_screen_step3_p',
       desc: '',
       args: [],
     );
   }
 
-  /// `Spusťte na zařízení měření pomocí {actionButtonLabel} a počkejte na konec měření`
+  /// `Vypněte tlakoměr pomocí tlačítka {actionButtonLabel}, poté spusťte měření dalším stisknutím tlačítka {actionButtonLabel} a počkejte na jeho dokončení`
   String find_device_screen_step4_p(String actionButtonLabel) {
     return Intl.message(
-      'Spusťte na zařízení měření pomocí $actionButtonLabel a počkejte na konec měření',
+      'Vypněte tlakoměr pomocí tlačítka $actionButtonLabel, poté spusťte měření dalším stisknutím tlačítka $actionButtonLabel a počkejte na jeho dokončení',
       name: 'find_device_screen_step4_p',
       desc: '',
       args: [actionButtonLabel],
     );
   }
 
-  /// `Počkejte na synchronizaci výsledků`
+  /// `Počkejte na přenesení výsledků z tlakoměru`
   String get find_device_screen_step5_p {
     return Intl.message(
-      'Počkejte na synchronizaci výsledků',
+      'Počkejte na přenesení výsledků z tlakoměru',
       name: 'find_device_screen_step5_p',
       desc: '',
       args: [],
@@ -1913,10 +1999,10 @@ class I10n {
     );
   }
 
-  /// `Spusťte na zařízení měření pomocí {actionButtonLabel} a počkejte na konec měření`
+  /// `Spusťte na tlakoměru měření pomocí tlačítka {actionButtonLabel} a počkejte na jeho dokončení`
   String find_device_screen_step2(String actionButtonLabel) {
     return Intl.message(
-      'Spusťte na zařízení měření pomocí $actionButtonLabel a počkejte na konec měření',
+      'Spusťte na tlakoměru měření pomocí tlačítka $actionButtonLabel a počkejte na jeho dokončení',
       name: 'find_device_screen_step2',
       desc: '',
       args: [actionButtonLabel],
@@ -1933,20 +2019,20 @@ class I10n {
     );
   }
 
-  /// `Počkejte na synchronizaci výsledků`
+  /// `Počkejte na přenesení výsledků z tlakoměru`
   String get find_device_screen_step4 {
     return Intl.message(
-      'Počkejte na synchronizaci výsledků',
+      'Počkejte na přenesení výsledků z tlakoměru',
       name: 'find_device_screen_step4',
       desc: '',
       args: [],
     );
   }
 
-  /// `Stránky nemocnice o zařízení`
+  /// `Stránky nemocnice o tlakoměru`
   String get find_device_screen_device_reference {
     return Intl.message(
-      'Stránky nemocnice o zařízení',
+      'Stránky nemocnice o tlakoměru',
       name: 'find_device_screen_device_reference',
       desc: '',
       args: [],
@@ -2008,6 +2094,36 @@ class I10n {
     return Intl.message(
       'Povolit',
       name: 'find_device_screen_not_granted_bt_btn_settings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zařízení nenalezeno`
+  String get find_device_not_found_title {
+    return Intl.message(
+      'Zařízení nenalezeno',
+      name: 'find_device_not_found_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pro opětovné vyhledávání stisknete na tlačítko opakovat`
+  String get find_device_not_found_desc {
+    return Intl.message(
+      'Pro opětovné vyhledávání stisknete na tlačítko opakovat',
+      name: 'find_device_not_found_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Opakovat`
+  String get find_device_repeat_search {
+    return Intl.message(
+      'Opakovat',
+      name: 'find_device_repeat_search',
       desc: '',
       args: [],
     );
@@ -2083,6 +2199,16 @@ class I10n {
     );
   }
 
+  /// `Odeslat výsledek měření`
+  String get measurement_summary_screen_send_results {
+    return Intl.message(
+      'Odeslat výsledek měření',
+      name: 'measurement_summary_screen_send_results',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Pozor, vaše naměřené hodnoty překročily nastavené meze, kontaktujte vašeho lékaře!`
   String get measurement_summary_screen_exceeded_values {
     return Intl.message(
@@ -2103,10 +2229,10 @@ class I10n {
     );
   }
 
-  /// `Výsledky měření {measurementType} v {unitType}`
+  /// `Výsledky měření {measurementType} {unitType}`
   String chart_screen_title(String measurementType, String unitType) {
     return Intl.message(
-      'Výsledky měření $measurementType v $unitType',
+      'Výsledky měření $measurementType $unitType',
       name: 'chart_screen_title',
       desc: '',
       args: [measurementType, unitType],
@@ -2133,23 +2259,35 @@ class I10n {
     );
   }
 
-  /// `Registrovat zařízení`
-  String get register_device_search_screen_title {
-    return Intl.message(
-      'Registrovat zařízení',
-      name: 'register_device_search_screen_title',
-      desc: '',
-      args: [],
+  /// `{devicePurposeName, select, addDevice{Přidat zařízení} registerDevice{Registrovat zařízení} other{Jiný}}`
+  String device_search_screen_purpose_title(Object devicePurposeName) {
+    return Intl.select(
+      devicePurposeName,
+      {
+        'addDevice': 'Přidat zařízení',
+        'registerDevice': 'Registrovat zařízení',
+        'other': 'Jiný',
+      },
+      name: 'device_search_screen_purpose_title',
+      desc: 'Device purpose names',
+      args: [devicePurposeName],
     );
   }
 
-  /// `Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.`
-  String get register_device_search_screen_desc {
-    return Intl.message(
-      'Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.',
-      name: 'register_device_search_screen_desc',
-      desc: '',
-      args: [],
+  /// `{devicePurposeName, select, addDevice{Pro přidání zařízení je potřeba mít Bluetooth v režimu párovaní jenom zařízení, které chcete přidat.} registerDevice{Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.} other{Jiný}}`
+  String device_search_screen_purpose_desc(Object devicePurposeName) {
+    return Intl.select(
+      devicePurposeName,
+      {
+        'addDevice':
+            'Pro přidání zařízení je potřeba mít Bluetooth v režimu párovaní jenom zařízení, které chcete přidat.',
+        'registerDevice':
+            'Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.',
+        'other': 'Jiný',
+      },
+      name: 'device_search_screen_purpose_desc',
+      desc: 'Device purpose description',
+      args: [devicePurposeName],
     );
   }
 
@@ -2194,10 +2332,20 @@ class I10n {
   }
 
   /// `Technický Identifikátor`
-  String get register_device_detail_screen_identificator {
+  String get register_device_detail_screen_identifier {
     return Intl.message(
       'Technický Identifikátor',
-      name: 'register_device_detail_screen_identificator',
+      name: 'register_device_detail_screen_identifier',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bluetooth adresa`
+  String get register_device_detail_screen_bluetooth_address {
+    return Intl.message(
+      'Bluetooth adresa',
+      name: 'register_device_detail_screen_bluetooth_address',
       desc: '',
       args: [],
     );
@@ -2269,6 +2417,225 @@ class I10n {
     return Intl.message(
       'Příručka',
       name: 'manual_screen_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Použité licence`
+  String get licenses_screen_title {
+    return Intl.message(
+      'Použité licence',
+      name: 'licenses_screen_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Detail licence`
+  String get license_detail_screen_title {
+    return Intl.message(
+      'Detail licence',
+      name: 'license_detail_screen_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Použité licence`
+  String get licenses_menu_title {
+    return Intl.message(
+      'Použité licence',
+      name: 'licenses_menu_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Licence použitých knihoven`
+  String get licenses_menu_subtitle {
+    return Intl.message(
+      'Licence použitých knihoven',
+      name: 'licenses_menu_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{shortnessOfBreathValue, select, none{Dýchání bez problémů} low{Občasná dušnost při fyzické námaze} medium{Častější problémy s dušností} high{Velmi špatně se mi dýchá} other{}}`
+  String shortness_of_breath_values(Object shortnessOfBreathValue) {
+    return Intl.select(
+      shortnessOfBreathValue,
+      {
+        'none': 'Dýchání bez problémů',
+        'low': 'Občasná dušnost při fyzické námaze',
+        'medium': 'Častější problémy s dušností',
+        'high': 'Velmi špatně se mi dýchá',
+        'other': '',
+      },
+      name: 'shortness_of_breath_values',
+      desc: 'Shortness of breath values',
+      args: [shortnessOfBreathValue],
+    );
+  }
+
+  /// `{overallHealthValue, select, good{Velmi dobrý} variable{Mírné/občasné zhoršení při fyzické námaze} bad{Setrvalé zhoršení bez příčiny} veryBad{Cítím se velmi špatně} other{}}`
+  String overall_health_values(Object overallHealthValue) {
+    return Intl.select(
+      overallHealthValue,
+      {
+        'good': 'Velmi dobrý',
+        'variable': 'Mírné/občasné zhoršení při fyzické námaze',
+        'bad': 'Setrvalé zhoršení bez příčiny',
+        'veryBad': 'Cítím se velmi špatně',
+        'other': '',
+      },
+      name: 'overall_health_values',
+      desc: 'Overall health values',
+      args: [overallHealthValue],
+    );
+  }
+
+  /// `Nastavit přenos dat z hodinek`
+  String get watch_setup_menu_title {
+    return Intl.message(
+      'Nastavit přenos dat z hodinek',
+      name: 'watch_setup_menu_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nastavení hodinek`
+  String get watch_setup_screen_title {
+    return Intl.message(
+      'Nastavení hodinek',
+      name: 'watch_setup_screen_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pro správnou funkčnost přenosu dat z hodinek je nutné udělit aplikaci následující oprávnění:`
+  String get watch_setup_explanation {
+    return Intl.message(
+      'Pro správnou funkčnost přenosu dat z hodinek je nutné udělit aplikaci následující oprávnění:',
+      name: 'watch_setup_explanation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{permission, select, notification{Odesílání oznámení} bluetoothConnect{Připojování k Bluetooth zařízením} ignoreBatteryOptimizations{Běh aplikace na pozadí} other{ }}`
+  String permission_names(Object permission) {
+    return Intl.select(
+      permission,
+      {
+        'notification': 'Odesílání oznámení',
+        'bluetoothConnect': 'Připojování k Bluetooth zařízením',
+        'ignoreBatteryOptimizations': 'Běh aplikace na pozadí',
+        'other': ' ',
+      },
+      name: 'permission_names',
+      desc: 'Permission names',
+      args: [permission],
+    );
+  }
+
+  /// `{permission, select, notification{Oprávnění odesílat oznámení je nutné pro průběžnou komunikaci aplikace s hodinkami.} bluetoothConnect{Oprávnění připojovat se k Bluetooth zařízením je nutné pro přenos měření z hodinek.} ignoreBatteryOptimizations{Oprávnění běžet na pozadí nám pomáhá zajistit, aby přenos dat správně pracoval, i když aplikace není spuštěná.} other{ }}`
+  String permission_explanations(Object permission) {
+    return Intl.select(
+      permission,
+      {
+        'notification':
+            'Oprávnění odesílat oznámení je nutné pro průběžnou komunikaci aplikace s hodinkami.',
+        'bluetoothConnect':
+            'Oprávnění připojovat se k Bluetooth zařízením je nutné pro přenos měření z hodinek.',
+        'ignoreBatteryOptimizations':
+            'Oprávnění běžet na pozadí nám pomáhá zajistit, aby přenos dat správně pracoval, i když aplikace není spuštěná.',
+        'other': ' ',
+      },
+      name: 'permission_explanations',
+      desc: 'Permission explanations',
+      args: [permission],
+    );
+  }
+
+  /// `Pro aktivaci přenosu dat musí být přiřazené zařízení zapnuté a v dosahu telefonu.`
+  String get watch_setup_turn_on_devices {
+    return Intl.message(
+      'Pro aktivaci přenosu dat musí být přiřazené zařízení zapnuté a v dosahu telefonu.',
+      name: 'watch_setup_turn_on_devices',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Po udělení oprávnění prosím aktivujte periodický přenos dat:`
+  String get watch_setup_turn_on_synchronization {
+    return Intl.message(
+      'Po udělení oprávnění prosím aktivujte periodický přenos dat:',
+      name: 'watch_setup_turn_on_synchronization',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Aktivovat periodický přenos dat`
+  String get watch_synchronization_toggle_label {
+    return Intl.message(
+      'Aktivovat periodický přenos dat',
+      name: 'watch_synchronization_toggle_label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Přenos dat z hodinek se nezdařil. Je aktivní bluetooth telefonu, jsou hodinky zapnuté a v dosahu?`
+  String get watch_synchronization_failed {
+    return Intl.message(
+      'Přenos dat z hodinek se nezdařil. Je aktivní bluetooth telefonu, jsou hodinky zapnuté a v dosahu?',
+      name: 'watch_synchronization_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nastavení hodinek se nezdařilo. Ujistěte se, že aplikace má potřebná oprávnění, je aktivní bluetooth telefonu a hodinky jsou zapnuté a v dosahu. Potom zkuste akci opakovat.`
+  String get watch_setup_failed {
+    return Intl.message(
+      'Nastavení hodinek se nezdařilo. Ujistěte se, že aplikace má potřebná oprávnění, je aktivní bluetooth telefonu a hodinky jsou zapnuté a v dosahu. Potom zkuste akci opakovat.',
+      name: 'watch_setup_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Je aktivní přenos dat pouze z některých hodinek. Zkuste prosím aktivaci provést znovu. Ujistěte se, že všechny Vaše přiřazené hodinky jsou v dosahu.`
+  String get watch_setup_partial {
+    return Intl.message(
+      'Je aktivní přenos dat pouze z některých hodinek. Zkuste prosím aktivaci provést znovu. Ujistěte se, že všechny Vaše přiřazené hodinky jsou v dosahu.',
+      name: 'watch_setup_partial',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Konfigurace hodinek`
+  String get new_watch_assigned_title {
+    return Intl.message(
+      'Konfigurace hodinek',
+      name: 'new_watch_assigned_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Máte přiřazené hodinky. Aktivujte prosím automatický přenos naměřených dat z hodinek v nastavení aplikace.`
+  String get new_watch_assigned_description {
+    return Intl.message(
+      'Máte přiřazené hodinky. Aktivujte prosím automatický přenos naměřených dat z hodinek v nastavení aplikace.',
+      name: 'new_watch_assigned_description',
       desc: '',
       args: [],
     );

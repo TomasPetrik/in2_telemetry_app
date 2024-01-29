@@ -15,7 +15,7 @@ import 'package:scalesoft_app/ui/routers/routes/calendar_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/screens/navigation_screen.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
-import 'package:scalesoft_app/ui/widgets/blured_user_app_bar.dart';
+import 'package:scalesoft_app/ui/widgets/blurred_user_app_bar.dart';
 import 'package:scalesoft_app/ui/widgets/care_plans_evaluation_header.dart';
 import 'package:scalesoft_app/ui/widgets/no_plans_placeholder.dart';
 import 'package:scalesoft_app/ui/widgets/results_list.dart';
@@ -94,10 +94,13 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                     state.currentCarePlans == null) {
                   return const SizedBox.shrink();
                 } else {
+                  /*
                   final supportedMeasurementTypes =
                       CarePlanHelper.getMeasurementTypesByResults(
                     state.results!,
                   );
+                  */
+                  final allMeasurementTypes = state.allMeasurementTypes!;
 
                   return NavigationScreen(
                     onTabSelected: (tabIndex) {
@@ -110,7 +113,7 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                       } else {
                         resultsBloc.add(
                           ResultsBlocEvent.curentPlansChange(
-                            supportedMeasurementTypes.toList()[tabIndex - 1],
+                            allMeasurementTypes.toList()[tabIndex - 1],
                           ),
                         );
                       }
@@ -136,14 +139,14 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                               openWhenSelector: openWhenSelector,
                             ),
                     ],
-                    noContentWidget: supportedMeasurementTypes.isEmpty
+                    noContentWidget: allMeasurementTypes.isEmpty
                         ? NoContentPlaceholder(
                             userAccount: session.isMultiUser != true
                                 ? sessionAccounts[0]
                                 : null,
                             enterMeasurementWithoutPlan: false,
                             supportedMeasurementTypes:
-                                supportedMeasurementTypes,
+                                allMeasurementTypes,
                             noContentType: session.isMultiUser != true &&
                                     !sessionAccounts[0].viewOwnMeasurementData
                                 ? NoContentType.notAllowedSeeOwnMeasurements
@@ -161,15 +164,15 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                       ],
                     ),
                     tabs: [
-                      if (supportedMeasurementTypes.length > 1) ...{
+                      if (allMeasurementTypes.length > 1) ...{
                         NavigationTabBarItem(
                           label: localization.dashboard_screen_all,
                           slivers: [
                             ResultsList(
                               dayDt: state.selectedWhenPeriod ==
                                       ResultsWhenPeriod.today
-                                  ? DateTime.now().getTodayMidnight()
-                                  : DateTime.now().getYesterdayMidnight(),
+                                  ? DateTime.now().date
+                                  : DateTime.now().yesterday,
                               isMultiUser: getIt<Session>().isMultiUser == true,
                               mResults: state.results!,
                               canOpenChart: true,
@@ -178,7 +181,7 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                           bottomSlivers: [],
                         ),
                       },
-                      ...supportedMeasurementTypes
+                      ...allMeasurementTypes
                           .map(
                             (measurementType) => NavigationTabBarItem(
                               label: localization.common_measurement_types(
@@ -188,8 +191,8 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                                 ResultsList(
                                   dayDt: state.selectedWhenPeriod ==
                                           ResultsWhenPeriod.today
-                                      ? DateTime.now().getTodayMidnight()
-                                      : DateTime.now().getYesterdayMidnight(),
+                                      ? DateTime.now().date
+                                      : DateTime.now().yesterday,
                                   isMultiUser:
                                       getIt<Session>().isMultiUser == true,
                                   mResults: state.results!,
@@ -209,7 +212,7 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
               top: 0,
               left: 0,
               right: 0,
-              child: BluredUserAppBar(),
+              child: BlurredUserAppBar(),
             ),
           ],
         );

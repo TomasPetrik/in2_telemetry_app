@@ -3,7 +3,6 @@ import 'package:hive/hive.dart';
 
 part 'report.freezed.dart';
 part 'report.g.dart';
-part 'report.hive.dart';
 
 @freezed
 class Report with _$Report {

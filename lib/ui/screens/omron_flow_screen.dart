@@ -8,9 +8,10 @@ import 'package:scalesoft_app/bloc/omron/omron_connection_bloc.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_bloc_event.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/screens/synced_result.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
-import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
+import 'package:scalesoft_app/ui/widgets/blurred_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/device_progress.dart';
 import 'package:scalesoft_app/ui/widgets/process_item.dart';
 import 'package:scalesoft_app/ui/widgets/warning_item.dart';
@@ -30,8 +31,9 @@ class OmronFlowScreen extends StatefulWidget {
   State<OmronFlowScreen> createState() => _OmronFlowScreenState();
 }
 
-class _OmronFlowScreenState extends State<OmronFlowScreen> {
-  late final OmronConnectionBloc omronConnectionBloc;
+class _OmronFlowScreenState extends State<OmronFlowScreen>
+    with BottomSheetMixin, WidgetsBindingObserver {
+  final OmronConnectionBloc omronConnectionBloc = getIt<OmronConnectionBloc>();
   late final MeasurementTypeContract measurementType;
   late final Device device;
 
@@ -40,13 +42,35 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
       (device.deviceIdentifier == null || device.wasPaired != true);
 
   @override
-  void initState() {
-    omronConnectionBloc = getIt<OmronConnectionBloc>();
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    debugPrint('didChangeAppLifecycleState ${state.toString()}');
 
+    if (state == AppLifecycleState.resumed) {
+      if (omronConnectionBloc.shouldRequestPermission == true) {
+        omronConnectionBloc.add(const OmronConnectionBlocEvent.checkHwState());
+      }
+    }
+  }
+
+  @override
+  void initState() {
     device = widget.device;
     measurementType = widget.measurementType;
-
+    omronConnectionBloc.add(
+      OmronConnectionBlocEvent.init(
+        widget.userId,
+        measurementType,
+        device,
+      ),
+    );
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   Future<bool> _onWillPop() async {
@@ -62,39 +86,60 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
         child: Stack(
           children: [
             Positioned.fill(
-              child: BlocBuilder<OmronConnectionBloc, OmronConnectionState>(
-                bloc: omronConnectionBloc
-                  ..add(
-                    OmronConnectionBlocEvent.init(
-                      widget.userId,
-                      measurementType,
-                      device,
-                    ),
-                  ),
+              child: BlocConsumer<OmronConnectionBloc, OmronConnectionState>(
+                bloc: omronConnectionBloc,
                 buildWhen: (previous, current) {
                   final showState = current.whenOrNull(
                         init: () => true,
-                        disabledBt: () => true,
-                        notVerified: (measurementResult) => true,
-                        noBtPermissions: () => true,
-                        searching: () => true,
-                        connected: () => true,
-                        syncing: () => true,
-                        pairing: () => true,
-                        synced: (measurementResult, deviceInfo) => true,
-                        paired: (deviceInfo) => true,
+                        disabledBt: (_) => true,
+                        notVerified: (_, measurementResult) => true,
+                        noBtPermissions: (_) => true,
+                        searching: (_) => true,
+                        connected: (_) => true,
+                        syncing: (_) => true,
+                        pairing: (_) => true,
+                        synced: (timestamp, measurementResult, deviceInfo) =>
+                            true,
+                        paired: (_, deviceInfo) => true,
                       ) ??
                       false;
 
                   return showState;
                 },
+                listener: (context, state) async {
+                  state.whenOrNull(
+                    notFound: (_) async {
+                      await showDevNotFound(context).then((searchAgain) {
+                        if (searchAgain == true) {
+                          omronConnectionBloc.add(
+                            const OmronConnectionBlocEvent.searchDevice(),
+                          );
+                        } else if (searchAgain == false) {
+                          Navigator.of(context).pop();
+                        }
+                      });
+                    },
+                    disabledLocalizationService: (_) {
+                      showLocalizationSettings(context: context)
+                          .then((openLocationSettings) async {
+                        if (openLocationSettings == true) {
+                          await AppSettings.openAppSettings(
+                            type: AppSettingsType.location,
+                          );
+                        } else {
+                          Navigator.of(context).pop();
+                        }
+                      });
+                    },
+                  );
+                },
                 builder: ((context, state) {
                   final deviceStatusWidget = state.whenOrNull(
-                    disabledBt: () {
+                    disabledBt: (_) {
                       return DeviceProgress(
                         header: WarningItem(
-                          title: localization
-                              .find_device_screen_disabled_bt_title,
+                          title:
+                              localization.find_device_screen_disabled_bt_title,
                           description:
                               localization.find_device_screen_disabled_bt_desc,
                           buttonLabel: localization
@@ -114,7 +159,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                         reqPairing: reqModelPairing,
                       );
                     },
-                    noBtPermissions: () {
+                    noBtPermissions: (_) {
                       return DeviceProgress(
                         header: WarningItem(
                           title: localization
@@ -142,8 +187,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                       return DeviceProgress(
                         header: ProcessItem(
                           label: reqModelPairing
-                              ? localization
-                                  .find_device_screen_searching_device
+                              ? localization.find_device_screen_searching_device
                               : localization
                                   .find_device_screen_waiting_on_measurement,
                           processType: ProcessType.inProgress,
@@ -153,12 +197,12 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                         reqPairing: reqModelPairing,
                       );
                     },
-                    searching: () {
+                    searching: (_) {
                       return DeviceProgress(
                         header: ProcessItem(
                           label: reqModelPairing
                               ? localization
-                                  .find_device_screen_searching_device
+                                  .find_device_screen_searching_tonometer
                               : localization
                                   .find_device_screen_waiting_on_measurement,
                           processType: ProcessType.inProgress,
@@ -168,7 +212,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                         reqPairing: reqModelPairing,
                       );
                     },
-                    connected: () {
+                    connected: (_) {
                       return DeviceProgress(
                         header: ProcessItem(
                           label:
@@ -180,20 +224,19 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                         reqPairing: reqModelPairing,
                       );
                     },
-                    notVerified: (hwMeasurementResult) {
+                    notVerified: (_, hwMeasurementResult) {
                       return SyncedResult(
+                        key: ValueKey(hwMeasurementResult.hashCode),
                         userId: widget.userId,
-                        deviceId:
-                            device.deviceIdentifier ?? '${device.localId}',
+                        deviceId: hwMeasurementResult.devId,
                         hwMeasurementResult: hwMeasurementResult,
                         measurementType: measurementType,
                       );
                     },
-                    pairing: () {
+                    pairing: (_) {
                       return DeviceProgress(
                         header: ProcessItem(
-                          label:
-                              localization.find_device_screen_pairing_device,
+                          label: localization.find_device_screen_pairing_device,
                           processType: ProcessType.inProgress,
                         ),
                         device: device,
@@ -201,7 +244,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                         reqPairing: reqModelPairing,
                       );
                     },
-                    paired: (deviceInfo) {
+                    paired: (_, deviceInfo) {
                       return DeviceProgress(
                         header: ProcessItem(
                           label: localization
@@ -213,7 +256,9 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                         reqPairing: reqModelPairing,
                       );
                     },
-                    syncing: () {
+                    syncing: (
+                      _,
+                    ) {
                       return DeviceProgress(
                         header: ProcessItem(
                           label: localization.find_device_screen_sync_results,
@@ -224,11 +269,15 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
                         reqPairing: reqModelPairing,
                       );
                     },
-                    synced: (hwMeasurementResult, deviceInfo) {
+                    synced: (
+                      timestamp,
+                      hwMeasurementResult,
+                      deviceInfo,
+                    ) {
                       return SyncedResult(
+                        key: ValueKey(timestamp),
                         userId: widget.userId,
-                        deviceId:
-                            device.deviceIdentifier ?? '${device.localId}',
+                        deviceId: hwMeasurementResult.devId,
                         hwMeasurementResult: hwMeasurementResult,
                         measurementType: measurementType,
                         deviceInfo: deviceInfo,
@@ -247,7 +296,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> {
               top: 0,
               left: 0,
               right: 0,
-              child: BluredScaleAppBar(
+              child: BlurredScaleAppBar(
                 title: device.visibleName ?? '',
                 subTitle: '${localization.common_measurement} '
                     '${localization.common_measurement_types_genitive(measurementType.name).toLowerCase()}',

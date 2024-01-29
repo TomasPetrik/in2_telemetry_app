@@ -14,5 +14,6 @@ class ContentState with _$ContentState {
     String originalLocation,
   ) = _OnDaylightAppearanceChanged;
   const factory ContentState.onUserAdded(UserAccount userAccount) = _UserAdded;
+  const factory ContentState.tryCompleteAuth(Uri uri) = _TryCompleteAuth;
   const factory ContentState.activeMode(Key key) = _ActiveMode;
 }

@@ -14,7 +14,7 @@ import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/storage/session.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/exceptions/invalid_request_exception.dart';
 
 @injectable
@@ -88,7 +88,7 @@ class TokenInterceptor extends Interceptor {
           if (newAuthToken != null) {
             err.requestOptions.headers[HttpHeaders.authorizationHeader] =
                 'Bearer ${newAuthToken.accessToken}';
-            final dio = getIt<Dio>(instanceName: Constants.privateDioName);
+            final dio = getIt<Dio>(instanceName: ConfigurationConstants.privateDioName);
             final response = await dio.fetch(err.requestOptions);
             return handler.resolve(response);
           }

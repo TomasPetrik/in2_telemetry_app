@@ -17,15 +17,9 @@ import 'package:scalesoft_app/data/repositories/care_plan_repository.dart';
 import 'package:scalesoft_app/globals.dart';
 import 'package:scalesoft_app/globals_initialization.dart';
 import 'package:scalesoft_app/locales.dart';
+import 'package:scalesoft_app/managers/background_measurement_manager.dart';
 import 'package:scalesoft_app/model/app_settings.dart';
 import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
-import 'package:scalesoft_app/providers/calendar_evaluation_db_provider.dart';
-import 'package:scalesoft_app/providers/measurements_db_provider.dart';
-import 'package:scalesoft_app/providers/paired_devices_db_provider.dart';
-import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
-import 'package:scalesoft_app/providers/reports_db_provider.dart';
-import 'package:scalesoft_app/providers/session_db_provider.dart';
 import 'package:scalesoft_app/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/report_service.dart';
@@ -33,13 +27,14 @@ import 'package:scalesoft_app/services/sync_service.dart';
 import 'package:scalesoft_app/ui/managers/content_manager.dart';
 import 'package:scalesoft_app/ui/routers/app_router.dart';
 import 'package:scalesoft_app/ui/routers/routes/appearance_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/blank_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/configuration_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/no_user_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_added_route.dart';
 import 'package:scalesoft_app/ui/scale_app.dart';
 import 'package:scalesoft_app/ui/screens/splash_screen.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/extensions/locale_extensions.dart';
 import 'package:scalesoft_app/utils/extensions/theme_mode_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/appearance_helper.dart';
@@ -74,6 +69,14 @@ Future<void> run() async {
   await _main(themeMode: ThemeMode.dark, locale: cs);
 }
 
+Future<void> watchSyncBackgroundTaskImpl() async {
+  await Hive.initFlutter();
+
+  await configureDependencies();
+
+  getIt<BackgroundMeasurementManager>().configureBackgroundServiceMethodCallHandler();
+}
+
 Future<void> _main({
   required final ThemeMode themeMode,
   required final Locale locale,
@@ -93,6 +96,10 @@ Future<void> _main({
       );
     },
     (error, stackTrace) {
+      if (!getIt.isRegistered<ReportService>()) {
+        debugPrintStack(stackTrace: stackTrace, label: error.toString());
+        return;
+      }
       getIt<ReportService>()
           .trackEvent(severity: Severity.error, message: stackTrace.toString());
     },
@@ -137,6 +144,7 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
               '/${ConfigurationRoute.name}/${AppearanceRoute.name}',
           onDaylightAppearanceChanged: (originalLocation) => originalLocation,
           activeMode: (key) => '/${DashboardRoute.name}',
+          tryCompleteAuth: (uri) => '/${BlankRoute.name}',
         );
 
         if (path != null) {
@@ -149,37 +157,15 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
   }
 
   Future<void> init() async {
+    await Hive.initFlutter();
+
     await configureDependencies();
 
-    getIt<Dio>(instanceName: Constants.privateDioName)
+    getIt<Dio>(instanceName: ConfigurationConstants.privateDioName)
         .interceptors
         .add(getIt<TokenInterceptor>());
 
-    await Hive.initFlutter();
-
     final settingsDbProvider = getIt<AppSettingsDbProvider>();
-    await settingsDbProvider.init();
-
-    final accountDbProvider = getIt<AccountDbProvider>();
-    await accountDbProvider.init();
-
-    final pendindResultsDbProvider = getIt<PendingResultsDbProvider>();
-    await pendindResultsDbProvider.init();
-
-    final sessionDbProvider = getIt<SessionDbProvider>();
-    await sessionDbProvider.init();
-
-    final pairedDevicesDbProvider = getIt<PairedDevicesDbProvider>();
-    await pairedDevicesDbProvider.init();
-
-    final calendarEvaluationDbProvider = getIt<CalendarEvaluationDbProvider>();
-    await calendarEvaluationDbProvider.init();
-
-    final measurementDbProvider = getIt<MeasurementsDbProvider>();
-    await measurementDbProvider.init();
-
-    final reportsDbProvider = getIt<ReportsDbProvider>();
-    await reportsDbProvider.init();
 
     var appSettings = settingsDbProvider.read();
     if (appSettings == null) {

@@ -4,7 +4,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 part 'theme_mode_local.freezed.dart';
 part 'theme_mode_local.g.dart';
-part 'theme_mode_local.hive.dart';
 
 @freezed
 class ThemeModeLocal with _$ThemeModeLocal {

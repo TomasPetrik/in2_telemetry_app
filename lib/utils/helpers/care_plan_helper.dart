@@ -38,8 +38,8 @@ class CarePlanHelper {
   }
 
   static bool hasMeasurementsToday(CarePlan plan) {
-    final from = DateTime.now().getStartOfDay();
-    final to = DateTime.now().getEndOfDay();
+    final from = DateTime.now().startOfDay;
+    final to = DateTime.now().endOfDay;
 
     final todayMeasurements = getMeasurements([plan], from, to, []);
     return todayMeasurements.isNotEmpty;
@@ -47,8 +47,8 @@ class CarePlanHelper {
 
   static bool hasMeasurementsYesterday(CarePlan plan) {
     final from =
-        DateTime.now().subtract(const Duration(days: 1)).getStartOfDay();
-    final to = DateTime.now().getStartOfDay();
+        DateTime.now().subtract(const Duration(days: 1)).startOfDay;
+    final to = DateTime.now().startOfDay;
 
     final yesterdayMeasurements = getMeasurements([plan], from, to, []);
     return yesterdayMeasurements.isNotEmpty;
@@ -233,7 +233,7 @@ class CarePlanHelper {
     switch (whenPeriod) {
       case PlanWhenPeriod.today:
         final from = DateTime.now();
-        final to = from.getEndOfDay();
+        final to = from.endOfDay;
         measurements = getMeasurements(
           carePlans,
           from,
@@ -243,9 +243,8 @@ class CarePlanHelper {
         );
         break;
       case PlanWhenPeriod.tomorrow:
-        final from =
-            DateTime.now().add(const Duration(days: 1)).getStartOfDay();
-        final to = from.getEndOfDay();
+        final from = DateTime.now().tomorrow;
+        final to = from.endOfDay;
         measurements = getMeasurements(
           carePlans,
           from,
@@ -278,7 +277,7 @@ class CarePlanHelper {
     List<MeasurementResult> offlineResults,
   ) {
     final from = plan.scheduledStart;
-    final to = DateTime.now().getEndOfDay();
+    final to = DateTime.now().endOfDay;
 
     return getMeasurements([plan], from, to, offlineResults);
   }
@@ -291,8 +290,8 @@ class Calendar {
     required List<MeasurementResult> offlineResults,
     bool all = false,
   }) {
-    final from = dayDt.getStartOfDay();
-    final to = dayDt.getEndOfDay();
+    final from = dayDt.startOfDay;
+    final to = dayDt.endOfDay;
 
     return CarePlanHelper.getMeasurements(
       carePlans,
@@ -409,7 +408,7 @@ class Calendar {
         carePlans.any(
           (x) => x.scheduledEnd == null || x.scheduledEnd!.isAfter(currentDate),
         )) {
-      final to = currentDate.getTomorrowMidnight();
+      final to = currentDate.tomorrow;
 
       final measurements = CarePlanHelper.getMeasurements(
         carePlans,
@@ -422,7 +421,7 @@ class Calendar {
 
       resultSet.addAll(measurements);
 
-      currentDate = currentDate.getTomorrowMidnight();
+      currentDate = currentDate.tomorrow;
     }
     return resultSet.toList();
   }

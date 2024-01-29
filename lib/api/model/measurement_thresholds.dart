@@ -2,14 +2,18 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive/hive.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
+import 'package:scalesoft_app/api/model/measurement/overall_health_value.dart';
+import 'package:scalesoft_app/api/model/measurement/shortness_of_breath_value.dart';
 import 'package:scalesoft_app/api/model/thresholds/blood_pressure_threshold_setting.dart';
 import 'package:scalesoft_app/api/model/thresholds/heart_rate_threshold_setting.dart';
+import 'package:scalesoft_app/api/model/thresholds/overall_health_threshold_settings.dart';
 import 'package:scalesoft_app/api/model/thresholds/oxygen_saturation_threshold_setting.dart';
+import 'package:scalesoft_app/api/model/thresholds/shortness_of_breath_threshold_settings.dart';
 import 'package:scalesoft_app/api/model/thresholds/temperature_threshold_settings.dart';
 
 part 'measurement_thresholds.freezed.dart';
+
 part 'measurement_thresholds.g.dart';
-part 'measurement_thresholds.hive.dart';
 
 @freezed
 class MeasurementThresholds with _$MeasurementThresholds {
@@ -21,6 +25,8 @@ class MeasurementThresholds with _$MeasurementThresholds {
     @HiveField(2) HeartRateThresholdSetting? heartRate,
     @HiveField(3) OxygenSaturationThresholdSetting? oxygenSaturation,
     @HiveField(4) TemperatureThresholdSetting? temperature,
+    @HiveField(5) ShortnessOfBreathThresholdSetting? shortnessOfBreath,
+    @HiveField(6) OverallHealthThresholdSetting? overallHealth,
   ) = _MeasurementThresholds;
 
   factory MeasurementThresholds.fromJson(Map<String, dynamic> json) =>
@@ -61,8 +67,26 @@ class MeasurementThresholds with _$MeasurementThresholds {
         (temperature?.max != null && temperatureValue > temperature!.max!);
   }
 
+  bool _exceededShortnessOfBreath(ShortnessOfBreathValue? value) {
+    if (value == null) {
+      return false;
+    }
+
+    return shortnessOfBreath?.max != null &&
+        value.index > shortnessOfBreath!.max!.index;
+  }
+
+  bool _exceededOverallHealth(OverallHealthValue? value) {
+    if (value == null) {
+      return false;
+    }
+
+    return overallHealth?.max != null &&
+        value.index > overallHealth!.max!.index;
+  }
+
   bool exceededValues(Measurement measurement) {
-    final measurementType = measurement.measurementType!;
+    final measurementType = measurement.measurementType;
     switch (measurementType) {
       case MeasurementTypeContract.bloodPressure:
         return _exceededBloodPressure(
@@ -71,19 +95,19 @@ class MeasurementThresholds with _$MeasurementThresholds {
         );
 
       case MeasurementTypeContract.heartRate:
-        return _exceededHeartRate(
-          measurement.heartRate!,
-        );
+        return _exceededHeartRate(measurement.heartRate!);
 
       case MeasurementTypeContract.oxygenSaturation:
-        return _exceededOxygenSaturation(
-          measurement.oxygenSaturation!,
-        );
+        return _exceededOxygenSaturation(measurement.oxygenSaturation!);
 
       case MeasurementTypeContract.temperature:
-        return _exceededTemperature(
-          measurement.temperature!,
-        );
+        return _exceededTemperature(measurement.temperature!);
+
+      case MeasurementTypeContract.shortnessOfBreath:
+        return _exceededShortnessOfBreath(measurement.shortnessOfBreath!);
+
+      case MeasurementTypeContract.overallHealth:
+        return _exceededOverallHealth(measurement.overallHealth!);
 
       default:
         return false;

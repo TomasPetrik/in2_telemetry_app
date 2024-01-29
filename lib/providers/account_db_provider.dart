@@ -8,7 +8,7 @@ import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_version.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
-import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaulation_aggregated.dart';
+import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation_aggregated.dart';
 import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/api/model/care_plan/when_time_value.dart';
 import 'package:scalesoft_app/api/model/device_model.dart';
@@ -17,12 +17,16 @@ import 'package:scalesoft_app/api/model/hospital.dart';
 import 'package:scalesoft_app/api/model/measurement/composed_double_value.dart';
 import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/model/measurement/overall_health_value.dart';
+import 'package:scalesoft_app/api/model/measurement/shortness_of_breath_value.dart';
 import 'package:scalesoft_app/api/model/measurement_thresholds.dart';
 import 'package:scalesoft_app/api/model/settings/time_setting.dart';
 import 'package:scalesoft_app/api/model/template_time_set.dart';
 import 'package:scalesoft_app/api/model/thresholds/blood_pressure_threshold_setting.dart';
 import 'package:scalesoft_app/api/model/thresholds/heart_rate_threshold_setting.dart';
+import 'package:scalesoft_app/api/model/thresholds/overall_health_threshold_settings.dart';
 import 'package:scalesoft_app/api/model/thresholds/oxygen_saturation_threshold_setting.dart';
+import 'package:scalesoft_app/api/model/thresholds/shortness_of_breath_threshold_settings.dart';
 import 'package:scalesoft_app/api/model/thresholds/temperature_threshold_settings.dart';
 import 'package:scalesoft_app/api/model/user.dart';
 import 'package:scalesoft_app/model/user_account.dart';
@@ -30,6 +34,10 @@ import 'package:scalesoft_app/providers/box_provider.dart';
 
 @singleton
 class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
+  @override
+  @PostConstruct(preResolve: true)
+  Future<void> init() async => super.init();
+
   @override
   final String boxName = 'accountBox';
 
@@ -69,6 +77,13 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
     Hive.registerAdapter(HeartRateThresholdSettingAdapter());
     Hive.registerAdapter(OxygenSaturationThresholdSettingAdapter());
     Hive.registerAdapter(TemperatureThresholdSettingAdapter());
+    Hive.registerAdapter(ShortnessOfBreathThresholdSettingAdapter());
+    Hive.registerAdapter(OverallHealthThresholdSettingAdapter());
+    Hive.registerAdapter(ShortnessOfBreathValueAdapter());
+    Hive.registerAdapter(OverallHealthValueAdapter());
+    Hive.registerAdapter(MeasurementFlowAdapter());
+    Hive.registerAdapter(ActionButtonTypeAdapter());
+    Hive.registerAdapter(DeviceModelTypeAdapter());
   }
 
   @override
@@ -161,7 +176,7 @@ class AccountDbProvider extends BoxProvider<UserAccount> implements AccountDb {
               .compareTo(b.lastActiveIn!.millisecondsSinceEpoch),
         );
 
-      return lastActiveAccounts.last;
+      return lastActiveAccounts.lastOrNull;
     } catch (_) {
       return null;
     }

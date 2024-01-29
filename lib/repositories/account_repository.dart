@@ -3,6 +3,7 @@ import 'package:scalesoft_app/api/client/account_api_client.dart';
 import 'package:scalesoft_app/api/model/auth_token.dart';
 import 'package:scalesoft_app/api/model/report/report_request.dart';
 import 'package:scalesoft_app/api/model/user_info.dart';
+import 'package:scalesoft_app/config.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/storage/session.dart';
 
@@ -29,6 +30,7 @@ class AccountRepository {
     return accountApiClient.sendUserAppReports(
       userAccount.hospital!.authData.baseUrl,
       reportRequest,
+      Config.value.logEndpointSecret,
     );
   }
 }

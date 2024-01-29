@@ -35,18 +35,8 @@ V prípade používania VS Code IDE stačí prejsť do časti **Run and Debug**,
 
 Alebo spustenie pomocou príkazového riadku:
 
-  
-
-  
-
 1. flutter run --debug,
-
-  
-
 2. flutter run --profile,
-
-  
-
 3. flutter run --release
 
   
@@ -103,19 +93,18 @@ Po pridaní akejkoľvek novej knižnice do súboru `pubspec.yaml` nezabudnúť s
 
   
 
-V súbore `lib/utils/constants.dart` sa nachádzajú nasledujúce parametre:
+V súbore `lib/constants/configuration_constants.dart` sa nachádzajú nasledujúce parametre:
 
   
 
-| Parametre | Význam | Prednastavená hodnota |
-|--|--|--|
-| autoSyncIntervalMinutes | Periodické načitávanie plánov na pozadí v minútach. | 15 |
-| defaultLat / defaultLng | Prednastavená poloha (Praha), ktorá sa použije pri automatickom prepínaní režimu Light / Dark pri východe / západe slnka pokiaľ je zakázané načítať polohu zariadenia. | 50.08804 / 14.42076 |
-| clientSecret | Týka sa prihlasovania OAuth2 |'cqWFWo9zYQHFh38kS8VC'|
-| clientId | Týka sa prihlasovania OAuth2 |'MobileApp' |
-| scopes | Týka sa prihlasovania OAuth2 |[openid,..] |
-| redirectUrl | Týka sa prihlasovania OAuth2 |'cz.scalesoft.tlm://auth-callback' |
-| redirectUrl | Týka sa prihlasovania OAuth2 | |
+| Parametre               | Význam                                              | Prednastavená hodnota              |
+|-------------------------|-----------------------------------------------------|------------------------------------|
+| autoSyncIntervalMinutes | Periodické načitávanie plánov na pozadí v minútach. | 15                                 |
+| clientSecret            | Týka sa prihlasovania OAuth2                        | 'cqWFWo9zYQHFh38kS8VC'             |
+| clientId                | Týka sa prihlasovania OAuth2                        | 'MobileApp'                        |
+| scopes                  | Týka sa prihlasovania OAuth2                        | [openid,..]                        |
+| redirectUrl             | Týka sa prihlasovania OAuth2                        | 'cz.scalesoft.tlm://auth-callback' |
+| redirectUrl             | Týka sa prihlasovania OAuth2                        |                                    |
 
   
 
@@ -215,28 +204,9 @@ V lib`/utils/constants.dart` je zoznam podporovaných zariadení `supportedMeasu
 
 ## Verziovanie aplikácie:
 
-  
-
-  
-
 1. Nastavenie poznámok, ktoré popisujú posledné zmeny v súbore `release_notes.json`,
-
-  
-
-  
-
 2. Zvýšenie verzie v súbore `pubspec.yaml` napr, version: **1.0.99+99**, pričom prvé trojčíslie popisuje číslo verzie, a posledné čislo za **+** je číslo zostavy,
-
-  
-
-  
-
 3. Tieto zmeny sa aktualizujú v repozitári **(git commit a git push)**,
-
-  
-
-  
-
 4. V nástroji **Codemagic** sa spustí zostavenie novej verzie.
 
 

@@ -32,4 +32,5 @@ class SyncState with _$SyncState {
     UserAccount userAccount,
     CarePlan carePlan,
   ) = _SomeUsersCarePlanChanged;
+  const factory SyncState.newWatchAssigned() = _NewWatchAssigned;
 }

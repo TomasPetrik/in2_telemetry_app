@@ -17,10 +17,10 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.107+107
+version: 1.0.130+130
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ">=3.1.0 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -57,7 +57,7 @@ dependencies:
   # MISC
   intl: ^0.18.0
   app_settings: ^5.0.0
-  permission_handler: ^10.3.0
+  permission_handler: ^11.1.0
   collection: ^1.17.0
   pretty_dio_logger: ^1.2.0-beta-1
   path: ^1.8.3
@@ -65,18 +65,13 @@ dependencies:
   # OAuth2
   oauth2: ^2.0.1
   jwt_decode: ^0.3.1
-  webview_flutter: ^4.2.2
 
   # Bluetooth Comm
-  flutter_blue_plus: 1.4.0
+  flutter_blue_plus: 1.30.3
 
   flutter_svg: ^1.1.6
   hive: ^2.2.3
-  hive_flutter:
-    git:
-      url: https://github.com/yura2000/hive.git
-      ref: master
-      path: hive_flutter/
+  hive_flutter: ^1.1.0
 
   go_router: ^6.5.1
   package_info_plus: ^4.1.0
@@ -87,7 +82,7 @@ dependencies:
   background_fetch: ^1.1.5
 
   # Local notifications
-  flutter_local_notifications: ^13.0.0
+  flutter_local_notifications: ^16.0.0
   timezone: ^0.9.1
 
   # Open url in webview
@@ -95,8 +90,17 @@ dependencies:
   wakelock: ^0.6.2
   notification_permissions: ^0.6.1
 
+  # Handle oauth callbacks to app (deeplinks)
+  uni_links: ^0.5.1
+
   # View pdf
-  pdfx: ^2.3.0
+  # TODO: pdfx depends on a deprecated type, use a newer version as soon as it's available.
+  # https://github:com/ScerIO/packages:flutter/issues/448
+  pdfx:
+    git:
+      url: 'https://github.com/ScerIO/packages.flutter'
+      ref: '4be9de9ffed5398fd7d5f44bbb07dcd3d3f1711b'
+      path: packages/pdfx
 
   # Database
   drift: ^2.11.0
@@ -116,11 +120,7 @@ dev_dependencies:
   injectable_generator: ^2.3.0
   build_runner: ^2.4.6
   json_serializable: ^6.7.1
-  hive_generator:
-    git:
-      url: https://github.com/yura2000/hive.git
-      ref: master
-      path: hive_generator/
+  hive_generator: ^2.0.1
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -130,7 +130,8 @@ dev_dependencies:
   flutter_lints: ^2.0.2
   freezed: ^2.4.1
   flutter_launcher_icons: ^0.13.1
-  dart_code_metrics: ^5.7.3
+  flutter_oss_licenses: ^2.0.1
+  test: ^1.24.0
 
 flutter_icons:
   android: true

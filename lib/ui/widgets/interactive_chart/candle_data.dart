@@ -1,5 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
+import 'package:scalesoft_app/api/model/measurement/overall_health_value.dart';
+import 'package:scalesoft_app/api/model/measurement/shortness_of_breath_value.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 
 part 'candle_data.freezed.dart';
 
@@ -39,14 +42,22 @@ class CandleData with _$CandleData {
   }
 
   String get resultFormatted {
-    if ([
-      MeasurementTypeContract.bloodPressure,
-      MeasurementTypeContract.globalPosition,
-    ].contains(measurementType)) {
-      return '$highVal/$lowVal';
-    } else {
-      return '$highVal';
-    }
+    return switch (measurementType) {
+      null => '',
+      MeasurementTypeContract.globalPosition => 'Lat: $highVal | Lon: $lowVal',
+      MeasurementTypeContract.bloodPressure => '$highVal/$lowVal',
+      MeasurementTypeContract.shortnessOfBreath => highVal == null
+          ? ''
+          : localization.shortness_of_breath_values(
+              ShortnessOfBreathValue.values[highVal!.toInt()],
+            ),
+      MeasurementTypeContract.overallHealth => highVal == null
+          ? ''
+          : localization.overall_health_values(
+              OverallHealthValue.values[highVal!.toInt()],
+            ),
+      _ => '$highVal',
+    };
   }
 
   num? get highVal {

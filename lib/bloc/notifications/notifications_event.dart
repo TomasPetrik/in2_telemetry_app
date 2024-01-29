@@ -6,6 +6,10 @@ part 'notifications_event.freezed.dart';
 class NotificationsEvent with _$NotificationsEvent {
   const factory NotificationsEvent.initPlugin() = _InitPlugin;
   const factory NotificationsEvent.initSettings() = _InitSettings;
+  const factory NotificationsEvent.setNotificationsBySystemSettings() =
+      _SetNotificationsBySystemSettings;
+  const factory NotificationsEvent.requestNotificationPermissionIfNeed() =
+      _RequestNotificationPermissionIfNeed;
   const factory NotificationsEvent.setNotifications() = _SetNotifications;
   const factory NotificationsEvent.enableNotifications(bool enabled) =
       _EnableNotifications;

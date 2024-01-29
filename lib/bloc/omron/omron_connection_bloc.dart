@@ -18,7 +18,7 @@ import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/paired_devices_db_provider.dart';
 import 'package:scalesoft_app/services/report_service.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/events_constants.dart';
 import 'package:scalesoft_app/utils/helpers/bt_connection_helper.dart';
 import 'package:wakelock/wakelock.dart';
@@ -26,20 +26,36 @@ import 'package:wakelock/wakelock.dart';
 @injectable
 class OmronConnectionBloc
     extends Bloc<OmronConnectionBlocEvent, OmronConnectionState> {
+  final BtConnectionHelper _btConnectionHelper;
   final AccountDbProvider _accountDbProvider;
   final PairedDevicesDbProvider _pairedDevicesDbProvider;
   final ReportService _reportsService;
-  final FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
 
   Device? _device;
   late final UserAccount _userAccount;
   late final MeasurementTypeContract _measurementType;
+  bool shouldRequestPermission = true;
+  bool? _searchStarted;
 
   bool get reqModelPairing =>
-      _device?.reqPairing == true &&
-      (_device?.deviceIdentifier == null || _device?.wasPaired != true);
+      _device?.reqPairing == true && _device?.wasPaired != true;
+
+  String getDevIdFromName(String localName) {
+    String devId = localName;
+
+    final supportedDev = ConfigurationConstants.supportedDevices.firstWhere(
+      (dev) =>
+          localName.toLowerCase().contains(dev.bluetoothName!.toLowerCase()),
+    );
+
+    if (supportedDev.deviceModelType == DeviceModelType.omronM7) {
+      devId = devId.split('_').last;
+    }
+    return devId;
+  }
 
   OmronConnectionBloc(
+    this._btConnectionHelper,
     this._accountDbProvider,
     this._pairedDevicesDbProvider,
     this._reportsService,
@@ -47,15 +63,10 @@ class OmronConnectionBloc
     on<OmronConnectionBlocEvent>((event, emit) async {
       Future<DeviceInfo?> verifyDevice(
         BluetoothDevice blDevice,
-        AdvertisementData? advertisementData,
+        String localName,
       ) async {
-        final deviceInfo = await BtConnectionHelper.requestDeviceInfo(blDevice);
-        deviceInfo?.advData = advertisementData;
-
-        final batteryInfo =
-            await BtConnectionHelper.requestBatteryInfo(blDevice);
-
-        deviceInfo?.batteryInfo = batteryInfo;
+        final deviceInfo =
+            await _btConnectionHelper.requestDeviceInfo(blDevice);
 
         if (deviceInfo != null) {
           _reportsService.trackEvent(
@@ -65,6 +76,7 @@ class OmronConnectionBloc
           );
           emit(
             OmronConnectionState.verified(
+              timestamp: DateTime.now().microsecondsSinceEpoch,
               device: blDevice,
               deviceInfo: deviceInfo,
             ),
@@ -78,9 +90,11 @@ class OmronConnectionBloc
           );
           emit(
             OmronConnectionState.notVerified(
+              timestamp: DateTime.now().microsecondsSinceEpoch,
               measurementResult: HwMeasurementResult(
                 resultState: ResultState.connectionError,
                 measurementDt: DateTime.now(),
+                devId: getDevIdFromName(localName),
               ),
             ),
           );
@@ -91,8 +105,9 @@ class OmronConnectionBloc
       }
 
       Future<Device?> measureAndSync(
-        BluetoothDevice blDevice,
-        DeviceInfo deviceInfo,
+        final BluetoothDevice blDevice,
+        final DeviceInfo deviceInfo,
+        final String localName,
       ) async {
         if (reqModelPairing) {
           _reportsService.trackEvent(
@@ -100,36 +115,55 @@ class OmronConnectionBloc
             severity: Severity.info,
             message: EventsConstants.eventDevicePairing,
           );
-          emit(const OmronConnectionState.pairing());
+          emit(
+            OmronConnectionState.pairing(
+              timestamp: DateTime.now().microsecondsSinceEpoch,
+            ),
+          );
         } else {
           _reportsService.trackEvent(
             userAccount: _userAccount,
             severity: Severity.info,
             message: EventsConstants.eventDeviceSyncing,
           );
-          emit(const OmronConnectionState.syncing());
+          emit(
+            OmronConnectionState.syncing(
+              timestamp: DateTime.now().microsecondsSinceEpoch,
+            ),
+          );
         }
 
-        final measurementResult = await BtConnectionHelper.requestBPData(
+        debugPrint('request device for data');
+        final batteryInfo =
+            await _btConnectionHelper.requestBatteryInfo(blDevice);
+        final measurementResult = await _btConnectionHelper.requestBPData(
           blDevice,
           !reqModelPairing,
+          getDevIdFromName(localName),
         );
 
-        await Wakelock.disable();
+        if (!reqModelPairing) {
+          await Wakelock.disable();
+        }
 
-        if (measurementResult.resultState == ResultState.success) {
+        if (measurementResult.resultState == ResultState.connectionError) {
+          emit(
+            OmronConnectionState.notFound(
+              timestamp: DateTime.now().microsecondsSinceEpoch,
+            ),
+          );
+          return null;
+        } else if (measurementResult.resultState == ResultState.success) {
+          debugPrint('device got success data');
           final measurementInfo = measurementResult.measurementInfo;
 
-          final supportedDev = Constants.supportedDevices.firstWhere(
-            (dev) => deviceInfo.advData!.localName
+          final supportedDev = ConfigurationConstants.supportedDevices.firstWhere(
+            (dev) => localName
                 .toLowerCase()
                 .contains(dev.bluetoothName!.toLowerCase()),
           );
 
-          var devId = deviceInfo.advData!.localName;
-          if (supportedDev.deviceModelType == DeviceModelType.omronM7) {
-            devId = devId.split('_').last;
-          }
+          var devId = getDevIdFromName(localName);
 
           Measurement? measurement = Measurement(
             patientMuid: _userAccount.user.muid,
@@ -141,22 +175,16 @@ class OmronConnectionBloc
                 modelName: supportedDev.modelName,
                 deviceManufacturer: supportedDev.deviceManufacturer,
               ),
-              batteryPercentage: deviceInfo.batteryInfo?.batteryLevel,
             ),
             bloodPressure: BloodPressureValue(
               systolic: measurementInfo?.systolic,
               diastolic: measurementInfo?.diastolic,
             ),
             heartRate: measurementInfo?.pulseRate,
+            batteryPercentage: batteryInfo?.batteryLevel,
           );
 
-          emit(
-            OmronConnectionState.synced(
-              measurementResult:
-                  measurementResult.copyWith(measurement: measurement),
-              deviceInfo: deviceInfo,
-            ),
-          );
+
 
           if (reqModelPairing) {
             _reportsService.trackEvent(
@@ -170,28 +198,41 @@ class OmronConnectionBloc
               severity: Severity.info,
               message: EventsConstants.eventDeviceSynced,
             );
+             emit(
+              OmronConnectionState.synced(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
+                measurementResult:
+                    measurementResult.copyWith(measurement: measurement),
+                deviceInfo: deviceInfo,
+              ),
+            );
           }
+        } else if (measurementResult.resultState == ResultState.noData) {
+          debugPrint('device got empty data');
+          emit(
+            OmronConnectionState.synced(
+              timestamp: DateTime.now().microsecondsSinceEpoch,
+              measurementResult: measurementResult,
+              deviceInfo: deviceInfo,
+            ),
+          );
         }
 
-        if (reqModelPairing) {
+        if (measurementResult.resultState == ResultState.success &&
+            reqModelPairing) {
+          debugPrint(
+            'device got success data when pairing [saving paired device]',
+          );
           emit(
             OmronConnectionState.paired(
+              timestamp: DateTime.now().microsecondsSinceEpoch,
               deviceInfo: deviceInfo,
             ),
           );
 
           //save paired device
           if (measurementResult.resultState != ResultState.connectionError) {
-            var devId = deviceInfo.advData!.localName;
-
-            final supportedDev = Constants.supportedDevices.firstWhere(
-              (dev) => devId
-                  .toLowerCase()
-                  .contains(dev.bluetoothName!.toLowerCase()),
-            );
-            if (supportedDev.deviceModelType == DeviceModelType.omronM7) {
-              devId = devId.split('_').last;
-            }
+            var devId = getDevIdFromName(localName);
 
             final pairedDevice = _device!.copyWith(
               deviceIdentifier: devId,
@@ -209,22 +250,27 @@ class OmronConnectionBloc
 
       Future<void> connectToDevice(
         BluetoothDevice device,
-        advertisementData,
+        String localName,
       ) async {
-        emit(const OmronConnectionState.connecting());
+        emit(
+          OmronConnectionState.connecting(
+            timestamp: DateTime.now().microsecondsSinceEpoch,
+          ),
+        );
 
-        final BluetoothDeviceState deviceState = await device.state.first;
-        if (deviceState == BluetoothDeviceState.connected) {
-          emit(const OmronConnectionState.connected());
-        } else {
-          try {
-            await device.connect(autoConnect: false);
-            emit(const OmronConnectionState.connected());
-          } catch (e) {
-            debugPrint('dev is already connected');
-            await device.disconnect();
-            await device.connect(autoConnect: false);
-          }
+        try {
+          await device.connect(autoConnect: false);
+          emit(
+            OmronConnectionState.connected(
+              timestamp: DateTime.now().microsecondsSinceEpoch,
+            ),
+          );
+        } catch (e) {
+          debugPrint('dev is already connected');
+          await device.disconnect();
+          await device.connect(autoConnect: false);
+
+          add(OmronConnectionBlocEvent.verifyDevice(device, localName));
         }
 
         _reportsService.trackEvent(
@@ -233,7 +279,7 @@ class OmronConnectionBloc
           message: EventsConstants.eventDeviceConnected,
         );
 
-        add(OmronConnectionBlocEvent.verifyDevice(device, advertisementData));
+        add(OmronConnectionBlocEvent.verifyDevice(device, localName));
       }
 
       await event.when(
@@ -243,49 +289,112 @@ class OmronConnectionBloc
           _device = device;
           _userAccount = _accountDbProvider.get(userId)!;
           _measurementType = measurementType;
-          final btState = await _flutterBlue.state.first;
 
-          if (btState == BluetoothState.off) {
-            emit(const OmronConnectionState.disabledBt());
+          add(const OmronConnectionBlocEvent.checkHwState());
+        },
+        checkHwState: () async {
+          if (_searchStarted == true) {
+            return;
+          }
+
+          final btState = await FlutterBluePlus.adapterState.first;
+
+          if (btState == BluetoothAdapterState.off ||
+              btState == BluetoothAdapterState.unauthorized ||
+              btState == BluetoothAdapterState.turningOff) {
             _reportsService.trackEvent(
               userAccount: _userAccount,
               severity: Severity.warning,
               message: EventsConstants.eventBluetoothDisabled,
             );
-          } else {
-            emit(const OmronConnectionState.noBtPermissions());
+            emit(
+              OmronConnectionState.disabledBt(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
+              ),
+            );
+            return;
           }
 
-          final hasPermissionsGranted =
-              await BtConnectionHelper.hasPermissionsGranted();
-          if (!hasPermissionsGranted) {
+          final isBTPermissionsPermanentylDenied =
+              await _btConnectionHelper.isBTPermissionsPermanentylDenied();
+
+          if (isBTPermissionsPermanentylDenied) {
+            shouldRequestPermission = false;
+            emit(
+              OmronConnectionState.noBtPermissions(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
+              ),
+            );
+            return;
+          } else if (await _btConnectionHelper.isBTPermissionsGranted()) {
+            shouldRequestPermission = false;
+          } else {
+            shouldRequestPermission = true;
+            final hasPermissionsGranted =
+                await _btConnectionHelper.requestForBTPermissions();
+            if (!hasPermissionsGranted) {
+              _reportsService.trackEvent(
+                userAccount: _userAccount,
+                severity: Severity.warning,
+                message: EventsConstants.eventNoBTPermissionsGranted,
+              );
+              emit(
+                OmronConnectionState.noBtPermissions(
+                  timestamp: DateTime.now().microsecondsSinceEpoch,
+                ),
+              );
+              return;
+            }
+          }
+
+          shouldRequestPermission = false;
+
+          final hasLocationServiceEnabled =
+              await _btConnectionHelper.hasLocationServiceEnabled();
+          if (!hasLocationServiceEnabled) {
+            debugPrint('disabled location service !');
             _reportsService.trackEvent(
               userAccount: _userAccount,
               severity: Severity.warning,
-              message: EventsConstants.eventNoBTPermissionsGranted,
+              message: EventsConstants.eventDisabledLocalizationService,
             );
-            emit(const OmronConnectionState.noBtPermissions());
+            emit(
+              OmronConnectionState.disabledLocalizationService(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
+              ),
+            );
+            shouldRequestPermission = true;
+            _searchStarted = false;
+          } else {
+            _searchStarted = true;
+            _startCheckingBtState();
           }
-
-          _startCheckingBtState();
         },
         newBtState: (newBtState) async {
-          if (newBtState == BluetoothState.on) {
+          if (newBtState == BluetoothAdapterState.on) {
             add(const OmronConnectionBlocEvent.checkDeviceAvailability());
-          } else if (newBtState == BluetoothState.off) {
+          } else if (newBtState == BluetoothAdapterState.off) {
             _reportsService.trackEvent(
               userAccount: _userAccount,
               severity: Severity.warning,
               message: EventsConstants.eventBluetoothDisabled,
             );
-            emit(const OmronConnectionState.disabledBt());
+            emit(
+              OmronConnectionState.disabledBt(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
+              ),
+            );
           } else {
             _reportsService.trackEvent(
               userAccount: _userAccount,
               severity: Severity.warning,
               message: EventsConstants.eventNoBTPermissionsGranted,
             );
-            emit(const OmronConnectionState.noBtPermissions());
+            emit(
+              OmronConnectionState.noBtPermissions(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
+              ),
+            );
           }
         },
         checkDeviceAvailability: () async {
@@ -297,22 +406,37 @@ class OmronConnectionBloc
             severity: Severity.info,
             message: EventsConstants.eventDeviceSearchingStart,
           );
-          emit(const OmronConnectionState.searching());
-          final foundDevice = await BtConnectionHelper.searchDevice(
+          emit(
+            OmronConnectionState.searching(
+              timestamp: DateTime.now().microsecondsSinceEpoch,
+            ),
+          );
+          final foundDevice = await _btConnectionHelper.searchDevice(
             serviceUuid: bloodPressureServiceUuid,
             device: _device!,
+            searchMode:
+                reqModelPairing ? SearchMode.pairing : SearchMode.syncing,
+            maxAllowedDeviceSearchingTime: reqModelPairing
+                ? ConfigurationConstants.maxAllowedDeviceSearchingTime
+                : null,
           );
           if (foundDevice != null) {
             add(
               OmronConnectionBlocEvent.foundDevice(
                 foundDevice.device,
-                foundDevice.advertisementData,
+                foundDevice.localName,
               ),
             );
             add(
               OmronConnectionBlocEvent.connectToDevice(
                 foundDevice.device,
-                foundDevice.advertisementData,
+                foundDevice.localName,
+              ),
+            );
+          } else {
+            emit(
+              OmronConnectionState.notFound(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
               ),
             );
           }
@@ -324,20 +448,30 @@ class OmronConnectionBloc
             message: EventsConstants.eventDeviceSearchingStop,
           );
           await Wakelock.disable();
-          _flutterBlue.stopScan();
+          await FlutterBluePlus.stopScan();
         },
-        connectToDevice: (device, advertisementData) async {
-          await connectToDevice(device, advertisementData);
+        connectToDevice: (device, localName) async {
+          await connectToDevice(device, localName);
         },
-        verifyDevice: (device, advertisementData) async {
-          final deviceInfo = await verifyDevice(device, advertisementData);
+        verifyDevice: (device, localName) async {
+          final deviceInfo = await verifyDevice(device, localName);
 
           if (deviceInfo != null) {
-            add(OmronConnectionBlocEvent.measureAndSync(device, deviceInfo));
+            add(
+              OmronConnectionBlocEvent.measureAndSync(
+                device,
+                deviceInfo,
+                localName,
+              ),
+            );
           }
         },
-        measureAndSync: (blDevice, deviceInfo) async {
-          final pairedDevice = await measureAndSync(blDevice, deviceInfo);
+        measureAndSync: (blDevice, deviceInfo, localName) async {
+          final pairedDevice = await measureAndSync(
+            blDevice,
+            deviceInfo,
+            localName,
+          );
 
           //if device was about pairing before, then now we are expecting measurement data results,
           if (pairedDevice != null) {
@@ -346,9 +480,11 @@ class OmronConnectionBloc
             //straight after pairing process, device should be turned off,
             //then we can start search for device again in metering mode
             await Future.delayed(const Duration(seconds: 5));
-            final foundDevice = await BtConnectionHelper.searchDevice(
+            final foundDevice = await _btConnectionHelper.searchDevice(
               serviceUuid: bloodPressureServiceUuid,
               device: _device!,
+              searchMode:
+                  reqModelPairing ? SearchMode.pairing : SearchMode.syncing,
             );
             if (foundDevice != null) {
               _reportsService.trackEvent(
@@ -357,24 +493,29 @@ class OmronConnectionBloc
                 message: EventsConstants.eventDeviceFound,
               );
               await foundDevice.device.connect(autoConnect: false);
-              await measureAndSync(foundDevice.device, deviceInfo);
+              await measureAndSync(foundDevice.device, deviceInfo, localName);
             }
           }
         },
-        foundDevice: (device, advertisementData) async {
+        foundDevice: (device, localName) async {
           _reportsService.trackEvent(
             userAccount: _userAccount,
             severity: Severity.info,
             message: EventsConstants.eventDeviceFound,
           );
-          emit(OmronConnectionState.found(device: device));
+          emit(
+            OmronConnectionState.found(
+              timestamp: DateTime.now().microsecondsSinceEpoch,
+              device: device,
+            ),
+          );
         },
       );
     });
   }
 
   void _startCheckingBtState() {
-    FlutterBluePlus.instance.state.listen((btState) {
+    FlutterBluePlus.adapterState.listen((btState) {
       add(OmronConnectionBlocEvent.newBtState(btState));
     });
   }

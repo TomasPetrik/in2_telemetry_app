@@ -5,11 +5,11 @@ class MeasurementConfig {
   final List<String>? units;
 
   final List<UnitName> unitNames;
-  final double min;
-  final double max;
-  final TextInputType textInputType;
-  final List<String> hintText;
-  final List<TextInputFormatter> inputFormatters;
+  final double? min;
+  final double? max;
+  final TextInputType? textInputType;
+  final List<String>? hintText;
+  final List<TextInputFormatter>? inputFormatters;
 
   MeasurementConfig(
     this.type,
@@ -26,6 +26,7 @@ class MeasurementConfig {
 enum MeasurementConfigType {
   single,
   composed,
+  select,
 }
 
 enum UnitName {
@@ -39,4 +40,6 @@ enum UnitName {
   lat,
   lng,
   ews,
+  shortnessOfBreath,
+  overallHealth,
 }

@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:scalesoft_app/api/model/report/report_request.dart';
 import 'package:scalesoft_app/api/model/user_info.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 
 part 'account_api_client.g.dart';
 
@@ -11,7 +11,7 @@ part 'account_api_client.g.dart';
 @injectable
 abstract class AccountApiClient {
   @factoryMethod
-  factory AccountApiClient(@Named(Constants.privateDioName) Dio dio) =
+  factory AccountApiClient(@Named(ConfigurationConstants.privateDioName) Dio dio) =
       _AccountApiClient;
 
   @GET('{apiUrl}/user/me')
@@ -23,5 +23,6 @@ abstract class AccountApiClient {
   Future<void> sendUserAppReports(
     @Path('apiUrl') String apiUrl,
     @Body() ReportRequest reportRequest,
+    @Header("X-Custom-Authentication") String authHeader,
   );
 }

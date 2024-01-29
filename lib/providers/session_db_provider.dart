@@ -3,6 +3,11 @@ import 'package:scalesoft_app/providers/box_provider.dart';
 
 @singleton
 class SessionDbProvider extends BoxProvider<bool> {
+
+  @override
+  @PostConstruct(preResolve: true)
+  Future<void> init() async => super.init();
+  
   @override
   final String boxName = 'sessionBox';
 

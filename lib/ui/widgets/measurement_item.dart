@@ -140,8 +140,8 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
                           showAsLongPeriodical
                               ? localization
                                   .dashboard_screen_measurement_periodical_interval(
-                                  whenStart.toDateFormatLong(),
-                                  whenEnd.toDateFormatLong(),
+                                  whenStart.dateFormatLong,
+                                  whenEnd.dateFormatLong,
                                 )
                               : localization
                                   .dashboard_screen_measurement_interval(

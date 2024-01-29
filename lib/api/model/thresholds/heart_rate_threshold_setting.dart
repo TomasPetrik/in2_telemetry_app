@@ -3,7 +3,6 @@ import 'package:hive/hive.dart';
 
 part 'heart_rate_threshold_setting.freezed.dart';
 part 'heart_rate_threshold_setting.g.dart';
-part 'heart_rate_threshold_setting.hive.dart';
 
 @freezed
 class HeartRateThresholdSetting with _$HeartRateThresholdSetting {

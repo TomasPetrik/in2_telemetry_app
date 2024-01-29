@@ -19,7 +19,7 @@ import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/calendar_month_widget.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 class CalendarScreen extends StatelessWidget {
@@ -150,7 +150,7 @@ class CalendarScreen extends StatelessWidget {
                         } else {
                           return ScaleAppBar(
                             title:
-                                '${localization.common_months(Constants.monthsInYear[state.currentMonth!]!)} ${state.currentYear}',
+                                '${localization.common_months(ConfigurationConstants.monthsInYear[state.currentMonth!]!)} ${state.currentYear}',
                             showClose: true,
                             onCloseTap: onWillPop,
                             customLeftWidget: state.isCurrentMonth == true
@@ -268,7 +268,7 @@ class _CalendarFooter extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              selectedDay.startDt.toRegularDate(),
+                              selectedDay.startDt.dateFormat,
                               style: ScaleTextStyles.textAccent.apply(
                                 color: Theme.of(context).colorScheme.onPrimary,
                               ),

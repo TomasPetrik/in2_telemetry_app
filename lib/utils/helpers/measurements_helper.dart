@@ -5,12 +5,13 @@ import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
 import 'package:scalesoft_app/api/model/measurement/composed_double_value.dart';
+import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/ui/routers/routes/manual_measurement_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/metering_first_route.dart';
-import 'package:scalesoft_app/utils/constants.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
@@ -22,10 +23,16 @@ class MeasurementHelper {
     final bool showAllMeasurementTypes = false,
   }) async {
     if (selectedMeasurementType == null ||
-        Constants.supportedDevices.any(
-          (supportedDevice) => supportedDevice.supportedMeasurementTypes!
-              .contains(selectedMeasurementType),
-        )) {
+        ConfigurationConstants.supportedDevices
+            .where(
+              (x) =>
+                  x.measurementFlow?.hasFlag(MeasurementFlow.foreground) ??
+                  false,
+            )
+            .any(
+              (supportedDevice) => supportedDevice.supportedMeasurementTypes!
+                  .contains(selectedMeasurementType),
+            )) {
       GoRouter.of(context).pushNamed(
         MeteringFirstRoute.name,
         params: {
@@ -128,9 +135,9 @@ class MeasurementHelper {
       return ((measurementType == null ||
               (measurementType == mResult.measurementType)) &&
           ((whenPeriods.contains(ResultsWhenPeriod.today) &&
-                  mResult.measurementDateTime.isToday()) ||
+                  mResult.measurementDateTime.isToday) ||
               (whenPeriods.contains(ResultsWhenPeriod.yesterday) &&
-                  mResult.measurementDateTime.wasYesterday())));
+                  mResult.measurementDateTime.wasYesterday)));
     }).toList();
 
     //include not synced results
@@ -158,9 +165,9 @@ class MeasurementHelper {
                   (measurementType == pResult.measurementType)) &&
               (whenPeriods == null ||
                   (whenPeriods.contains(ResultsWhenPeriod.today) &&
-                      pResult.measurementDateTime?.isToday() == true) ||
+                      pResult.measurementDateTime?.isToday == true) ||
                   (whenPeriods.contains(ResultsWhenPeriod.yesterday) &&
-                      pResult.measurementDateTime?.wasYesterday() == true)));
+                      pResult.measurementDateTime?.wasYesterday == true)));
         })
         .map(
           (pResult) => MeasurementResult(
@@ -195,18 +202,15 @@ class MeasurementHelper {
       case MeasurementTypeContract.temperature:
         return measurement.temperature;
       case MeasurementTypeContract.oxygenSaturation:
-        return measurement.oxygenSaturation != null
-            ? measurement.oxygenSaturation!.toDouble()
-            : null;
+        return measurement.oxygenSaturation?.toDouble();
       case MeasurementTypeContract.heartRate:
-        return measurement.heartRate != null
-            ? measurement.heartRate!.toDouble()
-            : null;
+        return measurement.heartRate?.toDouble();
       case MeasurementTypeContract.respiratoryRate:
-        return measurement.respiratoryRate != null
-            ? measurement.respiratoryRate!.toDouble()
-            : null;
-
+        return measurement.respiratoryRate?.toDouble();
+      case MeasurementTypeContract.shortnessOfBreath:
+        return measurement.shortnessOfBreath?.value.toDouble();
+      case MeasurementTypeContract.overallHealth:
+        return measurementContract.overallHealth?.value.toDouble();
       default:
         return null;
     }

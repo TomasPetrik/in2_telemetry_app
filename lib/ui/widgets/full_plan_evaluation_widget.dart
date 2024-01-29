@@ -79,7 +79,7 @@ class FullPlanEvaluationWidget extends StatelessWidget {
                     localization
                         .care_plan_detail_screen_fulfillment_evaluation_valid_from(
                       veryFirstMeasurement.whenStart.toDateOrDay(),
-                      veryFirstMeasurement.whenStart.toTimeShort(),
+                      veryFirstMeasurement.whenStart.timeFormatShort,
                     ),
                     style: ScaleTextStyles.label.apply(
                       color: Theme.of(context).colorScheme.onSecondary,

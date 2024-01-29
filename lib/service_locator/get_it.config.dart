@@ -4,8 +4,7 @@
 // InjectableConfigGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_lambdas
-// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: type=lint
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
@@ -13,52 +12,55 @@ import 'package:dio/dio.dart' as _i12;
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
 
-import '../api/client/account_api_client.dart' as _i27;
-import '../api/client/auth_api_client.dart' as _i30;
-import '../api/client/care_plan_api_client.dart' as _i32;
-import '../api/client/device_api_client.dart' as _i35;
-import '../api/client/time_settings_api_client.dart' as _i24;
-import '../api/dio_module.dart' as _i48;
-import '../api/interceptors/token_interceptor.dart' as _i40;
-import '../bloc/auth/auth_bloc.dart' as _i41;
-import '../bloc/calendar/calendar_bloc.dart' as _i31;
-import '../bloc/calendar_footer/calendar_footer_bloc.dart' as _i8;
+import '../api/client/account_api_client.dart' as _i28;
+import '../api/client/auth_api_client.dart' as _i31;
+import '../api/client/care_plan_api_client.dart' as _i33;
+import '../api/client/device_api_client.dart' as _i36;
+import '../api/client/time_settings_api_client.dart' as _i25;
+import '../api/dio_module.dart' as _i50;
+import '../api/interceptors/token_interceptor.dart' as _i41;
+import '../bloc/auth/auth_bloc.dart' as _i42;
+import '../bloc/calendar/calendar_bloc.dart' as _i32;
+import '../bloc/calendar_footer/calendar_footer_bloc.dart' as _i9;
 import '../bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc.dart'
-    as _i42;
-import '../bloc/care_plan/care_plan_bloc.dart' as _i9;
+    as _i44;
+import '../bloc/care_plan/care_plan_bloc.dart' as _i10;
 import '../bloc/chart_bloc/chart_bloc.dart' as _i11;
-import '../bloc/chart_loader_bloc/chart_loader_bloc.dart' as _i34;
-import '../bloc/daily_times_settings/times_settings_bloc.dart' as _i26;
-import '../bloc/notifications/notifications_bloc.dart' as _i17;
-import '../bloc/omron/omron_connection_bloc.dart' as _i44;
-import '../bloc/register_device/register_device_bloc.dart' as _i45;
-import '../bloc/report/report_bloc.dart' as _i46;
-import '../bloc/results/results_bloc.dart' as _i21;
-import '../bloc/settings/app_settings_bloc.dart' as _i29;
-import '../bloc/sync/sync_bloc.dart' as _i47;
-import '../bloc/user_content/content_bloc.dart' as _i43;
-import '../cubit/device_management/device_management_cubit.dart' as _i36;
-import '../cubit/hospital_search/hospital_search_cubit.dart' as _i13;
-import '../cubit/loader/loader_cubit.dart' as _i15;
-import '../data/app_database.dart' as _i4;
-import '../data/repositories/care_plan_repository.dart' as _i10;
+import '../bloc/chart_loader_bloc/chart_loader_bloc.dart' as _i35;
+import '../bloc/daily_times_settings/times_settings_bloc.dart' as _i27;
+import '../bloc/notifications/notifications_bloc.dart' as _i18;
+import '../bloc/omron/omron_connection_bloc.dart' as _i46;
+import '../bloc/register_device/register_device_bloc.dart' as _i47;
+import '../bloc/report/report_bloc.dart' as _i48;
+import '../bloc/results/results_bloc.dart' as _i22;
+import '../bloc/settings/app_settings_bloc.dart' as _i30;
+import '../bloc/sync/sync_bloc.dart' as _i49;
+import '../bloc/user_content/content_bloc.dart' as _i45;
+import '../cubit/background_measurement/background_measurement_cubit.dart'
+    as _i6;
+import '../cubit/device_management/device_management_cubit.dart' as _i37;
+import '../cubit/hospital_search/hospital_search_cubit.dart' as _i14;
+import '../cubit/loader/loader_cubit.dart' as _i16;
+import '../managers/background_measurement_manager.dart' as _i43;
 import '../providers/account_db_provider.dart' as _i3;
-import '../providers/calendar_evaluation_db_provider.dart' as _i7;
-import '../providers/measurements_db_provider.dart' as _i16;
-import '../providers/paired_devices_db_provider.dart' as _i18;
-import '../providers/pending_results_dbs_provider.dart' as _i19;
-import '../providers/reports_db_provider.dart' as _i20;
-import '../providers/session_db_provider.dart' as _i23;
-import '../providers/settings_db_provider.dart' as _i5;
-import '../repositories/account_repository.dart' as _i28;
-import '../repositories/care_plans_repository.dart' as _i33;
-import '../repositories/device_repository.dart' as _i37;
-import '../repositories/time_settings_repository.dart' as _i25;
-import '../services/auth_service.dart' as _i6;
-import '../services/internet_service.dart' as _i14;
-import '../services/report_service.dart' as _i38;
-import '../services/sync_service.dart' as _i39;
-import '../storage/session.dart' as _i22;
+import '../providers/calendar_evaluation_db_provider.dart' as _i8;
+import '../providers/hospital_db_provider.dart' as _i13;
+import '../providers/measurements_db_provider.dart' as _i17;
+import '../providers/paired_devices_db_provider.dart' as _i19;
+import '../providers/pending_results_dbs_provider.dart' as _i20;
+import '../providers/reports_db_provider.dart' as _i21;
+import '../providers/session_db_provider.dart' as _i24;
+import '../providers/settings_db_provider.dart' as _i4;
+import '../repositories/account_repository.dart' as _i29;
+import '../repositories/care_plans_repository.dart' as _i34;
+import '../repositories/device_repository.dart' as _i38;
+import '../repositories/time_settings_repository.dart' as _i26;
+import '../services/auth_service.dart' as _i5;
+import '../services/internet_service.dart' as _i15;
+import '../services/report_service.dart' as _i39;
+import '../services/sync_service.dart' as _i40;
+import '../storage/session.dart' as _i23;
+import '../utils/helpers/bt_connection_helper.dart' as _i7;
 
 // initializes the registration of main-scope dependencies inside of GetIt
 Future<_i1.GetIt> init(
@@ -72,152 +74,216 @@ Future<_i1.GetIt> init(
     environmentFilter,
   );
   final dioModule = _$DioModule();
-  gh.singleton<_i3.AccountDbProvider>(_i3.AccountDbProvider());
-  gh.singleton<_i4.AppDatabase>(_i4.AppDatabase());
-  gh.singleton<_i5.AppSettingsDbProvider>(_i5.AppSettingsDbProvider());
-  gh.singleton<_i6.AuthService>(_i6.AuthService());
-  gh.singleton<_i7.CalendarEvaluationDbProvider>(
-      _i7.CalendarEvaluationDbProvider());
-  gh.singleton<_i8.CalendarFooterBloc>(_i8.CalendarFooterBloc());
-  gh.singleton<_i9.CarePlanBloc>(_i9.CarePlanBloc());
-  gh.singleton<_i10.CarePlanRepository>(
-      _i10.CarePlanRepository(gh<_i4.AppDatabase>()));
+  await gh.singletonAsync<_i3.AccountDbProvider>(
+    () {
+      final i = _i3.AccountDbProvider();
+      return i.init().then((_) => i);
+    },
+    preResolve: true,
+  );
+  await gh.singletonAsync<_i4.AppSettingsDbProvider>(
+    () {
+      final i = _i4.AppSettingsDbProvider();
+      return i.init().then((_) => i);
+    },
+    preResolve: true,
+  );
+  gh.singleton<_i5.AuthService>(_i5.AuthService());
+  gh.singleton<_i6.BackgroundMeasurementCubit>(
+      _i6.BackgroundMeasurementCubit());
+  gh.singleton<_i7.BtConnectionHelper>(_i7.BtConnectionHelper());
+  await gh.singletonAsync<_i8.CalendarEvaluationDbProvider>(
+    () {
+      final i = _i8.CalendarEvaluationDbProvider();
+      return i.init().then((_) => i);
+    },
+    preResolve: true,
+  );
+  gh.singleton<_i9.CalendarFooterBloc>(_i9.CalendarFooterBloc());
+  gh.singleton<_i10.CarePlanBloc>(_i10.CarePlanBloc());
   gh.factory<_i11.ChartBloc>(() => _i11.ChartBloc());
   gh.singleton<_i12.Dio>(
     dioModule.privateDio,
     instanceName: 'privateDio',
   );
-  gh.singleton<_i13.HospitalSearchCubit>(_i13.HospitalSearchCubit());
-  gh.singleton<_i14.InternetService>(_i14.InternetService());
-  gh.factory<_i15.LoaderCubit>(() => _i15.LoaderCubit());
-  gh.singleton<_i16.MeasurementsDbProvider>(_i16.MeasurementsDbProvider());
-  gh.singleton<_i17.NotificationsBloc>(_i17.NotificationsBloc(
+  await gh.singletonAsync<_i13.HospitalDbProvider>(
+    () {
+      final i = _i13.HospitalDbProvider();
+      return i.init().then((_) => i);
+    },
+    preResolve: true,
+  );
+  gh.singleton<_i14.HospitalSearchCubit>(_i14.HospitalSearchCubit());
+  gh.singleton<_i15.InternetService>(_i15.InternetService());
+  gh.factory<_i16.LoaderCubit>(() => _i16.LoaderCubit());
+  await gh.singletonAsync<_i17.MeasurementsDbProvider>(
+    () {
+      final i = _i17.MeasurementsDbProvider();
+      return i.init().then((_) => i);
+    },
+    preResolve: true,
+  );
+  gh.singleton<_i18.NotificationsBloc>(_i18.NotificationsBloc(
     gh<_i3.AccountDbProvider>(),
-    gh<_i5.AppSettingsDbProvider>(),
+    gh<_i4.AppSettingsDbProvider>(),
   ));
-  gh.singleton<_i18.PairedDevicesDbProvider>(_i18.PairedDevicesDbProvider());
-  gh.singleton<_i19.PendingResultsDbProvider>(_i19.PendingResultsDbProvider());
-  gh.singleton<_i20.ReportsDbProvider>(_i20.ReportsDbProvider());
-  gh.factory<_i21.ResultsBloc>(() => _i21.ResultsBloc());
-  gh.singleton<_i22.Session>(_i22.Session(
+  await gh.singletonAsync<_i19.PairedDevicesDbProvider>(
+    () {
+      final i = _i19.PairedDevicesDbProvider();
+      return i.init().then((_) => i);
+    },
+    preResolve: true,
+  );
+  await gh.singletonAsync<_i20.PendingResultsDbProvider>(
+    () {
+      final i = _i20.PendingResultsDbProvider();
+      return i.init().then((_) => i);
+    },
+    preResolve: true,
+  );
+  await gh.singletonAsync<_i21.ReportsDbProvider>(
+    () {
+      final i = _i21.ReportsDbProvider();
+      return i.init().then((_) => i);
+    },
+    preResolve: true,
+  );
+  gh.factory<_i22.ResultsBloc>(() => _i22.ResultsBloc());
+  gh.singleton<_i23.Session>(_i23.Session(
     gh<_i3.AccountDbProvider>(),
-    gh<_i19.PendingResultsDbProvider>(),
+    gh<_i20.PendingResultsDbProvider>(),
   ));
-  gh.singleton<_i23.SessionDbProvider>(_i23.SessionDbProvider());
-  gh.factory<_i24.TimeSettingsApiClient>(() =>
-      _i24.TimeSettingsApiClient(gh<_i12.Dio>(instanceName: 'privateDio')));
-  gh.singleton<_i25.TimeSettingsRepository>(_i25.TimeSettingsRepository(
-    gh<_i24.TimeSettingsApiClient>(),
-    gh<_i22.Session>(),
+  await gh.singletonAsync<_i24.SessionDbProvider>(
+    () {
+      final i = _i24.SessionDbProvider();
+      return i.init().then((_) => i);
+    },
+    preResolve: true,
+  );
+  gh.factory<_i25.TimeSettingsApiClient>(() =>
+      _i25.TimeSettingsApiClient(gh<_i12.Dio>(instanceName: 'privateDio')));
+  gh.singleton<_i26.TimeSettingsRepository>(_i26.TimeSettingsRepository(
+    gh<_i25.TimeSettingsApiClient>(),
+    gh<_i23.Session>(),
   ));
-  gh.factory<_i26.TimesSettingsBloc>(() => _i26.TimesSettingsBloc(
-        gh<_i14.InternetService>(),
+  gh.factory<_i27.TimesSettingsBloc>(() => _i27.TimesSettingsBloc(
+        gh<_i15.InternetService>(),
         gh<_i3.AccountDbProvider>(),
-        gh<_i25.TimeSettingsRepository>(),
+        gh<_i26.TimeSettingsRepository>(),
       ));
-  gh.factory<_i27.AccountApiClient>(
-      () => _i27.AccountApiClient(gh<_i12.Dio>(instanceName: 'privateDio')));
-  gh.singleton<_i28.AccountRepository>(_i28.AccountRepository(
-    gh<_i27.AccountApiClient>(),
-    gh<_i22.Session>(),
+  gh.factory<_i28.AccountApiClient>(
+      () => _i28.AccountApiClient(gh<_i12.Dio>(instanceName: 'privateDio')));
+  gh.singleton<_i29.AccountRepository>(_i29.AccountRepository(
+    gh<_i28.AccountApiClient>(),
+    gh<_i23.Session>(),
   ));
-  gh.singleton<_i29.AppSettingsBloc>(
-      _i29.AppSettingsBloc(gh<_i5.AppSettingsDbProvider>()));
-  gh.factory<_i30.AuthApiClient>(
-      () => _i30.AuthApiClient(gh<_i12.Dio>(instanceName: 'privateDio')));
-  gh.factory<_i31.CalendarBloc>(() => _i31.CalendarBloc(
-        gh<_i22.Session>(),
-        gh<_i8.CalendarFooterBloc>(),
+  gh.singleton<_i30.AppSettingsBloc>(
+      _i30.AppSettingsBloc(gh<_i4.AppSettingsDbProvider>()));
+  gh.factory<_i31.AuthApiClient>(
+      () => _i31.AuthApiClient(gh<_i12.Dio>(instanceName: 'privateDio')));
+  gh.factory<_i32.CalendarBloc>(() => _i32.CalendarBloc(
+        gh<_i23.Session>(),
+        gh<_i9.CalendarFooterBloc>(),
         gh<_i3.AccountDbProvider>(),
       ));
-  gh.factory<_i32.CarePlanApiClient>(
-      () => _i32.CarePlanApiClient(gh<_i12.Dio>(instanceName: 'privateDio')));
-  gh.singleton<_i33.CarePlansRepository>(_i33.CarePlansRepository(
-    gh<_i32.CarePlanApiClient>(),
-    gh<_i22.Session>(),
+  gh.factory<_i33.CarePlanApiClient>(
+      () => _i33.CarePlanApiClient(gh<_i12.Dio>(instanceName: 'privateDio')));
+  gh.singleton<_i34.CarePlansRepository>(_i34.CarePlansRepository(
+    gh<_i33.CarePlanApiClient>(),
+    gh<_i23.Session>(),
   ));
-  gh.factory<_i34.ChartLoaderBloc>(() => _i34.ChartLoaderBloc(
-        gh<_i33.CarePlansRepository>(),
-        gh<_i16.MeasurementsDbProvider>(),
-        gh<_i19.PendingResultsDbProvider>(),
+  gh.factory<_i35.ChartLoaderBloc>(() => _i35.ChartLoaderBloc(
+        gh<_i34.CarePlansRepository>(),
+        gh<_i17.MeasurementsDbProvider>(),
+        gh<_i20.PendingResultsDbProvider>(),
       ));
-  gh.factory<_i35.DeviceApiClient>(
-      () => _i35.DeviceApiClient(gh<_i12.Dio>(instanceName: 'privateDio')));
-  gh.factory<_i36.DeviceManagementCubit>(() => _i36.DeviceManagementCubit(
+  gh.factory<_i36.DeviceApiClient>(
+      () => _i36.DeviceApiClient(gh<_i12.Dio>(instanceName: 'privateDio')));
+  gh.factory<_i37.DeviceManagementCubit>(() => _i37.DeviceManagementCubit(
         gh<_i3.AccountDbProvider>(),
-        gh<_i18.PairedDevicesDbProvider>(),
+        gh<_i19.PairedDevicesDbProvider>(),
       ));
-  gh.singleton<_i37.DeviceRepository>(_i37.DeviceRepository(
-    gh<_i35.DeviceApiClient>(),
-    gh<_i22.Session>(),
+  gh.singleton<_i38.DeviceRepository>(_i38.DeviceRepository(
+    gh<_i36.DeviceApiClient>(),
+    gh<_i23.Session>(),
   ));
-  await gh.lazySingletonAsync<_i38.ReportService>(
-    () => _i38.ReportService.create(
+  await gh.lazySingletonAsync<_i39.ReportService>(
+    () => _i39.ReportService.create(
       gh<_i3.AccountDbProvider>(),
-      gh<_i20.ReportsDbProvider>(),
-      gh<_i28.AccountRepository>(),
+      gh<_i21.ReportsDbProvider>(),
+      gh<_i29.AccountRepository>(),
     ),
     preResolve: true,
   );
-  gh.singleton<_i39.SyncService>(_i39.SyncService(
-    gh<_i22.Session>(),
+  gh.singleton<_i40.SyncService>(_i40.SyncService(
+    gh<_i23.Session>(),
     gh<_i3.AccountDbProvider>(),
-    gh<_i19.PendingResultsDbProvider>(),
-    gh<_i28.AccountRepository>(),
-    gh<_i33.CarePlansRepository>(),
-    gh<_i25.TimeSettingsRepository>(),
-    gh<_i5.AppSettingsDbProvider>(),
-    gh<_i37.DeviceRepository>(),
+    gh<_i20.PendingResultsDbProvider>(),
+    gh<_i29.AccountRepository>(),
+    gh<_i34.CarePlansRepository>(),
+    gh<_i26.TimeSettingsRepository>(),
+    gh<_i4.AppSettingsDbProvider>(),
+    gh<_i38.DeviceRepository>(),
   ));
-  gh.factory<_i40.TokenInterceptor>(() => _i40.TokenInterceptor(
-        gh<_i22.Session>(),
-        gh<_i27.AccountApiClient>(),
+  gh.factory<_i41.TokenInterceptor>(() => _i41.TokenInterceptor(
+        gh<_i23.Session>(),
+        gh<_i28.AccountApiClient>(),
         gh<_i3.AccountDbProvider>(),
-        gh<_i38.ReportService>(),
+        gh<_i39.ReportService>(),
       ));
-  gh.singleton<_i41.AuthBloc>(_i41.AuthBloc(
-    gh<_i6.AuthService>(),
-    gh<_i38.ReportService>(),
-    gh<_i28.AccountRepository>(),
-    gh<_i22.Session>(),
+  gh.singleton<_i42.AuthBloc>(_i42.AuthBloc(
+    gh<_i5.AuthService>(),
+    gh<_i39.ReportService>(),
+    gh<_i29.AccountRepository>(),
+    gh<_i23.Session>(),
     gh<_i3.AccountDbProvider>(),
-    gh<_i19.PendingResultsDbProvider>(),
+    gh<_i20.PendingResultsDbProvider>(),
+    gh<_i13.HospitalDbProvider>(),
     gh<_i12.Dio>(instanceName: 'privateDio'),
-    gh<_i39.SyncService>(),
+    gh<_i40.SyncService>(),
   ));
-  gh.factory<_i42.CalendarFulfillmentServiceBloc>(
-      () => _i42.CalendarFulfillmentServiceBloc(
+  gh.singleton<_i43.BackgroundMeasurementManager>(
+      _i43.BackgroundMeasurementManager(
+    gh<_i40.SyncService>(),
+    gh<_i3.AccountDbProvider>(),
+    gh<_i6.BackgroundMeasurementCubit>(),
+    gh<_i39.ReportService>(),
+  ));
+  gh.factory<_i44.CalendarFulfillmentServiceBloc>(
+      () => _i44.CalendarFulfillmentServiceBloc(
             gh<_i3.AccountDbProvider>(),
-            gh<_i8.CalendarFooterBloc>(),
-            gh<_i33.CarePlansRepository>(),
-            gh<_i7.CalendarEvaluationDbProvider>(),
-            gh<_i16.MeasurementsDbProvider>(),
-            gh<_i19.PendingResultsDbProvider>(),
+            gh<_i9.CalendarFooterBloc>(),
+            gh<_i34.CarePlansRepository>(),
+            gh<_i8.CalendarEvaluationDbProvider>(),
+            gh<_i17.MeasurementsDbProvider>(),
+            gh<_i20.PendingResultsDbProvider>(),
           ));
-  gh.singleton<_i43.ContentBloc>(_i43.ContentBloc(
+  gh.singleton<_i45.ContentBloc>(_i45.ContentBloc(
     gh<_i3.AccountDbProvider>(),
-    gh<_i23.SessionDbProvider>(),
-    gh<_i22.Session>(),
-    gh<_i9.CarePlanBloc>(),
-    gh<_i38.ReportService>(),
+    gh<_i24.SessionDbProvider>(),
+    gh<_i23.Session>(),
+    gh<_i10.CarePlanBloc>(),
+    gh<_i39.ReportService>(),
   ));
-  gh.factory<_i44.OmronConnectionBloc>(() => _i44.OmronConnectionBloc(
+  gh.factory<_i46.OmronConnectionBloc>(() => _i46.OmronConnectionBloc(
+        gh<_i7.BtConnectionHelper>(),
         gh<_i3.AccountDbProvider>(),
-        gh<_i18.PairedDevicesDbProvider>(),
-        gh<_i38.ReportService>(),
+        gh<_i19.PairedDevicesDbProvider>(),
+        gh<_i39.ReportService>(),
       ));
-  gh.factory<_i45.RegisterDeviceBloc>(() => _i45.RegisterDeviceBloc(
+  gh.factory<_i47.RegisterDeviceBloc>(() => _i47.RegisterDeviceBloc(
+        gh<_i7.BtConnectionHelper>(),
         gh<_i3.AccountDbProvider>(),
-        gh<_i37.DeviceRepository>(),
-        gh<_i38.ReportService>(),
+        gh<_i38.DeviceRepository>(),
+        gh<_i39.ReportService>(),
       ));
-  gh.factory<_i46.ReportBloc>(() => _i46.ReportBloc(gh<_i38.ReportService>()));
-  gh.singleton<_i47.SyncBloc>(_i47.SyncBloc(
+  gh.factory<_i48.ReportBloc>(() => _i48.ReportBloc(gh<_i39.ReportService>()));
+  gh.singleton<_i49.SyncBloc>(_i49.SyncBloc(
     gh<_i3.AccountDbProvider>(),
-    gh<_i39.SyncService>(),
-    gh<_i22.Session>(),
+    gh<_i40.SyncService>(),
+    gh<_i23.Session>(),
   ));
   return getIt;
 }
 
-class _$DioModule extends _i48.DioModule {}
+class _$DioModule extends _i50.DioModule {}

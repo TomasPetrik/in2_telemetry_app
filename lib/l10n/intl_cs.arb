@@ -1,4 +1,5 @@
 {
+    "@@locale": "cs",
     "appTitle": "FONS Care",
     "@appTitle": {
         "description": "FONS Care je inovativní řešení v komunikaci lékařů s pacientem modernizující české zdravotnictví."
@@ -24,6 +25,7 @@
     "common_log_in": "Přihlásit se",
     "common_save": "Uložit",
     "common_wrong_value": "Nesprávná hodnota",
+    "common_diastolic_gt_systolic": "Vyšší než systolický",
     "common_not_measured": "Nenaměřeno",
     "common_do_sync": "Synchronizovat",
     "common_all_accounts": "Všechny účty",
@@ -50,7 +52,7 @@
             }
         }
     },
-    "common_action_button_label": "{actionButtonType, select, regular{akčního tlačítka} startButton{tlačítka START} other{ }}",
+    "common_action_button_label": "{actionButtonType, select, regular{akčního tlačítka} startButton{START|STOP} other{ }}",
     "@common_action_button_label": {
         "description": "Action Button Type",
         "placeholders": {
@@ -95,14 +97,14 @@
     },
     "server_error_title": "Chyba",
     "server_error_desc": "Zde je něco v nepořádku. Zkuste akci opakovat později.",
-    "common_measurement_types": "{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} other{Jiný}}",
+    "common_measurement_types": "{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} shortnessOfBreath{Dušnost} overallHealth{Celkový zdravotní stav} other{Jiný}}",
     "@common_measurement_types": {
         "description": "Measurement types",
         "placeholders": {
             "measurementType": {}
         }
     },
-    "common_measurement_types_genitive": "{measurementType, select, temperature{Teploty} bloodPressure{Krevního tlaku} oxygenSaturation{Saturace kyslíku} steps{Kroků} globalPosition{Pozice} heartRate{Srdečního tepu} ews{Ews} respiratoryRate{Dechové frekvence} other{Jiný}}",
+    "common_measurement_types_genitive": "{measurementType, select, temperature{Teploty} bloodPressure{Krevního tlaku} oxygenSaturation{Saturace kyslíku} steps{Kroků} globalPosition{Pozice} heartRate{Srdečního tepu} ews{Ews} respiratoryRate{Dechové frekvence} shortnessOfBreath{Dušnosti} overallHealth{Celkového zdravotního stavu} other{Jiný}}",
     "@common_measurement_types_genitive": {
         "description": "Measurement types",
         "placeholders": {
@@ -129,6 +131,7 @@
     "tabs_more": "Více",
     "configuration_screen_logged_accounts": "Přihlášené účty",
     "configuration_screen_add_account": "Přidat účet",
+    "configuration_screen_setup_watch": "Nastavit synchronizaci hodinek",
     "configuration_screen_settings": "Nastavení",
     "configuration_screen_notification_label": "Notifikace",
     "configuration_screen_notification_sublabel": "Dle plánu měření",
@@ -142,7 +145,7 @@
     "configuration_screen_dark": "Tmavý",
     "configuration_screen_good_in_night": "Skvělý v noci",
     "appearance_screen_title": "Vzhled",
-    "user_detail_screen_remove_account": "Odstranit účet",
+    "user_detail_screen_remove_account": "Odstranit účet z aplikace",
     "user_detail_screen_measurement_plans": "Plány měření",
     "user_detail_screen_user_info": "Informace o uživateli",
     "user_detail_screen_user_name": "Jméno",
@@ -204,10 +207,13 @@
     },
     "onboarding_account_added_screen_continue_to_app": "Pokračovat do aplikace",
     "onboarding_account_added_screen_add_other_account": "Přidat další účet",
+    "dialog_req_localization_service_title": "Povolení lokalizační služby",
+    "dialog_req_localization_service_description": "Aplikace vyžaduje povolení používat lokalizační službu na vyhledávaní zažírení v okolí.",
+    "dialog_req_localization_service_go_to_settings": "Přejít do nastavení",
     "dialog_req_notifications_title": "Povolení notifikací",
     "dialog_req_notifications_description": "Aplikace vyžaduje povolení notifikací, pokud chcete dostávat upozornění.",
     "dialog_req_notifications_go_to_settings": "Přejít do nastavení",
-    "dialog_account_removal_confirmation_title": "Odstranit účet",
+    "dialog_account_removal_confirmation_title": "Odstranit účet z aplikace",
     "dialog_account_removal_confirmation_description": "Všechna data účtu {accountName}\nbudou z aplikace nevratně\nodstraněna.",
     "@dialog_account_removal_confirmation_description": {
         "placeholders": {
@@ -336,18 +342,20 @@
     "metering_screen_device_removal_title": "Odstranit zařízení",
     "metering_screen_device_removal_button_confirm": "Odstranit zařízení",
     "metering_screen_device_removal_message": "Zařízení bude odstraněno. Pro opětovné používání ho budete muset znovu spárovat s aplikací.",
+    "metering_screen_lended_devices": "Zapůjčené zařízení",
+    "metering_screen_personal_devices": "Vlastní zařízení",
     "add_device_screen_title": "Přidat zařízení",
     "manual_measurement_screen_title": "Vlastní zápis hodnot",
     "manual_measurement_screen_type": "Typ",
     "manual_measurement_screen_measurement_time": "Čas odečtu",
-    "common_measurement_units_names": "{measurementUnitName, select, systolic{Systolický} diastolic{Diastolický} temperature{Teplota} pulse{Puls} oxygenSaturation{Saturace kyslíku} respiratoryRate{Dechová frekvence} steps{Kroky} lat{Lat} lng{Lng} ews{Ews} other{Jiný}}",
+    "common_measurement_units_names": "{measurementUnitName, select, systolic{Systolický} diastolic{Diastolický} temperature{Teplota} pulse{Puls} oxygenSaturation{Saturace kyslíku} respiratoryRate{Dechová frekvence} steps{Kroky} lat{Lat} lng{Lng} ews{Ews} shortnessOfBreath{Dušnost} overallHealth{Celkový zdravotní stav} other{Jiný}}",
     "@common_measurement_units_names": {
         "description": "Measurement unit names",
         "placeholders": {
             "measurementUnitName": {}
         }
     },
-    "common_measurement_units_types": "{measurementType, select, temperature{°C} bloodPressure{mmHg} oxygenSaturation{%} heartRate{TF} other{ }}",
+    "common_measurement_units_types": "{measurementType, select, temperature{°C} bloodPressure{mmHg} oxygenSaturation{%} heartRate{tepů/min} other{}}",
     "@common_measurement_units_types": {
         "description": "Measurement units",
         "placeholders": {
@@ -471,10 +479,11 @@
     "notifications_screen_at_start_of_measurement": "V čase začátku měření",
     "notifications_screen_10_min_before_measurement": "10 minut před každým měřením",
     "find_device_screen_searching_device": "Hledání zařízení...",
+    "find_device_screen_searching_tonometer": "Hledání tlakoměru...",
     "find_device_screen_waiting_on_measurement": "Čekáme až se změříte...",
-    "find_device_screen_device_connected": "Zařízení připojeno",
-    "find_device_screen_sync_results": "Probíhá synchronizace výsledků...",
-    "find_device_screen_pairing_device": "Probíhá párování zařízení...",
+    "find_device_screen_device_connected": "Tlakoměr připojen",
+    "find_device_screen_sync_results": "Probíhá přenos dat z tlakoměru...",
+    "find_device_screen_pairing_device": "Probíhá párování s tlakoměrem...",
     "find_device_screen_step1_p": "Zapněte {deviceName} v režimu párování",
     "@find_device_screen_step1_p": {
         "placeholders": {
@@ -483,9 +492,9 @@
             }
         }
     },
-    "find_device_screen_step2_p": "Počkejte, až vás zařízení vyzve k párování",
-    "find_device_screen_step3_p": "Párování zařízení",
-    "find_device_screen_step4_p": "Spusťte na zařízení měření pomocí {actionButtonLabel} a počkejte na konec měření",
+    "find_device_screen_step2_p": "Počkejte, na výzvu k párování",
+    "find_device_screen_step3_p": "Párování s tlakoměrem",
+    "find_device_screen_step4_p": "Vypněte tlakoměr pomocí tlačítka {actionButtonLabel}, poté spusťte měření dalším stisknutím tlačítka {actionButtonLabel} a počkejte na jeho dokončení",
     "@find_device_screen_step4_p": {
         "placeholders": {
             "actionButtonLabel": {
@@ -493,7 +502,7 @@
             }
         }
     },
-    "find_device_screen_step5_p": "Počkejte na synchronizaci výsledků",
+    "find_device_screen_step5_p": "Počkejte na přenesení výsledků z tlakoměru",
     "find_device_screen_step1": "Ujistěte se, že máte aktivován Bluetooth na {deviceName}",
     "@find_device_screen_step1": {
         "placeholders": {
@@ -502,7 +511,7 @@
             }
         }
     },
-    "find_device_screen_step2": "Spusťte na zařízení měření pomocí {actionButtonLabel} a počkejte na konec měření",
+    "find_device_screen_step2": "Spusťte na tlakoměru měření pomocí tlačítka {actionButtonLabel} a počkejte na jeho dokončení",
     "@find_device_screen_step2": {
         "placeholders": {
             "actionButtonLabel": {
@@ -511,14 +520,17 @@
         }
     },
     "find_device_screen_step3": "Po meření stiskněte opět akční tlačítko",
-    "find_device_screen_step4": "Počkejte na synchronizaci výsledků",
-    "find_device_screen_device_reference": "Stránky nemocnice o zařízení",
+    "find_device_screen_step4": "Počkejte na přenesení výsledků z tlakoměru",
+    "find_device_screen_device_reference": "Stránky nemocnice o tlakoměru",
     "find_device_screen_disabled_bt_title": "Bluetooth je vypnutý",
     "find_device_screen_disabled_bt_desc": "Pro spojení s přístrojem je potřeba mít Bluetooth zapnutý.",
     "find_device_screen_disabled_bt_btn_settings": "Nastavení",
     "find_device_screen_not_granted_bt_title": "Bluetooth zakázán ",
     "find_device_screen_not_granted_bt_desc": "Aplikace vyžaduje povolení používat Bluetooth pro komunikaci se zařízeními.",
     "find_device_screen_not_granted_bt_btn_settings": "Povolit",
+    "find_device_not_found_title": "Zařízení nenalezeno",
+    "find_device_not_found_desc": "Pro opětovné vyhledávání stisknete na tlačítko opakovat",
+    "find_device_repeat_search": "Opakovat",
     "measurement_summary_screen_success_title": "Měření bylo úspěšně dokončeno",
     "measurement_summary_screen_success_subtitle": "Výsledky budou odeslány po potvrzení",
     "measurement_summary_screen_result_success_desc": "Máte hotovo! Výsledek se připíše po potvrzení.",
@@ -526,9 +538,10 @@
     "measurement_summary_screen_no_data_desc": "Zařízení nedodalo žádné výsledky měření.",
     "measurement_summary_screen_no_data_repeat_measurement": "Opakovat měření",
     "measurement_summary_screen_disallow_to_send": "Neodeslat výsledky",
+    "measurement_summary_screen_send_results": "Odeslat výsledek měření",
     "measurement_summary_screen_exceeded_values": "Pozor, vaše naměřené hodnoty překročily nastavené meze, kontaktujte vašeho lékaře!",
     "results_history_screen_plan_of_day": "Plán měření dne",
-    "chart_screen_title": "Výsledky měření {measurementType} v {unitType}",
+    "chart_screen_title": "Výsledky měření {measurementType} {unitType}",
     "@chart_screen_title": {
         "placeholders": {
             "measurementType": {
@@ -541,13 +554,26 @@
     },
     "chart_placeholder_error_loading_data": "Zde je něco v nepořádku. Zkuste akci opakovat později.",
     "chart_placeholder_no_data_in_month": "Historie měření neobsahuje žádná data.",
-    "register_device_search_screen_title": "Registrovat zařízení",
-    "register_device_search_screen_desc": "Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.",
+    "device_search_screen_purpose_title": "{devicePurposeName, select, addDevice{Přidat zařízení} registerDevice{Registrovat zařízení} other{Jiný}}",
+    "@device_search_screen_purpose_title": {
+        "description": "Device purpose names",
+        "placeholders": {
+            "devicePurposeName": {}
+        }
+    },
+    "device_search_screen_purpose_desc": "{devicePurposeName, select, addDevice{Pro přidání zařízení je potřeba mít Bluetooth v režimu párovaní jenom zařízení, které chcete přidat.} registerDevice{Pro registraci je potřeba mít v režimu Bluetooth aktivní jenom zařízení, které chcete registrovat.} other{Jiný}}",
+    "@device_search_screen_purpose_desc": {
+        "description": "Device purpose description",
+        "placeholders": {
+            "devicePurposeName": {}
+        }
+    },
     "register_device_detail_screen_title": "Zařízení k registraci",
     "register_device_detail_screen_device": "Zařízení",
     "register_device_detail_screen_assigned_id": "Označení",
     "register_device_detail_screen_assigned_id_hint": "Například zařízení v kuchyni",
-    "register_device_detail_screen_identificator": "Technický Identifikátor",
+    "register_device_detail_screen_identifier": "Technický Identifikátor",
+    "register_device_detail_screen_bluetooth_address": "Bluetooth adresa",
     "register_device_detail_screen_button_register": "Registrovat",
     "register_device_detail_screen_not_filled_field": "Nevyplněné pole",
     "register_device_success_screen_desc": "Zařízení bylo úspěšně registrováno.",
@@ -574,5 +600,48 @@
             }
         }
     },
-    "manual_screen_title": "Příručka"
+    "manual_screen_title": "Příručka",
+    "licenses_screen_title": "Použité licence",
+    "license_detail_screen_title": "Detail licence",
+    "licenses_menu_title": "Použité licence",
+    "licenses_menu_subtitle": "Licence použitých knihoven",
+    "shortness_of_breath_values": "{shortnessOfBreathValue, select, none{Dýchání bez problémů} low{Občasná dušnost při fyzické námaze} medium{Častější problémy s dušností} high{Velmi špatně se mi dýchá} other{}}",
+    "@shortness_of_breath_values": {
+        "description": "Shortness of breath values",
+        "placeholders": {
+            "shortnessOfBreathValue": {}
+        }
+    },
+    "overall_health_values": "{overallHealthValue, select, good{Velmi dobrý} variable{Mírné/občasné zhoršení při fyzické námaze} bad{Setrvalé zhoršení bez příčiny} veryBad{Cítím se velmi špatně} other{}}",
+    "@overall_health_values": {
+        "description": "Overall health values",
+        "placeholders": {
+            "overallHealthValue": {}
+        }
+    },
+    "watch_setup_menu_title": "Nastavit přenos dat z hodinek",
+    "watch_setup_screen_title": "Nastavení hodinek",
+    "watch_setup_explanation": "Pro správnou funkčnost přenosu dat z hodinek je nutné udělit aplikaci následující oprávnění:",
+    "permission_names": "{permission, select, notification{Odesílání oznámení} bluetoothConnect{Připojování k Bluetooth zařízením} ignoreBatteryOptimizations{Běh aplikace na pozadí} other{ }}",
+    "@permission_names": {
+        "description": "Permission names",
+        "placeholders": {
+            "permission": {}
+        }
+    },
+    "permission_explanations": "{permission, select, notification{Oprávnění odesílat oznámení je nutné pro průběžnou komunikaci aplikace s hodinkami.} bluetoothConnect{Oprávnění připojovat se k Bluetooth zařízením je nutné pro přenos měření z hodinek.} ignoreBatteryOptimizations{Oprávnění běžet na pozadí nám pomáhá zajistit, aby přenos dat správně pracoval, i když aplikace není spuštěná.} other{ }}",
+    "@permission_explanations": {
+        "description": "Permission explanations",
+        "placeholders": {
+            "permission": {}
+        }
+    },
+    "watch_setup_turn_on_devices": "Pro aktivaci přenosu dat musí být přiřazené zařízení zapnuté a v dosahu telefonu.",
+    "watch_setup_turn_on_synchronization": "Po udělení oprávnění prosím aktivujte periodický přenos dat:",
+    "watch_synchronization_toggle_label": "Aktivovat periodický přenos dat",
+    "watch_synchronization_failed": "Přenos dat z hodinek se nezdařil. Je aktivní bluetooth telefonu, jsou hodinky zapnuté a v dosahu?",
+    "watch_setup_failed": "Nastavení hodinek se nezdařilo. Ujistěte se, že aplikace má potřebná oprávnění, je aktivní bluetooth telefonu a hodinky jsou zapnuté a v dosahu. Potom zkuste akci opakovat.",
+    "watch_setup_partial": "Je aktivní přenos dat pouze z některých hodinek. Zkuste prosím aktivaci provést znovu. Ujistěte se, že všechny Vaše přiřazené hodinky jsou v dosahu.",
+    "new_watch_assigned_title": "Konfigurace hodinek",
+    "new_watch_assigned_description": "Máte přiřazené hodinky. Aktivujte prosím automatický přenos naměřených dat z hodinek v nastavení aplikace."
 }

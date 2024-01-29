@@ -5,7 +5,6 @@ import 'package:scalesoft_app/model/theme_mode_local.dart';
 
 part 'app_settings.freezed.dart';
 part 'app_settings.g.dart';
-part 'app_settings.hive.dart';
 
 @freezed
 class AppSettings with _$AppSettings {

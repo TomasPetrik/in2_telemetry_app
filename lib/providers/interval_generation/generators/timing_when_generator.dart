@@ -80,7 +80,7 @@ class TimingWhenGenerator {
     var start = intervalBounds.start;
 
     while (start.isBefore(intervalBounds.end)) {
-      final midnight = start.getTomorrowMidnight();
+      final midnight = start.tomorrow;
       final currentEnd = [midnight, intervalBounds.end].min;
 
       final startDateTime = start.replaceTime(startTime);
@@ -131,7 +131,7 @@ class TimingWhenGenerator {
     var start = intervalBounds.start;
 
     while (start.isBefore(intervalBounds.end)) {
-      final midnight = start.getTomorrowMidnight();
+      final midnight = start.tomorrow;
       final currentEnd = [midnight, intervalBounds.end].min;
 
       final startDateTime = start.replaceTime(startTime);

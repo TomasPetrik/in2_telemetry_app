@@ -6,6 +6,7 @@ import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc_event.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc_state.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
+import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 import 'package:scalesoft_app/utils/helpers/results_helper.dart';
 
@@ -45,12 +46,18 @@ class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
                   measurementType: null,
                 );
 
+         final allMeasurementTypes =
+              CarePlanHelper.getMeasurementTypesByResults(
+            results,
+          );
+
           emit(
             ResultsBlocState(
               currentCarePlans: carePlans,
               selectedWhenPeriod: whenPeriod,
               uncategorizedResults: allServerResults,
               results: results,
+              allMeasurementTypes: allMeasurementTypes,
               plansEvaluationPerPeriod: plansEvaluationPerPeriod,
             ),
           );
@@ -90,9 +97,15 @@ class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
             measurementType: state.measurementType,
           );
 
+          final allMeasurementTypes =
+              CarePlanHelper.getMeasurementTypesByResults(
+            results,
+          );
+
           emit(
             state.copyWith(
               selectedWhenPeriod: whenPeriod,
+              allMeasurementTypes: allMeasurementTypes,
               results: results,
             ),
           );

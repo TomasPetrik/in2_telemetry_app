@@ -13,7 +13,7 @@ import 'package:scalesoft_app/ui/routers/routes/calendar_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/screens/navigation_screen.dart';
 import 'package:scalesoft_app/ui/widgets/action_widget.dart';
-import 'package:scalesoft_app/ui/widgets/blured_user_app_bar.dart';
+import 'package:scalesoft_app/ui/widgets/blurred_user_app_bar.dart';
 import 'package:scalesoft_app/ui/widgets/measurement_header.dart';
 import 'package:scalesoft_app/ui/widgets/measurements_list.dart';
 import 'package:scalesoft_app/ui/widgets/no_plans_placeholder.dart';
@@ -227,7 +227,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
           top: 0,
           left: 0,
           right: 0,
-          child: BluredUserAppBar(),
+          child: BlurredUserAppBar(),
         ),
       ],
     );

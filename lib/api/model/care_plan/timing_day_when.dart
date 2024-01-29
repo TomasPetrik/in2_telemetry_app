@@ -5,8 +5,6 @@ part 'timing_day_when.freezed.dart';
 
 part 'timing_day_when.g.dart';
 
-part 'timing_day_when.hive.dart';
-
 @unfreezed
 class TimingDayWhen with _$TimingDayWhen {
   const TimingDayWhen._();

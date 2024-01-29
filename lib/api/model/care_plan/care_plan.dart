@@ -5,7 +5,7 @@ import 'package:scalesoft_app/api/model/care_plan/author.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_version.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
-import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaulation_aggregated.dart';
+import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation_aggregated.dart';
 import 'package:scalesoft_app/api/model/care_plan/interval_generation/daily_timing_model.dart';
 import 'package:scalesoft_app/api/model/care_plan/interval_generation/timing_model.dart';
 import 'package:scalesoft_app/api/model/care_plan/interval_generation/when_model.dart';
@@ -14,7 +14,6 @@ import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 part 'care_plan.freezed.dart';
 part 'care_plan.g.dart';
-part 'care_plan.hive.dart';
 
 @unfreezed
 class CarePlan with _$CarePlan {

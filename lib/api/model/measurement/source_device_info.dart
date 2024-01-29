@@ -4,7 +4,6 @@ import 'package:scalesoft_app/api/model/measurement/device.dart';
 
 part 'source_device_info.freezed.dart';
 part 'source_device_info.g.dart';
-part 'source_device_info.hive.dart';
 
 @freezed
 class SourceDeviceInfo with _$SourceDeviceInfo {
@@ -13,7 +12,6 @@ class SourceDeviceInfo with _$SourceDeviceInfo {
   @HiveType(typeId: 36, adapterName: 'SourceDeviceInfoAdapter')
   const factory SourceDeviceInfo({
     @HiveField(0) Device? sourceDevice,
-    @HiveField(1) int? batteryPercentage,
   }) = _SourceDeviceInfo;
 
   factory SourceDeviceInfo.fromJson(Map<String, dynamic> json) =>

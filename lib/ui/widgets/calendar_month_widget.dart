@@ -15,7 +15,7 @@ import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/calendar_day_planned.dart';
 import 'package:scalesoft_app/ui/widgets/calendar_day_progress.dart';
 import 'package:scalesoft_app/ui/widgets/rotating_icon.dart';
-import 'package:scalesoft_app/utils/constants.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 
 class CalendarMonthWidget extends StatelessWidget {
   const CalendarMonthWidget({
@@ -58,7 +58,7 @@ class CalendarMonthWidget extends StatelessWidget {
               children: [
                 Gaps.gap24,
                 Text(
-                  '${localization.common_months(Constants.monthsInYear[loadedMonth.month]!)} ${loadedMonth.year}',
+                  '${localization.common_months(ConfigurationConstants.monthsInYear[loadedMonth.month]!)} ${loadedMonth.year}',
                   style: ScaleTextStyles.label.apply(
                     color: Theme.of(context).colorScheme.onPrimary,
                   ),

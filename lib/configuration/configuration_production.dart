@@ -39,19 +39,33 @@ class ProductionConfiguration extends BaseConfiguration {
       ),
       enabledMeasurementTypes: [MeasurementTypeContract.bloodPressure, MeasurementTypeContract.heartRate],
     ),
-    // TODO: Add URLs and uncomment #IN2-8308
-    // const Hospital(
-    //   id: 3,
-    //   title: 'Krajská nemocnice Tomáše Bati ve Zlíně',
-    //   iconPath: 'assets/icons/icon_hospital_kntb.svg',
-    //   authData: AuthData(
-    //     baseUrl: '???',
-    //     authUrl: '???',
-    //     tokenUrl: '???',
-    //   ),
-    // ),
+    const Hospital(
+      id: 3,
+      title: 'Krajská nemocnice T. Bati',
+      iconPath: 'assets/icons/icon_hospital_kntb.svg',
+      authData: AuthData(
+        baseUrl: 'https://e-health.bnzlin.cz/api-mobile/v1',
+        authUrl: 'https://e-health-auth.bnzlin.cz/connect/authorize',
+        tokenUrl: 'https://e-health-auth.bnzlin.cz/connect/token',
+      ),
+      enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate],
+    ),
+    const Hospital(
+      id: 5,
+      title: 'Klaudiánova Nemocnice',
+      iconPath: 'assets/icons/icon_hospital_onmb.png',
+      authData: AuthData(
+        baseUrl: 'https://pacient.onmb.cz/api-mobile/v1',
+        authUrl: 'https://pacient-auth.onmb.cz/connect/authorize',
+        tokenUrl: 'https://pacient-auth.onmb.cz/connect/token',
+      ),
+      enabledMeasurementTypes: [MeasurementType.shortnessOfBreath, MeasurementType.overallHealth],
+    ),
   ];
 
   @override
   final String clientSecret = 'urHw0u2395TVg7lfEhKe';
+
+  @override
+  final String logEndpointSecret = 'zvqoz0vA#agIA0rsIzYSuk7kU1sCfKK6hsVYP3dW6!AOj**^31';
 }

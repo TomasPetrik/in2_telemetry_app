@@ -69,6 +69,26 @@ class BottomDialog extends StatelessWidget {
     );
   }
 
+  factory BottomDialog.openLocalizationSettings({
+    Key? key,
+    required BuildContext context,
+  }) {
+    return _BottomDialog(
+      title: localization.dialog_req_localization_service_title,
+      description: localization.dialog_req_localization_service_description,
+      iconPath: 'assets/icons/icon_triangle_exclamation_big.svg',
+      iconColor: Theme.of(context).colorScheme.tertiary,
+      positiveButtonStyle: ButtonStyle(
+        buttonType: ButtonType.primary,
+        label: localization.dialog_req_localization_service_go_to_settings,
+      ),
+      negativeButtonStyle: ButtonStyle(
+        buttonType: ButtonType.secondary,
+        label: localization.common_close,
+      ),
+    );
+  }
+
   factory BottomDialog.deviceConfirmationRemoval({
     Key? key,
     required BuildContext context,
@@ -165,6 +185,26 @@ class BottomDialog extends StatelessWidget {
     );
   }
 
+  factory BottomDialog.deviceNotFound({
+    Key? key,
+    required BuildContext context,
+  }) {
+    return _BottomDialog(
+      title: localization.find_device_not_found_title,
+      description: localization.find_device_not_found_desc,
+      iconPath: 'assets/icons/icon_triangle_exclamation_big.svg',
+      iconColor: Theme.of(context).colorScheme.error,
+      positiveButtonStyle: ButtonStyle(
+        buttonType: ButtonType.primary,
+        label: localization.find_device_repeat_search,
+      ),
+      negativeButtonStyle: ButtonStyle(
+        buttonType: ButtonType.secondary,
+        label: localization.common_close,
+      ),
+    );
+  }
+
   factory BottomDialog.reportsSent({
     Key? key,
     required BuildContext context,
@@ -180,6 +220,23 @@ class BottomDialog extends StatelessWidget {
       ),
     );
   }
+
+  factory BottomDialog.watchSetupFailed({
+    Key? key,
+    required BuildContext context,
+  }) {
+    return _BottomDialog(
+      title: localization.server_error_title,
+      description: localization.watch_setup_failed,
+      iconPath: 'assets/icons/icon_triangle_exclamation_big.svg',
+      iconColor: Theme.of(context).colorScheme.error,
+      positiveButtonStyle: ButtonStyle(
+        buttonType: ButtonType.secondary,
+        label: localization.common_close,
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {

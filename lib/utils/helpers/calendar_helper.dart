@@ -4,7 +4,7 @@ import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 class CalendarHelper {
   static CalendarDayPeriod getDayPeriod(DateTime dayDt) {
-    final dtNow = DateTime.now().getTodayMidnight();
+    final dtNow = DateTime.now().date;
 
     if (dayDt.isBefore(dtNow)) {
       return CalendarDayPeriod.past;

@@ -7,33 +7,61 @@ import 'package:scalesoft_app/bloc/register_device/register_device_bloc.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_event.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
-import 'package:scalesoft_app/ui/widgets/blured_scale_app_bart.dart';
+import 'package:scalesoft_app/ui/widgets/blurred_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/device_item.dart';
 import 'package:scalesoft_app/ui/widgets/process_item.dart';
 import 'package:scalesoft_app/ui/widgets/warning_item.dart';
 
-class RegisterDeviceSearchScreen extends StatefulWidget {
-  const RegisterDeviceSearchScreen({
+enum DevicePurpose {
+  addDevice, //require pairing process
+  registerDevice,
+}
+
+class DeviceSearchScreen extends StatefulWidget {
+  const DeviceSearchScreen({
     super.key,
     required this.userId,
+    required this.devicePurpose,
   });
 
   final String userId;
+  final DevicePurpose devicePurpose;
 
   @override
-  State<RegisterDeviceSearchScreen> createState() =>
-      _RegisterDeviceSearchScreenState();
+  State<DeviceSearchScreen> createState() => _DeviceSearchScreenState();
 }
 
-class _RegisterDeviceSearchScreenState
-    extends State<RegisterDeviceSearchScreen> {
+class _DeviceSearchScreenState extends State<DeviceSearchScreen>
+    with BottomSheetMixin, WidgetsBindingObserver {
   final RegisterDeviceBloc registerDeviceBloc = getIt<RegisterDeviceBloc>();
 
   Future<bool> _onWillPop() async {
     registerDeviceBloc.add(const RegisterDeviceBlocEvent.stopSearch());
     return true;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed) {
+      if (registerDeviceBloc.shouldRequestPermission == true) {
+        registerDeviceBloc.add(const RegisterDeviceBlocEvent.checkHwState());
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
@@ -43,12 +71,35 @@ class _RegisterDeviceSearchScreenState
       child: Material(
         child: Stack(
           children: [
-            BlocBuilder<RegisterDeviceBloc, RegisterDeviceBlocState>(
+            BlocConsumer<RegisterDeviceBloc, RegisterDeviceBlocState>(
               bloc: registerDeviceBloc
-                ..add(RegisterDeviceBlocEvent.init(widget.userId, context)),
+                ..add(
+                  RegisterDeviceBlocEvent.init(
+                    userId: widget.userId,
+                    onlyPairingMode:
+                        widget.devicePurpose == DevicePurpose.addDevice,
+                  ),
+                ),
+              listener: (BuildContext context, RegisterDeviceBlocState state) {
+                state.whenOrNull(
+                  popDevice: (devToPop) => Navigator.of(context).pop(devToPop),
+                  disabledLocalizationService: (_) {
+                    showLocalizationSettings(context: context)
+                        .then((openLocationSettings) async {
+                      if (openLocationSettings == true) {
+                        await AppSettings.openAppSettings(
+                          type: AppSettingsType.location,
+                        );
+                      } else {
+                        Navigator.of(context).pop();
+                      }
+                    });
+                  },
+                );
+              },
               builder: (context, state) {
                 final header = state.whenOrNull(
-                  disabledBt: () => WarningItem(
+                  disabledBt: (_) => WarningItem(
                     title: localization.find_device_screen_disabled_bt_title,
                     description:
                         localization.find_device_screen_disabled_bt_desc,
@@ -64,7 +115,7 @@ class _RegisterDeviceSearchScreenState
                       );
                     },
                   ),
-                  noBtPermissions: () => WarningItem(
+                  noBtPermissions: (_) => WarningItem(
                     title: localization.find_device_screen_not_granted_bt_title,
                     description:
                         localization.find_device_screen_not_granted_bt_desc,
@@ -84,14 +135,14 @@ class _RegisterDeviceSearchScreenState
                     label: localization.find_device_screen_searching_device,
                     processType: ProcessType.inProgress,
                   ),
-                  searching: (devices) => ProcessItem(
+                  searching: (_, devices) => ProcessItem(
                     label: localization.find_device_screen_searching_device,
                     processType: ProcessType.inProgress,
                   ),
                 );
 
                 final btDevices =
-                    state.whenOrNull(searching: (devices) => devices);
+                    state.whenOrNull(searching: (_, devices) => devices);
 
                 return CustomScrollView(
                   slivers: [
@@ -117,7 +168,9 @@ class _RegisterDeviceSearchScreenState
                               child: Center(
                                 child: Text(
                                   localization
-                                      .register_device_search_screen_desc,
+                                      .device_search_screen_purpose_desc(
+                                    widget.devicePurpose.name,
+                                  ),
                                   style: ScaleTextStyles.text.apply(
                                     color: Theme.of(context)
                                         .colorScheme
@@ -145,13 +198,8 @@ class _RegisterDeviceSearchScreenState
                             return InkWell(
                               onTap: () {
                                 registerDeviceBloc.add(
-                                  RegisterDeviceBlocEvent.openDeviceDetail(
-                                    params: {
-                                      'userId': widget.userId,
-                                      'localId': '${foundDev.localId!}',
-                                      'deviceIdentifier':
-                                          foundDev.deviceIdentifier!,
-                                    },
+                                  RegisterDeviceBlocEvent.selectDevice(
+                                    foundDev,
                                   ),
                                 );
                               },
@@ -179,8 +227,10 @@ class _RegisterDeviceSearchScreenState
               top: 0,
               left: 0,
               right: 0,
-              child: BluredScaleAppBar(
-                title: localization.register_device_search_screen_title,
+              child: BlurredScaleAppBar(
+                title: localization.device_search_screen_purpose_title(
+                  widget.devicePurpose.name,
+                ),
                 showClose: true,
                 onCloseTap: _onWillPop,
               ),

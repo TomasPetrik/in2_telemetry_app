@@ -4,7 +4,6 @@ import 'package:scalesoft_app/api/model/measurement_thresholds.dart';
 
 part 'user.freezed.dart';
 part 'user.g.dart';
-part 'user.hive.dart';
 
 @freezed
 class User with _$User {

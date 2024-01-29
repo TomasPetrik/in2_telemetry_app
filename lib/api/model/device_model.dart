@@ -3,7 +3,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 part 'device_model.freezed.dart';
 part 'device_model.g.dart';
-part 'device_model.hive.dart';
 
 @freezed
 class DeviceModel with _$DeviceModel {

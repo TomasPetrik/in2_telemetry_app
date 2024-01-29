@@ -86,6 +86,12 @@ class DarkMode {
         cardColor: paperAccent,
         hintColor: colorContent80,
         colorScheme: colorScheme,
+        dividerTheme: DividerThemeData(color: colorContent20),
+        listTileTheme: ListTileThemeData(
+          titleTextStyle: ScaleTextStyles.text.apply(color: fontColor),
+          subtitleTextStyle: ScaleTextStyles.label.apply(color: colorContent60),
+          iconColor: primary,
+        ),
         cardTheme: CardTheme(
           elevation: Dimensions.cardElevation,
           shadowColor: cardShadow,

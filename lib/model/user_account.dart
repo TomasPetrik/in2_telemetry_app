@@ -13,7 +13,6 @@ import 'package:scalesoft_app/api/model/user.dart';
 
 part 'user_account.freezed.dart';
 part 'user_account.g.dart';
-part 'user_account.hive.dart';
 
 @unfreezed
 class UserAccount with _$UserAccount {
@@ -38,6 +37,7 @@ class UserAccount with _$UserAccount {
     @HiveField(14) TemplateTimeSet? templateTimeSet,
     @HiveField(15) List<TimeSetting>? timeSettingItems,
     @HiveField(16) List<DeviceModel>? supportedDeviceModels,
+    @HiveField(18) List<int>? notificationsIds,
   }) = _UserAccount;
 
   factory UserAccount.fromJson(Map<String, dynamic> json) =>
@@ -61,6 +61,8 @@ class UserAccount with _$UserAccount {
 
     return null;
   }
+
+  bool get isParentAccount => parentId == null;
 
   bool get enterMeasurementWithoutPlan =>
       userPermissions?.contains(
