@@ -118,7 +118,7 @@ class ConfigurationConstants {
         LengthLimitingTextInputFormatter(2),
       ],
     ),
-    MeasurementType.shortnessOfBreath: MeasurementConfig(
+    MeasurementTypeContract.shortnessOfBreath: MeasurementConfig(
       MeasurementConfigType.select,
       null,
       [UnitName.shortnessOfBreath],
@@ -128,7 +128,7 @@ class ConfigurationConstants {
       null,
       null,
     ),
-    MeasurementType.overallHealth: MeasurementConfig(
+    MeasurementTypeContract.overallHealth: MeasurementConfig(
       MeasurementConfigType.select,
       null,
       [UnitName.overallHealth],
@@ -194,11 +194,11 @@ class ConfigurationConstants {
       bluetoothName: "E86",
       deviceModelType: DeviceModelType.e8x,
       supportedMeasurementTypes: [
-        MeasurementType.temperature,
-        MeasurementType.heartRate,
-        MeasurementType.bloodPressure,
-        MeasurementType.oxygenSaturation,
-        MeasurementType.respiratoryRate,
+        MeasurementTypeContract.temperature,
+        MeasurementTypeContract.heartRate,
+        MeasurementTypeContract.bloodPressure,
+        MeasurementTypeContract.oxygenSaturation,
+        MeasurementTypeContract.respiratoryRate,
       ],
       imagePath: 'assets/images/e8x.png',
       measurementFlow: MeasurementFlow.background,

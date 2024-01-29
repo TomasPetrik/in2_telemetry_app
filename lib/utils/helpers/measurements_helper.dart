@@ -210,7 +210,7 @@ class MeasurementHelper {
       case MeasurementTypeContract.shortnessOfBreath:
         return measurement.shortnessOfBreath?.value.toDouble();
       case MeasurementTypeContract.overallHealth:
-        return measurementContract.overallHealth?.value.toDouble();
+        return measurement.overallHealth?.value.toDouble();
       default:
         return null;
     }

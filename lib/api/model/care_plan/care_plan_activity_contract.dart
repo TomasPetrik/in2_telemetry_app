@@ -1,8 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-part 'care_plan_activity.freezed.dart';
-part 'care_plan_activity.g.dart';
+part 'care_plan_activity_contract.freezed.dart';
+part 'care_plan_activity_contract.g.dart';
 
 @freezed
 class CarePlanActivityContract with _$CarePlanActivityContract {
@@ -11,7 +11,7 @@ class CarePlanActivityContract with _$CarePlanActivityContract {
     @HiveField(0) ActivityTypeContract activityType,
     @HiveField(1) MeasurementTypeContract measurementType,
     @HiveField(2) int? goalValue,
-  ) = _CarePlanActivity;
+  ) = _CarePlanActivityContract;
 
   factory CarePlanActivityContract.fromJson(Map<String, dynamic> json) =>
       _$CarePlanActivityContractFromJson(json);

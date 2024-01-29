@@ -1,4 +1,3 @@
-
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/data/app_database.dart';
@@ -10,7 +9,12 @@ class CarePlanRepository {
   CarePlanRepository(this._database);
 
   Future<int> createPlan({String? targetUserMuid}) async {
-    return await _database.into(_database.carePlans).insert(CarePlansCompanion.insert(targetUserMuid: Value(targetUserMuid), scheduledStart: DateTime.now(), testColumn: const Value("sds")));
+    return await _database.into(_database.carePlans).insert(
+          CarePlansCompanion.insert(
+            targetUserMuid: Value(targetUserMuid),
+            scheduledStart: DateTime.now(),
+          ),
+        );
   }
 
   Future<List<CarePlan>> getPlans() async {

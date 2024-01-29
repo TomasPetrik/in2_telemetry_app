@@ -67,7 +67,7 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
 
   //Personal devices which are not matching with user devices and user has also permission
   //for measurements with unknow devices <canMeasureWithUnknowDevice>
-  List<Device> getPersonalDevices(MeasurementType measurementType) {
+  List<Device> getPersonalDevices(MeasurementTypeContract measurementType) {
     final allPairedDevices = _pairedDevicesDbProvider.box.values
         .where(
           (device) => device.supportedMeasurementTypes!.contains(

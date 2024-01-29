@@ -48,7 +48,7 @@ class ProductionConfiguration extends BaseConfiguration {
         authUrl: 'https://e-health-auth.bnzlin.cz/connect/authorize',
         tokenUrl: 'https://e-health-auth.bnzlin.cz/connect/token',
       ),
-      enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate],
+      enabledMeasurementTypes: [MeasurementTypeContract.bloodPressure, MeasurementTypeContract.heartRate],
     ),
     const Hospital(
       id: 5,
@@ -59,7 +59,7 @@ class ProductionConfiguration extends BaseConfiguration {
         authUrl: 'https://pacient-auth.onmb.cz/connect/authorize',
         tokenUrl: 'https://pacient-auth.onmb.cz/connect/token',
       ),
-      enabledMeasurementTypes: [MeasurementType.shortnessOfBreath, MeasurementType.overallHealth],
+      enabledMeasurementTypes: [MeasurementTypeContract.shortnessOfBreath, MeasurementTypeContract.overallHealth],
     ),
   ];
 

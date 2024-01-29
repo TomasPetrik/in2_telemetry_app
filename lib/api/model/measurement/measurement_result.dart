@@ -68,29 +68,29 @@ class MeasurementResult with _$MeasurementResult {
     }
 
     final stringValue = switch (measurementType!) {
-      MeasurementType.temperature => value?.toStringAsFixed(1),
-      MeasurementType.bloodPressure =>
+      MeasurementTypeContract.temperature => value?.toStringAsFixed(1),
+      MeasurementTypeContract.bloodPressure =>
         "${composedValue?.firstValue?.toStringAsFixed(0) ?? '?'}/${composedValue?.secondValue?.toStringAsFixed(0) ?? '?'}",
-      MeasurementType.oxygenSaturation ||
-      MeasurementType.heartRate ||
-      MeasurementType.respiratoryRate ||
-      MeasurementType.ews =>
+      MeasurementTypeContract.oxygenSaturation ||
+      MeasurementTypeContract.heartRate ||
+      MeasurementTypeContract.respiratoryRate ||
+      MeasurementTypeContract.ews =>
         value?.toInt().toString(),
-      MeasurementType.shortnessOfBreath => value != null
+      MeasurementTypeContract.shortnessOfBreath => value != null
           ? localization.shortness_of_breath_values(
               ShortnessOfBreathValue.values
                   .firstWhere((x) => x.value == value!.toInt()),
             )
           : "",
-      MeasurementType.overallHealth => value != null
+      MeasurementTypeContract.overallHealth => value != null
           ? localization.overall_health_values(
               OverallHealthValue.values
                   .firstWhere((x) => x.value == value!.toInt()),
             )
           : "",
-      MeasurementType.steps ||
-      MeasurementType.globalPosition ||
-      MeasurementType.battery =>
+      MeasurementTypeContract.steps ||
+      MeasurementTypeContract.globalPosition ||
+      MeasurementTypeContract.battery =>
         "",
     };
 

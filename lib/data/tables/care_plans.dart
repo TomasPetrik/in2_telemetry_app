@@ -6,7 +6,6 @@ class CarePlans extends Table {
   TextColumn? get targetUserMuid => text().nullable()();
   TextColumn? get finishedByUserMuid => text().nullable()();
   TextColumn get activity => text().map(const CarePlanActivityConverter()).nullable()();
-  IntColumn get versionId
   DateTimeColumn get scheduledStart => dateTime()();
   IntColumn get versionId => integer().nullable()();
 }

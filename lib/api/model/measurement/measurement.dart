@@ -41,22 +41,22 @@ class Measurement with _$Measurement {
 
   String getFormattedValue() {
     final value = switch (measurementType) {
-      MeasurementType.temperature => temperature.toString(),
-      MeasurementType.bloodPressure =>
+      MeasurementTypeContract.temperature => temperature.toString(),
+      MeasurementTypeContract.bloodPressure =>
         "${bloodPressure?.systolic ?? 'N/A'}/${bloodPressure?.diastolic ?? 'N/A'}",
-      MeasurementType.oxygenSaturation => oxygenSaturation.toString(),
-      MeasurementType.heartRate => heartRate.toString(),
-      MeasurementType.respiratoryRate => respiratoryRate.toString(),
-      MeasurementType.shortnessOfBreath => shortnessOfBreath != null
+      MeasurementTypeContract.oxygenSaturation => oxygenSaturation.toString(),
+      MeasurementTypeContract.heartRate => heartRate.toString(),
+      MeasurementTypeContract.respiratoryRate => respiratoryRate.toString(),
+      MeasurementTypeContract.shortnessOfBreath => shortnessOfBreath != null
           ? localization.shortness_of_breath_values(shortnessOfBreath!)
           : "",
-      MeasurementType.overallHealth => overallHealth != null
+      MeasurementTypeContract.overallHealth => overallHealth != null
           ? localization.overall_health_values(overallHealth!)
           : "",
-      MeasurementType.ews ||
-      MeasurementType.steps ||
-      MeasurementType.globalPosition ||
-      MeasurementType.battery =>
+      MeasurementTypeContract.ews ||
+      MeasurementTypeContract.steps ||
+      MeasurementTypeContract.globalPosition ||
+      MeasurementTypeContract.battery =>
         "",
     };
 

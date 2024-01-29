@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/measurement/composed_int_value.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/constants/ble_constants.dart';
@@ -185,7 +185,7 @@ class BleE8xManager {
       if (listEquals(subList, E8xResponseTypes.batteryLevel)) {
         final batteryState = value[9];
         final measurement = Measurement(
-          measurementType: MeasurementType.battery,
+          measurementType: MeasurementTypeContract.battery,
           batteryPercentage: batteryState,
           measurementDateTime: DateTime.now().toUtc(),
         );
@@ -267,7 +267,7 @@ class BleE8xManager {
 
         result.add(
           Measurement(
-            measurementType: MeasurementType.heartRate,
+            measurementType: MeasurementTypeContract.heartRate,
             heartRate: heartTimes,
             measurementDateTime: measurementTime,
           ),
@@ -290,7 +290,7 @@ class BleE8xManager {
 
         bpData.add(
           Measurement(
-            measurementType: MeasurementType.bloodPressure,
+            measurementType: MeasurementTypeContract.bloodPressure,
             bloodPressure: BloodPressureValue(
               systolic: systolic,
               diastolic: diastolic,
@@ -328,7 +328,7 @@ class BleE8xManager {
           // - db only supports one measurement at any given instant.
           results.add(
             Measurement(
-              measurementType: MeasurementType.oxygenSaturation,
+              measurementType: MeasurementTypeContract.oxygenSaturation,
               respiratoryRate: respiratoryRate,
               oxygenSaturation: spo2,
               temperature: temp,

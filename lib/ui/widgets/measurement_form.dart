@@ -71,19 +71,19 @@ class MeasurementForm extends StatelessWidget {
           return measurement.copyWith(
             respiratoryRate: _value1?.toInt(),
           );
-        case MeasurementType.shortnessOfBreath:
+        case MeasurementTypeContract.shortnessOfBreath:
           return measurement.copyWith(
             shortnessOfBreath: _value1 == null
                 ? null
                 : ShortnessOfBreathValue.values[_value1!.toInt()],
           );
-        case MeasurementType.overallHealth:
+        case MeasurementTypeContract.overallHealth:
           return measurement.copyWith(
             overallHealth: _value1 == null
                 ? null
                 : OverallHealthValue.values[_value1!.toInt()],
           );
-        case MeasurementType.battery:
+        case MeasurementTypeContract.battery:
           return measurement.copyWith(
               batteryPercentage: _value1?.toInt(),
           );
@@ -215,7 +215,7 @@ class MeasurementForm extends StatelessWidget {
                             return localization.common_wrong_value;
                           }
                           if (measurementType ==
-                                  MeasurementType.bloodPressure &&
+                                  MeasurementTypeContract.bloodPressure &&
                               _value1 != null &&
                               _value1! < parsedValue) {
                             return localization.common_diastolic_gt_systolic;

@@ -79,7 +79,7 @@ class _MeteringFirstScreenState extends State<MeteringFirstScreen>
     return title;
   }
 
-  void goToMetering(Device device, MeasurementType measurementType) {
+  void goToMetering(Device device, MeasurementTypeContract measurementType) {
     GoRouter.of(context).pushNamed(
       OmronFlowRoute.name,
       queryParams: {

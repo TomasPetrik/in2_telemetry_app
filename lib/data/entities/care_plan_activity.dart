@@ -1,7 +1,7 @@
-import 'package:json_annotation/json_annotation.dart';
-import 'package:drift/drift.dart';
 import 'dart:convert';
 
+import 'package:drift/drift.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:scalesoft_app/data/entities/enums/activity_type.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 
@@ -15,20 +15,19 @@ class CarePlanActivity {
 
   CarePlanActivity(this.activityType, this.measurementType, {this.goalValue});
 
-  factory CarePlanActivity.fromJson(Map<String, dynamic> json) =>
-      _$CarePlanActivityFromJson(json);
+  factory CarePlanActivity.fromJson(Map<String, dynamic> json) => _$CarePlanActivityFromJson(json);
 
   Map<String, dynamic> toJson() => _$CarePlanActivityToJson(this);
 }
 
-class CarePlanActivityConverter
-    extends TypeConverter<CarePlanActivity, String> {
+class CarePlanActivityConverter extends TypeConverter<CarePlanActivity, String> {
   const CarePlanActivityConverter();
 
   @override
   CarePlanActivity fromSql(String fromDb) {
     return CarePlanActivity.fromJson(
-        json.decode(fromDb) as Map<String, dynamic>);
+      json.decode(fromDb) as Map<String, dynamic>,
+    );
   }
 
   @override
