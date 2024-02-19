@@ -355,7 +355,7 @@
             "measurementUnitName": {}
         }
     },
-    "common_measurement_units_types": "{measurementType, select, temperature{°C} bloodPressure{mmHg} oxygenSaturation{%} heartRate{tepů/min} other{}}",
+    "common_measurement_units_types": "{measurementType, select, temperature{°C} bloodPressure{mmHg} oxygenSaturation{%} heartRate{tepů/min} other{ }}",
     "@common_measurement_units_types": {
         "description": "Measurement units",
         "placeholders": {
@@ -605,14 +605,14 @@
     "license_detail_screen_title": "Detail licence",
     "licenses_menu_title": "Použité licence",
     "licenses_menu_subtitle": "Licence použitých knihoven",
-    "shortness_of_breath_values": "{shortnessOfBreathValue, select, none{Dýchání bez problémů} low{Občasná dušnost při fyzické námaze} medium{Častější problémy s dušností} high{Velmi špatně se mi dýchá} other{}}",
+    "shortness_of_breath_values": "{shortnessOfBreathValue, select, none{Dýchání bez problémů} low{Občasná dušnost při fyzické námaze} medium{Častější problémy s dušností} high{Velmi špatně se mi dýchá} other{ }}",
     "@shortness_of_breath_values": {
         "description": "Shortness of breath values",
         "placeholders": {
             "shortnessOfBreathValue": {}
         }
     },
-    "overall_health_values": "{overallHealthValue, select, good{Velmi dobrý} variable{Mírné/občasné zhoršení při fyzické námaze} bad{Setrvalé zhoršení bez příčiny} veryBad{Cítím se velmi špatně} other{}}",
+    "overall_health_values": "{overallHealthValue, select, good{Velmi dobrý} variable{Mírné/občasné zhoršení při fyzické námaze} bad{Setrvalé zhoršení bez příčiny} veryBad{Cítím se velmi špatně} other{ }}",
     "@overall_health_values": {
         "description": "Overall health values",
         "placeholders": {
