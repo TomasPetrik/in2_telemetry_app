@@ -125,7 +125,7 @@ class SyncService {
       userAccount: userAccount,
     );
 
-    setUserPlans(userAccount, activeCarePlans.items);
+    await setUserPlans(userAccount, activeCarePlans.items);
 
     //check and update assigned devices, current user data and his represented people
     //await checkForDataChanges(userAccount);
@@ -136,7 +136,6 @@ class SyncService {
       await loadMeasurementResults(userAccount);
     }
 
-    userAccount.carePlans = activeCarePlans.items;
     if (userAccount.representedPeople?.isNotEmpty == true) {
       for (final UserAccount representedPerson
           in userAccount.representedPeople!) {
@@ -144,7 +143,7 @@ class SyncService {
           userAccount: representedPerson,
         );
 
-        setUserPlans(representedPerson, activeCarePlans.items);
+        await setUserPlans(representedPerson, activeCarePlans.items);
 
         for (final carePlan in activeCarePlans.items) {
           carePlan.userId = representedPerson.user.muid;
@@ -239,6 +238,7 @@ class SyncService {
         );
       }
     }
+    userAccount.carePlans = carePlans;
   }
 
   Future<void> loadPartPlanEvaluation(final UserAccount userAccount) async {
@@ -281,6 +281,8 @@ class SyncService {
       );
       carePlan.serverEvaluationItems = lastTwoDaysEvaluation.items;
     }
+
+    userAccount.carePlans = carePlans;
   }
 
   /* load today's and yesterday's measurement results */
