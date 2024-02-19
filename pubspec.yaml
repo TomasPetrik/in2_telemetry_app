@@ -94,13 +94,7 @@ dependencies:
   uni_links: ^0.5.1
 
   # View pdf
-  # TODO: pdfx depends on a deprecated type, use a newer version as soon as it's available.
-  # https://github:com/ScerIO/packages:flutter/issues/448
-  pdfx:
-    git:
-      url: 'https://github.com/ScerIO/packages.flutter'
-      ref: '4be9de9ffed5398fd7d5f44bbb07dcd3d3f1711b'
-      path: packages/pdfx
+  pdfx: ^2.6.0
 
 dependency_overrides:
   win32: ^5.0.0
