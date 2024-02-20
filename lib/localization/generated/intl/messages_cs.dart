@@ -107,7 +107,7 @@ class MessageLookup extends MessageLookupByLibrary {
             'bloodPressure': 'mmHg',
             'oxygenSaturation': '%',
             'heartRate': 'tepů/min',
-            'other': '',
+            'other': ' ',
           })}";
 
   static String m12(month) => "${Intl.select(month, {
@@ -231,7 +231,7 @@ class MessageLookup extends MessageLookupByLibrary {
             'variable': 'Mírné/občasné zhoršení při fyzické námaze',
             'bad': 'Setrvalé zhoršení bez příčiny',
             'veryBad': 'Cítím se velmi špatně',
-            'other': '',
+            'other': ' ',
           })}";
 
   static String m38(permission) => "${Intl.select(permission, {
@@ -275,7 +275,7 @@ class MessageLookup extends MessageLookupByLibrary {
             'low': 'Občasná dušnost při fyzické námaze',
             'medium': 'Častější problémy s dušností',
             'high': 'Velmi špatně se mi dýchá',
-            'other': '',
+            'other': ' ',
           })}";
 
   static String m48(date, time) => "Poslední synchronizace ${date} ${time}";

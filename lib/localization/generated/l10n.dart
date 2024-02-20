@@ -1521,7 +1521,7 @@ class I10n {
     );
   }
 
-  /// `{measurementType, select, temperature{°C} bloodPressure{mmHg} oxygenSaturation{%} heartRate{tepů/min} other{}}`
+  /// `{measurementType, select, temperature{°C} bloodPressure{mmHg} oxygenSaturation{%} heartRate{tepů/min} other{ }}`
   String common_measurement_units_types(Object measurementType) {
     return Intl.select(
       measurementType,
@@ -1530,7 +1530,7 @@ class I10n {
         'bloodPressure': 'mmHg',
         'oxygenSaturation': '%',
         'heartRate': 'tepů/min',
-        'other': '',
+        'other': ' ',
       },
       name: 'common_measurement_units_types',
       desc: 'Measurement units',
@@ -2462,7 +2462,7 @@ class I10n {
     );
   }
 
-  /// `{shortnessOfBreathValue, select, none{Dýchání bez problémů} low{Občasná dušnost při fyzické námaze} medium{Častější problémy s dušností} high{Velmi špatně se mi dýchá} other{}}`
+  /// `{shortnessOfBreathValue, select, none{Dýchání bez problémů} low{Občasná dušnost při fyzické námaze} medium{Častější problémy s dušností} high{Velmi špatně se mi dýchá} other{ }}`
   String shortness_of_breath_values(Object shortnessOfBreathValue) {
     return Intl.select(
       shortnessOfBreathValue,
@@ -2471,7 +2471,7 @@ class I10n {
         'low': 'Občasná dušnost při fyzické námaze',
         'medium': 'Častější problémy s dušností',
         'high': 'Velmi špatně se mi dýchá',
-        'other': '',
+        'other': ' ',
       },
       name: 'shortness_of_breath_values',
       desc: 'Shortness of breath values',
@@ -2479,7 +2479,7 @@ class I10n {
     );
   }
 
-  /// `{overallHealthValue, select, good{Velmi dobrý} variable{Mírné/občasné zhoršení při fyzické námaze} bad{Setrvalé zhoršení bez příčiny} veryBad{Cítím se velmi špatně} other{}}`
+  /// `{overallHealthValue, select, good{Velmi dobrý} variable{Mírné/občasné zhoršení při fyzické námaze} bad{Setrvalé zhoršení bez příčiny} veryBad{Cítím se velmi špatně} other{ }}`
   String overall_health_values(Object overallHealthValue) {
     return Intl.select(
       overallHealthValue,
@@ -2488,7 +2488,7 @@ class I10n {
         'variable': 'Mírné/občasné zhoršení při fyzické námaze',
         'bad': 'Setrvalé zhoršení bez příčiny',
         'veryBad': 'Cítím se velmi špatně',
-        'other': '',
+        'other': ' ',
       },
       name: 'overall_health_values',
       desc: 'Overall health values',
