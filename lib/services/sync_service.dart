@@ -7,6 +7,7 @@ import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
 import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation_aggregated.dart';
 import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/managers/background_measurement_manager.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
@@ -18,7 +19,6 @@ import 'package:scalesoft_app/repositories/device_repository.dart';
 import 'package:scalesoft_app/repositories/time_settings_repository.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
-import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/notifications_helper.dart';
 
@@ -69,8 +69,7 @@ class SyncService {
         }
 
         //also load all versions for carePlan
-        final carePlanVersions =
-            await _carePlansRepository.loadCarePlanVersions(
+        final carePlanVersions = await _carePlansRepository.loadCarePlanVersions(
           userAccount: userAccount,
           carePlan: newCarePlan,
         );
@@ -82,11 +81,9 @@ class SyncService {
   }
 
   Future<void> loadWhenValues(final UserAccount userAccount) async {
-    final whenTimeValuesResponse = await _timeSettingsRepository
-        .loadPlanTemplate(userAccount: userAccount);
+    final whenTimeValuesResponse = await _timeSettingsRepository.loadPlanTemplate(userAccount: userAccount);
     userAccount.templateTimeSet = whenTimeValuesResponse;
-    for (final UserAccount representedPerson
-        in userAccount.representedPeople!) {
+    for (final UserAccount representedPerson in userAccount.representedPeople!) {
       representedPerson.templateTimeSet = whenTimeValuesResponse;
     }
   }
@@ -96,8 +93,7 @@ class SyncService {
       userAccount: userAccount,
     );
     userAccount.timeSettingItems = timeSettingItems;
-    for (final UserAccount representedPerson
-        in userAccount.representedPeople!) {
+    for (final UserAccount representedPerson in userAccount.representedPeople!) {
       representedPerson.timeSettingItems = timeSettingItems;
     }
   }
@@ -108,8 +104,7 @@ class SyncService {
         userAccount: userAccount,
       );
       userAccount.supportedDeviceModels = deviceModels;
-      for (final UserAccount representedPerson
-          in userAccount.representedPeople!) {
+      for (final UserAccount representedPerson in userAccount.representedPeople!) {
         representedPerson.supportedDeviceModels = deviceModels;
       }
     } on Exception {
@@ -138,8 +133,7 @@ class SyncService {
 
     userAccount.carePlans = activeCarePlans.items;
     if (userAccount.representedPeople?.isNotEmpty == true) {
-      for (final UserAccount representedPerson
-          in userAccount.representedPeople!) {
+      for (final UserAccount representedPerson in userAccount.representedPeople!) {
         final activeCarePlans = await _carePlansRepository.loadActiveCarePlans(
           userAccount: representedPerson,
         );
@@ -162,8 +156,7 @@ class SyncService {
   }
 
   Future<void> removeOfflineResult(MeasurementResult measurementResult) async {
-    await _pendingResultsDbProvider
-        .removeByDateTime(measurementResult.measurementDateTime);
+    await _pendingResultsDbProvider.removeByDateTime(measurementResult.measurementDateTime);
   }
 
   Future<void> updateUserData(UserAccount userAccount) async {
@@ -185,11 +178,11 @@ class SyncService {
   }
 
   List<Device>? parseAssignedDevices(List<Device>? devices, List<Device>? originalDevices) {
-    if(devices == null){
+    if (devices == null) {
       return null;
     }
 
-    final List<Device> result =[];
+    final List<Device> result = [];
 
     for (final device in devices) {
       final devicePrototype = ConfigurationConstants.supportedDevices.firstWhereOrNull(
@@ -198,8 +191,7 @@ class SyncService {
 
       if (devicePrototype == null) continue;
 
-      final existingDevice = originalDevices?.firstWhereOrNull((x)=>x.isEquivalentTo(device));
-
+      final existingDevice = originalDevices?.firstWhereOrNull((x) => x.isEquivalentTo(device));
 
       result.add(
         devicePrototype.copyWith(
@@ -223,8 +215,7 @@ class SyncService {
 
     for (final carePlan in carePlans) {
       try {
-        final fullPlanEvaluation =
-            await _carePlansRepository.loadFullPlanEvaluation(
+        final fullPlanEvaluation = await _carePlansRepository.loadFullPlanEvaluation(
           userAccount: userAccount,
           carePlanVersionId: carePlan.versionId,
         );
@@ -272,8 +263,7 @@ class SyncService {
       from = from.toUtc();
       to = to.toUtc();
 
-      final lastTwoDaysEvaluation =
-          await _carePlansRepository.loadPartPlanEvaluation(
+      final lastTwoDaysEvaluation = await _carePlansRepository.loadPartPlanEvaluation(
         userAccount: userAccount,
         carePlanId: carePlan.id,
         fromDateTime: from.toIso8601String(),
@@ -288,13 +278,10 @@ class SyncService {
     final carePlans = userAccount.carePlans;
     if (carePlans == null) return;
 
-    var supportedMeasurementTypes =
-        (userAccount.carePlans?.map((x) => x.activity.measurementType) ?? [])
-            .toSet();
+    var supportedMeasurementTypes = (userAccount.carePlans?.map((x) => x.activity.measurementType) ?? []).toSet();
 
     if (userAccount.hospital != null) {
-      supportedMeasurementTypes
-          .addAll(userAccount.hospital!.enabledMeasurementTypes);
+      supportedMeasurementTypes.addAll(userAccount.hospital!.enabledMeasurementTypes);
     } else {
       supportedMeasurementTypes.addAll(ConfigurationConstants.supportedMeasurementTypes);
     }
@@ -315,8 +302,8 @@ class SyncService {
     userAccount.measurementResults = allResults;
   }
 
-  Future<void> syncAllData() async {
-    final userAccounts = _session.getSessionAccounts();
+  Future<void> syncAllData({bool syncAllUsers = false}) async {
+    final userAccounts = syncAllUsers ? _accountDbProvider.getAll().toList() : _session.getSessionAccounts();
 
     for (final UserAccount userAccount in userAccounts) {
       try {
@@ -340,10 +327,8 @@ class SyncService {
   }
 
   Future<void> syncResults() async {
-    final Set<String> allowedUsersMuids = _session
-        .getSessionAccounts()
-        .map((userAccount) => userAccount.user.muid)
-        .toSet();
+    final Set<String> allowedUsersMuids =
+        _session.getSessionAccounts().map((userAccount) => userAccount.user.muid).toSet();
 
     for (final userId in allowedUsersMuids) {
       final userAccount = _accountDbProvider.get(userId);

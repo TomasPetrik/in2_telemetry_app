@@ -53,8 +53,8 @@ class CalendarScreen extends StatelessWidget {
             calendarHeight) <
         Dimensions.footerHeight;
 
-    return WillPopScope(
-      onWillPop: onWillPop,
+    return PopScope(
+      onPopInvoked: (_) => onWillPop(),
       child: Material(
         child: Stack(
           children: [

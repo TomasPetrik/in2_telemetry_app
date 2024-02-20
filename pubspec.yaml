@@ -79,7 +79,7 @@ dependencies:
   unique_identifier: ^0.3.0
 
   # Background fetching service
-  background_fetch: ^1.1.5
+  background_fetch: ^1.2.2
 
   # Local notifications
   flutter_local_notifications: ^16.0.0
@@ -98,8 +98,8 @@ dependencies:
   # https://github:com/ScerIO/packages:flutter/issues/448
   pdfx:
     git:
-      url: 'https://github.com/ScerIO/packages.flutter'
-      ref: '4be9de9ffed5398fd7d5f44bbb07dcd3d3f1711b'
+      url: "https://github.com/ScerIO/packages.flutter"
+      ref: "4be9de9ffed5398fd7d5f44bbb07dcd3d3f1711b"
       path: packages/pdfx
 
 dependency_overrides:

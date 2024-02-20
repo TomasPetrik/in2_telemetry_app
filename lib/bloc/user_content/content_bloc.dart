@@ -6,12 +6,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/model/report/report.dart';
+import 'package:scalesoft_app/app.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_state.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/providers/session_db_provider.dart';
@@ -19,7 +21,6 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
 import 'package:scalesoft_app/storage/session.dart';
-import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/events_constants.dart';
 import 'package:uni_links/uni_links.dart';
 
@@ -65,14 +66,12 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
   Future<void> _startWatchDog() async {
     //start of exact minute
     final offsetSec = 60 - DateTime.now().second + 1;
-    //debugPrint('watchdog will start after $offsetSec seconds');
     await Future.delayed(Duration(seconds: offsetSec));
     _autoRefreshDashboard();
 
-    //debugPrint('watchdog started on ${DateTime.now().toIso8601String()}}');
     _watchDogTimer?.cancel();
     _watchDogTimer = Timer.periodic(const Duration(seconds: 60), (Timer timer) {
-      debugPrint('notifing essentials');
+      getIt<ReportService>().trackEvent(severity: Severity.info, message: "Refresh dashboard");
       _autoRefreshDashboard();
     });
   }
@@ -96,8 +95,6 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     CheckLastLoggedUserContentEvent event,
     Emitter<ContentState> emit,
   ) async {
-    initBackgroundFetch();
-
     await _reportsService.removeOldLogs();
 
     final initialUri = await _getInitialUri();
@@ -116,9 +113,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
       );
       emit(const ContentState.unauthenticated());
 
-      BackgroundFetch.stop().then((int status) {
-        debugPrint('[BackgroundFetch] stop success: $status');
-      });
+      _stopBackgroundFetch();
     } else {
       _session.userAccount = userAccount;
       _session.isMultiUser = isMultiUser;
@@ -135,12 +130,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
       }
 
       //If is logged-in atleast one user , then try periodically fetching data for update
-      BackgroundFetch.start().then((int status) {
-        debugPrint('[BackgroundFetch] start success: $status');
-      }).catchError((e) {
-        debugPrint('[BackgroundFetch] start FAILURE: $e');
-      });
-
+      _startBackgroundFetch();
       emit(ContentState.activeMode(UniqueKey()));
     }
 
@@ -164,8 +154,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
       childAccount?.lastActiveIn = DateTime.now();
       _session.userAccount = childAccount;
     } else {
-      _session.userAccount =
-          event.userAccount.copyWith(lastActiveIn: DateTime.now());
+      _session.userAccount = event.userAccount.copyWith(lastActiveIn: DateTime.now());
       parentAccount = _session.userAccount!;
     }
 
@@ -201,19 +190,13 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     OnUserAddedContentEvent event,
     Emitter<ContentState> emit,
   ) async {
-    _session.userAccount = event.userAccount;
-    _session.userAccount =
-        event.userAccount.copyWith(lastActiveIn: DateTime.now());
+    _session.userAccount = event.userAccount.copyWith(lastActiveIn: DateTime.now());
     _session.isMultiUser = false;
     _sessionDbProvider.setIsMultiUser(false);
 
     //Same as during check last logged-in user
     //Make sure that if any user is active, we should start periodic background fetch
-    BackgroundFetch.start().then((int status) {
-      debugPrint('[BackgroundFetch] start success: $status');
-    }).catchError((e) {
-      debugPrint('[BackgroundFetch] start FAILURE: $e');
-    });
+    _startBackgroundFetch();
 
     _reportsService.trackEvent(
       userAccount: event.userAccount,
@@ -228,9 +211,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     SwitchNoUserContentEvent event,
     Emitter<ContentState> emit,
   ) async {
-    BackgroundFetch.stop().then((int status) {
-      debugPrint('[BackgroundFetch] stop success: $status');
-    });
+    _stopBackgroundFetch();
 
     _reportsService.trackEvent(
       userAccount: _session.isMultiUser == false ? _session.userAccount : null,
@@ -274,27 +255,62 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
   }
 }
 
-Future<void> initBackgroundFetch() async {
-  int status = await BackgroundFetch.configure(
-      BackgroundFetchConfig(
-        minimumFetchInterval: ConfigurationConstants.autoSyncIntervalMinutes,
-        stopOnTerminate: false,
-        enableHeadless: true,
-        requiresBatteryNotLow: false,
-        requiresCharging: false,
-        requiresStorageNotLow: false,
-        requiresDeviceIdle: false,
-        requiredNetworkType: NetworkType.NONE,
-      ), (String taskId) async {
-    debugPrint("[BackgroundFetch] Event received $taskId");
-    await getIt<SyncService>().syncAllData();
-
-    //Here must be signal completion of this task or the OS can punish app for taking too long in the background.
-    BackgroundFetch.finish(taskId);
-  }, (String taskId) async {
-    //If this task has exceeded its allowed running-time. It must be stopped immediately finish(taskId)
-    debugPrint("[BackgroundFetch] TASK TIMEOUT taskId: $taskId");
-    BackgroundFetch.finish(taskId);
+void _stopBackgroundFetch() {
+  BackgroundFetch.stop().then((int status) {
+    getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - stop status: $status');
+  }).catchError((e) {
+    getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - stop failure: $e');
   });
-  debugPrint('[BackgroundFetch] configure success: $status');
+}
+
+//onFetch
+void _onBackgroundFetch(String taskId) async {
+  getIt<ReportService>().trackEvent(severity: Severity.info, message: "BS - _onBackgroundFetch(), id: $taskId");
+
+  await getIt<SyncService>().syncAllData(syncAllUsers: true);
+
+  //Here must be signal completion of this task or the OS can punish app for taking too long in the background.
+  BackgroundFetch.finish(taskId);
+}
+
+/// This event fires shortly before your task is about to timeout.  You must finish any outstanding work and call BackgroundFetch.finish(taskId).
+Future<void> _onBackgroundFetchTimeout(String taskId) async {
+  //If this task has exceeded its allowed running-time. It must be stopped immediately finish(taskId)
+  getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - _onBackgroundFetchTimeout(), id: $taskId');
+
+  BackgroundFetch.finish(taskId);
+}
+
+Future<void> _startBackgroundFetch() async {
+  getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - init background fetch');
+
+  int status = await BackgroundFetch.configure(
+    BackgroundFetchConfig(
+      minimumFetchInterval: ConfigurationConstants.autoSyncIntervalMinutes,
+      forceAlarmManager: false,
+      stopOnTerminate: false,
+      enableHeadless: true,
+      startOnBoot: true,
+      requiresBatteryNotLow: false,
+      requiresCharging: false,
+      requiresStorageNotLow: false,
+      requiresDeviceIdle: false,
+      requiredNetworkType: NetworkType.NONE,
+    ),
+    _onBackgroundFetch,
+    _onBackgroundFetchTimeout,
+  );
+
+  getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - configure status: $status');
+
+  // Register to receive BackgroundFetch events after app is terminated.
+  // Requires {stopOnTerminate: false, enableHeadless: true}
+
+  getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - registering headless task');
+
+  bool registered = await BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
+
+  getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - registered headless task: $registered');
+  getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - schedulling first task in 5 seconds..');
+
 }

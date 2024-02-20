@@ -1,15 +1,13 @@
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/providers/box_provider.dart';
 
 @singleton
 class PairedDevicesDbProvider extends BoxProvider<Device> {
-
   @override
   @PostConstruct(preResolve: true)
   Future<void> init() async => super.init();
-  
+
   @override
   final String boxName = 'pairedDevicesBox';
 

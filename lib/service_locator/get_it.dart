@@ -1,4 +1,3 @@
-
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/localization/generated/l10n.dart';
@@ -12,7 +11,9 @@ final I10n localization = getIt<I10n>();
   preferRelativeImports: true, // default
   asExtension: false, // default
 )
-Future<GetIt> configureDependencies() async {
-  getIt.registerLazySingleton(I10n.new);
-  return await init(getIt);
+Future<void> configureDependencies() async {
+  if (!getIt.isRegistered<I10n>()) {
+    getIt.registerLazySingleton(I10n.new);
+    await init(getIt);
+  }
 }

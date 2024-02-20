@@ -66,8 +66,8 @@ class _DeviceSearchScreenState extends State<DeviceSearchScreen>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _onWillPop,
+    return PopScope(
+      onPopInvoked: (_) => _onWillPop,
       child: Material(
         child: Stack(
           children: [
