@@ -1,7 +1,7 @@
 PODS:
   - app_settings (5.1.1):
     - Flutter
-  - background_fetch (1.2.1):
+  - background_fetch (1.2.2):
     - Flutter
   - device_info_plus (0.0.1):
     - Flutter
@@ -81,9 +81,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   app_settings: 017320c6a680cdc94c799949d95b84cb69389ebc
-  background_fetch: 896944864b038d2837fc750d470e9841e1e6a363
+  background_fetch: ec64adecd504f2d0d333b4b11d31f47c8ee23d12
   device_info_plus: c6fb39579d0f423935b0c9ce7ee2f44b71b9fce6
-  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_blue_plus: 4837da7d00cf5d441fdd6635b3a57f936778ea96
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   notification_permissions: 825ea1bf2a52ab585c53fd7b5e8e96876d735d4b
@@ -96,6 +96,6 @@ SPEC CHECKSUMS:
   url_launcher_ios: bf5ce03e0e2088bad9cc378ea97fa0ed5b49673b
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
 
-PODFILE CHECKSUM: 44e2520ac91575d115951683b82685742e29cf3c
+PODFILE CHECKSUM: 3caf48085af8bcc0dce1e94e255aa616303e7ff1
 
 COCOAPODS: 1.12.1

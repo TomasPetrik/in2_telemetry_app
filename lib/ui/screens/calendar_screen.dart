@@ -37,12 +37,10 @@ class CalendarScreen extends StatelessWidget {
     final calendarBloc = getIt<CalendarBloc>()
       ..add(CalendarBlocEvent.init(context, preSelectedDt, carePlansIds));
 
-    Future<bool> onWillPop() async {
+    void onWillPop() {
       calendarBloc.add(const CalendarBlocEvent.nullDefaultDay());
       getIt<CalendarFooterBloc>()
           .add(const CalendarFooterEvent.selectDay(null));
-
-      return true;
     }
 
     const calendarHeight = Dimensions.calendarHeight;
@@ -53,8 +51,13 @@ class CalendarScreen extends StatelessWidget {
             calendarHeight) <
         Dimensions.footerHeight;
 
-    return WillPopScope(
-      onWillPop: onWillPop,
+    return PopScope(
+      // Workaround for https://github.com/flutter/flutter/issues/138737
+      canPop: false,
+      onPopInvoked: (_) {
+        onWillPop();
+        GoRouter.of(context).pop();
+      },
       child: Material(
         child: Stack(
           children: [

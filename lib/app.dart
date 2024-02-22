@@ -4,7 +4,6 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scalesoft_app/api/interceptors/token_interceptor.dart';
@@ -14,6 +13,7 @@ import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_bloc.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_event.dart';
 import 'package:scalesoft_app/data/repositories/care_plan_repository.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/globals.dart';
 import 'package:scalesoft_app/globals_initialization.dart';
 import 'package:scalesoft_app/locales.dart';
@@ -34,7 +34,6 @@ import 'package:scalesoft_app/ui/routers/routes/no_user_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_added_route.dart';
 import 'package:scalesoft_app/ui/scale_app.dart';
 import 'package:scalesoft_app/ui/screens/splash_screen.dart';
-import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/extensions/locale_extensions.dart';
 import 'package:scalesoft_app/utils/extensions/theme_mode_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/appearance_helper.dart';
@@ -46,22 +45,38 @@ import 'package:timezone/data/latest_all.dart' as tz;
 void backgroundFetchHeadlessTask(HeadlessTask task) async {
   String taskId = task.taskId;
   bool isTimeout = task.timeout;
+
+  /* Initialize assets first */
+  tz.initializeTimeZones();
+  await Hive.initFlutter();
+  await configureDependencies();
+  getIt<BackgroundMeasurementManager>().configureBackgroundServiceMethodCallHandler();
+  final dio = getIt<Dio>(instanceName: ConfigurationConstants.privateDioName);
+  final tokenInterceptor = getIt<TokenInterceptor>();
+  if (!dio.interceptors.contains(tokenInterceptor)) {
+    getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - added interceptor');
+    dio.interceptors.add(tokenInterceptor);
+  }
+
+  getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - backgroundFetchHeadlessTask() called');
+
   if (isTimeout) {
     // This task has exceeded its allowed running-time.
-    // You must stop what you're doing and immediately .finish(taskId)
-    debugPrint("[BackgroundFetch] Headless task timed-out: $taskId");
-    BackgroundFetch.finish(taskId);
+    // Must be stopped immediately
+
+    getIt<ReportService>().trackEvent(
+      severity: Severity.warning,
+      message: 'BS - headless task exceeded allowed running-time: $taskId',
+    );
     return;
   }
-  debugPrint('[BackgroundFetch] Headless event received.');
 
-  FlutterLocalNotificationsPlugin().show(
-    3001,
-    'Headless',
-    'Headless body',
-    const NotificationDetails(),
-  );
-  await getIt<SyncService>().syncAllData();
+  getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - started sync');
+
+  await getIt<SyncService>().syncAllData(syncAllUsers: true);
+
+  getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - finished sync');
+
   BackgroundFetch.finish(taskId);
 }
 
@@ -100,14 +115,9 @@ Future<void> _main({
         debugPrintStack(stackTrace: stackTrace, label: error.toString());
         return;
       }
-      getIt<ReportService>()
-          .trackEvent(severity: Severity.error, message: stackTrace.toString());
+      getIt<ReportService>().trackEvent(severity: Severity.error, message: stackTrace.toString());
     },
   );
-
-  // Register to receive BackgroundFetch events after app is terminated.
-  // Requires {stopOnTerminate: false, enableHeadless: true}
-  BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
 }
 
 class ScalesoftApp extends StatefulWidget {
@@ -138,10 +148,8 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
       onInit: (context, state) {
         final path = state.whenOrNull(
           unauthenticated: () => '/${NoUserRoute.name}',
-          onUserAdded: (UserAccount userAccount) =>
-              '/${UserAddedRoute.name}/${userAccount.user.muid}',
-          onAppearanceChanged: (_) =>
-              '/${ConfigurationRoute.name}/${AppearanceRoute.name}',
+          onUserAdded: (UserAccount userAccount) => '/${UserAddedRoute.name}/${userAccount.user.muid}',
+          onAppearanceChanged: (_) => '/${ConfigurationRoute.name}/${AppearanceRoute.name}',
           onDaylightAppearanceChanged: (originalLocation) => originalLocation,
           activeMode: (key) => '/${DashboardRoute.name}',
           tryCompleteAuth: (uri) => '/${BlankRoute.name}',
@@ -161,9 +169,7 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
 
     await configureDependencies();
 
-    getIt<Dio>(instanceName: ConfigurationConstants.privateDioName)
-        .interceptors
-        .add(getIt<TokenInterceptor>());
+    getIt<Dio>(instanceName: ConfigurationConstants.privateDioName).interceptors.add(getIt<TokenInterceptor>());
 
     final settingsDbProvider = getIt<AppSettingsDbProvider>();
 

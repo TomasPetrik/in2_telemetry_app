@@ -2,6 +2,7 @@ import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
 import 'package:scalesoft_app/api/model/measurement/device.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_bloc.dart';
@@ -73,15 +74,19 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
     super.dispose();
   }
 
-  Future<bool> _onWillPop() async {
+  void _onWillPop() {
     omronConnectionBloc.add(const OmronConnectionBlocEvent.stopSearch());
-    return true;
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _onWillPop,
+    return PopScope(
+      // Workaround for https://github.com/flutter/flutter/issues/138737
+      canPop: false,
+      onPopInvoked: (_) {
+        _onWillPop();
+        GoRouter.of(context).pop();
+      },
       child: Material(
         child: Stack(
           children: [

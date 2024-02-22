@@ -30,9 +30,7 @@ class PendingResultsDbProvider extends BoxProvider<Measurement> {
 
   List<Measurement> getPerUser(String userId) {
     if (box.isNotEmpty) {
-      return box.values
-          .where((measurement) => measurement.patientMuid == userId)
-          .toList();
+      return box.values.where((measurement) => measurement.patientMuid == userId).toList();
     }
     return [];
   }
@@ -53,8 +51,7 @@ class PendingResultsDbProvider extends BoxProvider<Measurement> {
 
   Future<void> saveAll(final Iterable<Measurement> measurements) async {
     final measurementMap = <String, Measurement>{
-      for (final x in measurements)
-        x.measurementDateTime!.millisecondsSinceEpoch.toString(): x
+      for (final x in measurements) x.measurementDateTime!.millisecondsSinceEpoch.toString(): x,
     };
     await box.putAll(measurementMap);
   }
@@ -62,8 +59,7 @@ class PendingResultsDbProvider extends BoxProvider<Measurement> {
   Future<Measurement> remove(
     final Measurement manualMeasurement,
   ) async {
-    final measurementId =
-        manualMeasurement.measurementDateTime!.millisecondsSinceEpoch;
+    final measurementId = manualMeasurement.measurementDateTime!.millisecondsSinceEpoch;
     await box.delete('$measurementId');
     return manualMeasurement;
   }

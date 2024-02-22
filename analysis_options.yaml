@@ -5,6 +5,7 @@ analyzer:
     [
       "**/*.hive.dart",
       "**/*.g.dart",
+      "**/*.freezed.dart",
       "lib/localization/generated/**",
       "lib/service_locator/get_it.config.dart",
       "lib/unused_keys_finder.dart",

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_event.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_state.dart';
@@ -38,9 +39,8 @@ class _DeviceSearchScreenState extends State<DeviceSearchScreen>
     with BottomSheetMixin, WidgetsBindingObserver {
   final RegisterDeviceBloc registerDeviceBloc = getIt<RegisterDeviceBloc>();
 
-  Future<bool> _onWillPop() async {
+  void _onWillPop() {
     registerDeviceBloc.add(const RegisterDeviceBlocEvent.stopSearch());
-    return true;
   }
 
   @override
@@ -66,8 +66,13 @@ class _DeviceSearchScreenState extends State<DeviceSearchScreen>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _onWillPop,
+    return PopScope(
+      // Workaround for https://github.com/flutter/flutter/issues/138737
+      canPop: false,
+      onPopInvoked: (_) {
+        _onWillPop();
+        GoRouter.of(context).pop();
+      },
       child: Material(
         child: Stack(
           children: [
