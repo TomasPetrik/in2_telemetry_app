@@ -359,7 +359,7 @@ class SyncService {
           }
           await _pendingResultsDbProvider.remove(userMeasurement);
         }
-        //TODO.. here is gap when we should wait until backend will udpate date in their dbs
+        //TODO.. here is gap when we should wait until backend will update date in their dbs
         await Future.delayed(const Duration(seconds: 3));
         //reload user results
         await loadFulFillmentEvaluation(userAccount);
