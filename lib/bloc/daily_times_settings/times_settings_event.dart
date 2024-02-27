@@ -1,17 +1,17 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
+import 'package:scalesoft_app/api/contracts/time_settings/timing_day_when_contract.dart';
 
 part 'times_settings_event.freezed.dart';
 
 @freezed
 class TimesSettingsEvent with _$TimesSettingsEvent {
-  const factory TimesSettingsEvent.init(CarePlan carePlan) = _Init;
+  const factory TimesSettingsEvent.init(CarePlanContract carePlan) = _Init;
   const factory TimesSettingsEvent.setTime({
-    required CarePlan carePlan,
-    required DailyTime newStartTime,
-    required DailyTime newEndTime,
-    required TimingDayWhen timingDayWhen,
+    required CarePlanContract carePlan,
+    required TimeOfDayContract newStartTime,
+    required TimeOfDayContract newEndTime,
+    required TimingDayWhenContract timingDayWhen,
   }) = _SetTime;
-  const factory TimesSettingsEvent.resetTimes(CarePlan carePlan) = _ResetTimes;
+  const factory TimesSettingsEvent.resetTimes(CarePlanContract carePlan) = _ResetTimes;
 }

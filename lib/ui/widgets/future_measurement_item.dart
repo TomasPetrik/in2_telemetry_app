@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -20,7 +18,7 @@ class FutureMeasurementItem extends StatelessWidget with BottomSheetMixin {
   final bool isMultiUser;
   final PlannedMeasurement futureMeasurement;
 
-  CarePlan get carePlan => futureMeasurement.carePlan;
+  CarePlanContract get carePlan => futureMeasurement.carePlan;
 
   int get requiredCount => futureMeasurement.reqCount;
 
@@ -31,7 +29,7 @@ class FutureMeasurementItem extends StatelessWidget with BottomSheetMixin {
   DateTime get whenEnd => futureMeasurement.whenEnd;
 
   bool get showAsLongPeriodical =>
-      carePlan.isPeriodical && carePlan.periodUnit != TimeUnit.hour;
+      carePlan.isPeriodical && carePlan.periodUnit != TimeUnitContract.hour;
 
   @override
   Widget build(BuildContext context) {

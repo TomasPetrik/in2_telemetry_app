@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/navigation_screen.dart';
@@ -29,7 +29,7 @@ class ResultsHistoryScreen extends StatelessWidget {
     final bool isMultiUser = usersEvaluationsDay.length > 1;
 
     final measurementResults =
-        usersEvaluationsDay.fold<List<MeasurementResult>>(
+        usersEvaluationsDay.fold<List<MeasurementDataContract>>(
       [],
       (previousValue, userEvaluationsDay) => [
         ...previousValue,

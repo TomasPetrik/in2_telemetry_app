@@ -2,7 +2,7 @@ import 'dart:core';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
 import 'package:scalesoft_app/api/model/care_plan/interval_generation/timing_model.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
@@ -54,21 +54,21 @@ class TimingPeriodGenerator {
   }
 
   /// Calculates the start of the second interval
-  /// First intervals (except when [periodUnit] is [TimeUnit.hour]) do not last a multiple of [periodUnit].
+  /// First intervals (except when [periodUnit] is [TimeUnitContract.hour]) do not last a multiple of [periodUnit].
   /// Instead, the first period's end is aligned to a multiple of [periodUnit]
   /// For example, the first interval for a daily period doesn't end after a day. Instead it ends at the start (midnight) of the closest day.
   static DateTime _getSecondIntervalStart(
     DateTime periodStart,
     int period,
-    TimeUnit periodUnit,
+    TimeUnitContract periodUnit,
   ) {
     // First, align the interval with the start of a period unit (next midnight / start of next month / ...)
     final alignedInterval = switch (periodUnit) {
-      TimeUnit.hour => periodStart.add(const Duration(hours: 1)),
-      TimeUnit.day => periodStart.tomorrow,
-      TimeUnit.week => periodStart.nextWeekStart,
-      TimeUnit.month => periodStart.nextMonthStart,
-      TimeUnit.year => periodStart.nextYearStart,
+      TimeUnitContract.hour => periodStart.add(const Duration(hours: 1)),
+      TimeUnitContract.day => periodStart.tomorrow,
+      TimeUnitContract.week => periodStart.nextWeekStart,
+      TimeUnitContract.month => periodStart.nextMonthStart,
+      TimeUnitContract.year => periodStart.nextYearStart,
     };
 
     // We've "used up" one period by aligning with a period unit. Now we'll add the remaining periods.
@@ -82,7 +82,7 @@ class TimingPeriodGenerator {
     DateTime planStart,
     DateTime requestedStart,
     int period,
-    TimeUnit periodUnit,
+    TimeUnitContract periodUnit,
   ) {
     // If the plan starts in the future, the first relevant interval starts when the plan starts
     if (requestedStart.isAtSameMomentAs(planStart) ||
@@ -112,7 +112,7 @@ class TimingPeriodGenerator {
     DateTime planStart,
     DateTime requestedStart,
     int period,
-    TimeUnit periodUnit,
+    TimeUnitContract periodUnit,
   ) {
     var current = planStart;
     DateTime previous;
@@ -129,14 +129,14 @@ class TimingPeriodGenerator {
   static DateTime _getPeriodEnd(
     DateTime input,
     int period,
-    TimeUnit periodUnit,
+    TimeUnitContract periodUnit,
   ) {
     return switch (periodUnit) {
-      TimeUnit.hour => input.add(Duration(hours: period)),
-      TimeUnit.day => input.add(Duration(days: period)),
-      TimeUnit.week => input.add(Duration(days: period * 7)),
-      TimeUnit.month => input.copyWith(month: input.month + 1),
-      TimeUnit.year => input.copyWith(year: input.year + 1),
+      TimeUnitContract.hour => input.add(Duration(hours: period)),
+      TimeUnitContract.day => input.add(Duration(days: period)),
+      TimeUnitContract.week => input.add(Duration(days: period * 7)),
+      TimeUnitContract.month => input.copyWith(month: input.month + 1),
+      TimeUnitContract.year => input.copyWith(year: input.year + 1),
     };
   }
 }

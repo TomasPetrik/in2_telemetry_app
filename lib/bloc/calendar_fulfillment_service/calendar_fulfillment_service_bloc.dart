@@ -2,19 +2,13 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/calendar_footer/calendar_footer_bloc.dart';
 import 'package:scalesoft_app/bloc/calendar_footer/calendar_footer_event.dart';
 import 'package:scalesoft_app/bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc_event.dart';
 import 'package:scalesoft_app/bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc_state.dart';
-import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
-import 'package:scalesoft_app/providers/calendar_evaluation_db_provider.dart';
-import 'package:scalesoft_app/providers/measurements_db_provider.dart';
-import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/repositories/care_plans_repository.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
@@ -30,7 +24,7 @@ class CalendarFulfillmentServiceBloc extends Bloc<
   final CalendarEvaluationDbProvider _calendarEvaluationDbProvider;
   final MeasurementsDbProvider _measurementsDbProvider;
   final PendingResultsDbProvider _pendingResultsDbProvider;
-  late List<MeasurementResult> offlineResults;
+  late List<MeasurementDataContract> offlineResults;
 
   CalendarFulfillmentServiceBloc(
     this._accountDbProvider,
@@ -42,7 +36,7 @@ class CalendarFulfillmentServiceBloc extends Bloc<
   ) : super(const CalendarFulfillmentServiceBlocState()) {
     Future<void> loadAllUsersMeasurements(
       CalendarMonth calendarMonth,
-      List<CarePlan> carePlans,
+      List<CarePlanContract> carePlans,
     ) async {
       final userAccounts =
           carePlans.fold<List<UserAccount>>([], (prevAccounts, carePlan) {
@@ -88,7 +82,7 @@ class CalendarFulfillmentServiceBloc extends Bloc<
 
     Future<void> loadMonthFulfillments(
       CalendarMonth calendarMonth,
-      List<CarePlan> carePlans,
+      List<CarePlanContract> carePlans,
     ) async {
       //1. Load plan evaluation,
       for (final carePlan in carePlans) {
@@ -117,14 +111,14 @@ class CalendarFulfillmentServiceBloc extends Bloc<
 
     Future<void> populateMonth(
       CalendarMonth calendarMonth,
-      List<CarePlan> carePlans,
+      List<CarePlanContract> carePlans,
     ) async {
       /*
       debugPrint(
         'start getting info for ev days int dates ${calendarMonth.monthStartDate} - ${calendarMonth.monthEndDate}',
       );
       */
-      Map<CarePlan, FulfillmentEvaluation> carePlansEvaluations = {};
+      Map<CarePlanContract, FulfillmentEvaluation> carePlansEvaluations = {};
       List<FulfillmentEvaluationItem> evaluationItems = [];
 
       //1. Get and populate month by evaluation items
@@ -161,6 +155,7 @@ class CalendarFulfillmentServiceBloc extends Bloc<
                     evItem.end.isAtSameMomentAs(day.endDt)));
           }).toList();
 
+          // TODO: This is never used?
           day.carePlansEvaluation =
               EvaluationPlanHelper.getProgressFromEvaluationItems(
             dayEvItems,
@@ -182,7 +177,7 @@ class CalendarFulfillmentServiceBloc extends Bloc<
 
     Future<void> setCalendarMonth(
       CalendarMonth calendarMonth,
-      List<CarePlan> carePlans,
+      List<CarePlanContract> carePlans,
     ) async {
       final selectedDayDt = _calendarFooterBloc.state.selectedDay?.startDt;
 

@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -13,9 +12,9 @@ class ScaleTimePicker extends StatefulWidget {
     this.maxTime,
   });
 
-  final DailyTime? defaultTime;
-  final DailyTime? minTime;
-  final DailyTime? maxTime;
+  final TimeOfDay? defaultTime;
+  final TimeOfDay? minTime;
+  final TimeOfDay? maxTime;
 
   @override
   State<ScaleTimePicker> createState() => _ScaleTimePickerState();
@@ -99,7 +98,7 @@ class _ScaleTimePickerState extends State<ScaleTimePicker> {
                       : minuteMode == MinuteMode.minMinute
                           ? selectedMinute + minMinute
                           : selectedMinute;
-                  Navigator.of(context).pop(DailyTime(selectedHour, minute, 0));
+                  Navigator.of(context).pop(TimeOfDayContract(selectedHour, minute, 0));
                 },
                 child: Text(
                   localization.common_confirm,

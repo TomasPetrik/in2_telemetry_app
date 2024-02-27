@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:scalesoft_app/api/model/measurement/device.dart';
+import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -17,7 +17,7 @@ class DeviceProgress extends StatelessWidget {
     required this.reqPairing,
   });
 
-  final Device device;
+  final SourceDeviceContract device;
   final int activeIndex;
   final Widget header;
   final bool reqPairing;

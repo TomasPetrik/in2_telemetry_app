@@ -1,17 +1,15 @@
 import 'package:collection/collection.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_version.dart';
-import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
-import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/contracts/measurement_type_contract.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_version_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/providers/interval_generation/timing_interval_generator.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 class CarePlanHelper {
-  static DateTime getEarliestDateOfCarePlans(List<CarePlan> carePlans) {
+  static DateTime getEarliestDateOfCarePlans(List<CarePlanContract> carePlans) {
     final veryLastDt = carePlans
         .map((carePlan) => carePlan.scheduledStart)
         .sorted((a, b) => b.compareTo(a))
@@ -20,11 +18,11 @@ class CarePlanHelper {
     return veryLastDt;
   }
 
-  static List<CarePlan> getCarePlansContainingMeasurements({
-    required List<CarePlan> allCarePlans,
+  static List<CarePlanContract> getCarePlansContainingMeasurements({
+    required List<CarePlanContract> allCarePlans,
     required ResultsWhenPeriod whenPeriod,
   }) {
-    List<CarePlan> carePlans = [];
+    List<CarePlanContract> carePlans = [];
     for (final carePlan in allCarePlans) {
       if ((whenPeriod == ResultsWhenPeriod.today &&
               hasMeasurementsToday(carePlan)) ||
@@ -37,7 +35,7 @@ class CarePlanHelper {
     return carePlans;
   }
 
-  static bool hasMeasurementsToday(CarePlan plan) {
+  static bool hasMeasurementsToday(CarePlanContract plan) {
     final from = DateTime.now().startOfDay;
     final to = DateTime.now().endOfDay;
 
@@ -45,7 +43,7 @@ class CarePlanHelper {
     return todayMeasurements.isNotEmpty;
   }
 
-  static bool hasMeasurementsYesterday(CarePlan plan) {
+  static bool hasMeasurementsYesterday(CarePlanContract plan) {
     final from =
         DateTime.now().subtract(const Duration(days: 1)).startOfDay;
     final to = DateTime.now().startOfDay;
@@ -54,7 +52,7 @@ class CarePlanHelper {
     return yesterdayMeasurements.isNotEmpty;
   }
 
-  static Set<MeasurementTypeContract> getMeasurementTypes(List<CarePlan> carePlans) {
+  static Set<MeasurementTypeContract> getMeasurementTypes(List<CarePlanContract> carePlans) {
     final measurementTypes = carePlans.map((x) => x.activity.measurementType);
     final result = {...measurementTypes};
 
@@ -62,17 +60,17 @@ class CarePlanHelper {
   }
 
   static Set<MeasurementTypeContract> getMeasurementTypesByResults(
-    List<MeasurementResult> results,
+    List<MeasurementDataContract> results,
   ) {
-    final measurementTypes = results.map((x) => x.measurementType!);
+    final measurementTypes = results.map((x) => x.measurementType);
     final result = {...measurementTypes};
 
     return result;
   }
 
   static Map<PlanWhenPeriod, int> getPossibleWhenPeriods(
-    final List<CarePlan> carePlans,
-    final List<MeasurementResult> offlineResults,
+    final List<CarePlanContract> carePlans,
+    final List<MeasurementDataContract> offlineResults,
   ) {
     Map<PlanWhenPeriod, int> periods = {
       PlanWhenPeriod.next10: 10,
@@ -124,10 +122,10 @@ class CarePlanHelper {
   }
 
   static List<PlannedMeasurement> getMeasurements(
-    List<CarePlan> carePlans,
+    List<CarePlanContract> carePlans,
     DateTime from,
     DateTime to,
-    List<MeasurementResult> offlineResults, {
+    List<MeasurementDataContract> offlineResults, {
     bool ignoreOngoing = false,
     bool ignoreCompleted = false,
   }) {
@@ -157,11 +155,11 @@ class CarePlanHelper {
   }
 
   static List<PlannedMeasurement> getMeasurementsForVersion(
-    CarePlanVersion version,
-    CarePlan plan,
+    CarePlanVersionContract version,
+    CarePlanContract plan,
     DateTime from,
     DateTime to,
-    List<MeasurementResult> offlineResults, {
+    List<MeasurementDataContract> offlineResults, {
     bool ignoreOngoing = false,
     bool ignoreCompleted = false,
   }) {
@@ -187,11 +185,11 @@ class CarePlanHelper {
 
     final plannedMeasurements = intervals.map(
       (interval) => PlannedMeasurement(
-        userId: plan.userId!,
+        userId: plan.targetUserMuid,
         whenStart: interval.start,
         whenEnd: interval.end,
         carePlan: plan,
-        reqCount: plan.frequency,
+        reqCount: version.frequency,
         whenCode: interval.whenCode,
       ),
     );
@@ -224,9 +222,9 @@ class CarePlanHelper {
   }
 
   static List<PlannedMeasurement> getMeasurementsForPeriod(
-    List<CarePlan> carePlans,
+    List<CarePlanContract> carePlans,
     PlanWhenPeriod whenPeriod,
-    List<MeasurementResult> offlineResults,
+    List<MeasurementDataContract> offlineResults,
   ) {
     List<PlannedMeasurement> measurements = [];
 
@@ -273,8 +271,8 @@ class CarePlanHelper {
   /// Returns all planned measurements up to, and including today
   /// (up to the upcoming midnight).
   static List<PlannedMeasurement> getPlannedMeasurementsUpToToday(
-    CarePlan plan,
-    List<MeasurementResult> offlineResults,
+    CarePlanContract plan,
+    List<MeasurementDataContract> offlineResults,
   ) {
     final from = plan.scheduledStart;
     final to = DateTime.now().endOfDay;
@@ -285,9 +283,9 @@ class CarePlanHelper {
 
 class Calendar {
   static List<PlannedMeasurement> getMeasurementsOfDay({
-    required List<CarePlan> carePlans,
+    required List<CarePlanContract> carePlans,
     required DateTime dayDt,
-    required List<MeasurementResult> offlineResults,
+    required List<MeasurementDataContract> offlineResults,
     bool all = false,
   }) {
     final from = dayDt.startOfDay;
@@ -303,7 +301,7 @@ class Calendar {
   }
 
   static PlannedMeasurement getVeryFirstMeasurement({
-    required CarePlan carePlan,
+    required CarePlanContract carePlan,
   }) {
     final List<PlannedMeasurement> upcomingMeasurements = [];
 
@@ -332,12 +330,12 @@ class Calendar {
   }
 
   static List<PlannedMeasurement> getNUpcomingMeasurements({
-    required List<CarePlan> carePlans,
+    required List<CarePlanContract> carePlans,
     required int reqCount,
-    required List<MeasurementResult> offlineResults,
+    required List<MeasurementDataContract> offlineResults,
   }) {
     final currentDt = DateTime.now();
-    final upcomingMeasurements = getNUpcomingMeasurementss(
+    final upcomingMeasurements = generateUpcomingMeasurements(
       carePlans,
       reqCount,
       currentDt,
@@ -372,10 +370,10 @@ class Calendar {
 
   //this method is for setting up notifications
   static List<PlannedMeasurement> getNScheduledMeasurements({
-    required List<CarePlan> carePlans,
+    required List<CarePlanContract> carePlans,
     required int reqCount,
   }) {
-    var upcomingMeasurements = getNUpcomingMeasurementss(
+    var upcomingMeasurements = generateUpcomingMeasurements(
       carePlans,
       reqCount,
       DateTime.now(),
@@ -392,11 +390,11 @@ class Calendar {
     return upcomingNMeasurements;
   }
 
-  static List<PlannedMeasurement> getNUpcomingMeasurementss(
-    List<CarePlan> carePlans,
+  static List<PlannedMeasurement> generateUpcomingMeasurements(
+    List<CarePlanContract> carePlans,
     int reqCount,
     DateTime from,
-    List<MeasurementResult> offlineResults,
+    List<MeasurementDataContract> offlineResults,
     bool ignoreOngoing,
   ) {
     // Using a set to remove duplicates
@@ -443,12 +441,12 @@ class PlannedMeasurement {
   final DateTime whenStart;
   final DateTime whenEnd;
 
-  final CarePlan carePlan;
+  final CarePlanContract carePlan;
   final int reqCount;
   int? currentCount;
 
   FulfillmentEvaluationItem? fulfillmentEvaluationItem;
-  final WhenCode? whenCode;
+  final WhenCodeContract? whenCode;
 
   bool get isGoingOverDay => !whenStart.isSameDate(whenEnd);
 

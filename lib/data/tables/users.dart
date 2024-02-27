@@ -13,11 +13,9 @@ class Users extends Table {
 
   TextColumn get muid => text()();
 
-  IntColumn get parentId => integer().references(Users, #id).nullable()();
+  IntColumn get parentId => integer().references(Users, #id, onDelete: KeyAction.cascade).nullable()();
 
-  TextColumn get firstNames => text().map(const StringListConverter())();
-
-  TextColumn get lastNames => text().map(const StringListConverter()).withDefault(emptyList)();
+  TextColumn get fullName => text()();
 
   TextColumn get phoneNumbers => text().map(const StringListConverter()).withDefault(emptyList)();
 

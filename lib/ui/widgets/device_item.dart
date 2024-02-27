@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:scalesoft_app/api/model/measurement/device.dart';
+import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
-import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 class DeviceItem extends StatelessWidget {
   const DeviceItem({
@@ -13,7 +12,7 @@ class DeviceItem extends StatelessWidget {
     this.onRemove,
   });
 
-  final Device device;
+  final SourceDeviceContract device;
   final VoidCallback? onRemove;
 
   String getSubTitle(BuildContext context) {

@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
-import 'package:scalesoft_app/api/model/care_plan/when_time_value.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
+import 'package:scalesoft_app/api/contracts/time_settings/timing_day_when_contract.dart';
 import 'package:scalesoft_app/bloc/daily_times_settings/times_settings_bloc.dart';
 import 'package:scalesoft_app/bloc/daily_times_settings/times_settings_event.dart';
 import 'package:scalesoft_app/bloc/daily_times_settings/times_settings_state.dart';
@@ -22,7 +21,7 @@ class TimesSettingsForm extends StatelessWidget with BottomSheetMixin {
     required this.carePlan,
   });
 
-  final CarePlan carePlan;
+  final CarePlanContract carePlan;
   late final TimesSettingsBloc timeSettingsBloc;
 
   bool settingsChanged() {
@@ -84,9 +83,9 @@ class _TimeSettingsForm extends StatelessWidget with BottomSheetMixin {
 
   final VoidCallback resetTimes;
   final List<WhenTimeValue> templateWhenValues;
-  final List<TimingDayWhen> timingsDayWhen;
+  final List<TimingDayWhenContract> timingsDayWhen;
   final TimesSettingsBloc timeSettingsBloc;
-  final CarePlan carePlan;
+  final CarePlanContract carePlan;
 
   @override
   Widget build(BuildContext context) {

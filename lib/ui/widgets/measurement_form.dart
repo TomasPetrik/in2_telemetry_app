@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
-import 'package:scalesoft_app/api/model/measurement/composed_int_value.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement.dart';
-import 'package:scalesoft_app/api/model/measurement/overall_health_value.dart';
-import 'package:scalesoft_app/api/model/measurement/shortness_of_breath_value.dart';
+import 'package:scalesoft_app/api/contracts/measurement/blood_pressure_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement.dart';
+import 'package:scalesoft_app/api/contracts/measurement/overall_health_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement/shortness_of_breath_contract.dart';
 import 'package:scalesoft_app/model/measurement_config.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -45,12 +44,13 @@ class MeasurementForm extends StatelessWidget {
           );
         case MeasurementTypeContract.bloodPressure:
           return measurement.copyWith(
-            bloodPressure: BloodPressureValue(
-              systolic: _value1?.toInt(),
-              diastolic: _value2?.toInt(),
-            ),
+            bloodPressure: _value1 == null || _value2 == null
+                ? null
+                : BloodPressureContract(
+                    systolic: _value1!.toInt(),
+                    diastolic: _value2!.toInt(),
+                  ),
           );
-
         case MeasurementTypeContract.oxygenSaturation:
           return measurement.copyWith(
             oxygenSaturation: _value1?.toInt(),
@@ -75,13 +75,13 @@ class MeasurementForm extends StatelessWidget {
           return measurement.copyWith(
             shortnessOfBreath: _value1 == null
                 ? null
-                : ShortnessOfBreathValue.values[_value1!.toInt()],
+                : ShortnessOfBreathContract.values[_value1!.toInt()],
           );
         case MeasurementTypeContract.overallHealth:
           return measurement.copyWith(
             overallHealth: _value1 == null
                 ? null
-                : OverallHealthValue.values[_value1!.toInt()],
+                : OverallHealthContract.values[_value1!.toInt()],
           );
         case MeasurementTypeContract.battery:
           return measurement.copyWith(

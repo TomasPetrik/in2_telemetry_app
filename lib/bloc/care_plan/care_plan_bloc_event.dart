@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 @immutable
@@ -17,7 +16,7 @@ class CarePlanInitializeEvent extends CarePlanBlocEvent {
   });
 
   final PlanWhenPeriod whenPeriod;
-  final List<CarePlan> carePlans;
+  final List<CarePlanContract> carePlans;
   final List<Measurement> pendingResults;
 }
 

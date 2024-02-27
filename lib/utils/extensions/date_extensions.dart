@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart' as tdw;
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
+import 'package:scalesoft_app/api/contracts/time_settings/timing_day_when_contract.dart' as tdw;
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/utils/extensions/string_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
@@ -36,7 +36,7 @@ extension DateParse on DateTime {
 
   bool get wasYesterday => DateTime.now().yesterday == date;
 
-  WeekDay get weekDay => WeekDay.values[date.weekday - 1];
+  WeekDayContract get weekDay => WeekDayContract.values[date.weekday - 1];
 
   DateTime get startOfDay => date;
 

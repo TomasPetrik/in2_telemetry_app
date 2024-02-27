@@ -4,11 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
-import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
-import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
@@ -41,7 +38,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
   late MeasurementTypeContract dropdownValue;
 
   late TextEditingController timeEditingController;
-  late DailyTime measurementTime;
+  late TimeOfDay measurementTime;
   late List<MeasurementTypeContract> enabledMeasurementTypes;
 
   @override

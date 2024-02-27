@@ -5,22 +5,16 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:scalesoft_app/api/interceptors/token_interceptor.dart';
-import 'package:scalesoft_app/api/model/report/report.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_bloc.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_event.dart';
-import 'package:scalesoft_app/data/repositories/care_plan_repository.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/globals.dart';
 import 'package:scalesoft_app/globals_initialization.dart';
 import 'package:scalesoft_app/locales.dart';
 import 'package:scalesoft_app/managers/background_measurement_manager.dart';
-import 'package:scalesoft_app/model/app_settings.dart';
-import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
@@ -34,10 +28,10 @@ import 'package:scalesoft_app/ui/routers/routes/no_user_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_added_route.dart';
 import 'package:scalesoft_app/ui/scale_app.dart';
 import 'package:scalesoft_app/ui/screens/splash_screen.dart';
-import 'package:scalesoft_app/utils/extensions/locale_extensions.dart';
 import 'package:scalesoft_app/utils/extensions/theme_mode_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/appearance_helper.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:scalesoft_app/api/contracts/logs/log_contract.dart';
 
 // [Android-only] This "Headless Task" is run when the Android app is terminated with `enableHeadless: true`
 // Be sure to annotate your callback function to avoid issues in release mode on Flutter >= 3.3.0
@@ -48,7 +42,6 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
 
   /* Initialize assets first */
   tz.initializeTimeZones();
-  await Hive.initFlutter();
   await configureDependencies();
   getIt<BackgroundMeasurementManager>().configureBackgroundServiceMethodCallHandler();
   final dio = getIt<Dio>(instanceName: ConfigurationConstants.privateDioName);
@@ -85,8 +78,6 @@ Future<void> run() async {
 }
 
 Future<void> watchSyncBackgroundTaskImpl() async {
-  await Hive.initFlutter();
-
   await configureDependencies();
 
   getIt<BackgroundMeasurementManager>().configureBackgroundServiceMethodCallHandler();
@@ -204,6 +195,5 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
     // final plans = await repo.getPlans();
     //
     // debugPrint(plans.toString());
-
   }
 }

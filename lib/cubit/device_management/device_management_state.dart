@@ -1,14 +1,13 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
-import 'package:scalesoft_app/api/model/measurement/device.dart';
+import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
 
 part 'device_management_state.freezed.dart';
 
 @freezed
 class DeviceManagementState with _$DeviceManagementState {
   const factory DeviceManagementState({
-    List<Device>? assignedDevices,
-    List<Device>? personalDevices,
+    List<SourceDeviceContract>? assignedDevices,
+    List<SourceDeviceContract>? personalDevices,
     bool? supportDeviceMeasurement,
     bool? hasMeasurementTabs,
     MeasurementTypeContract? selectedMeasurementType,

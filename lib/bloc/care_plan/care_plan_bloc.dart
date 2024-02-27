@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_state.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
@@ -16,7 +16,7 @@ import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 @singleton
 class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
   final List<Measurement> _pendingResults = [];
-  final List<CarePlan> _allCarePlans = [];
+  final List<CarePlanContract> _allCarePlans = [];
 
   CarePlanBloc() : super(CarePlanBlocState()) {
     on<CarePlanInitializeEvent>((event, emit) async {
@@ -25,7 +25,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
       _pendingResults.clear();
       _pendingResults.addAll(event.pendingResults);
 
-      final List<MeasurementResult> todayOfflineResults =
+      final List<MeasurementDataContract> todayOfflineResults =
           MeasurementHelper.getOffilneResultsConverted(
         _pendingResults,
         [ResultsWhenPeriod.today],
@@ -75,7 +75,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
     });
 
     on<TimePeriodChangeEvent>((event, emit) {
-      final List<MeasurementResult> todayOfflineResults =
+      final List<MeasurementDataContract> todayOfflineResults =
           MeasurementHelper.getOffilneResultsConverted(
         _pendingResults,
         [ResultsWhenPeriod.today],
@@ -113,7 +113,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
     });
 
     on<CurrentPlansChangeEvent>((event, emit) {
-      final List<MeasurementResult> todayOfflineResults =
+      final List<MeasurementDataContract> todayOfflineResults =
           MeasurementHelper.getOffilneResultsConverted(
         _pendingResults,
         [ResultsWhenPeriod.today],
@@ -170,7 +170,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
 
     on<RefreshStateEvent>(
       (event, emit) async {
-        final List<MeasurementResult> todayOfflineResults =
+        final List<MeasurementDataContract> todayOfflineResults =
             MeasurementHelper.getOffilneResultsConverted(
           _pendingResults,
           [ResultsWhenPeriod.today],

@@ -2,9 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
-import 'package:scalesoft_app/api/model/measurement/composed_int_value.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement.dart';
+import 'package:scalesoft_app/api/contracts/measurement/blood_pressure_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement.dart';
 import 'package:scalesoft_app/constants/ble_constants.dart';
 import 'package:scalesoft_app/constants/e8x_commands.dart';
 import 'package:scalesoft_app/constants/e8x_response_types.dart';
@@ -291,7 +290,7 @@ class BleE8xManager {
         bpData.add(
           Measurement(
             measurementType: MeasurementTypeContract.bloodPressure,
-            bloodPressure: BloodPressureValue(
+            bloodPressure: BloodPressureContract(
               systolic: systolic,
               diastolic: diastolic,
             ),

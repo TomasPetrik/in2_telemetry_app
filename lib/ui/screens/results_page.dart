@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc_event.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc_state.dart';
@@ -40,7 +40,7 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
         final allCarePlans = session.getActiveCarePlans();
         final allPendingResults = session.getPendingResults();
         final allMeasurementResults =
-            sessionAccounts.fold<List<MeasurementResult>>(
+            sessionAccounts.fold<List<MeasurementDataContract>>(
           [],
           (prevResults, userAccount) =>
               [...prevResults, ...userAccount.measurementResults ?? []],

@@ -1,14 +1,11 @@
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/care_plan_api_client.dart';
-import 'package:scalesoft_app/api/model/active_care_plans_response.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
-import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
-import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation_aggregated.dart';
-import 'package:scalesoft_app/api/model/care_plan_versions_response.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
-import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/active_care_plans_contract.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/aggregated_fulfillment_evaluation_contract.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_versions_response.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/storage/session.dart';
 
 @singleton
@@ -18,7 +15,7 @@ class CarePlansRepository {
 
   CarePlansRepository(this.carePlanApiClient, this.session);
 
-  Future<ActiveCarePlansResponse> loadActiveCarePlans({
+  Future<ActiveCarePlansContract> loadActiveCarePlans({
     required UserAccount userAccount,
     int start = 0,
     int count = 100,
@@ -38,9 +35,9 @@ class CarePlansRepository {
     return resp;
   }
 
-  Future<CarePlanVersionsResponse> loadCarePlanVersions({
+  Future<CarePlanVersionsContract> loadCarePlanVersions({
     required UserAccount userAccount,
-    required CarePlan carePlan,
+    required CarePlanContract carePlan,
     int start = 0,
     int count = 100,
   }) async {
@@ -55,7 +52,7 @@ class CarePlansRepository {
     return resp;
   }
 
-  Future<List<MeasurementResult>> loadResults({
+  Future<List<MeasurementDataContract>> loadResults({
     required UserAccount userAccount,
     required MeasurementTypeContract measurementType,
     required String startDateTime,
@@ -77,7 +74,7 @@ class CarePlansRepository {
     return results;
   }
 
-  Future<FulfillmentEvaluationAggregated> loadFullPlanEvaluation({
+  Future<AggregatedFulfillmentEvaluationContract> loadFullPlanEvaluation({
     required UserAccount userAccount,
     required int carePlanVersionId,
   }) async {

@@ -1,10 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
 import 'package:scalesoft_app/storage/session.dart';
 
@@ -67,7 +66,7 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
 
           emit(await _session.detectSyncState());
         },
-        resolveUpdatedUserPlan: (CarePlan carePlanToUpdate) async {
+        resolveUpdatedUserPlan: (CarePlanContract carePlanToUpdate) async {
           final userAccount = _accountDbProvider.get(carePlanToUpdate.userId!);
           if (userAccount == null) return;
 
@@ -85,7 +84,7 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
             emit(const SyncState.none());
           }
         },
-        removeOfflineResult: (MeasurementResult measurementResult) async {
+        removeOfflineResult: (MeasurementDataContract measurementResult) async {
           await _syncService.removeOfflineResult(measurementResult);
           final syncState = await _session.detectSyncState();
 

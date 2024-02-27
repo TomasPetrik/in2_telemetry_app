@@ -1,13 +1,7 @@
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
-import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
-import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/providers/calendar_evaluation_db_provider.dart';
-import 'package:scalesoft_app/providers/measurements_db_provider.dart';
-import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
@@ -17,8 +11,8 @@ import 'package:scalesoft_app/utils/helpers/results_helper.dart';
 
 class EvaluationPlanHelper {
   static int getProgressFromFullPlanEvaluation({
-    required CarePlan carePlan,
-    required List<MeasurementResult> offlineResults,
+    required CarePlanContract carePlan,
+    required List<MeasurementDataContract> offlineResults,
   }) {
     int actualCount = carePlan.fullPlanEvaluation!.measurementInPlanCount;
     int requiredMeasurementCount =
@@ -63,9 +57,9 @@ class EvaluationPlanHelper {
   }
 
   static int? getProgressFromPlans({
-    required List<CarePlan> carePlans,
+    required List<CarePlanContract> carePlans,
     required ResultsWhenPeriod whenPeriod,
-    required List<MeasurementResult> offlineResults,
+    required List<MeasurementDataContract> offlineResults,
   }) {
     int expectedCount = 0;
     int actualCount = 0;
@@ -151,7 +145,7 @@ class EvaluationPlanHelper {
       final List<Measurement> offlineMeasurements =
           pendingResultsDbProvider.getPerUser(userAccount.user.muid);
 
-      final List<MeasurementResult> offlineResults =
+      final List<MeasurementDataContract> offlineResults =
           MeasurementHelper.getOffilneResultsConverted(
         offlineMeasurements,
         null,
@@ -165,7 +159,7 @@ class EvaluationPlanHelper {
           .toSet();
 
       for (final measurementType in measurementTypes) {
-        final List<MeasurementResult> serverResultsOfExactType =
+        final List<MeasurementDataContract> serverResultsOfExactType =
             measurementsDbProvider
                     .get(
                       userAccount.user.muid,

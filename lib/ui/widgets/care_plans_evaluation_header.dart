@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
@@ -19,7 +19,7 @@ class CarePlansEvaluationHeader extends StatelessWidget {
     required this.openWhenSelector,
   });
 
-  final List<CarePlan> carePlans;
+  final List<CarePlanContract> carePlans;
   final ResultsWhenPeriod whenPeriod;
   final Function openWhenSelector;
 
@@ -30,7 +30,7 @@ class CarePlansEvaluationHeader extends StatelessWidget {
 
     final allPendingResults = getIt<Session>().getPendingResults();
 
-    final List<MeasurementResult> offlineResults =
+    final List<MeasurementDataContract> offlineResults =
         MeasurementHelper.getOffilneResultsConverted(
       allPendingResults,
       [whenPeriod],

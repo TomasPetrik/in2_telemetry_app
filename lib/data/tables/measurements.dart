@@ -9,9 +9,9 @@ import 'package:scalesoft_app/data/tables/users.dart';
 class Measurements extends Table {
   IntColumn get id => integer().autoIncrement()();
 
-  IntColumn get userId => integer().references(Users, #id)();
+  IntColumn get userId => integer().references(Users, #id, onDelete: KeyAction.cascade)();
 
-  IntColumn get deviceId => integer().references(Devices, #id)();
+  IntColumn get deviceId => integer().references(Devices, #id, onDelete: KeyAction.cascade)();
 
   DateTimeColumn get measuredAt => dateTime()();
 

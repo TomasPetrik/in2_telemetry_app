@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
+import 'package:scalesoft_app/api/contracts/time_settings/when_code_contract.dart';
 
 part 'evaluation_interval_model.freezed.dart';
 
@@ -9,6 +9,6 @@ class EvaluationIntervalModel with _$EvaluationIntervalModel {
     DateTime start,
     DateTime end,
     int frequency, {
-    WhenCode? whenCode,
+    WhenCodeContract? whenCode,
   }) = _EvaluationIntervalModel;
 }

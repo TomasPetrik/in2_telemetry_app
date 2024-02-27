@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc_event.dart';
 import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc_state.dart';
@@ -17,7 +17,7 @@ class ChartBloc extends Bloc<ChartBlocEvent, ChartBlocState> {
 
   ChartBloc() : super(const ChartBlocState()) {
     DateTime getVeryFirstmodelfCarePlans(
-      List<CarePlan> carePlans,
+      List<CarePlanContract> carePlans,
       UserAccount userAccount,
     ) {
       if (carePlans.isNotEmpty) {

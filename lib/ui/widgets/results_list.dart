@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -20,10 +20,10 @@ class ResultsList extends StatelessWidget {
 
   final DateTime dayDt;
   final bool isMultiUser;
-  final List<MeasurementResult> mResults;
+  final List<MeasurementDataContract> mResults;
   final bool canOpenChart;
 
-  List<MeasurementResult> get _longPeriodicalNotCompletedMeasurements =>
+  List<MeasurementDataContract> get _longPeriodicalNotCompletedMeasurements =>
       mResults
           .where(
             (measurement) =>
@@ -31,7 +31,7 @@ class ResultsList extends StatelessWidget {
           )
           .toList();
 
-  List<MeasurementResult> get _rMeasurements => mResults
+  List<MeasurementDataContract> get _rMeasurements => mResults
       .where(
         (measurement) =>
             !(measurement.isLongPeriod && !measurement.wasMeasured),

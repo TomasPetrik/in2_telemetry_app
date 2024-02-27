@@ -23,7 +23,7 @@ V koreňovom adresári stačí spustiť súbor`./make.sh` ktorý pripravý proje
 
 4.  **flutter gen-l10n** - vygenerovanie prekladov,
 
-5.  **dart run build_runner build --delete-conflicting-outputs** - vygenerovanie podporných auto-generujúcich sa súborov (freezed, json, hive objekty)
+5.  **dart run build_runner build --delete-conflicting-outputs** - vygenerovanie podporných auto-generujúcich sa súborov (freezed, json, drift objekty)
 
 >  **Poznámka:** Je možné dodatočne sputiť príkaz **dart run lib/unused_keys_finder.dart** , ktorý vyhľadá preklady, ktoré sa nepoužívajú.
 
@@ -63,7 +63,7 @@ Po každej zmene prekladov v súbore `lib/l10n/intl_cs.arb` je potrebné pregene
 
   
 
-V prípade vytváraní nových objektov alebo existujúcich objektov, ktoré používajú nasledujúce anotácie `@freezed, @Freezed, @unfreezed, @injectable, @singleton, @lazySingleton, @module, @HiveType,` alebo anotácie atribútov objektov `@JsonKey, @HiveField` je potrebné pregenerovať automaticky generované súbori pomocou príkazu **dart run build_runner build --delete-conflicting-outputs**.
+V prípade vytváraní nových objektov alebo existujúcich objektov, ktoré používajú nasledujúce anotácie `@freezed, @Freezed, @unfreezed, @injectable, @singleton, @lazySingleton, @module,` alebo anotácie atribútov objektov `@JsonKey, @HiveField` je potrebné pregenerovať automaticky generované súbori pomocou príkazu **dart run build_runner build --delete-conflicting-outputs**.
 
   
 

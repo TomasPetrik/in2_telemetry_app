@@ -5,7 +5,7 @@ import 'package:scalesoft_app/data/tables/users.dart';
 class DevicePrototypes extends Table {
   IntColumn get id => integer().autoIncrement()();
 
-  IntColumn get userId => integer().references(Users, #id)();
+  IntColumn get userId => integer().references(Users, #id, onDelete: KeyAction.cascade)();
 
   TextColumn get aboutUrl => text()();
 

@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:scalesoft_app/api/model/active_care_plans_response.dart';
-import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation.dart';
-import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation_aggregated.dart';
-import 'package:scalesoft_app/api/model/care_plan_versions_response.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/active_care_plans_contract.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/aggregated_fulfillment_evaluation_contract.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_versions_response.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
+import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_evaluation_item.dart';
 
 part 'care_plan_api_client.g.dart';
 
@@ -19,7 +19,7 @@ abstract class CarePlanApiClient {
       _CarePlanApiClient;
 
   @GET('{apiUrl}/patient/care-plan/active')
-  Future<ActiveCarePlansResponse> loadActiveCarePlans(
+  Future<ActiveCarePlansContract> loadActiveCarePlans(
     @Path('apiUrl') String apiUrl,
     @Query('patientMuid') String patientMuid,
     @Query('start') int start,
@@ -29,7 +29,7 @@ abstract class CarePlanApiClient {
   @GET(
     '{apiUrl}/patient/me/care-plan/{carePlanId}/version?start={start}&count={count}',
   )
-  Future<CarePlanVersionsResponse> loadCarePlanVersions(
+  Future<CarePlanVersionsContract> loadCarePlanVersions(
     @Path('apiUrl') String apiUrl,
     @Path('carePlanId') int carePlanId,
     @Path('start') int start,
@@ -37,7 +37,7 @@ abstract class CarePlanApiClient {
   );
 
   @GET('{apiUrl}/patient/measurement')
-  Future<List<MeasurementResult>> loadResults(
+  Future<List<MeasurementDataContract>> loadResults(
     @Path('apiUrl') String apiUrl,
     @Query('patientMuid') String patientMuid,
     @Query('type') String measurementType,
@@ -48,7 +48,7 @@ abstract class CarePlanApiClient {
   @GET(
     '{apiUrl}/patient/me/care-plan/version/{carePlanVersionId}/fulfillment-evaluation',
   )
-  Future<List<FulfillmentEvaluationItem>> loadFullPlanEvaluationIntervalls(
+  Future<List<FulfillmentEvaluationItem>> loadFullPlanEvaluationIntervals(
     @Path('apiUrl') String apiUrl,
     @Path('carePlanVersionId') int carePlanVersionId,
   );
@@ -56,7 +56,7 @@ abstract class CarePlanApiClient {
   @GET(
     '{apiUrl}/patient/me/care-plan/version/{carePlanVersionId}/fulfillment-evaluation-aggregated',
   )
-  Future<FulfillmentEvaluationAggregated> loadFullPlanEvaluation(
+  Future<AggregatedFulfillmentEvaluationContract> loadFullPlanEvaluation(
     @Path('apiUrl') String apiUrl,
     @Path('carePlanVersionId') int carePlanVersionId,
   );

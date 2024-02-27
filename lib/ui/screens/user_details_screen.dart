@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/model/measurement/device.dart';
+import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/report/report_bloc.dart';
@@ -12,7 +12,6 @@ import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/cubit/loader/loader_cubit.dart';
 import 'package:scalesoft_app/cubit/loader/loader_state.dart';
-import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/care_plan_detail_route.dart';
@@ -235,14 +234,14 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                               .user_detail_screen_register_device_button,
                           buttonType: ButtonType.primary,
                           onPressed: () {
-                            GoRouter.of(context).pushNamed<Device?>(
+                            GoRouter.of(context).pushNamed<SourceDeviceContract?>(
                               DeviceSearchRoute.name,
                               params: {
                                 'userId': userAccount.user.muid,
                                 'devicePurpose':
                                     DevicePurpose.registerDevice.name,
                               },
-                            ).then((final Device? device) {
+                            ).then((final SourceDeviceContract? device) {
                               if (device != null) {
                                 GoRouter.of(context).pushNamed(
                                   RegisterDeviceDetailRoute.name,

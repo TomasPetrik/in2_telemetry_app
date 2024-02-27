@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc_event.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc_state.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
@@ -12,16 +12,16 @@ import 'package:scalesoft_app/utils/helpers/results_helper.dart';
 
 @injectable
 class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
-  late final List<MeasurementResult> _offlineResults;
-  late final List<CarePlan> _allCarePlans;
+  late final List<MeasurementDataContract> _offlineResults;
+  late final List<CarePlanContract> _allCarePlans;
 
   ResultsBloc() : super(ResultsBlocState()) {
     on<ResultsBlocEvent>((event, emit) async {
       event.when(
         init: (
           final ResultsWhenPeriod whenPeriod,
-          final List<CarePlan> carePlans,
-          final List<MeasurementResult> allServerResults,
+          final List<CarePlanContract> carePlans,
+          final List<MeasurementDataContract> allServerResults,
           final List<Measurement>? pendingResults,
         ) async {
           _allCarePlans = carePlans;
@@ -33,7 +33,7 @@ class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
           );
 
           final Map<ResultsWhenPeriod, int?> plansEvaluationPerPeriod =
-              ResultsHelper.getPeriodFultillments(
+              ResultsHelper.getPeriodFulfillments(
             _allCarePlans,
             _offlineResults,
           );

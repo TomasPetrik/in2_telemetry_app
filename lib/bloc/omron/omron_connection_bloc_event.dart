@@ -1,7 +1,6 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
-import 'package:scalesoft_app/api/model/measurement/device.dart';
+import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
 import 'package:scalesoft_app/model/device_info.dart';
 
 part 'omron_connection_bloc_event.freezed.dart';
@@ -11,7 +10,7 @@ class OmronConnectionBlocEvent with _$OmronConnectionBlocEvent {
   const factory OmronConnectionBlocEvent.init(
     String userId,
     MeasurementTypeContract measurementType,
-    Device device,
+    SourceDeviceContract device,
   ) = _Init;
   const factory OmronConnectionBlocEvent.checkHwState() = _CheckHwState;
   const factory OmronConnectionBlocEvent.newBtState(

@@ -3,19 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 import 'package:oauth2/oauth2.dart';
-import 'package:scalesoft_app/api/model/auth_data.dart';
-import 'package:scalesoft_app/api/model/auth_token.dart';
-import 'package:scalesoft_app/api/model/report/report.dart';
+import 'package:scalesoft_app/api/contracts/logs/log_contract.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/config.dart';
-import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/data/entities/json_entities/user/auth_token.dart';
 import 'package:scalesoft_app/parsers/jwt_parser.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
-import 'package:scalesoft_app/providers/hospital_db_provider.dart';
-import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
 import 'package:scalesoft_app/repositories/account_repository.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/auth_service.dart';
@@ -77,13 +72,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       hospital.authData.codeVerifier,
     );
 
-    _session.hospital = hospital.copyWith(
-      authData: AuthData(
-        baseUrl: hospital.authData.baseUrl,
-        authUrl: hospital.authData.authUrl,
-        tokenUrl: hospital.authData.tokenUrl,
-      ),
-    );
+    _session.hospital = hospital;
 
     _grant!.getAuthorizationUrl(
       Uri.parse(Config.value.redirectUrl),
@@ -273,7 +262,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _session.token = null;
         _session.userAccount = null;
         _session.hospital = null;
-        _session.userPermissions = null;
+        _session.userPermissions = [];
 
         final lastLoggedUser = _accountDbProvider.getLast();
         if (lastLoggedUser != null) {

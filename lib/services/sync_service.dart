@@ -3,16 +3,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/fulfillment_evaluation_aggregated.dart';
-import 'package:scalesoft_app/api/model/measurement/device.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/aggregated_fulfillment_evaluation_contract.dart';
+import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/managers/background_measurement_manager.dart';
-import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
-import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
-import 'package:scalesoft_app/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/repositories/account_repository.dart';
 import 'package:scalesoft_app/repositories/care_plans_repository.dart';
 import 'package:scalesoft_app/repositories/device_repository.dart';
@@ -46,7 +42,7 @@ class SyncService {
 
   Future<void> setUserPlans(
     final UserAccount userAccount,
-    final List<CarePlan> newCarePlans,
+    final List<CarePlanContract> newCarePlans,
   ) async {
     for (final carePlan in newCarePlans) {
       carePlan.userId = userAccount.user.muid;
@@ -154,8 +150,9 @@ class SyncService {
     }
   }
 
-  Future<void> removeOfflineResult(MeasurementResult measurementResult) async {
-    await _pendingResultsDbProvider.removeByDateTime(measurementResult.measurementDateTime);
+  Future<void> removeOfflineResult(MeasurementDataContract measurementResult) async {
+    await _pendingResultsDbProvider
+        .removeByDateTime(measurementResult.measurementDateTime);
   }
 
   Future<void> updateUserData(UserAccount userAccount) async {
@@ -176,12 +173,12 @@ class SyncService {
     userAccount.user = userInfo.currentUser;
   }
 
-  List<Device>? parseAssignedDevices(List<Device>? devices, List<Device>? originalDevices) {
+  List<SourceDeviceContract>? parseAssignedDevices(List<SourceDeviceContract>? devices, List<SourceDeviceContract>? originalDevices) {
     if (devices == null) {
       return null;
     }
 
-    final List<Device> result = [];
+    final List<SourceDeviceContract> result = [];
 
     for (final device in devices) {
       final devicePrototype = ConfigurationConstants.supportedDevices.firstWhereOrNull(
@@ -220,7 +217,7 @@ class SyncService {
         );
         carePlan.fullPlanEvaluation = fullPlanEvaluation;
       } catch (e) {
-        carePlan.fullPlanEvaluation = FulfillmentEvaluationAggregated(
+        carePlan.fullPlanEvaluation = AggregatedFulfillmentEvaluationContract(
           DateTime.now(),
           DateTime.now(),
           0,
@@ -283,15 +280,14 @@ class SyncService {
     var supportedMeasurementTypes = (userAccount.carePlans?.map((x) => x.activity.measurementType) ?? []).toSet();
 
     if (userAccount.hospital != null) {
-      supportedMeasurementTypes.addAll(userAccount.hospital!.enabledMeasurementTypes);
-    } else {
-      supportedMeasurementTypes.addAll(ConfigurationConstants.supportedMeasurementTypes);
+      supportedMeasurementTypes
+          .addAll(userAccount.hospital!.enabledMeasurementTypes);
     }
 
     final yesterdayMidnight = DateTime.now().yesterday;
     final tomorrowMidnight = DateTime.now().tomorrow;
 
-    final List<MeasurementResult> allResults = [];
+    final List<MeasurementDataContract> allResults = [];
     for (final measurementType in supportedMeasurementTypes) {
       final measurementResults = await _carePlansRepository.loadResults(
         userAccount: userAccount,

@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:scalesoft_app/api/model/measurement/device.dart';
+import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/extensions/uint8_list_extension.dart';
 import 'package:scalesoft_app/model/device_info.dart';
@@ -64,7 +64,7 @@ class BtConnectionHelper {
     }
   }
 
-  bool matchDeviceId(Device device, String localName) {
+  bool matchDeviceId(SourceDeviceContract device, String localName) {
     if (device.deviceIdentifier == null) {
       return true;
     }
@@ -96,7 +96,7 @@ class BtConnectionHelper {
 
   Future<DeviceSearchResult?> searchDevice({
     required Guid serviceUuid,
-    required Device device,
+    required SourceDeviceContract device,
     required SearchMode searchMode,
     Duration? maxAllowedDeviceSearchingTime,
   }) async {
@@ -166,7 +166,7 @@ class BtConnectionHelper {
   Future<void> searchDevicesByService({
     required List<Guid> serviceUuids,
     required onlyPairingMode,
-    required Function(List<Device> devices) onResult,
+    required Function(List<SourceDeviceContract> devices) onResult,
   }) async {
     syncMode = false;
     final isScanning = FlutterBluePlus.isScanningNow;
@@ -208,7 +208,7 @@ class BtConnectionHelper {
 
       debugPrint('found matching devices ${matchedResults.length}');
 
-      final List<Device> availableDevices = [];
+      final List<SourceDeviceContract> availableDevices = [];
 
       for (final scanResult in matchedResults) {
         if (scanResult.rssi < 0 && scanResult.advertisementData.connectable) {
@@ -231,7 +231,7 @@ class BtConnectionHelper {
     }
   }
 
-  Device convertToDevice(
+  SourceDeviceContract convertToDevice(
     String advertisementName,
     BluetoothDevice btDevice,
   ) {
@@ -245,15 +245,18 @@ class BtConnectionHelper {
 
     var preferredIdName = advertisementName;
 
-    if (supportedDev.deviceModelType == DeviceModelType.omronM7) {
+    // TODO
+    if (supportedDev.deviceModelType.index == DeviceModelType.omronM7.index) {
       preferredIdName = advertisementName.split('_').last;
     }
 
-    return supportedDev.copyWith(
-      bluetoothAddress:
-          Platform.isAndroid ? btDevice.remoteId.toString() : null,
-      deviceIdentifier: preferredIdName,
-    );
+    // TODO
+    // return supportedDev.copyWith(
+    //   bluetoothAddress:
+    //       Platform.isAndroid ? btDevice.remoteId.toString() : null,
+    //   deviceIdentifier: preferredIdName,
+    // );
+    return SourceDeviceContract();
   }
 
   Future<DeviceInfo?> requestDeviceInfo(BluetoothDevice device) async {

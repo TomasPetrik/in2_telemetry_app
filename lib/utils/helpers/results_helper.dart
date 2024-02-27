@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement_type_contract.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/ui/widgets/interactive_chart/candle_data.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
@@ -10,9 +10,9 @@ import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
 
 class ResultsHelper {
-  static Map<ResultsWhenPeriod, int?> getPeriodFultillments(
-    List<CarePlan> carePlans,
-    final List<MeasurementResult> todayAndYesterdayResults,
+  static Map<ResultsWhenPeriod, int?> getPeriodFulfillments(
+    List<CarePlanContract> carePlans,
+    final List<MeasurementDataContract> todayAndYesterdayResults,
   ) {
     return {
       ResultsWhenPeriod.yesterday: EvaluationPlanHelper.getProgressFromPlans(
@@ -29,10 +29,10 @@ class ResultsHelper {
   }
 
   static List<PlannedMeasurement> getMeasurements(
-    final List<CarePlan> allCarePlans,
+    final List<CarePlanContract> allCarePlans,
     final ResultsWhenPeriod whenPeriod,
     final MeasurementTypeContract? measurementType,
-    final List<MeasurementResult> offlineResults,
+    final List<MeasurementDataContract> offlineResults,
   ) {
     List<PlannedMeasurement> measurements = [];
 
@@ -72,13 +72,13 @@ class ResultsHelper {
     return measurements;
   }
 
-  static List<MeasurementResult> getResultsOfDay({
+  static List<MeasurementDataContract> getResultsOfDay({
     required final List<PlannedMeasurement> plannedMeasurements,
-    required final List<MeasurementResult> serverResults,
-    required final List<MeasurementResult> offlineResults,
+    required final List<MeasurementDataContract> serverResults,
+    required final List<MeasurementDataContract> offlineResults,
     required final DateTime startOfDay,
   }) {
-    final List<MeasurementResult> allResults = [];
+    final List<MeasurementDataContract> allResults = [];
 
     //sort by isPeriodical because later on we want to add periodicals partials
     //measurements which haven't been included in previous measurements
@@ -87,14 +87,14 @@ class ResultsHelper {
     );
 
     final resultsUntilNow = plannedMeasurements
-        .fold<List<MeasurementResult>>([], (prevMeasurements, plMeasurement) {
-      List<MeasurementResult> results = [];
+        .fold<List<MeasurementDataContract>>([], (prevMeasurements, plMeasurement) {
+      List<MeasurementDataContract> results = [];
 
       final evaluationItem = plMeasurement.fulfillmentEvaluationItem!;
 
       if (!plMeasurement.carePlan.isPeriodical) {
         results.add(
-          MeasurementResult(
+          MeasurementDataContract(
             measurementDateTime:
                 evaluationItem.actualMeasurementTimes.isNotEmpty
                     ? evaluationItem.actualMeasurementTimes.first
@@ -123,7 +123,7 @@ class ResultsHelper {
             (prevMeasurementTime) => prevMeasurementTime == measurementTime,
           )) {
             results.add(
-              MeasurementResult(
+              MeasurementDataContract(
                 measurementDateTime: measurementTime,
                 measurementIntervalStart: plMeasurement.whenStart,
                 measurementIntervalEnd: null,
@@ -143,7 +143,7 @@ class ResultsHelper {
         //then show if periodical measurement haven't bee fully completed
         if (!evaluationItem.wasMeasured()) {
           results.add(
-            MeasurementResult(
+            MeasurementDataContract(
               measurementDateTime: plMeasurement.whenStart,
               measurementIntervalStart: plMeasurement.whenStart,
               measurementIntervalEnd: plMeasurement.whenEnd,
@@ -185,7 +185,7 @@ class ResultsHelper {
       allResults.addAll(
         offlineResults
             .map(
-              (offlineResult) => MeasurementResult(
+              (offlineResult) => MeasurementDataContract(
                 measurementDateTime: offlineResult.measurementDateTime,
                 measurementIntervalEnd: null,
                 reqCount: 1,
@@ -211,7 +211,7 @@ class ResultsHelper {
 
         if (matchingResults.isEmpty) {
           allResults.add(
-            MeasurementResult(
+            MeasurementDataContract(
               measurementDateTime: serverResult.measurementDateTime,
               measurementIntervalEnd: null,
               reqCount: 1,
@@ -242,11 +242,11 @@ class ResultsHelper {
     return allResults;
   }
 
-  static List<MeasurementResult> getResultsByWhenPeriod({
-    required final List<CarePlan> carePlans,
+  static List<MeasurementDataContract> getResultsByWhenPeriod({
+    required final List<CarePlanContract> carePlans,
     required final ResultsWhenPeriod whenPeriod,
-    required final List<MeasurementResult> allServerResults,
-    required final List<MeasurementResult> allOfflineResults,
+    required final List<MeasurementDataContract> allServerResults,
+    required final List<MeasurementDataContract> allOfflineResults,
     MeasurementTypeContract? measurementType,
   }) {
     final dtNow = DateTime.now();
@@ -305,7 +305,7 @@ class ResultsHelper {
   }
 
   static CandleData getCandleByMeasurementResult(
-    MeasurementResult measurement,
+    MeasurementDataContract measurement,
   ) {
     switch (measurement.measurementType!) {
       case MeasurementTypeContract.temperature:

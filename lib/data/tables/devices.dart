@@ -7,11 +7,11 @@ class Devices extends Table {
   IntColumn get id => integer().autoIncrement()();
 
   // TODO: UserId here might not be useful, it might be more practical to only use userId in prototype? If so, delete.
-  IntColumn get userId => integer().references(Users, #id)();
+  IntColumn get userId => integer().references(Users, #id, onDelete: KeyAction.cascade)();
 
   IntColumn get physicalDeviceId => integer().references(PhysicalDevices, #id)();
 
-  IntColumn get prototypeId => integer().references(DevicePrototypes, #id)();
+  IntColumn get prototypeId => integer().references(DevicePrototypes, #id, onDelete: KeyAction.cascade)();
 
   DateTimeColumn get addedAt => dateTime()();
 

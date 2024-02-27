@@ -23,6 +23,9 @@ class TimeOnly {
 
   TimeOnly.fromDateTime(DateTime dateTime) : this(dateTime.hour, dateTime.minute, dateTime.second);
 
+  TimeOnly fromString(String timeOfDayString) =>
+      TimeOnly.fromDateTime(DateTime.parse('2018-10-20 ${timeOfDayString}Z'));
+
   bool isBefore(TimeOnly other) {
     return totalSeconds < other.totalSeconds;
   }

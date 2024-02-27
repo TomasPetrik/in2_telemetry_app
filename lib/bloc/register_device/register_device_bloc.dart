@@ -3,13 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/model/device_to_register.dart';
-import 'package:scalesoft_app/api/model/measurement/device.dart';
-import 'package:scalesoft_app/api/model/report/report.dart';
+import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_event.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_state.dart';
-import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/repositories/device_repository.dart';
 import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/utils/events_constants.dart';
@@ -188,7 +184,7 @@ class RegisterDeviceBloc
           await Wakelock.disable();
           await FlutterBluePlus.stopScan();
         },
-        selectDevice: (Device device) async {
+        selectDevice: (SourceDeviceContract device) async {
           await Wakelock.disable();
           await FlutterBluePlus.stopScan();
           emit(RegisterDeviceBlocState.popDevice(device));

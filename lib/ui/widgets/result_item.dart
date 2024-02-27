@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
-import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/chart_screen_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
-import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 class ResultItem extends StatelessWidget with BottomSheetMixin {
   const ResultItem({
@@ -21,7 +18,7 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
   });
 
   final bool isMultiUser;
-  final MeasurementResult mResult;
+  final MeasurementDataContract mResult;
   final bool canOpenChart;
   final VoidCallback? onRemove;
 

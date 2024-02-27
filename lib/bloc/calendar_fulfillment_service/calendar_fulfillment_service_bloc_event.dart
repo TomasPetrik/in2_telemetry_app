@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 
 part 'calendar_fulfillment_service_bloc_event.freezed.dart';
@@ -18,6 +18,6 @@ class CalendarFulfillmentServiceBlocEvent
 
   const factory CalendarFulfillmentServiceBlocEvent.loadMonthFulfillments(
     CalendarMonth month,
-    List<CarePlan> carePlans,
+    List<CarePlanContract> carePlans,
   ) = _LoadFulfillments;
 }

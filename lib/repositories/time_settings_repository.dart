@@ -1,9 +1,5 @@
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/time_settings_api_client.dart';
-import 'package:scalesoft_app/api/model/settings/time_setting.dart';
-import 'package:scalesoft_app/api/model/settings/time_settings.dart';
-import 'package:scalesoft_app/api/model/template_time_set.dart';
-import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/storage/session.dart';
 
 @singleton

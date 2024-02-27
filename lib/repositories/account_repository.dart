@@ -1,10 +1,8 @@
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/account_api_client.dart';
-import 'package:scalesoft_app/api/model/auth_token.dart';
-import 'package:scalesoft_app/api/model/report/report_request.dart';
-import 'package:scalesoft_app/api/model/user_info.dart';
+import 'package:scalesoft_app/api/contracts/user/current_user_info_contract.dart';
 import 'package:scalesoft_app/config.dart';
-import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/data/entities/json_entities/user/auth_token.dart';
 import 'package:scalesoft_app/storage/session.dart';
 
 @singleton
@@ -14,7 +12,7 @@ class AccountRepository {
 
   AccountRepository(this.accountApiClient, this.session);
 
-  Future<UserInfo> loadUserInfo({
+  Future<CurrentUserInfoContract> loadUserInfo({
     required AuthToken authToken,
     required String apiUrl,
   }) {

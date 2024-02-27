@@ -4,11 +4,6 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:scalesoft_app/api/model/report/report.dart';
-import 'package:scalesoft_app/api/model/report/report_request.dart';
-import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
-import 'package:scalesoft_app/providers/reports_db_provider.dart';
 import 'package:scalesoft_app/repositories/account_repository.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:unique_identifier/unique_identifier.dart';
@@ -87,7 +82,7 @@ class ReportService {
     required String message,
   }) async {
     String? patientMuid = userAccount?.user.muid ?? userId;
-    final report = Report(
+    final report = LogContract(
       eventTime: DateTime.now(),
       appVersion: _appVersion,
       osVersion: _osVersion,

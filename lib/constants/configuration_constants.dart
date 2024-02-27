@@ -1,6 +1,9 @@
 import 'package:flutter/services.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
-import 'package:scalesoft_app/api/model/measurement/device.dart';
+import 'package:scalesoft_app/data/entities/enums/action_button_type.dart';
+import 'package:scalesoft_app/data/entities/enums/device_model_type.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_flow.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
+import 'package:scalesoft_app/data/entities/json_entities/device/device_prototype_template.dart';
 import 'package:scalesoft_app/model/measurement_config.dart';
 import 'package:scalesoft_app/utils/input_formatters/decimal_text_input_formatter.dart';
 
@@ -19,8 +22,8 @@ class ConfigurationConstants {
 
   /* Supported Measurements */
 
-  static Map<MeasurementTypeContract, MeasurementConfig> supportedMeasurements = {
-    MeasurementTypeContract.bloodPressure: MeasurementConfig(
+  static Map<MeasurementType, MeasurementConfig> supportedMeasurements = {
+    MeasurementType.bloodPressure: MeasurementConfig(
       MeasurementConfigType.composed,
       ['mmHg', 'mmHg'],
       [UnitName.systolic, UnitName.diastolic],
@@ -33,7 +36,7 @@ class ConfigurationConstants {
         LengthLimitingTextInputFormatter(3),
       ],
     ),
-    MeasurementTypeContract.temperature: MeasurementConfig(
+    MeasurementType.temperature: MeasurementConfig(
       MeasurementConfigType.single,
       ['°C'],
       [UnitName.temperature],
@@ -43,7 +46,7 @@ class ConfigurationConstants {
       ['0'],
       [DecimalTextInputFormatter(1)],
     ),
-    MeasurementTypeContract.heartRate: MeasurementConfig(
+    MeasurementType.heartRate: MeasurementConfig(
       MeasurementConfigType.single,
       ['TF'],
       [UnitName.pulse],
@@ -56,7 +59,7 @@ class ConfigurationConstants {
         LengthLimitingTextInputFormatter(3),
       ],
     ),
-    MeasurementTypeContract.oxygenSaturation: MeasurementConfig(
+    MeasurementType.oxygenSaturation: MeasurementConfig(
       MeasurementConfigType.single,
       ['%'],
       [UnitName.oxygenSaturation],
@@ -66,7 +69,7 @@ class ConfigurationConstants {
       ['0'],
       [DecimalTextInputFormatter(1)],
     ),
-    MeasurementTypeContract.respiratoryRate: MeasurementConfig(
+    MeasurementType.respiratoryRate: MeasurementConfig(
       MeasurementConfigType.single,
       null,
       [UnitName.respiratoryRate],
@@ -79,7 +82,7 @@ class ConfigurationConstants {
         LengthLimitingTextInputFormatter(3),
       ],
     ),
-    MeasurementTypeContract.steps: MeasurementConfig(
+    MeasurementType.steps: MeasurementConfig(
       MeasurementConfigType.single,
       null,
       [UnitName.steps],
@@ -92,7 +95,7 @@ class ConfigurationConstants {
         LengthLimitingTextInputFormatter(10),
       ],
     ),
-    MeasurementTypeContract.globalPosition: MeasurementConfig(
+    MeasurementType.globalPosition: MeasurementConfig(
       MeasurementConfigType.composed,
       null,
       [UnitName.lat, UnitName.lng],
@@ -105,7 +108,7 @@ class ConfigurationConstants {
       ['48.2389', '17.3693'],
       [DecimalTextInputFormatter(12), LengthLimitingTextInputFormatter(15)],
     ),
-    MeasurementTypeContract.ews: MeasurementConfig(
+    MeasurementType.ews: MeasurementConfig(
       MeasurementConfigType.single,
       null,
       [UnitName.ews],
@@ -118,7 +121,7 @@ class ConfigurationConstants {
         LengthLimitingTextInputFormatter(2),
       ],
     ),
-    MeasurementTypeContract.shortnessOfBreath: MeasurementConfig(
+    MeasurementType.shortnessOfBreath: MeasurementConfig(
       MeasurementConfigType.select,
       null,
       [UnitName.shortnessOfBreath],
@@ -128,7 +131,7 @@ class ConfigurationConstants {
       null,
       null,
     ),
-    MeasurementTypeContract.overallHealth: MeasurementConfig(
+    MeasurementType.overallHealth: MeasurementConfig(
       MeasurementConfigType.select,
       null,
       [UnitName.overallHealth],
@@ -142,16 +145,16 @@ class ConfigurationConstants {
 
   /* Supported measurement types */
 
-  static const Set<MeasurementTypeContract> supportedMeasurementTypes = {
-    MeasurementTypeContract.bloodPressure,
+  static const Set<MeasurementType> supportedMeasurementTypes = {
+    MeasurementType.bloodPressure,
   };
 
   /* EGoverment authorization */
 
   /* Supported Devices */
 
-  static final List<Device> supportedDevices = [
-    Device(
+  static final List<DevicePrototypeTemplate> supportedDevices = [
+    DevicePrototypeTemplate(
       localId: 0,
       modelName: 'BM77',
       deviceManufacturer: 'Beurer',
@@ -161,16 +164,16 @@ class ConfigurationConstants {
       deviceModelType: DeviceModelType.beurerBm77,
       imagePath: 'assets/images/beurer_bm_77.png',
       supportedMeasurementTypes: [
-        MeasurementTypeContract.bloodPressure,
-        MeasurementTypeContract.heartRate,
+        MeasurementType.bloodPressure,
+        MeasurementType.heartRate,
       ],
-      reqPairing: false,
+      requiresPairing: false,
       askToActivateBt: true,
       askToConfirmMeasurement: true,
       actionButtonType: ActionButtonType.regular,
       measurementFlow: MeasurementFlow.foreground,
     ),
-    Device(
+    DevicePrototypeTemplate(
       localId: 1,
       modelName: 'M7',
       deviceManufacturer: "Omron",
@@ -180,25 +183,25 @@ class ConfigurationConstants {
       deviceModelType: DeviceModelType.omronM7,
       imagePath: 'assets/images/omron_m7.png',
       supportedMeasurementTypes: [
-        MeasurementTypeContract.bloodPressure,
-        MeasurementTypeContract.heartRate,
+        MeasurementType.bloodPressure,
+        MeasurementType.heartRate,
       ],
-      reqPairing: true,
+      requiresPairing: true,
       actionButtonType: ActionButtonType.startButton,
       measurementFlow: MeasurementFlow.foreground,
     ),
-    Device(
+    DevicePrototypeTemplate(
       localId: 2,
       modelName: 'E86',
       visibleName: "E86",
       bluetoothName: "E86",
       deviceModelType: DeviceModelType.e8x,
       supportedMeasurementTypes: [
-        MeasurementTypeContract.temperature,
-        MeasurementTypeContract.heartRate,
-        MeasurementTypeContract.bloodPressure,
-        MeasurementTypeContract.oxygenSaturation,
-        MeasurementTypeContract.respiratoryRate,
+        MeasurementType.temperature,
+        MeasurementType.heartRate,
+        MeasurementType.bloodPressure,
+        MeasurementType.oxygenSaturation,
+        MeasurementType.respiratoryRate,
       ],
       imagePath: 'assets/images/e8x.png',
       measurementFlow: MeasurementFlow.background,

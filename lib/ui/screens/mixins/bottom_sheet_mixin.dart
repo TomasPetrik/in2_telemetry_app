@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
-import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/api/model/hospital.dart';
-import 'package:scalesoft_app/model/user_account.dart';
 import 'package:scalesoft_app/ui/dialogs/bottom_dialog.dart';
 import 'package:scalesoft_app/ui/dialogs/hospital_selection_dialog.dart';
 import 'package:scalesoft_app/ui/dialogs/planned_measurement_time_dialog.dart';

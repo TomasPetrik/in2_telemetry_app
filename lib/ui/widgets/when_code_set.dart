@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -16,22 +15,22 @@ class WhenCodeSet extends StatefulWidget {
     required this.onNewTimeSet,
   });
 
-  final DailyTime defaultTime;
-  final DailyTime? minTime;
-  final DailyTime? maxTime;
-  final WhenCode? whenCode;
-  final Function(DailyTime dailyTime) onNewTimeSet;
+  final TimeOfDayContract defaultTime;
+  final TimeOfDayContract? minTime;
+  final TimeOfDayContract? maxTime;
+  final WhenCodeContract? whenCode;
+  final Function(TimeOfDayContract dailyTime) onNewTimeSet;
 
   @override
   State<WhenCodeSet> createState() => _WhenCodeSetState();
 }
 
 class _WhenCodeSetState extends State<WhenCodeSet> with BottomSheetMixin {
-  late WhenCode? whenCode;
+  late WhenCodeContract? whenCode;
 
-  late DailyTime defaultTime;
-  late DailyTime? minTime;
-  late DailyTime? maxTime;
+  late TimeOfDayContract defaultTime;
+  late TimeOfDayContract? minTime;
+  late TimeOfDayContract? maxTime;
   late TextEditingController timeTextController;
 
   @override

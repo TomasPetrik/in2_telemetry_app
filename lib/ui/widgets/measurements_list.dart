@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -26,11 +26,11 @@ class MeasurementsList extends StatelessWidget {
   });
 
   final PlanWhenPeriod whenPeriod;
-  final List<CarePlan> carePlans;
+  final List<CarePlanContract> carePlans;
   final List<PlannedMeasurement> measurements;
   final PlannedMeasurement nextMeasurement;
   final PlanWhenPeriod planWhenPeriod;
-  final List<MeasurementResult> results;
+  final List<MeasurementDataContract> results;
 
   List<PlannedMeasurement> get _pMeasurements => measurements
       .where(

@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:scalesoft_app/api/model/device_model.dart';
-import 'package:scalesoft_app/api/model/device_to_register.dart';
+import 'package:scalesoft_app/api/contracts/device/device_prototype_contract.dart';
+import 'package:scalesoft_app/api/contracts/device/device_create_contract.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
 
 part 'device_api_client.g.dart';
@@ -17,9 +17,9 @@ abstract class DeviceApiClient {
   @POST('{apiUrl}/device')
   Future<void> registerDevice(
     @Path('apiUrl') String apiUrl,
-    @Body() DeviceToRegister deviceToRegister,
+    @Body() DeviceCreateContract deviceToRegister,
   );
 
   @GET('{apiUrl}/device/models')
-  Future<List<DeviceModel>> getDeviceModels(@Path('apiUrl') String apiUrl);
+  Future<List<DevicePrototypeContract>> getDeviceModels(@Path('apiUrl') String apiUrl);
 }

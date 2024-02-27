@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
@@ -28,8 +28,8 @@ class CarePlanDetailScreen extends StatefulWidget with BottomSheetMixin {
     required this.offlineResults,
   });
 
-  final CarePlan carePlan;
-  final List<MeasurementResult> offlineResults;
+  final CarePlanContract carePlan;
+  final List<MeasurementDataContract> offlineResults;
 
   @override
   State<CarePlanDetailScreen> createState() => _CarePlanDetailScreenState();

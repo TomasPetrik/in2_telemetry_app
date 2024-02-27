@@ -4,19 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
-import 'package:scalesoft_app/api/model/measurement/composed_int_value.dart';
-import 'package:scalesoft_app/api/model/measurement/device.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement.dart';
-import 'package:scalesoft_app/api/model/measurement/source_device_info.dart';
-import 'package:scalesoft_app/api/model/report/report.dart';
+import 'package:scalesoft_app/api/contracts/measurement/blood_pressure_contract.dart';
+import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_bloc_event.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_state.dart';
 import 'package:scalesoft_app/model/device_info.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
-import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
-import 'package:scalesoft_app/providers/paired_devices_db_provider.dart';
 import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/events_constants.dart';
@@ -31,7 +25,7 @@ class OmronConnectionBloc
   final PairedDevicesDbProvider _pairedDevicesDbProvider;
   final ReportService _reportsService;
 
-  Device? _device;
+  SourceDeviceContract? _device;
   late final UserAccount _userAccount;
   late final MeasurementTypeContract _measurementType;
   bool shouldRequestPermission = true;
@@ -104,7 +98,7 @@ class OmronConnectionBloc
         }
       }
 
-      Future<Device?> measureAndSync(
+      Future<SourceDeviceContract?> measureAndSync(
         final BluetoothDevice blDevice,
         final DeviceInfo deviceInfo,
         final String localName,

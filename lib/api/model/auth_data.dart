@@ -1,24 +1,13 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+class AuthData {
+  final String baseUrl;
+  final String authUrl;
+  final String tokenUrl;
+  final String? codeVerifier;
 
-part 'auth_data.freezed.dart';
-part 'auth_data.g.dart';
-
-@freezed
-class AuthData with _$AuthData {
-  const AuthData._();
-
-  @HiveType(typeId: 5, adapterName: 'AuthDataAdapter')
-  const factory AuthData({
-    @HiveField(0) required String baseUrl,
-    @HiveField(1) required String authUrl,
-    @HiveField(2) required String tokenUrl,
-    @HiveField(3) String? codeVerifier,
-  }) = _AuthData;
-
-  factory AuthData.fromJson(Map<String, dynamic> json) =>
-      _$AuthDataFromJson(json);
-
-  @override
-  String toString() => toJson().toString();
+  const AuthData({
+    required this.baseUrl,
+    required this.authUrl,
+    required this.tokenUrl,
+    this.codeVerifier,
+  });
 }

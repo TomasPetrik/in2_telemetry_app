@@ -1,7 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
-import 'package:scalesoft_app/api/model/measurement/overall_health_value.dart';
-import 'package:scalesoft_app/api/model/measurement/shortness_of_breath_value.dart';
+import 'package:scalesoft_app/api/contracts/measurement/overall_health_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement/shortness_of_breath_contract.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 
 part 'candle_data.freezed.dart';
@@ -49,12 +48,12 @@ class CandleData with _$CandleData {
       MeasurementTypeContract.shortnessOfBreath => highVal == null
           ? ''
           : localization.shortness_of_breath_values(
-              ShortnessOfBreathValue.values[highVal!.toInt()],
+              ShortnessOfBreathContract.values[highVal!.toInt()],
             ),
       MeasurementTypeContract.overallHealth => highVal == null
           ? ''
           : localization.overall_health_values(
-              OverallHealthValue.values[highVal!.toInt()],
+              OverallHealthContract.values[highVal!.toInt()],
             ),
       _ => '$highVal',
     };

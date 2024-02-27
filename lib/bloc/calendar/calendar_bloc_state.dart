@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity_contract.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
-import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 part 'calendar_bloc_state.freezed.dart';
@@ -62,7 +60,7 @@ class CalendarDay with _$CalendarDay {
     bool? wasCheckedForEvaluation,
     int? carePlansEvaluation,
     List<PlannedMeasurement>? plannedMeasurements,
-    List<UserAccount>? userAccounts,
+    List<User>? userAccounts,
     List<UserEvaluationDay>? usersEvaluationsDay,
     bool? isSelected,
   }) = _CalendarDay;
@@ -153,9 +151,9 @@ class UserEvaluationDay with _$UserEvaluationDay {
     return futureMeasurements;
   }
 
-  List<MeasurementResult> getMeasurementResults() {
+  List<MeasurementDataContract> getMeasurementResults() {
     final measurementResults =
-        carePlanFulfillments.fold<List<MeasurementResult>>(
+        carePlanFulfillments.fold<List<MeasurementDataContract>>(
       [],
       (previousValue, carePlanFulfillments) =>
           [...previousValue, ...carePlanFulfillments.measurementResults],
@@ -172,7 +170,7 @@ class SingleDayMeasurementsOfExactType with _$SingleDayMeasurementsOfExactType {
     MeasurementTypeContract measurementType,
     List<PlannedMeasurement> plannedMeasurements,
     List<Measurement> offlineResults,
-    List<MeasurementResult> measurementResults,
+    List<MeasurementDataContract> measurementResults,
   ) = _CarePlanFulfillment;
 
   int get evaluationPercentage => getActualCount() == 0

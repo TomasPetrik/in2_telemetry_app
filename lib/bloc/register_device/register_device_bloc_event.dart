@@ -1,7 +1,6 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/model/measurement/device.dart';
-import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
 
 part 'register_device_bloc_event.freezed.dart';
 
@@ -21,15 +20,15 @@ class RegisterDeviceBlocEvent with _$RegisterDeviceBlocEvent {
 
   const factory RegisterDeviceBlocEvent.notifyAboutNewDevices({
     required int timestamp,
-    required List<Device> foundDevices,
+    required List<SourceDeviceContract> foundDevices,
   }) = _NotifyAboutNewDevices;
 
-  const factory RegisterDeviceBlocEvent.selectDevice(Device device) =
+  const factory RegisterDeviceBlocEvent.selectDevice(SourceDeviceContract device) =
       _SelectDevice;
 
   const factory RegisterDeviceBlocEvent.registerDevice(
     UserAccount userAccount,
-    Device device,
+    SourceDeviceContract device,
     String assignedIdentifier,
   ) = _RegisterDevice;
 }

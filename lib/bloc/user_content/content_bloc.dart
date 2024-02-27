@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/model/report/report.dart';
+import 'package:scalesoft_app/api/contracts/logs/log_contract.dart';
 import 'package:scalesoft_app/app.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
@@ -14,8 +14,7 @@ import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_state.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
-import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
+import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/providers/session_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/report_service.dart';
@@ -144,7 +143,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     _session.isMultiUser = false;
     _sessionDbProvider.setIsMultiUser(false);
 
-    final UserAccount parentAccount;
+    final User parentAccount;
 
     if (event.userAccount.parentId?.isNotEmpty == true) {
       parentAccount = _accountDbProvider.get(event.userAccount.parentId!)!;

@@ -1,17 +1,19 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/model/user_account.dart';
 
-part 'user_jwt_data.freezed.dart';
 part 'user_jwt_data.g.dart';
 
-@freezed
-class UserJwtData with _$UserJwtData {
-  factory UserJwtData(
-    List<UserPermission> permission,
-  ) = _UserPermissions;
+@JsonSerializable()
+class UserJwtData {
+  @JsonKey(name: "permission")
+  final List<String> permissions;
 
-  factory UserJwtData.fromJson(Map<String, dynamic> json) =>
-      _$UserJwtDataFromJson(json);
+  const UserJwtData({
+    required this.permissions,
+  });
+
+  factory UserJwtData.fromJson(Map<String, dynamic> json) => _$UserJwtDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserJwtDataToJson(this);
 
   @override
   String toString() => toJson().toString();
