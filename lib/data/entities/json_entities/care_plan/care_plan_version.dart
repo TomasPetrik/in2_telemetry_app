@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:scalesoft_app/data/entities/enums/week_day.dart';
@@ -36,8 +38,8 @@ class CarePlanVersion {
 
   Map<String, dynamic> toJson() => _$CarePlanVersionToJson(this);
 
-  static TypeConverter<CarePlanVersion, String> converter = TypeConverter.json(
-    fromJson: (json) => CarePlanVersion.fromJson(json as Map<String, Object?>),
-    toJson: (obj) => obj.toJson(),
+  static TypeConverter<List<CarePlanVersion>, String> listConverter = TypeConverter.json(
+    fromJson: (fromJson) => (json.decode(fromJson) as List<Map<String, dynamic>>).map(CarePlanVersion.fromJson).toList(),
+    toJson: (obj) => json.encode(obj),
   );
 }

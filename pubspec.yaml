@@ -95,8 +95,8 @@ dependencies:
   pdfx: ^2.6.0
 
   # Database
-  drift: ^2.11.0
-  drift_dev: ^2.11.0
+  drift: ^2.16.0
+  drift_dev: ^2.16.0
   sqlite3_flutter_libs: ^0.5.15
   path_provider: ^2.1.0
 
@@ -110,7 +110,7 @@ dev_dependencies:
   # API
   retrofit_generator: 7.0.6
   injectable_generator: ^2.3.0
-  build_runner: ^2.4.6
+  build_runner: ^2.4.8
   json_serializable: ^6.7.1
 
   # The "flutter_lints" package below contains a set of recommended lints to

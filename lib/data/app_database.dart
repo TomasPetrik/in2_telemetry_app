@@ -42,7 +42,7 @@ import 'package:scalesoft_app/data/entities/enums/overall_health_state.dart';
 import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
 import 'package:scalesoft_app/data/entities/json_entities/measurement/blood_pressure_value.dart';
 
-part 'app_database.g.dart';
+part 'app_database.drift.dart';
 
 @singleton
 @DriftDatabase(
@@ -76,11 +76,19 @@ class AppDatabase extends _$AppDatabase {
       },
       onCreate: (Migrator m) async {
         await m.createAll();
-        await customStatement('CREATE UNIQUE INDEX IF NOT EXISTS UQ_PhysicalDevice ON "physical_devices" ("identifier", COALESCE("manufacturer", \'\'), "model_name");');
       },
       onUpgrade: upgradeStrategy,
     );
   }
+
+  @override
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        ...super.allSchemaEntities,
+        Index(
+          'UQ_PhysicalDevice',
+          'CREATE UNIQUE INDEX IF NOT EXISTS UQ_PhysicalDevice ON "physical_devices" ("identifier", COALESCE("manufacturer", \'\'), "model_name");',
+        ),
+      ];
 }
 
 LazyDatabase _openConnection() {

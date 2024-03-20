@@ -11,4 +11,10 @@ class AppSettings extends Table {
   BoolColumn get notifyAtStartOfMeasurement => boolean()();
 
   BoolColumn get notify10minBeforeMeasurement => boolean()();
+
+  IntColumn get lastHospitalId => integer()();
+
+  TextColumn get currentCodeVerifier => text()();
+
+  BoolColumn get showAllUsers => boolean()();
 }

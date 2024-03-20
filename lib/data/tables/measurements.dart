@@ -11,7 +11,7 @@ class Measurements extends Table {
 
   IntColumn get userId => integer().references(Users, #id, onDelete: KeyAction.cascade)();
 
-  IntColumn get deviceId => integer().references(Devices, #id, onDelete: KeyAction.cascade)();
+  IntColumn get deviceId => integer().references(Devices, #id, onDelete: KeyAction.cascade).nullable()();
 
   DateTimeColumn get measuredAt => dateTime()();
 
@@ -19,7 +19,7 @@ class Measurements extends Table {
 
   BoolColumn get isUploaded => boolean().withDefault(const Constant(false))();
 
-  IntColumn get temperature => integer().nullable()();
+  RealColumn get temperature => real().nullable()();
 
   TextColumn get bloodPressure => text().map(BloodPressureValue.converter).nullable()();
 

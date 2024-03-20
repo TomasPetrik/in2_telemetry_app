@@ -10,9 +10,11 @@ import 'package:scalesoft_app/data/tables/users.dart';
 class CarePlans extends Table {
   IntColumn get id => integer().autoIncrement()();
 
+  IntColumn get remoteId => integer()();
+
   IntColumn get targetUserId => integer().references(Users, #id, onDelete: KeyAction.cascade)();
 
-  TextColumn get activity => text().map(const CarePlanActivityConverter()).nullable()();
+  TextColumn get activity => text().map(const CarePlanActivityConverter())();
 
   TextColumn get author => text().map(const CarePlanAuthorConverter())();
 
@@ -22,5 +24,10 @@ class CarePlans extends Table {
 
   BoolColumn get wasChanged => boolean().withDefault(const Constant(false))();
 
-  TextColumn get versions => text().map(CarePlanVersion.converter)();
+  TextColumn get versions => text().map(CarePlanVersion.listConverter)();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {targetUserId, remoteId},
+  ];
 }

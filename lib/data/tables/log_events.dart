@@ -1,8 +1,11 @@
 import 'package:drift/drift.dart';
 import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
+import 'package:scalesoft_app/data/tables/users.dart';
 
 class LogEvents extends Table {
-  TextColumn get userMuid => text().nullable()();
+  IntColumn get id =>integer().autoIncrement()();
+
+  IntColumn get userId => integer().references(Users, #id).nullable()();
 
   TextColumn get appVersion => text()();
 

@@ -52,6 +52,8 @@ app.*.map.json
 # Generated files
 *.g.dart
 *.freezed.dart
+*.drift.dart
+*.auto_mappr.dart
 
 /_EXTRA/
 /.fvm/

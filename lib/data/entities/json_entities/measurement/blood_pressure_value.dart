@@ -5,8 +5,8 @@ part 'blood_pressure_value.g.dart';
 
 @JsonSerializable()
 class BloodPressureValue {
-  int systolic;
-  int diastolic;
+  int? systolic;
+  int? diastolic;
 
   BloodPressureValue({
     required this.systolic,

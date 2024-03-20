@@ -1,6 +1,20 @@
 targets:
+  drift:
+    auto_apply_builders: false
+    builders:
+      drift_dev:analyzer:
+        enabled: true
+        options: &options
+          has_separate_analyzer: true
+          store_date_time_values_as_text: true
+      drift_dev:not_shared:
+        enabled: true
+        options: *options
+
+
   $default:
     builders:
       drift_dev:
-        options:
-          store_date_time_values_as_text: true
+        enabled: false
+    dependencies:
+      - ":drift"

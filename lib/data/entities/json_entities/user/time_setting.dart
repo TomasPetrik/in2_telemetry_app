@@ -24,7 +24,8 @@ class TimeSetting {
   Map<String, dynamic> toJson() => _$TimeSettingToJson(this);
 
   static TypeConverter<List<TimeSetting>, String> listConverter = TypeConverter.json(
-    fromJson: (fromDb) => (json.decode(fromDb) as List<Map<String, dynamic>>).map(TimeSetting.fromJson).toList(),
+    fromJson: (fromDb) =>
+        (jsonDecode(fromDb).cast<Map<String, dynamic>>()).map<TimeSetting>(TimeSetting.fromJson).toList(),
     toJson: (obj) => json.encode(obj),
   );
 }
