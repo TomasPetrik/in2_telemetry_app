@@ -1,6 +1,8 @@
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/account_api_client.dart';
+import 'package:scalesoft_app/api/contracts/logs/logs_contract.dart';
 import 'package:scalesoft_app/api/contracts/user/current_user_info_contract.dart';
+import 'package:scalesoft_app/api/model/user_model.dart';
 import 'package:scalesoft_app/config.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/auth_token.dart';
 import 'package:scalesoft_app/storage/session.dart';
@@ -21,12 +23,12 @@ class AccountRepository {
   }
 
   Future<void> sendUserAppReports({
-    required UserAccount userAccount,
-    required ReportRequest reportRequest,
+    required UserModel user,
+    required LogsContract reportRequest,
   }) {
-    session.token = userAccount.authToken;
+    session.token = user.authToken;
     return accountApiClient.sendUserAppReports(
-      userAccount.hospital!.authData.baseUrl,
+      user.hospital.authData.baseUrl,
       reportRequest,
       Config.value.logEndpointSecret,
     );

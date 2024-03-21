@@ -1,6 +1,5 @@
 import 'package:drift/drift.dart';
 import 'package:scalesoft_app/data/app_database.dart';
-import 'package:scalesoft_app/data/entities/combined_entities/log_with_muid.dart';
 import 'package:scalesoft_app/data/tables/log_events.dart';
 import 'package:scalesoft_app/data/tables/users.dart';
 
@@ -18,30 +17,16 @@ class LogsDao extends DatabaseAccessor<AppDatabase> with _$LogsDaoMixin {
     await (delete(logEvents)..where((x) => x.eventTime.isSmallerOrEqualValue(olderThan))).go();
   }
 
-  Future<List<LogWithMuid>> getAll() async {
-    final muidColumn = users.muid;
-
-    final query = (select(logEvents)
-          ..join([leftOuterJoin(users, logEvents.userId.equalsExp(users.id), useColumns: false)]))
-        .addColumns([muidColumn]);
-
-    final results = await query.map((row) => LogWithMuid(row.read(muidColumn), row.readTable(logEvents))).get();
-    return results;
+  Future<List<LogEvent>> getAll() async {
+    return await (select(logEvents)).get();
   }
 
-  /// Deletes all reports made by the given user. If [userMuid] is null, deletes all reports without a user.
-  Future<void> deleteUserReports(String? userMuid) async {
-    if (userMuid == null) {
+  Future<void> deleteUserReports(int? userId) async {
+    if (userId == null) {
       await (delete(logEvents)..where((x) => x.userId.isNull())).go();
       return;
     }
 
-    final userIds = await (selectOnly(users)
-          ..addColumns([users.id])
-          ..where((users.muid.equals(userMuid))))
-        .map((x) => x.read(users.id)!)
-        .get();
-
-    await (delete(logEvents)..where((log) => log.userId.isIn(userIds))).go();
+    await (delete(logEvents)..where((log) => log.userId.equals(userId))).go();
   }
 }

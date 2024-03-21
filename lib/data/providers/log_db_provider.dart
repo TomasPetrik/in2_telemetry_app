@@ -30,14 +30,19 @@ class LogDbProvider {
     return await _database.logsDao.save(log);
   }
 
-  Future<Map<String?, List<LogEvent>>> getLogEventsPerUser() async {
+  Future<Map<int?, List<LogEvent>>> getLogEventsPerUser() async {
     final entities = await _database.logsDao.getAll();
 
-    Map<String?, List<LogEvent>> result = entities.groupFoldBy((x) => x.muid, (prev, curr) => [...?prev, curr.log]);
+    final result = entities.groupListsBy((x) => x.userId);
     return result;
   }
 
   Future<void> removeBeforeDateTime(DateTime date) async {
     await _database.logsDao.removeBeforeDateTime(date);
+  }
+
+  /// Deletes all reports made by the given user. If [userMuid] is null, deletes all reports without a user.
+  Future<void> deleteUserReports(int? userId) async {
+    await _database.logsDao.deleteUserReports(userId);
   }
 }
