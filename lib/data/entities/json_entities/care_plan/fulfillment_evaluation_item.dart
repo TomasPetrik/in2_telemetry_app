@@ -31,7 +31,10 @@ class FulfillmentEvaluationItemListConverter extends TypeConverter<List<Fulfillm
 
   @override
   List<FulfillmentEvaluationItem> fromSql(String fromDb) {
-    return (json.decode(fromDb) as List<Map<String, dynamic>>).map(FulfillmentEvaluationItem.fromJson).toList();
+    return jsonDecode(fromDb)
+        .cast<Map<String, dynamic>>()
+        .map<FulfillmentEvaluationItem>(FulfillmentEvaluationItem.fromJson)
+        .toList();
   }
 
   @override

@@ -39,7 +39,7 @@ class CarePlanVersion {
   Map<String, dynamic> toJson() => _$CarePlanVersionToJson(this);
 
   static TypeConverter<List<CarePlanVersion>, String> listConverter = TypeConverter.json(
-    fromJson: (fromJson) => (json.decode(fromJson) as List<Map<String, dynamic>>).map(CarePlanVersion.fromJson).toList(),
+    fromJson: (fromJson) => jsonDecode(fromJson).cast<Map<String,dynamic>>().map<CarePlanVersion>(CarePlanVersion.fromJson).toList(),
     toJson: (obj) => json.encode(obj),
   );
 }
