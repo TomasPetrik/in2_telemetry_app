@@ -1,0 +1,14 @@
+import 'package:drift/drift.dart';
+import 'package:scalesoft_app/data/app_database.dart';
+import 'package:scalesoft_app/data/tables/when_templates.dart';
+
+part 'when_templates_dao.drift.dart';
+
+@DriftAccessor(tables: [WhenTemplates])
+class WhenTemplatesDao extends DatabaseAccessor<AppDatabase> with _$WhenTemplatesDaoMixin {
+  WhenTemplatesDao(AppDatabase db) : super(db);
+
+  Future<List<WhenTemplate>> getByUser(int userId) async {
+    return await (select(whenTemplates)..where((x) => x.userId.equals(userId))).get();
+  }
+}

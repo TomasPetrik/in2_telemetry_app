@@ -8,6 +8,11 @@ import 'package:flutter/material.dart' hide Table;
 import 'package:injectable/injectable.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:scalesoft_app/data/daos/care_plans_dao.dart';
+import 'package:scalesoft_app/data/daos/logs_dao.dart';
+import 'package:scalesoft_app/data/daos/measurements_dao.dart';
+import 'package:scalesoft_app/data/daos/users_dao.dart';
+import 'package:scalesoft_app/data/daos/when_templates_dao.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/care_plan_author.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/care_plan_version.dart';
@@ -20,7 +25,6 @@ import 'package:scalesoft_app/data/entities/json_entities/measurement_thresholds
 import 'package:scalesoft_app/data/entities/json_entities/measurement_thresholds/shortness_of_breath_thresholds.dart';
 import 'package:scalesoft_app/data/entities/json_entities/measurement_thresholds/temperature_thresholds.dart';
 import 'package:scalesoft_app/data/entities/json_entities/list_converters.dart';
-import 'package:scalesoft_app/data/migrations.dart';
 import 'package:scalesoft_app/data/tables/app_settings.dart';
 import 'package:scalesoft_app/data/tables/care_plans.dart';
 import 'package:scalesoft_app/data/tables/device_prototypes.dart';
@@ -58,6 +62,13 @@ part 'app_database.drift.dart';
     AppSettings,
     LogEvents,
   ],
+  daos: [
+    UsersDao,
+    LogsDao,
+    MeasurementsDao,
+    WhenTemplatesDao,
+    CarePlansDao,
+  ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
@@ -77,7 +88,6 @@ class AppDatabase extends _$AppDatabase {
       onCreate: (Migrator m) async {
         await m.createAll();
       },
-      onUpgrade: upgradeStrategy,
     );
   }
 

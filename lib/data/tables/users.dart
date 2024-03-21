@@ -3,8 +3,6 @@ import 'package:scalesoft_app/data/entities/json_entities/list_converters.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/auth_token.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/time_setting.dart';
 
-const emptyList = Constant('[]');
-
 class Users extends Table {
   IntColumn get id => integer().autoIncrement()();
 
@@ -15,17 +13,19 @@ class Users extends Table {
 
   IntColumn get parentId => integer().references(Users, #id, onDelete: KeyAction.cascade).nullable()();
 
-  TextColumn get fullName => text()();
+  TextColumn get firstNames => text()();
 
-  TextColumn get phoneNumbers => text().map(const StringListConverter()).withDefault(emptyList)();
+  TextColumn get lastNames => text()();
 
-  TextColumn get emailAddresses => text().map(const StringListConverter()).withDefault(emptyList)();
+  TextColumn get phoneNumbers => text().map(const StringListConverter())();
+
+  TextColumn get emailAddresses => text().map(const StringListConverter())();
 
   DateTimeColumn get lastActive => dateTime().nullable()();
 
   TextColumn get authToken => text().map(AuthToken.converter)();
 
-  TextColumn get permissions => text().map(const StringListConverter()).withDefault(emptyList)();
+  TextColumn get permissions => text().map(const StringListConverter())();
 
   BoolColumn get isSessionExpired => boolean().withDefault(const Constant(false))();
 
@@ -33,7 +33,7 @@ class Users extends Table {
 
   BoolColumn get lastSyncFailed => boolean().withDefault(const Constant(false))();
 
-  TextColumn get notificationIds => text().map(const IntListConverter()).withDefault(emptyList)();
+  TextColumn get notificationIds => text().map(const IntListConverter()).withDefault(const Constant('[]'))();
 
   TextColumn get timeSettings => text().map(TimeSetting.listConverter)();
 

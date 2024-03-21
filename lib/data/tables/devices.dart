@@ -21,7 +21,7 @@ class Devices extends Table {
 
   TextColumn get bluetoothAddress => text().nullable()();
 
-  DateTimeColumn get lastMeasurementTIme => dateTime().nullable()();
+  DateTimeColumn get lastMeasurementTime => dateTime().nullable()();
 
   @override
   List<Set<Column>> get uniqueKeys => [

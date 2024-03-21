@@ -14,7 +14,12 @@ class FulfillmentEvaluationAggregated {
   int measurementInPlanCount;
 
   FulfillmentEvaluationAggregated(
-      this.start, this.end, this.requiredMeasurementCount, this.totalMeasurementCount, this.measurementInPlanCount);
+    this.start,
+    this.end,
+    this.requiredMeasurementCount,
+    this.totalMeasurementCount,
+    this.measurementInPlanCount,
+  );
 
   factory FulfillmentEvaluationAggregated.fromJson(Map<String, dynamic> json) =>
       _$FulfillmentEvaluationAggregatedFromJson(json);

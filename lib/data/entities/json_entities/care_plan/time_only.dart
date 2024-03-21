@@ -23,8 +23,7 @@ class TimeOnly {
 
   TimeOnly.fromDateTime(DateTime dateTime) : this(dateTime.hour, dateTime.minute, dateTime.second);
 
-  TimeOnly fromString(String timeOfDayString) =>
-      TimeOnly.fromDateTime(DateTime.parse('2018-10-20 ${timeOfDayString}Z'));
+  TimeOnly.fromString(String timeOfDayString) : this.fromDateTime(DateTime.parse('2018-10-20 ${timeOfDayString}Z'));
 
   bool isBefore(TimeOnly other) {
     return totalSeconds < other.totalSeconds;
@@ -88,4 +87,8 @@ class TimeOnly {
     fromJson: (json) => TimeOnly.fromJson(json as Map<String, Object?>),
     toJson: (obj) => obj.toJson(),
   );
+
+  @override
+  String toString() =>
+      '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}:${second.toString().padLeft(2, '0')}';
 }

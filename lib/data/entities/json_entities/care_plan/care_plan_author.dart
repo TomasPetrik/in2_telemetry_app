@@ -16,6 +16,8 @@ class CarePlanAuthor {
   factory CarePlanAuthor.fromJson(Map<String, dynamic> json) => _$CarePlanAuthorFromJson(json);
 
   Map<String, dynamic> toJson() => _$CarePlanAuthorToJson(this);
+
+  String get fullName => [...firstNames, ...lastNames].join(' ');
 }
 
 class CarePlanAuthorConverter extends TypeConverter<CarePlanAuthor, String> {
