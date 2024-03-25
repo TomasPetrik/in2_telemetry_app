@@ -19,6 +19,17 @@ class SettingsDbProvider {
     return await _createDefaultAppSettings();
   }
 
+  Stream<AppSetting> watchSettings()  {
+    final stream = _database.select(_database.appSettings).watchSingleOrNull();
+    stream.first.then((initialValue) {
+      if(initialValue == null){
+        _createDefaultAppSettings();
+      }
+    });
+
+    return stream.where((event) => event!=null).cast();
+  }
+
   Future<AppSetting> updateAppSettings(AppSettingsCompanion changes) async {
     final settingsExist = (await _database.select(_database.appSettings).getSingleOrNull()) != null;
 

@@ -181,6 +181,7 @@ Future<_i1.GetIt> init(
       gh<_i32.UserDbProvider>(),
       gh<_i14.LogDbProvider>(),
       gh<_i38.AccountRepository>(),
+      gh<_i15.LogEventMapper>(),
     ),
     preResolve: true,
   );

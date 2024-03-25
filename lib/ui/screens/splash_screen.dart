@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:scalesoft_app/data/app_database.dart';
 
 class SplashScreen extends StatelessWidget {
-  final Future<void> Function() loadingFunction;
-  final VoidCallback onLoaded;
+  final Future<AppSetting> Function() loadingFunction;
+  final void Function(AppSetting) onLoaded;
 
   const SplashScreen({
     super.key,
@@ -13,7 +14,7 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<void>(
-      future: loadingFunction().then(((_) => onLoaded())),
+      future: loadingFunction().then((onLoaded)),
       builder: (context, snapshot) {
         return MaterialApp(
           home: Scaffold(

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/api/model/user_model.dart';
 
 abstract class ContentEvent extends Equatable {
   const ContentEvent();
@@ -23,16 +23,16 @@ class SwitchMultiUserContentEvent extends ContentEvent {
 }
 
 class SwitchUserContentEvent extends ContentEvent {
-  final UserAccount userAccount;
+  final int userId;
 
-  const SwitchUserContentEvent({required this.userAccount});
+  const SwitchUserContentEvent({required this.userId});
 
   @override
-  List<Object?> get props => [userAccount];
+  List<Object?> get props => [userId];
 }
 
 class OnUserAddedContentEvent extends ContentEvent {
-  final UserAccount userAccount;
+  final UserModel userAccount;
 
   const OnUserAddedContentEvent({required this.userAccount});
 

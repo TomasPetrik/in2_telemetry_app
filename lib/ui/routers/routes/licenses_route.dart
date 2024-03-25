@@ -5,7 +5,7 @@ import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
 
 class LicensesRoute extends ApplicationRoute with PageBuilderMixin {
   static const name = 'licenses';
-  static const path = '/licenses';
+  static const path = 'licenses';
 
   LicensesRoute({
     required super.navigator,
@@ -20,7 +20,7 @@ class LicensesRoute extends ApplicationRoute with PageBuilderMixin {
       routes: routes,
       parentNavigatorKey: navigator,
       pageBuilder: pageBuilder(
-        withTransition: false,
+        withTransition: true,
         builder: (state) {
           return const LicensesScreen();
         },

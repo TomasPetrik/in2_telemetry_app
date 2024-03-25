@@ -43,7 +43,7 @@ class ContentManager extends StatelessWidget {
         final initialWidget = state.when(
           initial: () => MaterialApp(
             key: UniqueKey(),
-            title: 'Telemetry App',
+            title: 'FONS Care',
             theme: LightMode.theme,
             darkTheme: DarkMode.theme,
             themeMode: themeMode,
@@ -52,7 +52,6 @@ class ContentManager extends StatelessWidget {
             ),
           ),
           unauthenticated: () => onInit(context, state),
-          onAppearanceChanged: (_) => onInit(context, state),
           onUserAdded: (_) => onInit(context, state),
           activeMode: (key) => onInit(context, state),
           onDaylightAppearanceChanged: (_) => onInit(context, state),

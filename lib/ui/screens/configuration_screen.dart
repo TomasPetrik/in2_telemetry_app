@@ -203,47 +203,38 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                         ),
                       Gaps.gap24,
                       SettingsItem(
-                        label: localization
-                            .configuration_screen_notification_label,
-                        subLabel: localization
-                            .configuration_screen_notification_sublabel,
+                        label: localization.configuration_screen_notification_label,
+                        subLabel: localization.configuration_screen_notification_sublabel,
                         iconWidget: SvgPicture.asset(
                           'assets/icons/icon_message_square_notification.svg',
                           color: Theme.of(context).colorScheme.onSecondary,
                         ),
                         onTap: () {
-                          GoRouter.of(context)
-                              .pushNamed(NotificationRoute.name);
+                          GoRouter.of(context).pushNamed(NotificationRoute.name);
                         },
                       ),
                       Gaps.gap24,
-                      BlocBuilder<AppSettingsBloc, AppSettings>(
-                        bloc: getIt<AppSettingsBloc>()
-                          ..add(const AppSettingsBlocEvent.initSettings()),
+                      BlocBuilder<AppSettingsBloc, AppSetting?>(
+                        bloc: getIt<AppSettingsBloc>()..add(const AppSettingsBlocEvent.initSettings()),
                         builder: (context, state) {
                           return SettingsItem(
-                            label: localization
-                                .configuration_screen_appearance_label,
-                            subLabel: state.autosetAppearance == true
-                                ? localization
-                                    .configuration_screen_auto_appearance_sublabel
-                                : localization
-                                    .configuration_screen_system_appearance_sublabel,
+                            label: localization.configuration_screen_appearance_label,
+                            subLabel: state?.themeMode == ThemeMode.system
+                                ? localization.configuration_screen_auto_appearance_sublabel
+                                : localization.configuration_screen_system_appearance_sublabel,
                             iconWidget: SvgPicture.asset(
                               'assets/icons/icon_paint_roller.svg',
                               color: Theme.of(context).colorScheme.onSecondary,
                             ),
                             onTap: () {
-                              GoRouter.of(context)
-                                  .pushNamed(AppearanceRoute.name);
+                              GoRouter.of(context).pushNamed(AppearanceRoute.name);
                             },
                           );
                         },
                       ),
                       Gaps.gap24,
-                      BlocBuilder<AppSettingsBloc, AppSettings>(
-                        bloc: getIt<AppSettingsBloc>()
-                          ..add(const AppSettingsBlocEvent.initSettings()),
+                      BlocBuilder<AppSettingsBloc, AppSetting?>(
+                        bloc: getIt<AppSettingsBloc>()..add(const AppSettingsBlocEvent.initSettings()),
                         builder: (context, state) {
                           return SettingsItem(
                             label: localization.manual_screen_title,

@@ -6,32 +6,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/interceptors/token_interceptor.dart';
+import 'package:scalesoft_app/api/model/user_model.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_bloc.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_event.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
+import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
 import 'package:scalesoft_app/globals.dart';
 import 'package:scalesoft_app/globals_initialization.dart';
 import 'package:scalesoft_app/locales.dart';
 import 'package:scalesoft_app/managers/background_measurement_manager.dart';
+import 'package:scalesoft_app/data/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
 import 'package:scalesoft_app/ui/managers/content_manager.dart';
 import 'package:scalesoft_app/ui/routers/app_router.dart';
-import 'package:scalesoft_app/ui/routers/routes/appearance_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/blank_route.dart';
-import 'package:scalesoft_app/ui/routers/routes/configuration_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/no_user_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_added_route.dart';
 import 'package:scalesoft_app/ui/scale_app.dart';
 import 'package:scalesoft_app/ui/screens/splash_screen.dart';
-import 'package:scalesoft_app/utils/extensions/theme_mode_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/appearance_helper.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
-import 'package:scalesoft_app/api/contracts/logs/log_contract.dart';
+import 'package:scalesoft_app/data/app_database.dart';
 
 // [Android-only] This "Headless Task" is run when the Android app is terminated with `enableHeadless: true`
 // Be sure to annotate your callback function to avoid issues in release mode on Flutter >= 3.3.0
@@ -47,28 +47,28 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
   final dio = getIt<Dio>(instanceName: ConfigurationConstants.privateDioName);
   final tokenInterceptor = getIt<TokenInterceptor>();
   if (!dio.interceptors.contains(tokenInterceptor)) {
-    getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - added interceptor');
+    getIt<ReportService>().trackEvent(severity: LogSeverity.info, message: 'BS - added interceptor');
     dio.interceptors.add(tokenInterceptor);
   }
 
-  getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - backgroundFetchHeadlessTask() called');
+  getIt<ReportService>().trackEvent(severity: LogSeverity.info, message: 'BS - backgroundFetchHeadlessTask() called');
 
   if (isTimeout) {
     // This task has exceeded its allowed running-time.
     // Must be stopped immediately
 
     getIt<ReportService>().trackEvent(
-      severity: Severity.warning,
+      severity: LogSeverity.warning,
       message: 'BS - headless task exceeded allowed running-time: $taskId',
     );
     return;
   }
 
-  getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - started sync');
+  getIt<ReportService>().trackEvent(severity: LogSeverity.info, message: 'BS - started sync');
 
   await getIt<SyncService>().syncAllData(syncAllUsers: true);
 
-  getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - finished sync');
+  getIt<ReportService>().trackEvent(severity: LogSeverity.info, message: 'BS - finished sync');
 
   BackgroundFetch.finish(taskId);
 }
@@ -106,7 +106,7 @@ Future<void> _main({
         debugPrintStack(stackTrace: stackTrace, label: error.toString());
         return;
       }
-      getIt<ReportService>().trackEvent(severity: Severity.error, message: stackTrace.toString());
+      getIt<ReportService>().trackEvent(severity: LogSeverity.error, message: stackTrace.toString());
     },
   );
 }
@@ -121,14 +121,16 @@ class ScalesoftApp extends StatefulWidget {
 class _ScalesoftAppState extends State<ScalesoftApp> {
   GoRouter? _goRouter;
   bool _isInitializing = true;
+  AppSetting? settings;
 
   @override
   Widget build(BuildContext context) {
-    if (_isInitializing) {
+    if (_isInitializing || settings == null) {
       return SplashScreen(
         loadingFunction: init,
-        onLoaded: () => setState(() {
+        onLoaded: (result) => setState(() {
           _isInitializing = false;
+          settings = result;
         }),
       );
     }
@@ -139,8 +141,7 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
       onInit: (context, state) {
         final path = state.whenOrNull(
           unauthenticated: () => '/${NoUserRoute.name}',
-          onUserAdded: (UserAccount userAccount) => '/${UserAddedRoute.name}/${userAccount.user.muid}',
-          onAppearanceChanged: (_) => '/${ConfigurationRoute.name}/${AppearanceRoute.name}',
+          onUserAdded: (UserModel userAccount) => '/${UserAddedRoute.name}/${userAccount.id}',
           onDaylightAppearanceChanged: (originalLocation) => originalLocation,
           activeMode: (key) => '/${DashboardRoute.name}',
           tryCompleteAuth: (uri) => '/${BlankRoute.name}',
@@ -149,51 +150,37 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
         if (path != null) {
           _goRouter!.go(path);
         }
-        return ScaleApp(goRouter: _goRouter!);
+        return ScaleApp(
+          goRouter: _goRouter!,
+          settings: settings!,
+        );
       },
       themeMode: buildConfig.themeMode,
     );
   }
 
-  Future<void> init() async {
-    await Hive.initFlutter();
-
+  Future<AppSetting> init() async {
     await configureDependencies();
 
     getIt<Dio>(instanceName: ConfigurationConstants.privateDioName).interceptors.add(getIt<TokenInterceptor>());
 
-    final settingsDbProvider = getIt<AppSettingsDbProvider>();
+    final settingsDbProvider = getIt<SettingsDbProvider>();
 
-    var appSettings = settingsDbProvider.read();
-    if (appSettings == null) {
-      appSettings = AppSettings(
-        themeModeLocal: buildConfig.themeMode.toLocal(),
-        localLocale: buildConfig.locale.toLocal(),
-        enabledNotifications: true,
-        notifyAtStartOfMeasurement: true,
-        autosetAppearance: false,
-      );
-      settingsDbProvider.write(appSettings);
-    }
+    var appSettings = await settingsDbProvider.getSettings();
 
     AppearanceHelper.setSystemUIOverlayStyle(
-      appSettings.themeModeLocal.themeMode,
+      appSettings.themeMode,
     );
 
-    final notifcationsBloc = getIt<NotificationsBloc>();
-    notifcationsBloc.add(const NotificationsEvent.initPlugin());
-    notifcationsBloc.notificationsStreamController.stream.listen(
+    final notificationsBloc = getIt<NotificationsBloc>();
+    notificationsBloc.add(const NotificationsEvent.initPlugin());
+    notificationsBloc.notificationsStreamController.stream.listen(
       (_) {
         _goRouter?.goNamed(DashboardRoute.name);
         getIt<CarePlanBloc>().add(const RefreshStateEvent());
       },
     );
 
-    // final repo = getIt<CarePlanRepository>();
-    // repo.createPlan(targetUserMuid: "asdasds");
-    //
-    // final plans = await repo.getPlans();
-    //
-    // debugPrint(plans.toString());
+    return appSettings;
   }
 }
