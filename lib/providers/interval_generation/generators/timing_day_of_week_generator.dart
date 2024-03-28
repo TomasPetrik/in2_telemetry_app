@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
+import 'package:scalesoft_app/data/entities/enums/week_day.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 // Do not modify without also changing TimingDayOfWeekGenerator.cs in SCSHealthPlatform
@@ -8,7 +8,7 @@ class TimingDayOfWeekGenerator {
 
   /// Generates weekly intervals within [currentIntervals] that occur on [weekDays]
   static List<DateTimeRange> getModifiedIntervals(
-    List<WeekDayContract> weekDays,
+    List<WeekDay> weekDays,
     List<DateTimeRange> currentIntervals,
   ) {
     List<DateTimeRange> result = [];
@@ -25,7 +25,7 @@ class TimingDayOfWeekGenerator {
 
   static List<DateTimeRange> _getModifiedIntervals(
     DateTimeRange currentInterval,
-    WeekDayContract forDayOfWeek,
+    WeekDay forDayOfWeek,
   ) {
     List<DateTimeRange> result = [];
 

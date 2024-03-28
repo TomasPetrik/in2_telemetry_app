@@ -1,83 +1,94 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
-import 'package:scalesoft_app/api/contracts/measurement/measurement.dart';
-import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc_event.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc_state.dart';
+import 'package:scalesoft_app/data/app_database.dart';
+import 'package:scalesoft_app/data/providers/care_plan_db_provider.dart';
+import 'package:scalesoft_app/data/providers/measurements_db_provider.dart';
+import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
-import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
-import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
+import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/results_helper.dart';
 
 @injectable
 class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
-  late final List<MeasurementDataContract> _offlineResults;
-  late final List<CarePlanContract> _allCarePlans;
+  late final List<Measurement> _allMeasurements;
+  late final List<CarePlan> _allCarePlans;
 
-  ResultsBloc() : super(ResultsBlocState()) {
+  final Session _session;
+  final CarePlanDbProvider _carePlanDbProvider;
+  final MeasurementsDbProvider _measurementsDbProvider;
+
+  ResultsBloc(this._session, this._carePlanDbProvider, this._measurementsDbProvider) : super(ResultsBlocState()) {
     on<ResultsBlocEvent>((event, emit) async {
       event.when(
         init: (
           final ResultsWhenPeriod whenPeriod,
-          final List<CarePlanContract> carePlans,
-          final List<MeasurementDataContract> allServerResults,
-          final List<Measurement>? pendingResults,
         ) async {
-          _allCarePlans = carePlans;
+          final sessionAccounts = await _session.getSessionAccounts();
 
-          _offlineResults = MeasurementHelper.getOffilneResultsConverted(
-            pendingResults ?? [],
-            null,
-            null,
-          );
+          final List<CarePlan> activeCarePlans = [];
+          final List<Measurement> allMeasurements = [];
 
-          final Map<ResultsWhenPeriod, int?> plansEvaluationPerPeriod =
-              ResultsHelper.getPeriodFulfillments(
+          final endOfToday = DateTime.now().endOfDay;
+
+          for (final user in sessionAccounts) {
+            final plans = await _carePlanDbProvider.getByUser(user.id);
+            final activePlans = plans.where(
+              (x) => x.versions
+                  .any((version) => version.scheduledEnd == null || version.scheduledEnd!.isAfter(endOfToday)),
+            );
+            activeCarePlans.addAll(activePlans);
+
+            final measurements = await _measurementsDbProvider.getByUser(user.id);
+            allMeasurements.addAll(measurements);
+          }
+
+          _allMeasurements = allMeasurements;
+
+          _allCarePlans = activeCarePlans;
+
+          final Map<ResultsWhenPeriod, int?> plansEvaluationPerPeriod = ResultsHelper.getPeriodFulfillments(
             _allCarePlans,
-            _offlineResults,
+            allMeasurements,
           );
 
           final results = ResultsHelper.getResultsByWhenPeriod(
-                  carePlans: carePlans,
-                  whenPeriod: whenPeriod,
-                  allServerResults: allServerResults,
-                  allOfflineResults: _offlineResults,
-                  measurementType: null,
-                );
-
-         final allMeasurementTypes =
-              CarePlanHelper.getMeasurementTypesByResults(
-            results,
+            carePlans: activeCarePlans,
+            whenPeriod: whenPeriod,
+            allOfflineResults: allMeasurements,
+            measurementType: null,
+            users: sessionAccounts,
           );
+
+          final allMeasurementTypes = results.map((x) => x.measurementType).toSet();
 
           emit(
             ResultsBlocState(
-              currentCarePlans: carePlans,
+              currentCarePlans: activeCarePlans,
               selectedWhenPeriod: whenPeriod,
-              uncategorizedResults: allServerResults,
               results: results,
               allMeasurementTypes: allMeasurementTypes,
               plansEvaluationPerPeriod: plansEvaluationPerPeriod,
+              sessionUsers: sessionAccounts,
             ),
           );
         },
-        curentPlansChange: (final measurementType) {
+        currentPlansChange: (final measurementType) {
           final carePlans = measurementType == null
               ? _allCarePlans
               : _allCarePlans
                   .where(
-                    (carePlan) =>
-                        carePlan.activity.measurementType == measurementType,
+                    (carePlan) => carePlan.activity.measurementType == measurementType,
                   )
                   .toList();
 
           final results = ResultsHelper.getResultsByWhenPeriod(
             carePlans: carePlans,
             whenPeriod: state.selectedWhenPeriod!,
-            allServerResults: state.uncategorizedResults!,
-            allOfflineResults: _offlineResults,
+            allOfflineResults: _allMeasurements,
             measurementType: measurementType,
+            users: state.sessionUsers ?? [],
           );
 
           emit(
@@ -92,15 +103,12 @@ class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
           final results = ResultsHelper.getResultsByWhenPeriod(
             carePlans: state.currentCarePlans!,
             whenPeriod: whenPeriod,
-            allServerResults: state.uncategorizedResults!,
-            allOfflineResults: _offlineResults,
+            allOfflineResults: _allMeasurements,
             measurementType: state.measurementType,
+            users: state.sessionUsers ?? [],
           );
 
-          final allMeasurementTypes =
-              CarePlanHelper.getMeasurementTypesByResults(
-            results,
-          );
+          final allMeasurementTypes = results.map((x) => x.measurementType).toSet();
 
           emit(
             state.copyWith(

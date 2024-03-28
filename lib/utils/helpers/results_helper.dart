@@ -1,18 +1,24 @@
-import 'package:collection/collection.dart';
-import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
-import 'package:scalesoft_app/api/contracts/measurement/measurement.dart';
 import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement_type_contract.dart';
+import 'package:scalesoft_app/api/model/user_model.dart';
+import 'package:scalesoft_app/data/app_database.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
+import 'package:scalesoft_app/mapper/measurement_type_mapper.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
+import 'package:scalesoft_app/ui/viewModels/measurement_result_view_model.dart';
 import 'package:scalesoft_app/ui/widgets/interactive_chart/candle_data.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
+import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 class ResultsHelper {
+  static MeasurementTypeMapper measurementTypeMapper = getIt<MeasurementTypeMapper>();
+
   static Map<ResultsWhenPeriod, int?> getPeriodFulfillments(
-    List<CarePlanContract> carePlans,
-    final List<MeasurementDataContract> todayAndYesterdayResults,
+    List<CarePlan> carePlans,
+    final List<Measurement> todayAndYesterdayResults,
   ) {
     return {
       ResultsWhenPeriod.yesterday: EvaluationPlanHelper.getProgressFromPlans(
@@ -28,26 +34,25 @@ class ResultsHelper {
     };
   }
 
-  static List<PlannedMeasurement> getMeasurements(
-    final List<CarePlanContract> allCarePlans,
+  static List<PlannedMeasurement> getPlannedMeasurements(
+    final List<CarePlan> allCarePlans,
     final ResultsWhenPeriod whenPeriod,
-    final MeasurementTypeContract? measurementType,
-    final List<MeasurementDataContract> offlineResults,
+    final MeasurementType? measurementType,
+    final List<Measurement> offlineResults,
   ) {
     List<PlannedMeasurement> measurements = [];
 
     final carePlans = measurementType != null
         ? allCarePlans
             .where(
-              (carePlan) =>
-                  carePlan.activity.measurementType == measurementType,
+              (carePlan) => carePlan.activity.measurementType == measurementType,
             )
             .toList()
         : allCarePlans;
 
     switch (whenPeriod) {
       case ResultsWhenPeriod.today:
-        measurements = Calendar.getMeasurementsOfDay(
+        measurements = Calendar.getPlannedMeasurementsOfDay(
           carePlans: carePlans,
           dayDt: DateTime.now().date,
           offlineResults: offlineResults,
@@ -55,7 +60,7 @@ class ResultsHelper {
         );
         break;
       case ResultsWhenPeriod.yesterday:
-        measurements = Calendar.getMeasurementsOfDay(
+        measurements = Calendar.getPlannedMeasurementsOfDay(
           carePlans: carePlans,
           dayDt: DateTime.now().yesterday,
           offlineResults: offlineResults,
@@ -65,97 +70,58 @@ class ResultsHelper {
     }
 
     measurements.sort(
-      (a, b) => a.whenStart.millisecondsSinceEpoch
-          .compareTo(b.whenStart.millisecondsSinceEpoch),
+      (a, b) => a.whenStart.millisecondsSinceEpoch.compareTo(b.whenStart.millisecondsSinceEpoch),
     );
 
     return measurements;
   }
 
-  static List<MeasurementDataContract> getResultsOfDay({
+  static List<MeasurementResultViewModel> getResultsOfDay({
     required final List<PlannedMeasurement> plannedMeasurements,
-    required final List<MeasurementDataContract> serverResults,
-    required final List<MeasurementDataContract> offlineResults,
+    required final List<Measurement> measurements,
     required final DateTime startOfDay,
+    required final List<UserModel> users,
   }) {
-    final List<MeasurementDataContract> allResults = [];
+    final List<MeasurementResultViewModel> allResults = [];
 
     //sort by isPeriodical because later on we want to add periodicals partials
-    //measurements which haven't been included in previous measurements
-    plannedMeasurements.sort(
-      (a, b) => a.carePlan.isPeriodical != b.carePlan.isPeriodical ? 1 : 0,
-    );
+    // measurements which haven't been included in previous measurements
 
-    final resultsUntilNow = plannedMeasurements
-        .fold<List<MeasurementDataContract>>([], (prevMeasurements, plMeasurement) {
-      List<MeasurementDataContract> results = [];
+    final resultsUntilNow =
+        plannedMeasurements.fold<List<MeasurementResultViewModel>>([], (prevMeasurements, plannedMeasurement) {
+      List<MeasurementResultViewModel> results = [];
 
-      final evaluationItem = plMeasurement.fulfillmentEvaluationItem!;
+      final evaluationItem = plannedMeasurement.fulfillmentEvaluationItem!;
 
-      if (!plMeasurement.carePlan.isPeriodical) {
+      final measurementTimes = evaluationItem.actualMeasurementTimes.where((time) => time.isAfter(startOfDay));
+      // Add one item per measurement time
+      // If requiredCount > actualCount, add another item representing the remaining measurements
+      final user = users.firstWhere((x) => x.id == plannedMeasurement.userId);
+
+      for (final measurementTime in measurementTimes) {
         results.add(
-          MeasurementDataContract(
-            measurementDateTime:
-                evaluationItem.actualMeasurementTimes.isNotEmpty
-                    ? evaluationItem.actualMeasurementTimes.first
-                    : plMeasurement.whenStart,
-            measurementIntervalStart: plMeasurement.whenStart,
-            measurementIntervalEnd: plMeasurement.whenEnd,
-            evaluationItem: evaluationItem,
-            reqCount: plMeasurement.reqCount,
-            currentCount: plMeasurement.currentCount!,
-            measurementType: plMeasurement.carePlan.activity.measurementType,
-            userId: plMeasurement.userId,
-            whenCode: plMeasurement.whenCode,
+          MeasurementResultViewModel(
+            plannedMeasurement.measurementType,
+            measurementTime,
+            user,
+            1,
+            1,
+            plannedMeasurement.whenCode,
           ),
         );
-      } else {
-        //we want to show any periodical partial measurements separated
-        final actualMeasurementTimes = evaluationItem.actualMeasurementTimes
-            .where((measurementTime) => measurementTime.isAfter(startOfDay));
-        for (final measurementTime in actualMeasurementTimes) {
-          final prevMeasurementTimes = prevMeasurements
-              .map((prevMeasurement) => prevMeasurement.measurementDateTime)
-              .toList();
+      }
 
-          //add this partials only if wasn't included before in other measurements
-          if (prevMeasurementTimes.none(
-            (prevMeasurementTime) => prevMeasurementTime == measurementTime,
-          )) {
-            results.add(
-              MeasurementDataContract(
-                measurementDateTime: measurementTime,
-                measurementIntervalStart: plMeasurement.whenStart,
-                measurementIntervalEnd: null,
-                //because we want to show them separated
-                evaluationItem: evaluationItem,
-                reqCount: 1,
-                currentCount: 1,
-                measurementType:
-                    plMeasurement.carePlan.activity.measurementType,
-                userId: plMeasurement.userId,
-                whenCode: plMeasurement.whenCode,
-              ),
-            );
-          }
-        }
-
-        //then show if periodical measurement haven't bee fully completed
-        if (!evaluationItem.wasMeasured()) {
-          results.add(
-            MeasurementDataContract(
-              measurementDateTime: plMeasurement.whenStart,
-              measurementIntervalStart: plMeasurement.whenStart,
-              measurementIntervalEnd: plMeasurement.whenEnd,
-              evaluationItem: evaluationItem,
-              reqCount: evaluationItem.requiredMeasurementCount,
-              currentCount: evaluationItem.actualMeasurementCount,
-              measurementType: plMeasurement.carePlan.activity.measurementType,
-              userId: plMeasurement.userId,
-              whenCode: plMeasurement.whenCode,
-            ),
-          );
-        }
+      if (plannedMeasurement.reqCount > evaluationItem.actualMeasurementCount) {
+        results.add(
+          MeasurementResultViewModel(
+            plannedMeasurement.measurementType,
+            plannedMeasurement.whenStart,
+            user,
+            plannedMeasurement.reqCount,
+            evaluationItem.actualMeasurementCount,
+            plannedMeasurement.whenCode,
+          ),
+        );
       }
 
       return [
@@ -166,88 +132,50 @@ class ResultsHelper {
 
     allResults.addAll(resultsUntilNow);
 
-    //2. Add offline results if they haven't been included in previos measurements
-    if (offlineResults.isNotEmpty) {
-      final resultsTimes =
-          resultsUntilNow.fold<List<DateTime>>([], (prevTimes, result) {
-        return [
-          ...prevTimes,
-          ...result.evaluationItem!.actualMeasurementTimes,
-        ];
-      });
-      //2.1 First remove already included
-      offlineResults.removeWhere(
-        (offlineResult) => resultsTimes
-            .any((dateTime) => dateTime == offlineResult.measurementDateTime),
-      );
-
-      //2.2 Then convert them and add to all measurements
-      allResults.addAll(
-        offlineResults
-            .map(
-              (offlineResult) => MeasurementDataContract(
-                measurementDateTime: offlineResult.measurementDateTime,
-                measurementIntervalEnd: null,
-                reqCount: 1,
-                currentCount: 1,
-                measurementType: offlineResult.measurementType,
-                userId: offlineResult.userId,
-                whenCode: offlineResult.whenCode,
-              ),
-            )
-            .toList(),
-      );
-    }
-
     //3. Add other patient/measurement (s) not included in previous ongoing resolved results;
     // Add measured values to existing results.
-    if (serverResults.isNotEmpty) {
-      for (final serverResult in serverResults) {
-        final matchingResults = resultsUntilNow.where(
-          (x) =>
-              x.measurementDateTime == serverResult.measurementDateTime &&
-              x.measurementType == serverResult.measurementType,
-        );
+    for (final measurement in measurements) {
+      final matchingResults = resultsUntilNow.where(
+        (x) =>
+            x.measurementTime == measurement.measuredAt &&
+            x.measurementType == measurement.measurementType &&
+            x.user.id == measurement.userId,
+      );
 
-        if (matchingResults.isEmpty) {
-          allResults.add(
-            MeasurementDataContract(
-              measurementDateTime: serverResult.measurementDateTime,
-              measurementIntervalEnd: null,
-              reqCount: 1,
-              currentCount: 1,
-              measurementType: serverResult.measurementType,
-              userId: serverResult.userId,
-              whenCode: serverResult.whenCode,
-              value: serverResult.value,
-              composedValue: serverResult.composedValue,
-            ),
-          );
-        } else {
-          for (final computedResult in matchingResults) {
-            computedResult.value = serverResult.value;
-            computedResult.composedValue = serverResult.composedValue;
-          }
+      if (matchingResults.isEmpty) {
+        allResults.add(
+          MeasurementResultViewModel(
+            measurement.measurementType,
+            measurement.measuredAt,
+            users.firstWhere((x) => x.id == measurement.userId),
+            1,
+            1,
+            null,
+            result: MeasurementHelper.measurementToString(measurement),
+          ),
+        );
+      } else {
+        for (final computedResult in matchingResults) {
+          computedResult.result = MeasurementHelper.measurementToString(measurement);
         }
       }
     }
 
     allResults.sort((a, b) {
-      final dtA = a.measurementDateTime;
-      final dtB = b.measurementDateTime;
+      final dtA = a.measurementTime;
+      final dtB = b.measurementTime;
 
       return dtB.millisecondsSinceEpoch.compareTo(dtA.millisecondsSinceEpoch);
     });
-
     return allResults;
   }
 
-  static List<MeasurementDataContract> getResultsByWhenPeriod({
-    required final List<CarePlanContract> carePlans,
+  static List<MeasurementResultViewModel> getResultsByWhenPeriod({
+    required final List<CarePlan> carePlans,
     required final ResultsWhenPeriod whenPeriod,
-    required final List<MeasurementDataContract> allServerResults,
-    required final List<MeasurementDataContract> allOfflineResults,
-    MeasurementTypeContract? measurementType,
+    required final List<Measurement> allOfflineResults,
+    required final List<UserModel> users,
+    MeasurementType? measurementType,
   }) {
     final dtNow = DateTime.now();
 
@@ -256,30 +184,17 @@ class ResultsHelper {
     final tomorrowMidnight = dtNow.tomorrow;
 
     final offlineResults = allOfflineResults.where((offlineResult) {
-      return (measurementType == null ||
-                  measurementType == offlineResult.measurementType!) &&
+      return (measurementType == null || measurementType == offlineResult.measurementType) &&
               (whenPeriod == ResultsWhenPeriod.today &&
-                  offlineResult.measurementDateTime
-                      .isBefore(tomorrowMidnight) &&
-                  offlineResult.measurementDateTime.isAfter(todayMidnight)) ||
+                  offlineResult.measuredAt.isBefore(tomorrowMidnight) &&
+                  offlineResult.measuredAt.isAfter(todayMidnight)) ||
           (whenPeriod == ResultsWhenPeriod.yesterday &&
-              offlineResult.measurementDateTime.isBefore(todayMidnight) &&
-              offlineResult.measurementDateTime.isAfter(yesterdayMidnight));
-    }).toList();
-
-    final serverResults = allServerResults.where((serverResult) {
-      return (measurementType == null ||
-              measurementType == serverResult.measurementType!) &&
-          ((whenPeriod == ResultsWhenPeriod.today &&
-                  serverResult.measurementDateTime.isBefore(tomorrowMidnight) &&
-                  serverResult.measurementDateTime.isAfter(todayMidnight)) ||
-              (whenPeriod == ResultsWhenPeriod.yesterday &&
-                  serverResult.measurementDateTime.isBefore(todayMidnight) &&
-                  serverResult.measurementDateTime.isAfter(yesterdayMidnight)));
+              offlineResult.measuredAt.isBefore(todayMidnight) &&
+              offlineResult.measuredAt.isAfter(yesterdayMidnight));
     }).toList();
 
     //1. Get results within current time
-    final List<PlannedMeasurement> plannedMeasurements = getMeasurements(
+    final List<PlannedMeasurement> plannedMeasurements = getPlannedMeasurements(
       carePlans,
       whenPeriod,
       measurementType,
@@ -288,17 +203,15 @@ class ResultsHelper {
 
     final pMeasurementsUntilNow = plannedMeasurements.where((measurement) {
       return measurement.whenEnd.isBefore(dtNow) ||
-          measurement.fulfillmentEvaluationItem!
-              .wasMeasured(); //it's finished measurement
+          measurement.fulfillmentEvaluationItem!.actualMeasurementCount >=
+              measurement.fulfillmentEvaluationItem!.requiredMeasurementCount; //it's finished measurement
     }).toList();
 
     final resultsOfDay = getResultsOfDay(
       plannedMeasurements: pMeasurementsUntilNow,
-      serverResults: serverResults,
-      offlineResults: offlineResults,
-      startOfDay: whenPeriod == ResultsWhenPeriod.today
-          ? todayMidnight
-          : yesterdayMidnight,
+      measurements: offlineResults,
+      startOfDay: whenPeriod == ResultsWhenPeriod.today ? todayMidnight : yesterdayMidnight,
+      users: users,
     );
 
     return resultsOfDay;
@@ -307,17 +220,19 @@ class ResultsHelper {
   static CandleData getCandleByMeasurementResult(
     MeasurementDataContract measurement,
   ) {
-    switch (measurement.measurementType!) {
+    final MeasurementType measurementType = measurementTypeMapper.convert(measurement.measurementType);
+
+    switch (measurement.measurementType) {
       case MeasurementTypeContract.temperature:
         return CandleData(
-          measurementType: measurement.measurementType!,
+          measurementType: measurementType,
           timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
           high: measurement.value,
           low: 0,
         );
       case MeasurementTypeContract.bloodPressure:
         return CandleData(
-          measurementType: measurement.measurementType!,
+          measurementType: measurementType,
           timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
           high: measurement.composedValue?.firstValue,
           low: measurement.composedValue?.secondValue,
@@ -325,35 +240,35 @@ class ResultsHelper {
 
       case MeasurementTypeContract.oxygenSaturation:
         return CandleData(
-          measurementType: measurement.measurementType!,
+          measurementType: measurementType,
           timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
           high: measurement.value,
           low: 0,
         );
       case MeasurementTypeContract.heartRate:
         return CandleData(
-          measurementType: measurement.measurementType!,
+          measurementType: measurementType,
           timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
           high: measurement.value,
           low: 0,
         );
       case MeasurementTypeContract.respiratoryRate:
         return CandleData(
-          measurementType: measurement.measurementType!,
+          measurementType: measurementType,
           timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
           high: measurement.value,
           low: 0,
         );
       case MeasurementTypeContract.shortnessOfBreath:
         return CandleData(
-          measurementType: measurement.measurementType!,
+          measurementType: measurementType,
           timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
           high: measurement.value,
           low: 0,
         );
       case MeasurementTypeContract.overallHealth:
         return CandleData(
-          measurementType: measurement.measurementType!,
+          measurementType: measurementType,
           timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
           high: measurement.value,
           low: 0,
@@ -363,7 +278,7 @@ class ResultsHelper {
       case MeasurementTypeContract.ews:
       case MeasurementTypeContract.battery:
         return CandleData(
-          measurementType: measurement.measurementType!,
+          measurementType: measurementType,
           timestamp: measurement.measurementDateTime.millisecondsSinceEpoch,
           high: null,
           low: null,
@@ -375,63 +290,63 @@ class ResultsHelper {
     Measurement measurement,
   ) {
     switch (measurement.measurementType) {
-      case MeasurementTypeContract.temperature:
+      case MeasurementType.temperature:
         return CandleData(
           measurementType: measurement.measurementType,
-          timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
+          timestamp: measurement.measuredAt.millisecondsSinceEpoch,
           high: measurement.temperature,
           low: 0,
         );
-      case MeasurementTypeContract.bloodPressure:
+      case MeasurementType.bloodPressure:
         return CandleData(
           measurementType: measurement.measurementType,
-          timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
+          timestamp: measurement.measuredAt.millisecondsSinceEpoch,
           high: measurement.bloodPressure?.systolic?.toDouble(),
           low: measurement.bloodPressure?.diastolic?.toDouble(),
         );
 
-      case MeasurementTypeContract.oxygenSaturation:
+      case MeasurementType.oxygenSaturation:
         return CandleData(
           measurementType: measurement.measurementType,
-          timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
+          timestamp: measurement.measuredAt.millisecondsSinceEpoch,
           high: measurement.oxygenSaturation?.toDouble(),
           low: 0,
         );
-      case MeasurementTypeContract.heartRate:
+      case MeasurementType.heartRate:
         return CandleData(
           measurementType: measurement.measurementType,
-          timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
+          timestamp: measurement.measuredAt.millisecondsSinceEpoch,
           high: measurement.heartRate?.toDouble(),
           low: 0,
         );
-      case MeasurementTypeContract.respiratoryRate:
+      case MeasurementType.respiratoryRate:
         return CandleData(
           measurementType: measurement.measurementType,
-          timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
+          timestamp: measurement.measuredAt.millisecondsSinceEpoch,
           high: measurement.respiratoryRate?.toDouble(),
           low: 0,
         );
-      case MeasurementTypeContract.shortnessOfBreath:
+      case MeasurementType.shortnessOfBreath:
         return CandleData(
           measurementType: measurement.measurementType,
-          timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
+          timestamp: measurement.measuredAt.millisecondsSinceEpoch,
           high: measurement.shortnessOfBreath?.index.toDouble(),
           low: 0,
         );
-      case MeasurementTypeContract.overallHealth:
+      case MeasurementType.overallHealth:
         return CandleData(
           measurementType: measurement.measurementType,
-          timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
+          timestamp: measurement.measuredAt.millisecondsSinceEpoch,
           high: measurement.shortnessOfBreath?.index.toDouble(),
           low: 0,
         );
-      case MeasurementTypeContract.steps:
-      case MeasurementTypeContract.globalPosition:
-      case MeasurementTypeContract.ews:
-      case MeasurementTypeContract.battery:
+      case MeasurementType.steps:
+      case MeasurementType.globalPosition:
+      case MeasurementType.ews:
+      case MeasurementType.battery:
         return CandleData(
           measurementType: measurement.measurementType,
-          timestamp: measurement.measurementDateTime!.millisecondsSinceEpoch,
+          timestamp: measurement.measuredAt.millisecondsSinceEpoch,
           high: null,
           low: null,
         );

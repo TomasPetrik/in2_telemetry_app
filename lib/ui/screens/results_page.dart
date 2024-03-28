@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc_event.dart';
 import 'package:scalesoft_app/bloc/results/results_bloc_state.dart';
@@ -22,7 +21,6 @@ import 'package:scalesoft_app/ui/widgets/results_list.dart';
 import 'package:scalesoft_app/ui/widgets/sync_widget.dart';
 import 'package:scalesoft_app/ui/widgets/users_profiles_evaluation_header.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
-import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 class ResultsPage extends StatelessWidget with BottomSheetMixin {
   const ResultsPage({super.key});
@@ -35,24 +33,11 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
       buildWhen: (previous, current) => previous != current,
       bloc: syncBloc..add(const SyncEvent.init()),
       builder: (context, syncState) {
-        final session = getIt<Session>();
-        final sessionAccounts = session.getSessionAccounts();
-        final allCarePlans = session.getActiveCarePlans();
-        final allPendingResults = session.getPendingResults();
-        final allMeasurementResults =
-            sessionAccounts.fold<List<MeasurementDataContract>>(
-          [],
-          (prevResults, userAccount) =>
-              [...prevResults, ...userAccount.measurementResults ?? []],
-        );
 
         final resultsBloc = getIt<ResultsBloc>()
           ..add(
-            ResultsBlocEvent.init(
-              carePlans: allCarePlans,
+            const ResultsBlocEvent.init(
               whenPeriod: ResultsWhenPeriod.today,
-              allServerResults: allMeasurementResults,
-              pendingResults: allPendingResults,
             ),
           );
 
@@ -106,13 +91,13 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                     onTabSelected: (tabIndex) {
                       if (tabIndex == 0) {
                         resultsBloc.add(
-                          const ResultsBlocEvent.curentPlansChange(
+                          const ResultsBlocEvent.currentPlansChange(
                             null,
                           ),
                         );
                       } else {
                         resultsBloc.add(
-                          ResultsBlocEvent.curentPlansChange(
+                          ResultsBlocEvent.currentPlansChange(
                             allMeasurementTypes.toList()[tabIndex - 1],
                           ),
                         );
@@ -125,7 +110,7 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                     topSlivers: [
                       session.isMultiUser == true
                           ? UsersProfilesEvaluationHeader(
-                              userAccounts: session.getSessionAccounts(),
+                              userAccounts: state.sessionUsers?? [],
                               whenPeriod: state.selectedWhenPeriod!,
                               openWhenSelector: openWhenSelector,
                             )
@@ -173,7 +158,7 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                                       ResultsWhenPeriod.today
                                   ? DateTime.now().date
                                   : DateTime.now().yesterday,
-                              isMultiUser: getIt<Session>().isMultiUser == true,
+                              showUserNames: getIt<Session>().isMultiUser == true,
                               mResults: state.results!,
                               canOpenChart: true,
                             ),
@@ -193,7 +178,7 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                                           ResultsWhenPeriod.today
                                       ? DateTime.now().date
                                       : DateTime.now().yesterday,
-                                  isMultiUser:
+                                  showUserNames:
                                       getIt<Session>().isMultiUser == true,
                                   mResults: state.results!,
                                   canOpenChart: true,

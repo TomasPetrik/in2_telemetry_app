@@ -1,10 +1,13 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/contracts/measurement/measurement.dart';
-import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement/composed_value_contract.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
+import 'package:scalesoft_app/data/app_database.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
+import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_evaluation_item.dart';
+import 'package:scalesoft_app/mapper/measurement_type_mapper.dart';
+import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/ui/routers/routes/manual_measurement_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/metering_first_route.dart';
@@ -12,10 +15,12 @@ import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 class MeasurementHelper {
+  static MeasurementTypeMapper measurementTypeMapper = getIt<MeasurementTypeMapper>();
+
   static void doMeasurement({
     required final BuildContext context,
-    required final String userId,
-    final MeasurementTypeContract? selectedMeasurementType,
+    required final int userId,
+    final MeasurementType? selectedMeasurementType,
     final bool showAllMeasurementTypes = false,
   }) async {
     if (selectedMeasurementType == null ||
@@ -26,16 +31,13 @@ class MeasurementHelper {
                   false,
             )
             .any(
-              (supportedDevice) => supportedDevice.supportedMeasurementTypes!
-                  .contains(selectedMeasurementType),
+              (supportedDevice) => supportedDevice.supportedMeasurementTypes.contains(selectedMeasurementType),
             )) {
       GoRouter.of(context).pushNamed(
         MeteringFirstRoute.name,
         params: {
-          'userId': userId,
-          'measurementType': selectedMeasurementType != null
-              ? selectedMeasurementType.name
-              : 'anyType',
+          'userId': userId.toString(),
+          'measurementType': selectedMeasurementType != null ? selectedMeasurementType.name : 'anyType',
           'showAllMeasurementTypes': showAllMeasurementTypes.toString(),
         },
       );
@@ -43,7 +45,7 @@ class MeasurementHelper {
       GoRouter.of(context).pushNamed(
         ManualMeasurementRoute.name,
         params: {
-          'userId': userId,
+          'userId': userId.toString(),
           'measurementType': selectedMeasurementType.name,
           'showAllMeasurementTypes': showAllMeasurementTypes.toString(),
         },
@@ -53,19 +55,16 @@ class MeasurementHelper {
 
   static FulfillmentEvaluationItem getFulfillmentEvaluation(
     PlannedMeasurement plannedMeasurement,
-    List<MeasurementResult> offlineResults,
+    List<Measurement> measurements,
+    List<FulfillmentEvaluationItem> evaluationItems,
   ) {
     int totalCount = 0;
     List<DateTime> measuredTimes = [];
 
-    List<FulfillmentEvaluationItem> evItems =
-        plannedMeasurement.carePlan.serverEvaluationItems ?? [];
-
     //get all datetimes in last two days
-    final measurementTimes = evItems.fold<List<DateTime>>(
+    final measurementTimes = evaluationItems.fold<List<DateTime>>(
       [],
-      (previousValue, evItem) =>
-          [...previousValue, ...evItem.actualMeasurementTimes],
+      (previousValue, evItem) => [...previousValue, ...evItem.actualMeasurementTimes],
     );
 
     //filter them by matching exact measurement time
@@ -94,17 +93,15 @@ class MeasurementHelper {
     }
 
     //otherwise check offline results
-    final matchedOfflineMeasurementTimes = offlineResults.where(
+    final matchedOfflineMeasurementTimes = measurements.where(
       (mResult) {
-        return mResult.measurementType ==
-                plannedMeasurement.carePlan.activity.measurementType &&
+        return mResult.measurementType == plannedMeasurement.measurementType &&
             mResult.userId == plannedMeasurement.userId;
       },
-    ).map((mResult) => mResult.measurementDateTime);
+    ).map((mResult) => mResult.measuredAt);
 
     for (final measuredTime in matchedOfflineMeasurementTimes) {
-      if (measuredTime.isBefore(plannedMeasurement.whenEnd) &&
-          measuredTime.isAfter(plannedMeasurement.whenStart)) {
+      if (measuredTime.isBefore(plannedMeasurement.whenEnd) && measuredTime.isAfter(plannedMeasurement.whenStart)) {
         measuredTimes.add(measuredTime);
         totalCount += 1;
       }
@@ -121,69 +118,28 @@ class MeasurementHelper {
     );
   }
 
-  static List<MeasurementResult> getResults(
-    List<MeasurementResult> measurementResults,
-    List<Measurement> pendingResults,
-    List<ResultsWhenPeriod> whenPeriods,
-    MeasurementTypeContract? measurementType,
-  ) {
-    List<MeasurementResult> results = measurementResults.where((mResult) {
-      return ((measurementType == null ||
-              (measurementType == mResult.measurementType)) &&
-          ((whenPeriods.contains(ResultsWhenPeriod.today) &&
-                  mResult.measurementDateTime.isToday) ||
-              (whenPeriods.contains(ResultsWhenPeriod.yesterday) &&
-                  mResult.measurementDateTime.wasYesterday)));
-    }).toList();
-
-    //include not synced results
-
-    final filteredPendingResults = getOffilneResultsConverted(
-      pendingResults,
-      whenPeriods,
-      measurementType,
-    );
-
-    results.addAll(filteredPendingResults);
-
-    return results;
-  }
-
-  static List<MeasurementResult> getOffilneResultsConverted(
+  static List<Measurement> filterMeasurements(
     List<Measurement> pendingResults,
     List<ResultsWhenPeriod>? whenPeriods,
-    MeasurementTypeContract? measurementType,
+    MeasurementType? measurementType,
   ) {
     //offline (not synced results)
     final measurementResults = pendingResults
         .where((pResult) {
-          return ((measurementType == null ||
-                  (measurementType == pResult.measurementType)) &&
+          return ((measurementType == null || (measurementType == pResult.measurementType)) &&
               (whenPeriods == null ||
-                  (whenPeriods.contains(ResultsWhenPeriod.today) &&
-                      pResult.measurementDateTime?.isToday == true) ||
-                  (whenPeriods.contains(ResultsWhenPeriod.yesterday) &&
-                      pResult.measurementDateTime?.wasYesterday == true)));
+                  (whenPeriods.contains(ResultsWhenPeriod.today) && pResult.measuredAt.isToday == true) ||
+                  (whenPeriods.contains(ResultsWhenPeriod.yesterday) && pResult.measuredAt.wasYesterday == true)));
         })
-        .map(
-          (pResult) => MeasurementResult(
-            measurementDateTime: pResult.measurementDateTime!,
-            value: getValueByMeasurement(pResult),
-            composedValue: getComposedDoubleValue(pResult),
-            sourceDevice: pResult.sourceDeviceWithMetadata?.sourceDevice,
-            measurementType: pResult.measurementType,
-            userId: pResult.patientMuid,
-          ),
-        )
         .toList();
 
     return measurementResults;
   }
 
-  static ComposedDoubleValue? getComposedDoubleValue(Measurement measurement) {
+  static ComposedValueContract? getComposedDoubleValue(Measurement measurement) {
     switch (measurement.measurementType) {
-      case MeasurementTypeContract.bloodPressure:
-        return ComposedDoubleValue(
+      case MeasurementType.bloodPressure:
+        return ComposedValueContract(
           firstValue: measurement.bloodPressure?.systolic?.toDouble(),
           secondValue: measurement.bloodPressure?.diastolic?.toDouble(),
         );
@@ -195,20 +151,39 @@ class MeasurementHelper {
 
   static double? getValueByMeasurement(Measurement measurement) {
     switch (measurement.measurementType) {
-      case MeasurementTypeContract.temperature:
+      case MeasurementType.temperature:
         return measurement.temperature;
-      case MeasurementTypeContract.oxygenSaturation:
+      case MeasurementType.oxygenSaturation:
         return measurement.oxygenSaturation?.toDouble();
-      case MeasurementTypeContract.heartRate:
+      case MeasurementType.heartRate:
         return measurement.heartRate?.toDouble();
-      case MeasurementTypeContract.respiratoryRate:
+      case MeasurementType.respiratoryRate:
         return measurement.respiratoryRate?.toDouble();
-      case MeasurementTypeContract.shortnessOfBreath:
+      case MeasurementType.shortnessOfBreath:
         return measurement.shortnessOfBreath?.value.toDouble();
-      case MeasurementTypeContract.overallHealth:
+      case MeasurementType.overallHealth:
         return measurement.overallHealth?.value.toDouble();
       default:
         return null;
     }
+  }
+
+  static String measurementToString(Measurement measurement) {
+    final value = switch (measurement.measurementType) {
+      MeasurementType.temperature => measurement.temperature.toString(),
+      MeasurementType.bloodPressure =>
+        "${measurement.bloodPressure?.systolic ?? 'N/A'}/${measurement.bloodPressure?.diastolic ?? 'N/A'}",
+      MeasurementType.oxygenSaturation => measurement.oxygenSaturation.toString(),
+      MeasurementType.heartRate => measurement.heartRate.toString(),
+      MeasurementType.respiratoryRate => measurement.respiratoryRate.toString(),
+      MeasurementType.shortnessOfBreath => measurement.shortnessOfBreath != null
+          ? localization.shortness_of_breath_values(measurement.shortnessOfBreath!)
+          : "",
+      MeasurementType.overallHealth =>
+        measurement.overallHealth != null ? localization.overall_health_values(measurement.overallHealth!) : "",
+      MeasurementType.ews || MeasurementType.steps || MeasurementType.globalPosition || MeasurementType.battery => "",
+    };
+
+    return "$value ${localization.common_measurement_units_types(measurement.measurementType)}";
   }
 }

@@ -47,11 +47,11 @@ class Session {
     return lastSyncAtItems.isEmpty ? null : lastSyncAtItems.last;
   }
 
-  List<UserAccount> getSessionAccounts() {
-    if (isMultiUser == true) {
-      return _accountDbProvider.getAll().toList();
+  Future<List<UserModel>> getSessionAccounts() async {
+    if (isMultiUser) {
+      return await _userDbProvider.getAll();
     } else {
-      return [if (userAccount != null) userAccount!];
+      return [if (user != null) user!];
     }
   }
 
