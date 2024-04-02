@@ -61,6 +61,7 @@ class AuthService {
     final responseUrl = await linkStream.first;
 
     if (responseUrl != null) {
+      await closeInAppWebView();
       final tokenResponse = await grant.handleAuthorizationResponse(
         Uri.parse(responseUrl).queryParameters,
       );
