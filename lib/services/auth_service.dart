@@ -48,7 +48,7 @@ class AuthService {
     if (await canLaunchUrl(newAuthUri)) {
       await launchUrl(
         newAuthUri,
-        mode: LaunchMode.externalApplication,
+        mode: LaunchMode.inAppBrowserView,
         webOnlyWindowName: '_blank',
       );
     }
