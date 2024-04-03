@@ -131,8 +131,9 @@ class EvaluationPlanHelper {
   static List<UserEvaluationDay> getUserEvaluationDays(
     final int year,
     final int month,
+    final List<CarePlan> allUsersCarePlans,
     final CalendarDay day,
-    final List<UserAccount> userAccounts,
+    final List<UserAccount> userAccountsOfDay,
     final MeasurementsDbProvider measurementsDbProvider,
   ) {
     final CalendarEvaluationDbProvider calendarDbProvider =
@@ -141,9 +142,9 @@ class EvaluationPlanHelper {
         getIt<PendingResultsDbProvider>();
     final List<UserEvaluationDay> userEvDays = [];
 
-    for (final userAccount in userAccounts) {
+    for (final userAccountOfDay in userAccountsOfDay) {
       final List<Measurement> offlineMeasurements =
-          pendingResultsDbProvider.getPerUser(userAccount.user.muid);
+          pendingResultsDbProvider.getPerUser(userAccountOfDay.user.muid);
 
       final List<MeasurementDataContract> offlineResults =
           MeasurementHelper.getOffilneResultsConverted(
@@ -154,6 +155,8 @@ class EvaluationPlanHelper {
 
       final List<SingleDayMeasurementsOfExactType> carePlanFulfillments = [];
 
+      final userCarePlansOfDay = allUsersCarePlans.where((carePlan) => carePlan.userId == userAccountOfDay.user.muid).toList();
+
       Set<MeasurementTypeContract> measurementTypes = userAccount.carePlans!
           .map((carePlan) => carePlan.activity.measurementType)
           .toSet();
@@ -162,7 +165,7 @@ class EvaluationPlanHelper {
         final List<MeasurementDataContract> serverResultsOfExactType =
             measurementsDbProvider
                     .get(
-                      userAccount.user.muid,
+                      userAccountOfDay.user.muid,
                       measurementType,
                       year,
                       month,
@@ -176,7 +179,7 @@ class EvaluationPlanHelper {
                     .toList() ??
                 [];
 
-        final carePlansOfExactType = userAccount.carePlans!
+        final carePlansOfExactType = userCarePlansOfDay
             .where(
               (carePlan) =>
                   carePlan.activity.measurementType == measurementType,
@@ -239,7 +242,7 @@ class EvaluationPlanHelper {
         final userEvaluationDay = UserEvaluationDay(
           carePlanFulfillments,
           day.startDt,
-          userAccount.user.fullName,
+          userAccountOfDay.user.fullName,
           day.dayPeriod,
         );
         userEvDays.add(userEvaluationDay);

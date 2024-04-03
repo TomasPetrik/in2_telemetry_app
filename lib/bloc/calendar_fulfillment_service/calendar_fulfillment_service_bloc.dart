@@ -165,6 +165,7 @@ class CalendarFulfillmentServiceBloc extends Bloc<
               EvaluationPlanHelper.getUserEvaluationDays(
             calendarMonth.year,
             calendarMonth.month,
+            carePlans,
             day,
             day.userAccounts!,
             _measurementsDbProvider,
