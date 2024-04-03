@@ -2,7 +2,6 @@ import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement_type_contract.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_bloc.dart';
@@ -81,12 +80,11 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      // Workaround for https://github.com/flutter/flutter/issues/138737
-      canPop: false,
-      onPopInvoked: (_) {
+    // Workaround for https://github.com/flutter/flutter/issues/138737
+    return WillPopScope(
+      onWillPop: () async {
         _onWillPop();
-        GoRouter.of(context).pop();
+        return true;
       },
       child: Material(
         child: Stack(

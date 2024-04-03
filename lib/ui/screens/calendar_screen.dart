@@ -51,12 +51,11 @@ class CalendarScreen extends StatelessWidget {
             calendarHeight) <
         Dimensions.footerHeight;
 
-    return PopScope(
-      // Workaround for https://github.com/flutter/flutter/issues/138737
-      canPop: false,
-      onPopInvoked: (_) {
+    // Workaround for https://github.com/flutter/flutter/issues/138737
+    return WillPopScope(
+      onWillPop: () async {
         onWillPop();
-        GoRouter.of(context).pop();
+        return true;
       },
       child: Material(
         child: Stack(
@@ -112,10 +111,11 @@ class CalendarScreen extends StatelessWidget {
                     ),
                   ),
                   if (!isSmallDisplay)
-                    const Padding(
+                    Padding(
                       padding: Paddings.horizontal16,
                       child: _CalendarFooter(
                         isDownSticky: false,
+                        onPop: onWillPop,
                       ),
                     ),
                 ],
@@ -129,8 +129,9 @@ class CalendarScreen extends StatelessWidget {
                 child: Container(
                   padding: Paddings.horizontal16,
                   color: Theme.of(context).colorScheme.surface,
-                  child: const _CalendarFooter(
+                  child: _CalendarFooter(
                     isDownSticky: true,
+                    onPop: onWillPop,
                   ),
                 ),
               ),
@@ -206,9 +207,11 @@ class CalendarScreen extends StatelessWidget {
 class _CalendarFooter extends StatelessWidget {
   const _CalendarFooter({
     required this.isDownSticky,
+    required this.onPop,
   });
 
   final bool isDownSticky;
+  final VoidCallback onPop;
 
   @override
   Widget build(BuildContext context) {
@@ -240,6 +243,8 @@ class _CalendarFooter extends StatelessWidget {
                   }
                   break;
                 case CalendarDayPeriod.today:
+                  // Part of workaround for https://github.com/flutter/flutter/issues/138737
+                  onPop();
                   GoRouter.of(context).goNamed(ResultsRoute.name);
                   break;
                 case CalendarDayPeriod.future:
