@@ -2,9 +2,10 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 part 'auth_token.freezed.dart';
+
 part 'auth_token.g.dart';
 
-@freezed
+@unfreezed
 class AuthToken with _$AuthToken {
   const AuthToken._();
 
@@ -21,7 +22,10 @@ class AuthToken with _$AuthToken {
   @override
   String toString() => toJson().toString();
 
-  bool isExpired() {
-    return DateTime.now().isAfter(accessTokenExpires);
+  /// returns true when the token is either expired, or about to be expired
+  bool isExpiring() {
+    return DateTime.now()
+        .add(const Duration(minutes: 5))
+        .isAfter(accessTokenExpires);
   }
 }

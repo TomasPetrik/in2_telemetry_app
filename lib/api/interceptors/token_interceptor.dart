@@ -36,6 +36,10 @@ class TokenInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    if (session.token?.isExpiring() ?? false) {
+      await refreshToken(session.token!.accessToken);
+    }
+
     final accessToken = session.token?.accessToken;
 
     if (!options.headers.containsKey(HttpHeaders.authorizationHeader) &&
@@ -69,6 +73,7 @@ class TokenInterceptor extends Interceptor {
 
     switch (err.response?.statusCode) {
       case 400:
+      case 401:
         final refreshToken = err.requestOptions.data['refresh_token'];
         if (refreshToken != null) {
           getIt<SyncBloc>().add(
@@ -77,27 +82,6 @@ class TokenInterceptor extends Interceptor {
         }
         handler.next(err);
         throw InvalidRequestException();
-      case 401:
-        try {
-          final originalToken = err
-              .requestOptions.headers[HttpHeaders.authorizationHeader]
-              .toString()
-              .split(' ')[1];
-
-          final newAuthToken = await refreshToken(originalToken);
-          if (newAuthToken != null) {
-            err.requestOptions.headers[HttpHeaders.authorizationHeader] =
-                'Bearer ${newAuthToken.accessToken}';
-            final dio = getIt<Dio>(instanceName: ConfigurationConstants.privateDioName);
-            final response = await dio.fetch(err.requestOptions);
-            return handler.resolve(response);
-          }
-        } catch (_) {
-          handler.next(err);
-          throw InvalidRequestException();
-        }
-
-        return;
       /*
       case 403:
         throw ForbiddenException();
@@ -119,7 +103,11 @@ class TokenInterceptor extends Interceptor {
 
     final refreshToken = userAccount.authToken!.refreshToken;
     final tokenUrl = userAccount.hospital!.authData.tokenUrl;
+
     session.token = userAccount.authToken;
+    // Avoid calling this method recursively when refreshing the token...
+    session.token!.accessTokenExpires =
+        DateTime.now().add(const Duration(minutes: 10));
 
     final response = await getIt<AuthApiClient>().refreshToken(
       tokenUrl,
