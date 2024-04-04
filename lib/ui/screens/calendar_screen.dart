@@ -9,17 +9,18 @@ import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_day.dart';
 import 'package:scalesoft_app/bloc/calendar_footer/calendar_footer_bloc.dart';
 import 'package:scalesoft_app/bloc/calendar_footer/calendar_footer_event.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/future_measurements_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_history_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_route.dart';
+import 'package:scalesoft_app/ui/screens/custom_scroll_physics.dart';
 import 'package:scalesoft_app/ui/screens/days_in_week_header.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/calendar_month_widget.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
-import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 class CalendarScreen extends StatelessWidget {
@@ -34,13 +35,11 @@ class CalendarScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final calendarBloc = getIt<CalendarBloc>()
-      ..add(CalendarBlocEvent.init(context, preSelectedDt, carePlansIds));
+    final calendarBloc = getIt<CalendarBloc>()..add(CalendarBlocEvent.init(context, preSelectedDt, carePlansIds));
 
     void onWillPop() {
       calendarBloc.add(const CalendarBlocEvent.nullDefaultDay());
-      getIt<CalendarFooterBloc>()
-          .add(const CalendarFooterEvent.selectDay(null));
+      getIt<CalendarFooterBloc>().add(const CalendarFooterEvent.selectDay(null));
     }
 
     const calendarHeight = Dimensions.calendarHeight;
@@ -64,15 +63,14 @@ class CalendarScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Gap(
-                    MediaQuery.of(context).viewPadding.top +
-                        Dimensions.appBarHeight,
+                    MediaQuery.of(context).viewPadding.top + Dimensions.appBarHeight,
                   ),
                   SizedBox(
                     height: calendarHeight,
                     child: BlocBuilder<CalendarBloc, CalendarBlocState>(
                       bloc: calendarBloc,
                       buildWhen: (previous, current) {
-                        bool rebuild = current.updateSelf;
+                        bool rebuild = !current.updateOnlyHeader;
                         return rebuild;
                       },
                       builder: (context, state) {
@@ -84,9 +82,9 @@ class CalendarScreen extends StatelessWidget {
                         } else {
                           return PageView.builder(
                             scrollDirection: Axis.vertical,
-                            padEnds: false, //state.padEnds,
+                            padEnds: false,
                             controller: state.controller,
-                            //allowImplicitScrolling: true,
+                            physics: const CustomPageViewScrollPhysics(),
                             onPageChanged: (newPage) {
                               calendarBloc.add(
                                 CalendarBlocEvent.onPageChanged(newPage),
@@ -170,9 +168,7 @@ class CalendarScreen extends StatelessWidget {
                                     child: Text(
                                       localization.common_today,
                                       style: ScaleTextStyles.text.apply(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
+                                        color: Theme.of(context).colorScheme.primary,
                                       ),
                                     ),
                                   ),
@@ -226,13 +222,11 @@ class _CalendarFooter extends StatelessWidget {
             selectedDay.plannedMeasurements!.isEmpty) {
           return const SizedBox.shrink();
         } else {
-          int measurementsCount = selectedDay.plannedMeasurements!
-              .fold(0, (sum, current) => sum + current.reqCount);
+          int measurementsCount = selectedDay.plannedMeasurements!.fold(0, (sum, current) => sum + current.reqCount);
 
           return InkWell(
             onTap: () {
-              session.usersEvaluationsDayRestoration =
-                  selectedDay.usersEvaluationsDay;
+              session.usersEvaluationsDayRestoration = selectedDay.usersEvaluationsDay;
 
               switch (selectedDay.dayPeriod) {
                 case CalendarDayPeriod.past:
@@ -286,8 +280,7 @@ class _CalendarFooter extends StatelessWidget {
                               '${selectedDay.userAccounts!.first.user.fullName}'
                               ' ${selectedDay.userAccounts!.length > 1 ? localization.common_plus_n_others(selectedDay.userAccounts!.length - 1) : ''}',
                               style: ScaleTextStyles.label.apply(
-                                color:
-                                    Theme.of(context).colorScheme.onSecondary,
+                                color: Theme.of(context).colorScheme.onSecondary,
                               ),
                             ),
                           ],

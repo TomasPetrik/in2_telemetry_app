@@ -18,7 +18,7 @@ class CalendarBlocState with _$CalendarBlocState {
     DateTime? selectedDayDt,
     PageController? controller,
     required bool padEnds,
-    required bool updateSelf,
+    required bool updateOnlyHeader,
     bool? isCurrentMonth,
   }) = _CalendarBlocState;
 }

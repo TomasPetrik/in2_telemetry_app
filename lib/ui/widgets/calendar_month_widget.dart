@@ -9,15 +9,15 @@ import 'package:scalesoft_app/bloc/calendar_footer/calendar_footer_event.dart';
 import 'package:scalesoft_app/bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc.dart';
 import 'package:scalesoft_app/bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc_event.dart';
 import 'package:scalesoft_app/bloc/calendar_fulfillment_service/calendar_fulfillment_service_bloc_state.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/calendar_day_planned.dart';
 import 'package:scalesoft_app/ui/widgets/calendar_day_progress.dart';
 import 'package:scalesoft_app/ui/widgets/rotating_icon.dart';
-import 'package:scalesoft_app/constants/configuration_constants.dart';
 
-class CalendarMonthWidget extends StatelessWidget {
+class CalendarMonthWidget extends StatefulWidget {
   const CalendarMonthWidget({
     super.key,
     required this.calendarMonth,
@@ -30,16 +30,25 @@ class CalendarMonthWidget extends StatelessWidget {
   final List<int> carePlansIds;
 
   @override
+  State<CalendarMonthWidget> createState() => _CalendarMonthWidgetState();
+}
+
+class _CalendarMonthWidgetState extends State<CalendarMonthWidget> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     final calendarServiceBloc = getIt<CalendarFulfillmentServiceBloc>();
 
-    return BlocBuilder<CalendarFulfillmentServiceBloc,
-        CalendarFulfillmentServiceBlocState>(
+    return BlocBuilder<CalendarFulfillmentServiceBloc, CalendarFulfillmentServiceBlocState>(
       bloc: calendarServiceBloc
         ..add(
           CalendarFulfillmentServiceBlocEvent.init(
-            calendarMonth,
-            carePlansIds,
+            widget.calendarMonth,
+            widget.carePlansIds,
           ),
         ),
       builder: (context, state) {
@@ -47,7 +56,7 @@ class CalendarMonthWidget extends StatelessWidget {
         if (state.month != null) {
           loadedMonth = state.month!;
         } else {
-          loadedMonth = calendarMonth;
+          loadedMonth = widget.calendarMonth;
         }
 
         return Stack(
@@ -91,29 +100,18 @@ class CalendarMonthWidget extends StatelessWidget {
                                             margin: Paddings.horizontal8,
                                             decoration: BoxDecoration(
                                               color: day.isSelected == true
-                                                  ? Theme.of(context)
-                                                      .colorScheme
-                                                      .primary
-                                                  : day.dayPeriod ==
-                                                          CalendarDayPeriod
-                                                              .today
+                                                  ? Theme.of(context).colorScheme.primary
+                                                  : day.dayPeriod == CalendarDayPeriod.today
                                                       ? Theme.of(
                                                           context,
                                                         ).colorScheme.tertiary
-                                                      : day.dayPeriod ==
-                                                              CalendarDayPeriod
-                                                                  .past
+                                                      : day.dayPeriod == CalendarDayPeriod.past
                                                           ? Theme.of(
                                                               context,
-                                                            )
-                                                              .colorScheme
-                                                              .secondary
+                                                            ).colorScheme.secondary
                                                           : Theme.of(
                                                               context,
-                                                            )
-                                                              .colorScheme
-                                                              .secondary
-                                                              .withOpacity(
+                                                            ).colorScheme.secondary.withOpacity(
                                                                 0.48,
                                                               ),
                                               borderRadius: BorderRadii.radius8,
@@ -121,17 +119,12 @@ class CalendarMonthWidget extends StatelessWidget {
                                             child: InkWell(
                                               onTap: () {
                                                 calendarServiceBloc.add(
-                                                  CalendarFulfillmentServiceBlocEvent
-                                                      .onDaySelected(
+                                                  CalendarFulfillmentServiceBlocEvent.onDaySelected(
                                                     day.startDt,
                                                   ),
                                                 );
-                                                calendarBloc.add(
-                                                  CalendarBlocEvent
-                                                      .onDaySelected(
-                                                    day.startDt,
-                                                    false,
-                                                  ),
+                                                widget.calendarBloc.add(
+                                                  CalendarBlocEvent.onDaySelected(day.startDt),
                                                 );
                                                 getIt<CalendarFooterBloc>().add(
                                                   CalendarFooterEvent.selectDay(
@@ -140,30 +133,20 @@ class CalendarMonthWidget extends StatelessWidget {
                                                 );
                                               },
                                               child: Container(
-                                                height: Dimensions
-                                                    .calendarCellHeight,
+                                                height: Dimensions.calendarCellHeight,
                                                 padding: Paddings.vertical4,
                                                 child: Center(
                                                   child: Text(
                                                     '${day.startDt.day}',
-                                                    style: ScaleTextStyles.text
-                                                        .apply(
-                                                      color: day.isSelected ==
-                                                                  true ||
-                                                              day.dayPeriod !=
-                                                                  CalendarDayPeriod
-                                                                      .future
+                                                    style: ScaleTextStyles.text.apply(
+                                                      color: day.isSelected == true ||
+                                                              day.dayPeriod != CalendarDayPeriod.future
                                                           ? Theme.of(
                                                               context,
-                                                            )
-                                                              .colorScheme
-                                                              .onSurface
+                                                            ).colorScheme.onSurface
                                                           : Theme.of(
                                                               context,
-                                                            )
-                                                              .colorScheme
-                                                              .onPrimary
-                                                              .withOpacity(
+                                                            ).colorScheme.onPrimary.withOpacity(
                                                                 0.48,
                                                               ),
                                                     ),
@@ -173,18 +156,14 @@ class CalendarMonthWidget extends StatelessWidget {
                                             ),
                                           ),
                                           Gaps.gap8,
-                                          if (day.dayPeriod ==
-                                                  CalendarDayPeriod.past ||
-                                              day.dayPeriod ==
-                                                  CalendarDayPeriod.today)
+                                          if (day.dayPeriod == CalendarDayPeriod.past ||
+                                              day.dayPeriod == CalendarDayPeriod.today)
                                             CalendarDayProgress(
-                                              progress:
-                                                  day.evaluationPercentage,
+                                              progress: day.evaluationPercentage,
                                             )
                                           else
                                             CalendarDayPlanned(
-                                              plannedMeasurements:
-                                                  day.plannedMeasurements,
+                                              plannedMeasurements: day.plannedMeasurements,
                                             ),
                                         ],
                                       ),
@@ -194,8 +173,7 @@ class CalendarMonthWidget extends StatelessWidget {
                           Container(
                             margin: Paddings.vertical16,
                             height: 0.5,
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ],
                       );

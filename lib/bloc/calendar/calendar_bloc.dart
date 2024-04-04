@@ -25,7 +25,7 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
   ) : super(
           const CalendarBlocState(
             padEnds: true,
-            updateSelf: false,
+            updateOnlyHeader: false,
           ),
         ) {
     on<CalendarBlocEvent>((event, emit) async {
@@ -40,7 +40,7 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
           //toDate should be always 2 months ahead
           final carePlans = _accountDbProvider.getCarePlans(carePlansIds);
           final fromDate = CarePlanHelper.getEarliestDateOfCarePlans(carePlans);
-          DateTime? toDate = CalendarHelper.getDateByMonthsOffset(defaultDt, 2);
+          DateTime? toDate = CalendarHelper.getDateByMonthsOffset(defaultDt, 12);
           if (preSelectedDt != null) {
             if (preSelectedDt.isAfter(toDate) == true) {
               toDate = CalendarHelper.getDateByMonthsOffset(preSelectedDt, 2);
@@ -50,8 +50,7 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
             defaultDt = preSelectedDt;
           }
 
-          final months =
-              CalendarHelper.getCalendarMonths(context, fromDate, toDate)!;
+          final months = CalendarHelper.getCalendarMonths(context, fromDate, toDate)!;
 
           final currentMonthIndex = months.indexWhere(
             (month) => month.year == defaultYear && month.month == defaultMonth,
@@ -71,13 +70,10 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
               padEnds: currentMonthIndex == months.length - 1,
               isCurrentMonth: true,
               selectedDayDt: defaultDt,
-              updateSelf: true,
+              updateOnlyHeader: false,
             ),
           );
 
-          //we need override this event because fullfillment_service_bloc is
-          //updates view after 700ms
-          await Future.delayed(const Duration(milliseconds: 800));
           add(CalendarBlocEvent.goOnDate(defaultDt));
         },
         goOnDate: (dt) async {
@@ -99,7 +95,7 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
           final selectedDay = CalendarHelper.getDayByDateTime(month, dt);
           if (selectedDay != null) {
             _calendarFooterBloc.add(CalendarFooterEvent.selectDay(selectedDay));
-            add(CalendarBlocEvent.onDaySelected(selectedDay.startDt, true));
+            add(CalendarBlocEvent.onDaySelected(selectedDay.startDt));
           }
         },
         onPageChanged: (int newPageIndex) async {
@@ -109,8 +105,7 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
           final currentYear = dt.year;
           final currentMonth = dt.month;
 
-          final bool isCurrentMonth = selectedMonth.year == currentYear &&
-              selectedMonth.month == currentMonth;
+          final bool isCurrentMonth = selectedMonth.year == currentYear && selectedMonth.month == currentMonth;
 
           emit(
             state.copyWith(
@@ -118,37 +113,16 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
               currentMonth: selectedMonth.month,
               padEnds: newPageIndex == state.months!.length - 1,
               isCurrentMonth: isCurrentMonth,
-              updateSelf: false,
-            ),
-          );
-
-          if (newPageIndex == state.months!.length - 2) {
-            add(const CalendarBlocEvent.addExtraMonth());
-          }
-        },
-        addExtraMonth: () async {
-          final lastMonth = state.months!.last;
-          final newLastMonthDate =
-              CalendarHelper.getDateByMonthsOffset(lastMonth.monthStartDate, 1);
-          final newLastMonth = CalendarHelper.getCalendarMonth(
-            context,
-            newLastMonthDate,
-          );
-          state.months!.add(newLastMonth);
-          await Future.delayed(const Duration(milliseconds: 700));
-          emit(
-            state.copyWith(
-              updateSelf: true,
+              updateOnlyHeader: true,
             ),
           );
         },
-        onDaySelected: (DateTime selectedDayDt, bool updateSelf) {
+        onDaySelected: (DateTime selectedDayDt) {
           //clear side months if they had some day selected
           _session.preSelectedDtRestoration = selectedDayDt;
 
           final currentMonthIndex = state.months?.indexWhere(
-            (month) =>
-                DateUtils.isSameMonth(month.monthStartDate, selectedDayDt),
+            (month) => DateUtils.isSameMonth(month.monthStartDate, selectedDayDt),
           );
 
           if (currentMonthIndex == null) return;
@@ -171,7 +145,7 @@ class CalendarBloc extends Bloc<CalendarBlocEvent, CalendarBlocState> {
           emit(
             state.copyWith(
               key: UniqueKey(),
-              updateSelf: updateSelf,
+              updateOnlyHeader: true,
             ),
           );
         },
