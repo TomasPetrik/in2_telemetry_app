@@ -136,6 +136,8 @@ class TokenInterceptor extends Interceptor {
     }
     await accountDbProvider.save(userAccount);
 
+    session.token = newToken;
+
     return newToken;
   }
 }
