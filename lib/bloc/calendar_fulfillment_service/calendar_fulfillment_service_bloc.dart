@@ -16,8 +16,8 @@ import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 @injectable
-class CalendarFulfillmentServiceBloc extends Bloc<
-    CalendarFulfillmentServiceBlocEvent, CalendarFulfillmentServiceBlocState> {
+class CalendarFulfillmentServiceBloc
+    extends Bloc<CalendarFulfillmentServiceBlocEvent, CalendarFulfillmentServiceBlocState> {
   final AccountDbProvider _accountDbProvider;
   final CalendarFooterBloc _calendarFooterBloc;
   final CarePlansRepository _carePlansRepository;
@@ -38,8 +38,7 @@ class CalendarFulfillmentServiceBloc extends Bloc<
       CalendarMonth calendarMonth,
       List<CarePlanContract> carePlans,
     ) async {
-      final userAccounts =
-          carePlans.fold<List<UserAccount>>([], (prevAccounts, carePlan) {
+      final userAccounts = carePlans.fold<List<UserAccount>>([], (prevAccounts, carePlan) {
         final userAccount = _accountDbProvider.get(carePlan.userId!)!;
 
         return [...prevAccounts, userAccount];
@@ -51,8 +50,7 @@ class CalendarFulfillmentServiceBloc extends Bloc<
           continue;
         }
         try {
-          final supportedMeasurementTypes =
-              CarePlanHelper.getMeasurementTypes(carePlans);
+          final supportedMeasurementTypes = CarePlanHelper.getMeasurementTypes(carePlans);
 
           final startDateTime = calendarMonth.monthStartDate;
           final endDateTime = calendarMonth.monthEndDate;
@@ -151,8 +149,7 @@ class CalendarFulfillmentServiceBloc extends Bloc<
           //but they were ended in this exact day
           final dayEvItems = evaluationItems.where((evItem) {
             return evItem.end.isAfter(day.startDt) &&
-                ((evItem.end.isBefore(day.endDt) ||
-                    evItem.end.isAtSameMomentAs(day.endDt)));
+                ((evItem.end.isBefore(day.endDt) || evItem.end.isAtSameMomentAs(day.endDt)));
           }).toList();
 
           // TODO: This is never used?
@@ -161,8 +158,7 @@ class CalendarFulfillmentServiceBloc extends Bloc<
             dayEvItems,
           );
 
-          final usersEvaluationsDay =
-              EvaluationPlanHelper.getUserEvaluationDays(
+          final usersEvaluationsDay = EvaluationPlanHelper.getUserEvaluationDays(
             calendarMonth.year,
             calendarMonth.month,
             carePlans,
@@ -207,16 +203,14 @@ class CalendarFulfillmentServiceBloc extends Bloc<
           //or for periodical measurements which ending in future but was completed earlier
           if (day.dayPeriod == CalendarDayPeriod.future) {
             plannedMeasurements.removeWhere(
-              (pMeasurement) =>
-                  pMeasurement.fulfillmentEvaluationItem?.wasMeasured() == true,
+              (pMeasurement) => pMeasurement.fulfillmentEvaluationItem?.wasMeasured() == true,
             );
           }
           day.plannedMeasurements = plannedMeasurements;
 
           final userAccounts = plannedMeasurements
               .map(
-                (plMeasurement) =>
-                    _accountDbProvider.get(plMeasurement.userId)!,
+                (plMeasurement) => _accountDbProvider.get(plMeasurement.userId)!,
               )
               .toSet();
 
@@ -229,8 +223,14 @@ class CalendarFulfillmentServiceBloc extends Bloc<
       await event.when(
         init: (calendarMonth, carePlansIds) async {
           //we need wait here because this init is invoked everytime when
-          //viewPager will change pange, so we won't freeze him
+          //viewPager will change page, so we won't freeze him
           //in process of changing page during scroll
+
+          debugPrint('init calendarFulfillmentServiceBloc ${calendarMonth.month}');
+
+          //each build will await for 1 second
+          await Future.delayed(const Duration(milliseconds: 400));
+
           final pendingResults = _pendingResultsDbProvider.getAll();
           offlineResults = MeasurementHelper.getOffilneResultsConverted(
             pendingResults,
@@ -239,26 +239,17 @@ class CalendarFulfillmentServiceBloc extends Bloc<
           );
 
           final carePlans = _accountDbProvider.getCarePlans(carePlansIds);
-          //await Future.delayed(const Duration(milliseconds: 700));
 
           await setCalendarMonth(calendarMonth, carePlans);
 
-          if (calendarMonth.monthStartDate.isAfter(DateTime.now())) {
-            emit(
-              CalendarFulfillmentServiceBlocState(
-                month: calendarMonth,
-                loading: false,
-              ),
-            );
-          }
-
-          await populateMonth(calendarMonth, carePlans);
           emit(
             CalendarFulfillmentServiceBlocState(
               month: calendarMonth,
               loading: false,
             ),
           );
+
+          await populateMonth(calendarMonth, carePlans);
 
           if (_calendarFooterBloc.state.selectedDay == null &&
               calendarMonth.monthEndDate.isAfter(DateTime.now()) &&
