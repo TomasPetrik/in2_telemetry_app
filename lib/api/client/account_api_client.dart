@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
@@ -13,9 +15,11 @@ abstract class AccountApiClient {
   @factoryMethod
   factory AccountApiClient(@Named(ConfigurationConstants.privateDioName) Dio dio) =
       _AccountApiClient;
+  factory AccountApiClient(@Named(ConfigurationConstants.privateDioName) Dio dio) = _AccountApiClient;
 
   @GET('{apiUrl}/user/me')
   Future<CurrentUserInfoContract> loadUserInfo(
+    @Header(HttpHeaders.authorizationHeader) String authHeader,
     @Path('apiUrl') String apiUrl,
   );
 

@@ -1,6 +1,5 @@
-
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/api/model/user_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/painters/user_item_painter.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -17,7 +16,7 @@ class UserItem extends StatelessWidget {
     this.showWarning,
   });
 
-  final UserAccount userAccount;
+  final UserModel userAccount;
   final UserItemType? userItemType;
   final bool hasNavigationIcon;
   final bool? showWarning;
@@ -28,8 +27,7 @@ class UserItem extends StatelessWidget {
       padding: Paddings.horizontal16,
       child: Row(
         children: [
-          if (userItemType == UserItemType.middle ||
-              userItemType == UserItemType.last) ...[
+          if (userItemType == UserItemType.middle || userItemType == UserItemType.last) ...[
             Gaps.gap16,
             Stack(
               children: [
@@ -42,14 +40,14 @@ class UserItem extends StatelessWidget {
           ],
           Expanded(
             child: SettingsItem(
-              label: userAccount.user.fullName,
+              label: userAccount.fullName,
               subLabel: _getCarePlansLabel(context, userAccount),
               showWarning: showWarning == true && userAccount.parentId == null,
               hasNavigationIcon: hasNavigationIcon,
               iconWidget: Padding(
                 padding: Paddings.all8,
                 child: Text(
-                  '${userAccount.user.firstNames[0][0]}${userAccount.user.lastNames[0][0]}',
+                  '${userAccount.firstNames[0][0]}${userAccount.lastNames[0][0]}',
                   style: ScaleTextStyles.title.apply(
                     color: Theme.of(context).colorScheme.onSecondary,
                   ),

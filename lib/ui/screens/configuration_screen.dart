@@ -6,6 +6,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:scalesoft_app/api/model/hospital.dart';
+import 'package:scalesoft_app/api/model/user_model.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
@@ -13,11 +15,9 @@ import 'package:scalesoft_app/bloc/settings/app_settings_bloc.dart';
 import 'package:scalesoft_app/bloc/settings/app_settings_bloc_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
+import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/managers/background_measurement_manager.dart';
-import 'package:scalesoft_app/model/app_settings.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/appearance_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/hospital_detail_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/licenses_route.dart';
@@ -34,13 +34,12 @@ import 'package:scalesoft_app/ui/widgets/image_widget.dart';
 import 'package:scalesoft_app/ui/widgets/settings_item.dart';
 
 class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
-  const ConfigurationScreen({super.key});
+  final List<MapEntry<Hospital, List<UserModel>>> hospitalUserEntries;
+
+  const ConfigurationScreen({super.key, required this.hospitalUserEntries});
 
   @override
   Widget build(BuildContext context) {
-    final AccountDbProvider accountDbProvider = getIt<AccountDbProvider>();
-    final hospitalUserEntries = accountDbProvider.getHospitalUsersMap().entries;
-
     final BackgroundMeasurementManager backgroundMeasurementManager = getIt<BackgroundMeasurementManager>();
     final shouldDisplayWatchSetupButton =
         backgroundMeasurementManager.anyUserWatchAssignmentExists() && Platform.isAndroid;
@@ -58,8 +57,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Gap(
-                        MediaQuery.of(context).viewPadding.top +
-                            Dimensions.appBarHeight,
+                        MediaQuery.of(context).viewPadding.top + Dimensions.appBarHeight,
                       ),
                       Gaps.gap16,
                       Center(
@@ -79,14 +77,11 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                           ),
                           InkWell(
                             onTap: () async {
-                              final hospitalSelection =
-                                  await selectHospital(context: context);
-                              if (hospitalSelection?.action ==
-                                  SwitchUserAction.addUserAccount) {
+                              final hospitalSelection = await selectHospital(context: context);
+                              if (hospitalSelection?.action == SwitchUserAction.addUserAccount) {
                                 getIt<AuthBloc>().add(
                                   Authenticate(
-                                    hospital:
-                                        hospitalSelection!.selectedHospital!,
+                                    hospital: hospitalSelection!.selectedHospital!,
                                   ),
                                 );
                               }
@@ -107,8 +102,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
-                              final hospital =
-                                  hospitalUserEntries.toList()[index];
+                              final hospital = hospitalUserEntries[index];
 
                               final bool showWarning = hospital.value.any(
                                 (userAccount) =>
@@ -119,9 +113,10 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
 
                               return SettingsItem(
                                 key: ObjectKey(hospital),
-                                showWarning: showWarning,
+                                showWarning: false,
+                                // showWarning, TODO
                                 label: hospital.key.title,
-                                subLabel: '${hospital.value[0].user.fullName}'
+                                subLabel: '${hospital.value[0].fullName}'
                                     ' ${hospital.value.length > 1 ? localization.common_plus_n_others(hospital.value.length - 1) : ''}',
                                 iconWidget: Padding(
                                   padding: Paddings.all8,
@@ -132,22 +127,14 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                                   if (hospital.value.length == 1) {
                                     GoRouter.of(context).pushNamed(
                                       UserDetailRoute.name,
-                                      extra: hospital.value[0].user.muid,
+                                      extra: hospital.value[0].id,
                                     );
                                   } else {
                                     GoRouter.of(context).pushNamed(
                                       HospitalDetailRoute.name,
                                       extra: List.of([
                                         hospital.key.title,
-                                        accountDbProvider
-                                            .getRootUsersFromHospital(
-                                              hospital.key,
-                                            )
-                                            .map(
-                                              (userAcccount) =>
-                                                  userAcccount.user.muid,
-                                            )
-                                            .toList(),
+                                        hospitalUserEntries.expand((e) => e.value.map((y) => y.id)).toList(),
                                       ]),
                                     );
                                   }
@@ -170,10 +157,8 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                         ),
                         hasNavigationIcon: false,
                         onTap: () async {
-                          final hospitalSelection =
-                              await selectHospital(context: context);
-                          if (hospitalSelection?.action ==
-                              SwitchUserAction.addUserAccount) {
+                          final hospitalSelection = await selectHospital(context: context);
+                          if (hospitalSelection?.action == SwitchUserAction.addUserAccount) {
                             getIt<AuthBloc>().add(
                               Authenticate(
                                 hospital: hospitalSelection!.selectedHospital!,
@@ -276,8 +261,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                                 child: Text(
                                   localization.app_version(packageInfo.version),
                                   style: ScaleTextStyles.label.apply(
-                                    color:
-                                        Theme.of(context).colorScheme.tertiary,
+                                    color: Theme.of(context).colorScheme.tertiary,
                                   ),
                                 ),
                               ),

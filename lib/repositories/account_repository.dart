@@ -2,15 +2,15 @@ import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/account_api_client.dart';
 import 'package:scalesoft_app/api/contracts/logs/logs_contract.dart';
 import 'package:scalesoft_app/api/contracts/user/current_user_info_contract.dart';
-import 'package:scalesoft_app/api/model/user_model.dart';
+import 'package:scalesoft_app/api/interceptors/token_interceptor.dart';
 import 'package:scalesoft_app/config.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/auth_token.dart';
-import 'package:scalesoft_app/storage/session.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 
 @singleton
 class AccountRepository {
   final AccountApiClient accountApiClient;
-  final Session session;
+  final UserCubit session;
 
   AccountRepository(this.accountApiClient, this.session);
 
@@ -18,17 +18,17 @@ class AccountRepository {
     required AuthToken authToken,
     required String apiUrl,
   }) {
-    session.token = authToken;
-    return accountApiClient.loadUserInfo(apiUrl);
+    return accountApiClient.loadUserInfo('Bearer ${authToken.accessToken}', apiUrl);
   }
 
   Future<void> sendUserAppReports({
-    required UserModel user,
+    required int userId,
     required LogsContract reportRequest,
-  }) {
-    session.token = user.authToken;
+  }) async {
+    TokenInterceptor.userId = userId;
+
     return accountApiClient.sendUserAppReports(
-      user.hospital.authData.baseUrl,
+      session.state.currentUser.hospital.authData.baseUrl,
       reportRequest,
       Config.value.logEndpointSecret,
     );

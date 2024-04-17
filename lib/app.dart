@@ -18,9 +18,11 @@ import 'package:scalesoft_app/globals_initialization.dart';
 import 'package:scalesoft_app/locales.dart';
 import 'package:scalesoft_app/managers/background_measurement_manager.dart';
 import 'package:scalesoft_app/data/providers/settings_db_provider.dart';
+import 'package:scalesoft_app/no_users_exception.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/ui/managers/content_manager.dart';
 import 'package:scalesoft_app/ui/routers/app_router.dart';
 import 'package:scalesoft_app/ui/routers/routes/blank_route.dart';
@@ -135,7 +137,27 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
       );
     }
 
+    final originalErrorHandler = FlutterError.onError;
+
+    getIt<UserCubit>().stream.handleError(
+          (e) => {
+            if (e is NoUsersException && _goRouter != null)
+              {
+                _goRouter!.goNamed(NoUserRoute.name),
+              },
+          },
+        );
+
+    FlutterError.onError = (FlutterErrorDetails details) {
+      if (details.exception is NoUsersException && _goRouter != null) {
+        _goRouter!.goNamed(NoUserRoute.name);
+      } else if (originalErrorHandler != null) {
+        originalErrorHandler(details);
+      }
+    };
+
     _goRouter = AppRouter().router;
+
     return ContentManager(
       goRouter: _goRouter!,
       onInit: (context, state) {

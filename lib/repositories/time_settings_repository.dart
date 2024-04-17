@@ -1,39 +1,44 @@
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/time_settings_api_client.dart';
-import 'package:scalesoft_app/storage/session.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_template_contract.dart';
+import 'package:scalesoft_app/api/contracts/time_settings/time_setting_contract.dart';
+import 'package:scalesoft_app/api/contracts/time_settings/time_settings_update_contract.dart';
+import 'package:scalesoft_app/data/entities/json_entities/user/auth_token.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
+import 'package:scalesoft_app/api/interceptors/token_interceptor.dart';
 
 @singleton
 class TimeSettingsRepository {
   final TimeSettingsApiClient timeSettingsApiClient;
-  final Session session;
+  final UserCubit session;
 
   TimeSettingsRepository(this.timeSettingsApiClient, this.session);
 
-  Future<TemplateTimeSet> loadPlanTemplate({
-    required UserAccount userAccount,
-  }) {
-    session.token = userAccount.authToken;
-    return timeSettingsApiClient.loadPlanTemplate(
-      userAccount.hospital!.authData.baseUrl,
+  Future<CarePlanTemplateContract> loadPlanTemplate({
+    required int userId,
+  }) async {
+    TokenInterceptor.userId = userId;
+
+    return await timeSettingsApiClient.loadPlanTemplate(
+      session.state.currentUser.hospital.authData.baseUrl,
     );
   }
 
-  Future<List<TimeSetting>> loadTimeSettings({
-    required UserAccount userAccount,
-  }) {
-    session.token = userAccount.authToken;
-    return timeSettingsApiClient.loadTimeSettings(
-      userAccount.hospital!.authData.baseUrl,
-    );
+  Future<List<TimeSettingContract>> loadTimeSettings(
+    AuthToken authToken,
+    String apiUrl,
+  ) {
+    return timeSettingsApiClient.loadTimeSettings(apiUrl, 'Bearer ${authToken.accessToken}');
   }
 
   Future<void> updateTimeSettings({
-    required UserAccount userAccount,
-    required TimeSettings timeSettings,
-  }) {
-    session.token = userAccount.authToken;
+    required int userId,
+    required TimeSettingsUpdateContract timeSettings,
+  }) async {
+    TokenInterceptor.userId = userId;
+
     return timeSettingsApiClient.updateTimeSettings(
-      userAccount.hospital!.authData.baseUrl,
+      session.state.currentUser.hospital.authData.baseUrl,
       timeSettings,
     );
   }

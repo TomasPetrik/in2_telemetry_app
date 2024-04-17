@@ -4,10 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
-import 'package:scalesoft_app/api/contracts/measurement/measurement.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_contract.dart';
+import 'package:scalesoft_app/api/model/user_model.dart';
 import 'package:scalesoft_app/constants/native_code_constants.dart';
 import 'package:scalesoft_app/cubit/background_measurement/background_measurement_cubit.dart';
+import 'package:scalesoft_app/data/app_database.dart';
+import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
+import 'package:scalesoft_app/data/providers/user_db_provider.dart';
 import 'package:scalesoft_app/managers/ble_e8x_manager.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/report_service.dart';
@@ -17,7 +20,7 @@ import 'package:scalesoft_app/utils/helpers/mac_address_helper.dart';
 @singleton
 class BackgroundMeasurementManager {
   final SyncService _syncService;
-  final AccountDbProvider _accountDbProvider;
+  final UserDbProvider _userDbProvider;
   final BackgroundMeasurementCubit _backgroundMeasurementCubit;
   final ReportService _reportService;
   final FlutterLocalNotificationsPlugin _notificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -25,7 +28,7 @@ class BackgroundMeasurementManager {
 
   BackgroundMeasurementManager(
     this._syncService,
-    this._accountDbProvider,
+    this._userDbProvider,
     this._backgroundMeasurementCubit,
     this._reportService,
   );
@@ -127,7 +130,7 @@ class BackgroundMeasurementManager {
     } on PlatformException catch (e) {
       debugPrint("Disassociate devices: native code invocation failed: $e");
       _reportService.trackEvent(
-        severity: Severity.error,
+        severity: LogSeverity.error,
         message: e.toString(),
       );
       return false;
@@ -146,7 +149,7 @@ class BackgroundMeasurementManager {
     } on PlatformException catch (e) {
       debugPrint("Associate devices: native code invocation failed: $e");
       _reportService.trackEvent(
-        severity: Severity.error,
+        severity: LogSeverity.error,
         message: e.toString(),
       );
       return false;
@@ -181,7 +184,7 @@ class BackgroundMeasurementManager {
     } on PlatformException catch (e) {
       debugPrint("Associate devices: native code invocation failed: $e");
       _reportService.trackEvent(
-        severity: Severity.error,
+        severity: LogSeverity.error,
         message: e.toString(),
       );
       return [];

@@ -1,33 +1,35 @@
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/device_api_client.dart';
-import 'package:scalesoft_app/api/contracts/device/device_prototype_contract.dart';
 import 'package:scalesoft_app/api/contracts/device/device_create_contract.dart';
-import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/storage/session.dart';
+import 'package:scalesoft_app/api/contracts/device/device_prototype_contract.dart';
+import 'package:scalesoft_app/api/interceptors/token_interceptor.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 
 @singleton
 class DeviceRepository {
   final DeviceApiClient deviceApiClient;
-  final Session session;
+  final UserCubit session;
 
   DeviceRepository(this.deviceApiClient, this.session);
 
-  Future<List<DeviceModel>> getDeviceModels({
-    required UserAccount userAccount,
-  }) {
-    session.token = userAccount.authToken;
-    return deviceApiClient.getDeviceModels(
-      userAccount.hospital!.authData.baseUrl,
+  Future<List<DevicePrototypeContract>> getDeviceModels({
+    required int userId,
+  }) async {
+    TokenInterceptor.userId = userId;
+
+    return await deviceApiClient.getDeviceModels(
+      session.state.currentUser.hospital.authData.baseUrl,
     );
   }
 
   Future<void> registerDevice({
-    required UserAccount userAccount,
-    required DeviceToRegister deviceToRegister,
-  }) {
-    session.token = userAccount.authToken;
-    return deviceApiClient.registerDevice(
-      userAccount.hospital!.authData.baseUrl,
+    required int userId,
+    required DeviceCreateContract deviceToRegister,
+  }) async {
+    TokenInterceptor.userId = userId;
+
+    return await deviceApiClient.registerDevice(
+      session.state.currentUser.hospital.authData.baseUrl,
       deviceToRegister,
     );
   }

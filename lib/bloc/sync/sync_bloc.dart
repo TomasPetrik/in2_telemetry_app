@@ -1,22 +1,25 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
+import 'package:scalesoft_app/data/providers/care_plan_db_provider.dart';
+import 'package:scalesoft_app/data/providers/user_db_provider.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
-import 'package:scalesoft_app/storage/session.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 
 @singleton
 class SyncBloc extends Bloc<SyncEvent, SyncState> {
-  final AccountDbProvider _accountDbProvider;
+  final UserDbProvider _userDbProvider;
   final SyncService _syncService;
-  final Session _session;
+  final UserCubit _session;
+  final CarePlanDbProvider _carePlanDbProvider;
 
   SyncBloc(
-    this._accountDbProvider,
+    this._userDbProvider,
     this._syncService,
     this._session,
+    this._carePlanDbProvider,
   ) : super(const SyncState.none()) {
     on<SyncEvent>((event, emit) async {
       await event.when(
@@ -62,19 +65,12 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
           }
         },
         userSessionExpired: (String refreshToken) async {
-          await _accountDbProvider.setExpiredUserByToken(refreshToken);
+          await _userDbProvider.setExpiredByRefreshToken(refreshToken);
 
           emit(await _session.detectSyncState());
         },
-        resolveUpdatedUserPlan: (CarePlanContract carePlanToUpdate) async {
-          final userAccount = _accountDbProvider.get(carePlanToUpdate.userId!);
-          if (userAccount == null) return;
-
-          final carePlan = userAccount.carePlans
-              ?.firstWhere((userPlan) => userPlan.id == carePlanToUpdate.id);
-          carePlan?.wasChanged = false;
-
-          _accountDbProvider.save(userAccount);
+        resolveUpdatedUserPlan: (int carePlanId) async {
+          await _carePlanDbProvider.resolveUpdatedCarePlan(carePlanId);
 
           final syncState = await _session.detectSyncState();
 

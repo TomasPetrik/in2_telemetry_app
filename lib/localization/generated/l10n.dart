@@ -2009,10 +2009,10 @@ class I10n {
     );
   }
 
-  /// `Po meření stiskněte opět akční tlačítko`
+  /// `Po měření stiskněte opět akční tlačítko`
   String get find_device_screen_step3 {
     return Intl.message(
-      'Po meření stiskněte opět akční tlačítko',
+      'Po měření stiskněte opět akční tlačítko',
       name: 'find_device_screen_step3',
       desc: '',
       args: [],

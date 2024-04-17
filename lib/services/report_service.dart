@@ -5,10 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:scalesoft_app/api/contracts/logs/logs_contract.dart';
-import 'package:scalesoft_app/api/model/user_model.dart';
 import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
 import 'package:scalesoft_app/data/providers/log_db_provider.dart';
-import 'package:scalesoft_app/data/providers/user_db_provider.dart';
 import 'package:scalesoft_app/mapper/log_event_mapper.dart';
 import 'package:scalesoft_app/repositories/account_repository.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
@@ -17,7 +15,6 @@ import 'package:unique_identifier/unique_identifier.dart';
 @preResolve
 @lazySingleton
 class ReportService {
-  final UserDbProvider _userDbProvider;
   final LogDbProvider _logsDbProvider;
   final AccountRepository _accountRepository;
   final LogEventMapper _logEventMapper;
@@ -34,13 +31,11 @@ class ReportService {
     this._phoneModel,
     this._osVersion,
     this._appIdentifier,
-    this._userDbProvider,
     this._logEventMapper,
   );
 
   @factoryMethod
   static Future<ReportService> create(
-    final UserDbProvider userDbProvider,
     final LogDbProvider logDbProvider,
     final AccountRepository accountRepository,
     final LogEventMapper logEventMapper,
@@ -74,7 +69,6 @@ class ReportService {
       phoneModel,
       osVersion,
       appIdentifier,
-      userDbProvider,
       logEventMapper,
     );
 
@@ -101,7 +95,6 @@ class ReportService {
   }
 
   Future<void> syncReports() async {
-    final List<UserModel> users = await _userDbProvider.getAll();
     final reports = await _logsDbProvider.getLogEventsPerUser();
 
     // Some reports don't have a user ID attached (logout, etc.). Attach those events to another user.
@@ -110,8 +103,7 @@ class ReportService {
     try {
       for (final userReports in reports.entries) {
         final userId = userReports.key ?? fallbackUserId;
-        final user = users.firstWhereOrNull((x) => x.id == userId);
-        if (user == null) {
+        if (userId == null) {
           continue;
         }
 
@@ -122,7 +114,7 @@ class ReportService {
         );
 
         await _accountRepository.sendUserAppReports(
-          user: user,
+          userId: userId,
           reportRequest: contract,
         );
 

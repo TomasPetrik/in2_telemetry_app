@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/account_api_client.dart';
 import 'package:scalesoft_app/api/client/auth_api_client.dart';
+import 'package:scalesoft_app/api/model/user_model.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/config.dart';
@@ -12,19 +14,20 @@ import 'package:scalesoft_app/data/providers/user_db_provider.dart';
 import 'package:scalesoft_app/parsers/jwt_parser.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/report_service.dart';
-import 'package:scalesoft_app/storage/session.dart';
-import 'package:scalesoft_app/constants/configuration_constants.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/utils/exceptions/invalid_request_exception.dart';
 
 @injectable
 class TokenInterceptor extends Interceptor {
-  final Session session;
+  final UserCubit userCubit;
   final AccountApiClient accountApiClient;
   final UserDbProvider userDbProvider;
   final ReportService reportService;
 
+  static int? userId;
+
   TokenInterceptor(
-    this.session,
+    this.userCubit,
     this.accountApiClient,
     this.reportService,
     this.userDbProvider,
@@ -35,15 +38,21 @@ class TokenInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    if (session.token?.isExpiring() ?? false) {
-      await refreshToken(session.token!.accessToken);
+    final user = userCubit.state.allUsers.firstWhereOrNull((x)=>x.id == userId);
+
+    // TODO: Remove temporary hack for avoiding infinite recursion.
+    if (options.headers.containsKey(HttpHeaders.authorizationHeader) || options.path.endsWith('token') || user == null) {
+      return handler.next(options);
     }
 
-    final accessToken = session.token?.accessToken;
 
-    if (!options.headers.containsKey(HttpHeaders.authorizationHeader) && accessToken != null) {
-      options.headers[HttpHeaders.authorizationHeader] = 'Bearer $accessToken';
+    if (user.authToken.isExpiring()) {
+      await refreshToken(user);
     }
+
+    final accessToken = user.authToken.accessToken;
+
+    options.headers[HttpHeaders.authorizationHeader] = 'Bearer $accessToken';
 
     return handler.next(options);
   }
@@ -90,18 +99,9 @@ class TokenInterceptor extends Interceptor {
     }
   }
 
-  Future<AuthToken?> refreshToken(String originalToken) async {
-    final user = await userDbProvider.getByAccessToken(originalToken);
-
-    if (user == null) return null;
-
+  Future<AuthToken?> refreshToken(UserModel user) async {
     final refreshToken = user.authToken.refreshToken;
     final tokenUrl = user.hospital.authData.tokenUrl;
-    session.token = user.authToken;
-
-    // Avoid calling this method recursively when refreshing the token...
-    session.token!.accessTokenExpires =
-        DateTime.now().add(const Duration(minutes: 10));
 
     final response = await getIt<AuthApiClient>().refreshToken(
       tokenUrl,
@@ -114,14 +114,14 @@ class TokenInterceptor extends Interceptor {
     final newToken = AuthToken(
       response.accessToken,
       response.refreshToken,
-      DateTime.now().add(const Duration(seconds: 3600)),
+      DateTime.now().add(Duration(seconds: response.expiresIn)),
     );
 
     final newUserPermissions = JwtParser(jwtToken: newToken.accessToken).getUserPermissions();
 
     await userDbProvider.updateAuthParameters(user.id, newToken, newUserPermissions);
-
-    session.token = newToken;
+    // TODO: Wait until change is propagated instead?
+    user.authToken.accessToken = newToken.accessToken;
 
     return newToken;
   }

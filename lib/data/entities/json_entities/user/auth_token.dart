@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:drift/drift.dart';
+import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 part 'auth_token.g.dart';
 
@@ -19,4 +20,8 @@ class AuthToken {
     fromJson: (json) => AuthToken.fromJson(json as Map<String, Object?>),
     toJson: (obj) => obj.toJson(),
   );
+
+  bool isExpiring(){
+    return DateTime.now().add(const Duration(minutes: 5)).isAfterOrAt(expires);
+  }
 }

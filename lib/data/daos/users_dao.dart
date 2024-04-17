@@ -3,6 +3,7 @@ import 'package:drift/drift.dart';
 import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/data/entities/combined_entities/user_with_represented_people.dart';
 import 'package:scalesoft_app/data/tables/users.dart';
+import 'package:scalesoft_app/utils/helpers/stream_helper.dart';
 
 part 'users_dao.drift.dart';
 
@@ -10,11 +11,11 @@ part 'users_dao.drift.dart';
 class UsersDao extends DatabaseAccessor<AppDatabase> with _$UsersDaoMixin {
   UsersDao(AppDatabase db) : super(db);
 
-  Future<UserWithRepresentedPeople?> getUser(int userId) async {
+  Stream<UserWithRepresentedPeople?> getUser(int userId) {
     return _getUser((user) => user.id.equals(userId));
   }
 
-  Future<UserWithRepresentedPeople?> getUserByMuid(String muid) async {
+  Stream<UserWithRepresentedPeople?> getUserByMuid(String muid) {
     return _getUser((user) => user.muid.equals(muid));
   }
 
@@ -34,21 +35,21 @@ class UsersDao extends DatabaseAccessor<AppDatabase> with _$UsersDaoMixin {
     await (delete(users)..where((x) => x.parentId.equals(parentId) & x.id.isNotIn(childrenToKeep))).go();
   }
 
-  Future<List<UserWithRepresentedPeople>> getRootUsersFromHospital(int hospitalId) async {
-    return await _getUsers((x) => x.hospitalId.equals(hospitalId) & x.parentId.isNull());
+  Stream<List<UserWithRepresentedPeople>> getRootUsersFromHospital(int hospitalId) {
+    return _getUsers((x) => x.hospitalId.equals(hospitalId) & x.parentId.isNull());
   }
 
   /// Gets all users, including represented people.
-  Future<List<UserWithRepresentedPeople>> getAll() async {
-    return await _getUsers(null);
+  Stream<List<UserWithRepresentedPeople>> getAll() {
+    return _getUsers(null);
   }
 
-  Future<List<UserWithRepresentedPeople>> getAllRootUsers() async {
-    return await _getUsers((x)=>x.parentId.isNull());
-}
+  Stream<List<UserWithRepresentedPeople>> getAllRootUsers() {
+    return _getUsers((x) => x.parentId.isNull());
+  }
 
-  Future<List<UserWithRepresentedPeople>> getByIds(Iterable<int> ids) async {
-    return await _getUsers((user) => user.id.isIn(ids));
+  Stream<List<UserWithRepresentedPeople>> getByIds(Iterable<int> ids) {
+    return _getUsers((user) => user.id.isIn(ids));
   }
 
   Future<int> countUsers() async {
@@ -79,37 +80,48 @@ class UsersDao extends DatabaseAccessor<AppDatabase> with _$UsersDaoMixin {
 
   /// Returns all users matched using the provided [filter]. If [filter] is null, all users are returned.
   /// Every user that matches the [filter] contains **ALL** of their represented people - the [filter] is **NOT** applied when fetching child elements.
-  Future<List<UserWithRepresentedPeople>> _getUsers(Expression<bool> Function($UsersTable user)? filter) async {
+  Stream<List<UserWithRepresentedPeople>> _getUsers(Expression<bool> Function($UsersTable user)? filter) {
     final rootUsersQuery = select(users);
 
     if (filter != null) {
       rootUsersQuery.where(filter);
     }
 
-    final rootUsers = await rootUsersQuery.get();
-    final rootUserIds = rootUsers.map((x) => x.id);
+    final rootUsersSubquery = Subquery(rootUsersQuery, 'rootUsers');
 
-    final representedPeople = await (select(users)..where((x) => x.parentId.isIn(rootUserIds))).get();
-    final representedPeopleMap = representedPeople.groupListsBy((x) => x.parentId);
+    final rootUsersStream = rootUsersQuery.watch();
 
-    return rootUsers
-        .map(
-          (rootUser) =>
-              UserWithRepresentedPeople(rootUser: rootUser, representedPeople: representedPeopleMap[rootUser.id] ?? []),
+    final representedPeopleStream = select(users)
+        .join(
+          [
+            innerJoin(
+              rootUsersSubquery,
+              rootUsersSubquery.ref(users.id).equalsExp(users.parentId),
+              useColumns: false,
+            ),
+          ],
         )
-        .toList();
+        .watch()
+        .map(
+          (list) => list.map((row) => row.readTable(users)),
+        );
+
+    final result =
+        StreamHelper.combineLastValues(rootUsersStream, representedPeopleStream, (rootUsers, representedPeople) {
+      return rootUsers.map((rootUser) {
+        final matchingRepresentedPeople =
+            representedPeople.where((representedPerson) => representedPerson.parentId == rootUser.id).toList();
+
+        return UserWithRepresentedPeople(rootUser: rootUser, representedPeople: matchingRepresentedPeople);
+      }).toList();
+    });
+
+    return result;
   }
 
-  Future<UserWithRepresentedPeople?> _getUser(Expression<bool> Function($UsersTable user) filter) async {
-    final rootUser = await (select(users)..where(filter)).getSingleOrNull();
-
-    if (rootUser == null) {
-      return null;
-    }
-
-    final representedPeople = await (select(users)..where((user) => user.parentId.equals(rootUser.id))).get();
-
-    return UserWithRepresentedPeople(rootUser: rootUser, representedPeople: representedPeople);
+  Stream<UserWithRepresentedPeople?> _getUser(Expression<bool> Function($UsersTable user) filter) {
+    final result = _getUsers(filter).map((list) => list.singleOrNull);
+    return result;
   }
 
   Future<UserWithRepresentedPeople?> getByAccessToken(String token) async {

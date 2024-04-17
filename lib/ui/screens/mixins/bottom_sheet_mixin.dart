@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/api/model/hospital.dart';
+import 'package:scalesoft_app/api/model/user_model.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
+import 'package:scalesoft_app/data/entities/json_entities/care_plan/time_only.dart';
 import 'package:scalesoft_app/ui/dialogs/bottom_dialog.dart';
 import 'package:scalesoft_app/ui/dialogs/hospital_selection_dialog.dart';
 import 'package:scalesoft_app/ui/dialogs/planned_measurement_time_dialog.dart';
@@ -10,13 +13,13 @@ import 'package:scalesoft_app/ui/widgets/scale_time_picker.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 mixin BottomSheetMixin {
-  Future<DailyTime?> showRestrictedTimePicker({
+  Future<TimeOnly?> showRestrictedTimePicker({
     required final BuildContext context,
-    DailyTime? defaultTime,
-    DailyTime? minTime,
-    DailyTime? maxTime,
+    TimeOnly? defaultTime,
+    TimeOnly? minTime,
+    TimeOnly? maxTime,
   }) async {
-    final result = await showModalBottomSheet<DailyTime?>(
+    final result = await showModalBottomSheet<TimeOnly?>(
       context: context,
       useRootNavigator: false,
       isScrollControlled: true,
@@ -83,7 +86,7 @@ mixin BottomSheetMixin {
 
   Future<bool?> showResultRemovalConfirmation({
     required final BuildContext context,
-    required final MeasurementTypeContract measurementType,
+    required final MeasurementType measurementType,
   }) async {
     final result = await showModalBottomSheet<bool?>(
       context: context,
@@ -249,7 +252,6 @@ mixin BottomSheetMixin {
 
   Future<SwitchUserResult?> switchUser({
     required final BuildContext context,
-    required final bool supportMultiUser,
   }) async {
     return await showModalBottomSheet<UserSelection>(
       context: context,
@@ -257,9 +259,7 @@ mixin BottomSheetMixin {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
-        return UserHospitalSelectionDialog(
-          supportMultiUser: supportMultiUser,
-        );
+        return const UserHospitalSelectionDialog();
       },
     ).then((userHospitalSelectionResult) async {
       SwitchUserResult switchUserResult;
@@ -297,7 +297,7 @@ mixin BottomSheetMixin {
   Future<UserSelection?> _selectUserFromHospital({
     required final BuildContext context,
     required Hospital hospital,
-    required List<UserAccount> userAccounts,
+    required List<UserModel> userAccounts,
   }) async {
     final userSelectionResult = await showModalBottomSheet<UserSelection>(
       context: context,
@@ -357,7 +357,7 @@ enum SwitchUserAction {
 }
 
 class SwitchUserResult {
-  UserAccount? selectedUser;
+  UserModel? selectedUser;
   bool? addNewUser;
   bool? activeMultiUser;
 
@@ -369,9 +369,9 @@ class SwitchUserResult {
 }
 
 class UserSelection {
-  UserAccount? selectedUser;
+  UserModel? selectedUser;
   Hospital? selectedHospital;
-  List<UserAccount>? hospitalUsers;
+  List<UserModel>? hospitalUsers;
   SwitchUserAction action;
 
   UserSelection({

@@ -22,6 +22,4 @@ class AuthorContract {
   String toString() => toJson().toString();
 
   String get fullName => [...firstNames, ...lastNames].join(' ');
-
-  ;
 }

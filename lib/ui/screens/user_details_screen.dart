@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
+import 'package:scalesoft_app/api/model/user_model.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/report/report_bloc.dart';
@@ -10,10 +11,12 @@ import 'package:scalesoft_app/bloc/report/report_bloc_event.dart';
 import 'package:scalesoft_app/bloc/report/report_bloc_state.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
+import 'package:scalesoft_app/constants/permissions.dart';
 import 'package:scalesoft_app/cubit/loader/loader_cubit.dart';
 import 'package:scalesoft_app/cubit/loader/loader_state.dart';
+import 'package:scalesoft_app/model/enum/user_problem_type.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/storage/session.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/ui/routers/routes/care_plan_detail_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/device_search_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/register_device_detail_route.dart';
@@ -35,7 +38,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
     required this.userAccount,
   });
 
-  final UserAccount userAccount;
+  final UserModel userAccount;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +68,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
 
         //2. Otherwise check for high pioritised problem
         final userProblemType =
-            getIt<Session>().getProblemIfExists(userAccount);
+            getIt<UserCubit>().getProblemIfExists(userAccount);
 
         Widget? userWarningWidget;
         if (anyProgressWidget != null) {
@@ -162,25 +165,25 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                   const SliverGap(Dimensions.padding24),
                   SliverNameValueRow(
                     name: localization.user_detail_screen_user_name,
-                    value: userAccount.user.firstNames[0],
+                    value: userAccount.firstNames,
                   ),
                   const SliverGap(Dimensions.padding8),
                   SliverNameValueRow(
                     name: localization.user_detail_screen_user_surname,
-                    value: userAccount.user.lastNames[0],
+                    value: userAccount.lastNames,
                   ),
-                  if (userAccount.user.phoneNumbers?.isNotEmpty == true) ...[
+                  if (userAccount.phoneNumbers.isNotEmpty) ...[
                     const SliverGap(Dimensions.padding8),
                     SliverNameValueRow(
                       name: localization.user_detail_screen_user_phone,
-                      value: userAccount.user.phoneNumbers![0],
+                      value: userAccount.phoneNumbers[0],
                     ),
                   ],
-                  if (userAccount.user.emailAddresses?.isNotEmpty == true) ...[
+                  if (userAccount.emailAddresses.isNotEmpty == true) ...[
                     const SliverGap(Dimensions.padding8),
                     SliverNameValueRow(
                       name: localization.user_detail_screen_user_email,
-                      value: userAccount.user.emailAddresses![0],
+                      value: userAccount.emailAddresses[0],
                     ),
                   ],
                   const SliverGap(Dimensions.padding24),
@@ -224,7 +227,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                       );
                     },
                   ),
-                  if (userAccount.canManageTelemonitoringDevices) ...[
+                  if (userAccount.permissions.contains(Permissions.manageTelemonitoringDevices)) ...[
                     const SliverGap(Dimensions.padding24),
                     SliverToBoxAdapter(
                       child: Padding(
@@ -237,7 +240,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                             GoRouter.of(context).pushNamed<SourceDeviceContract?>(
                               DeviceSearchRoute.name,
                               params: {
-                                'userId': userAccount.user.muid,
+                                'userId': userAccount.id.toString(),
                                 'devicePurpose':
                                     DevicePurpose.registerDevice.name,
                               },
@@ -246,7 +249,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                                 GoRouter.of(context).pushNamed(
                                   RegisterDeviceDetailRoute.name,
                                   params: {
-                                    'userId': userAccount.user.muid,
+                                    'userId': userAccount.id.toString(),
                                   },
                                   extra: device,
                                 );
@@ -268,7 +271,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                           onPressed: () async {
                             showAccounRemovalConfirmation(
                               context: context,
-                              accountName: userAccount.user.fullName,
+                              accountName: userAccount.fullName,
                             ).then((confirmed) {
                               if (confirmed == true) {
                                 GoRouter.of(context).pop();
@@ -300,7 +303,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                 left: 0,
                 right: 0,
                 child: BlurredScaleAppBar(
-                  title: userAccount.user.fullName,
+                  title: userAccount.fullName,
                   onBackTap: () {},
                 ),
               ),

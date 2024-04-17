@@ -22,7 +22,7 @@ class DeviceSearchRoute extends ApplicationRoute with PageBuilderMixin {
       pageBuilder: pageBuilder(
         withTransition: false,
         builder: (state) {
-          final userId = state.params['userId']!;
+          final userId = int.parse(state.params['userId']!);
           final devicePurposeName = state.params['devicePurpose']!;
           final DevicePurpose devicePurpose =
               DevicePurpose.values.firstWhere(

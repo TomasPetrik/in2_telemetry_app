@@ -5,7 +5,7 @@ import 'package:scalesoft_app/data/tables/users.dart';
 class LogEvents extends Table {
   IntColumn get id =>integer().autoIncrement()();
 
-  IntColumn get userId => integer().references(Users, #id).nullable()();
+  IntColumn get userId => integer().references(Users, #id, onDelete: KeyAction.cascade).nullable()();
 
   TextColumn get appVersion => text()();
 

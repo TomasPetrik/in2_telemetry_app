@@ -31,12 +31,8 @@ class MeasurementDataContract {
   @override
   String toString() => _$MeasurementDataContractToJson(this).toString();
 
-  // TODO?
-  // Measurement toMeasurement(){
-  //
-  // }
 
-  // TODO: Deduplicate this and the same method in measurement.dart
+  // TODO: Deduplicate this and the same method in measurement_contract.dart
   // Ideally change the API and replace MeasurementResult with Measurement
   String getFormattedValue() {
     final stringValue = switch (measurementType) {

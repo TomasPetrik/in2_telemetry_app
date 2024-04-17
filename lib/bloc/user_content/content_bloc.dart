@@ -14,14 +14,13 @@ import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_state.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
-import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
 import 'package:scalesoft_app/data/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/data/providers/user_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
-import 'package:scalesoft_app/storage/session.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/utils/events_constants.dart';
 import 'package:uni_links/uni_links.dart';
 
@@ -29,7 +28,7 @@ import 'package:uni_links/uni_links.dart';
 class ContentBloc extends Bloc<ContentEvent, ContentState> {
   final UserDbProvider _userDbProvider;
   final SettingsDbProvider _settingsDbProvider;
-  final Session _session;
+  final UserCubit _session;
   final CarePlanBloc _carePlanBloc;
   final ReportService _reportsService;
   bool _initialUriIsHandled = false;
@@ -56,7 +55,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
 
   void _autoRefreshDashboard() {
     _reportsService.trackEvent(
-      userId: _session.isMultiUser?null:_session.user?.id,
+      userId: _session.state.aggregateAllUsers || _session.state.rootUsers.isEmpty ? null : _session.state.currentUserId,
       severity: LogSeverity.info,
       message: EventsConstants.eventAutoRefreshDashboard,
     );
@@ -105,10 +104,9 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     }
 
     final userAccount = await _userDbProvider.getLastUsedUser();
-    final isMultiUser = await _settingsDbProvider.isMultiUser();
     if (userAccount == null) {
       _reportsService.trackEvent(
-        userId: isMultiUser ? null: _session.user?.id,
+        userId: null,
         severity: LogSeverity.info,
         message: EventsConstants.eventNoLastUserDetected,
       );
@@ -116,9 +114,6 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
 
       _stopBackgroundFetch();
     } else {
-      _session.user = userAccount;
-      _session.isMultiUser = isMultiUser;
-
       _reportsService.trackEvent(
         userId: userAccount.id,
         severity: LogSeverity.info,
@@ -142,12 +137,9 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     SwitchUserContentEvent event,
     Emitter<ContentState> emit,
   ) async {
-    _session.isMultiUser = false;
-    _settingsDbProvider.setIsMultiUser(false);
-
-      await _userDbProvider.updateUser(event.userId, UsersCompanion(lastActive: Value(DateTime.now())));
-      final user = await _userDbProvider.get(event.userId);
-      _session.user = user;
+    _session.toggleAllUserAggregation(false);
+    await _settingsDbProvider.setIsMultiUser(false);
+    await _session.setActiveUser(event.userId);
 
     _reportsService.trackEvent(
       userId: event.userId,
@@ -166,11 +158,11 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     Emitter<ContentState> emit,
   ) async {
     _reportsService.trackEvent(
-      userId: _session.isMultiUser == false ? _session.user?.id : null,
+      userId: _session.state.aggregateAllUsers ? null: _session.state.currentUserId,
       severity: LogSeverity.info,
       message: EventsConstants.eventSwitchToMultiuser,
     );
-    _session.isMultiUser = true;
+    _session.toggleAllUserAggregation(true);
     await _settingsDbProvider.setIsMultiUser(true);
     emit(ContentState.activeMode(UniqueKey()));
   }
@@ -179,8 +171,8 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     OnUserAddedContentEvent event,
     Emitter<ContentState> emit,
   ) async {
-    _session.user = event.userAccount;
-    _session.isMultiUser = false;
+    await _session.setActiveUser(event.userAccount.id);
+    _session.toggleAllUserAggregation(false);
     await _settingsDbProvider.setIsMultiUser(false);
 
     //Same as during check last logged-in user
@@ -203,11 +195,11 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     _stopBackgroundFetch();
 
     _reportsService.trackEvent(
-      userId: _session.isMultiUser == false ? _session.user?.id : null,
+      userId: null,
       severity: LogSeverity.info,
       message: EventsConstants.eventNoUserContent,
     );
-    _session.isMultiUser = false;
+    _session.toggleAllUserAggregation(false);
     await _settingsDbProvider.setIsMultiUser(false);
     emit(const ContentState.unauthenticated());
   }
@@ -217,7 +209,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     Emitter<ContentState> emit,
   ) async {
     _reportsService.trackEvent(
-      userId: _session.isMultiUser == false ? _session.user?.id : null,
+      userId: _session.state.currentUserId,
       severity: LogSeverity.info,
       message: EventsConstants.eventAppearanceChanged,
     );
@@ -228,7 +220,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     Emitter<ContentState> emit,
   ) async {
     _reportsService.trackEvent(
-      userId: _session.isMultiUser == false ? _session.user?.id : null,
+      userId: _session.state.currentUserId,
       severity: LogSeverity.info,
       message: EventsConstants.eventDaylightAppearanceChanged,
     );
@@ -264,7 +256,8 @@ void _onBackgroundFetch(String taskId) async {
 /// This event fires shortly before your task is about to timeout.  You must finish any outstanding work and call BackgroundFetch.finish(taskId).
 Future<void> _onBackgroundFetchTimeout(String taskId) async {
   //If this task has exceeded its allowed running-time. It must be stopped immediately finish(taskId)
-  getIt<ReportService>().trackEvent(severity: LogSeverity.info, message: 'BS - _onBackgroundFetchTimeout(), id: $taskId');
+  getIt<ReportService>()
+      .trackEvent(severity: LogSeverity.info, message: 'BS - _onBackgroundFetchTimeout(), id: $taskId');
 
   BackgroundFetch.finish(taskId);
 }

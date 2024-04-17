@@ -1,6 +1,9 @@
+import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
 import 'package:scalesoft_app/ui/screens/user_added_screen.dart';
 
@@ -21,12 +24,19 @@ class UserAddedRoute extends ApplicationRoute {
       routes: routes,
       parentNavigatorKey: navigator,
       builder: (context, state) {
-        final userId = state.params['userId']!;
-        final accountDbProvider = getIt<AccountDbProvider>();
-        final userAccount = accountDbProvider.get(userId)!;
+        final userId = int.parse(state.params['userId']!);
 
-        return UserAddedScreen(
-          userAccount: userAccount,
+        return BlocBuilder<UserCubit, UserCubitState>(
+          bloc: getIt<UserCubit>(),
+          builder: (context, state) {
+            final user = state.rootUsers.firstWhereOrNull((x) => x.id == userId);
+
+            if (user == null) {
+              return const CircularProgressIndicator();
+            }
+
+            return UserAddedScreen(userAccount: user);
+          },
         );
       },
     );

@@ -1,87 +1,112 @@
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
-import 'package:scalesoft_app/api/contracts/care_pan/aggregated_fulfillment_evaluation_contract.dart';
 import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
+import 'package:scalesoft_app/api/model/user_model.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
+import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_evaluation_item.dart';
 import 'package:scalesoft_app/managers/background_measurement_manager.dart';
+import 'package:scalesoft_app/model/care_plan_create_model.dart';
+import 'package:scalesoft_app/data/providers/care_plan_db_provider.dart';
 import 'package:scalesoft_app/repositories/account_repository.dart';
 import 'package:scalesoft_app/repositories/care_plans_repository.dart';
 import 'package:scalesoft_app/repositories/device_repository.dart';
 import 'package:scalesoft_app/repositories/time_settings_repository.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/storage/session.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
-import 'package:scalesoft_app/utils/helpers/notifications_helper.dart';
 
 @singleton
 class SyncService {
-  final Session _session;
-  final AccountDbProvider _accountDbProvider;
-  final PendingResultsDbProvider _pendingResultsDbProvider;
+  final UserCubit _session;
   final AccountRepository _accountRepository;
   final CarePlansRepository _carePlansRepository;
   final TimeSettingsRepository _timeSettingsRepository;
-  final AppSettingsDbProvider _appSettingsDbProvider;
   final DeviceRepository _deviceRepository;
+  final CarePlanDbProvider _carePlanDbProvider;
 
   SyncService(
     this._session,
-    this._accountDbProvider,
-    this._pendingResultsDbProvider,
     this._accountRepository,
     this._carePlansRepository,
     this._timeSettingsRepository,
-    this._appSettingsDbProvider,
     this._deviceRepository,
+    this._carePlanDbProvider,
   );
 
   Future<void> setUserPlans(
-    final UserAccount userAccount,
+    final int userid,
     final List<CarePlanContract> newCarePlans,
   ) async {
-    for (final carePlan in newCarePlans) {
-      carePlan.userId = userAccount.user.muid;
-    }
+    final currentCarePlans = await _carePlanDbProvider.getByUser(userid);
 
-    final currentCarePlans = userAccount.carePlans;
-    //check if plans were updated
-    if (currentCarePlans != null) {
-      for (final newCarePlan in newCarePlans) {
-        final currentPlan = currentCarePlans.firstWhereOrNull(
-          (currentCarePlan) => currentCarePlan.id == newCarePlan.id,
+    final yesterdayMidnight = DateTime.now().yesterday;
+    var tomorrowMidnight = DateTime.now().tomorrow;
+
+    final List<CarePlanCreateModel> results = [];
+
+    for (final newCarePlan in newCarePlans) {
+      final currentPlan = currentCarePlans.firstWhereOrNull(
+        (currentCarePlan) => currentCarePlan.id == newCarePlan.id,
+      );
+
+      var wasChanged = false;
+
+      // check if plans were updated
+      if (currentPlan != null) {
+        final currentVersion = currentPlan.versions.map((x) => x.versionId).max;
+        wasChanged = newCarePlan.versionId > currentVersion;
+      }
+
+      //also load all versions for carePlan
+      final carePlanVersions = await _carePlansRepository.loadCarePlanVersions(
+        userId: userid,
+        carePlanId: newCarePlan.id,
+      );
+
+      // TODO: Maybe load evaluation of the whole plan, not just the latest version?
+      final fullPlanEvaluation = await _carePlansRepository.loadFullPlanEvaluation(
+        userId: userid,
+        carePlanVersionId: newCarePlan.versionId,
+      );
+
+      List<FulfillmentEvaluationItem> evaluationItems = [];
+
+      if (newCarePlan.scheduledEnd?.isBefore(yesterdayMidnight) == true ||
+          newCarePlan.scheduledStart.isAfter(tomorrowMidnight)) {
+        debugPrint(
+          'not loading evaluation items for planId = ${newCarePlan.id}',
         );
-
-        if (currentPlan != null) {
-          if (newCarePlan.versionId > currentPlan.versionId) {
-            newCarePlan.wasChanged = true;
-          } else {
-            newCarePlan.wasChanged = currentPlan.wasChanged;
-          }
+      } else {
+        DateTime from = yesterdayMidnight;
+        if (newCarePlan.scheduledStart.isAfter(yesterdayMidnight)) {
+          from = newCarePlan.scheduledStart;
         }
 
-        //also load all versions for carePlan
-        final carePlanVersions = await _carePlansRepository.loadCarePlanVersions(
-          userAccount: userAccount,
-          carePlan: newCarePlan,
+        DateTime to = tomorrowMidnight;
+        if (newCarePlan.scheduledEnd?.isBefore(tomorrowMidnight) == true) {
+          to = newCarePlan.scheduledEnd!;
+        }
+
+        from = from.toUtc();
+        to = to.toUtc();
+
+        evaluationItems = await _carePlansRepository.loadPartPlanEvaluation(
+          userId: userid,
+          carePlanId: newCarePlan.id,
+          fromDateTime: from.toIso8601String(),
+          toDateTime: to.toIso8601String(),
         );
-        newCarePlan.carePlanVersions = carePlanVersions.items;
       }
+
+      results.add(
+          CarePlanCreateModel(newCarePlan, wasChanged, carePlanVersions.items, fullPlanEvaluation, evaluationItems),);
     }
 
-    userAccount.carePlans = newCarePlans;
-  }
-
-  Future<void> loadWhenValues(final UserAccount userAccount) async {
-    final whenTimeValuesResponse = await _timeSettingsRepository.loadPlanTemplate(userAccount: userAccount);
-    userAccount.templateTimeSet = whenTimeValuesResponse;
-    for (final UserAccount representedPerson in userAccount.representedPeople!) {
-      representedPerson.templateTimeSet = whenTimeValuesResponse;
-    }
+    await _carePlanDbProvider.replaceUserCarePlans(userid, results);
   }
 
   Future<void> loadTimeSettings(final UserAccount userAccount) async {
@@ -94,10 +119,10 @@ class SyncService {
     }
   }
 
-  Future<void> loadDeviceModels(final UserAccount userAccount) async {
+  Future<void> loadDeviceModels(final int userId) async {
     try {
       final deviceModels = await _deviceRepository.getDeviceModels(
-        userAccount: userAccount,
+        userId: userId,
       );
       userAccount.supportedDeviceModels = deviceModels;
       for (final UserAccount representedPerson in userAccount.representedPeople!) {
@@ -105,18 +130,20 @@ class SyncService {
       }
     } on Exception {
       debugPrint(
-        'Couln\'t load device models for user ${userAccount.user.fullName}',
+        'Couln\'t load device models for user $userId',
       );
     }
   }
 
-  Future<void> loadUserData(final UserAccount userAccount) async {
+  Future<void> loadUserData(final int userId) async {
+    final user = _session.state.rootUsers.firstWhere((x) => x.id == userId);
+
     //load active care plans, fulfillment_evaluation, results
     final activeCarePlans = await _carePlansRepository.loadActiveCarePlans(
-      userAccount: userAccount,
+      userId: userId,
     );
 
-    await setUserPlans(userAccount, activeCarePlans.items);
+    await setUserPlans(userId, activeCarePlans.items);
 
     //check and update assigned devices, current user data and his represented people
     //await checkForDataChanges(userAccount);
@@ -127,17 +154,13 @@ class SyncService {
       await loadMeasurementResults(userAccount);
     }
 
-    if (userAccount.representedPeople?.isNotEmpty == true) {
-      for (final UserAccount representedPerson in userAccount.representedPeople!) {
+    if (user.representedPeople.isNotEmpty) {
+      for (final representedPerson in user.representedPeople) {
         final activeCarePlans = await _carePlansRepository.loadActiveCarePlans(
-          userAccount: representedPerson,
+          userId: representedPerson.id,
         );
 
-        await setUserPlans(representedPerson, activeCarePlans.items);
-
-        for (final carePlan in activeCarePlans.items) {
-          carePlan.userId = representedPerson.user.muid;
-        }
+        await setUserPlans(representedPerson.id, activeCarePlans.items);
 
         representedPerson.carePlans = activeCarePlans.items;
 
@@ -155,25 +178,26 @@ class SyncService {
         .removeByDateTime(measurementResult.measurementDateTime);
   }
 
-  Future<void> updateUserData(UserAccount userAccount) async {
+  Future<void> updateUserData(UserModel userAccount) async {
     //check changes for root user and his represented people
 
     //update only root users but not representing people specifically
-    if (!userAccount.isParentAccount) return;
+    if (userAccount.isRepresentedPerson) return;
 
     final userInfo = await _accountRepository.loadUserInfo(
-      authToken: userAccount.authToken!,
-      apiUrl: userAccount.hospital!.authData.baseUrl,
+      authToken: userAccount.authToken,
+      apiUrl: userAccount.hospital.authData.baseUrl,
     );
 
     //1. Update assigned devices
-    userAccount.assignedDevices = parseAssignedDevices(userInfo.assignedDevices, userAccount.assignedDevices);
+    // userAccount.assignedDevices = parseAssignedDevices(userInfo.assignedDevices, userAccount.assignedDevices);
     getIt<BackgroundMeasurementManager>().removeUnassignedDevices();
 
-    userAccount.user = userInfo.currentUser;
+    // userAccount.user = userInfo.currentUser;
   }
 
-  List<SourceDeviceContract>? parseAssignedDevices(List<SourceDeviceContract>? devices, List<SourceDeviceContract>? originalDevices) {
+  List<SourceDeviceContract>? parseAssignedDevices(
+      List<SourceDeviceContract>? devices, List<SourceDeviceContract>? originalDevices,) {
     if (devices == null) {
       return null;
     }
@@ -301,9 +325,9 @@ class SyncService {
   }
 
   Future<void> syncAllData({bool syncAllUsers = false}) async {
-    final userAccounts = syncAllUsers ? _accountDbProvider.getAll().toList() : _session.getSessionAccounts();
+    final users = syncAllUsers ? _session.state.rootUsers : [_session.state.currentUser];
 
-    for (final UserAccount userAccount in userAccounts) {
+    for (final user in users) {
       try {
         await loadUserData(userAccount);
         userAccount.lastSyncAt = DateTime.now();
@@ -325,8 +349,7 @@ class SyncService {
   }
 
   Future<void> syncResults() async {
-    final Set<String> allowedUsersMuids =
-        _session.getSessionAccounts().map((userAccount) => userAccount.user.muid).toSet();
+    final users = _session.state.rootUsers;
 
     for (final userId in allowedUsersMuids) {
       final userAccount = _accountDbProvider.get(userId);

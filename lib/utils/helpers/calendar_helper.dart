@@ -23,7 +23,7 @@ class CalendarHelper {
   }
 
   static List<CalendarMonth>? getCalendarMonths(
-    BuildContext context,
+    MaterialLocalizations localizations,
     DateTime fromDate,
     DateTime toDate,
   ) {
@@ -35,7 +35,7 @@ class CalendarHelper {
       final offsetStartDate = DateUtils.addMonthsToMonthDate(fromDate, i);
       final offsetEndDate = DateUtils.addMonthsToMonthDate(fromDate, i + 1);
       final weekDays = getWeekDaysInMonth(
-        context: context,
+        localizations: localizations,
         currentYear: offsetStartDate.year,
         currentMonth: offsetStartDate.month,
       );
@@ -61,7 +61,7 @@ class CalendarHelper {
     final currentMonth = now.month;
 
     final weekDays = getWeekDaysInMonth(
-      context: context,
+      localizations: MaterialLocalizations.of(context),
       currentYear: currentYear,
       currentMonth: currentMonth,
     );
@@ -85,7 +85,7 @@ class CalendarHelper {
     DateTime monthStartDate,
   ) {
     final weekDays = getWeekDaysInMonth(
-      context: context,
+      localizations: MaterialLocalizations.of(context),
       currentYear: monthStartDate.year,
       currentMonth: monthStartDate.month,
     );
@@ -100,7 +100,7 @@ class CalendarHelper {
   }
 
   static Map<int, List<CalendarDay>> getWeekDaysInMonth({
-    required BuildContext context,
+    required MaterialLocalizations localizations,
     required int currentYear,
     required int currentMonth,
   }) {
@@ -109,7 +109,7 @@ class CalendarHelper {
     int week = 0;
     while (true) {
       final daysInWeek = getDaysInWeek(
-        context,
+        localizations,
         currentYear,
         currentMonth,
         week,
@@ -126,7 +126,7 @@ class CalendarHelper {
   }
 
   static List<CalendarDay>? getDaysInWeek(
-    BuildContext context,
+    MaterialLocalizations localizations,
     int year,
     int month,
     int week,
@@ -135,7 +135,7 @@ class CalendarHelper {
     final firstDayOffset = DateUtils.firstDayOffset(
       year,
       month,
-      MaterialLocalizations.of(context),
+      localizations,
     );
 
     final weekDaysOffset = week * 7;

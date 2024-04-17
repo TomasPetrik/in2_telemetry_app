@@ -519,7 +519,7 @@
             }
         }
     },
-    "find_device_screen_step3": "Po meření stiskněte opět akční tlačítko",
+    "find_device_screen_step3": "Po měření stiskněte opět akční tlačítko",
     "find_device_screen_step4": "Počkejte na přenesení výsledků z tlakoměru",
     "find_device_screen_device_reference": "Stránky nemocnice o tlakoměru",
     "find_device_screen_disabled_bt_title": "Bluetooth je vypnutý",

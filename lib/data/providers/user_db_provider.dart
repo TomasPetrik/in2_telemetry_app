@@ -19,27 +19,20 @@ class UserDbProvider {
 
   UserDbProvider(this._database, this._userMapper, this._whenCodeMapper);
 
-  Future<UserModel?> get(int userId) async {
-    final entity = await _database.usersDao.getUser(userId);
-    if (entity == null) {
-      return null;
-    }
+  Stream<UserModel?> get(int userId) {
+    final entity = _database.usersDao.getUser(userId);
 
-    return _mapUser(entity);
+    return entity.map((x) => x == null ? null : _mapUser(x));
   }
 
-  Future<UserModel?> getByMuid(String muid) async {
-    final entity = await _database.usersDao.getUserByMuid(muid);
+  Stream<UserModel?> getByMuid(String muid) {
+    final stream = _database.usersDao.getUserByMuid(muid);
 
-    if (entity == null) {
-      return null;
-    }
-
-    return _mapUser(entity);
+    return stream.map((x)=>x==null?null: _mapUser(x));
   }
 
   /// Saves the given user with represented people. If the user already exists, represented people not in [representedPeople] will be deleted.
-  Future<UserModel> createOrUpdateUser(
+  Future<int> createOrUpdateUser(
     UserContract rootUser,
     List<UserContract>? representedPeople,
     int hospitalId,
@@ -98,7 +91,7 @@ class UserDbProvider {
 
     await _database.usersDao.removeObsoleteRepresentedPeople(userId, representedPeopleIds);
 
-    return (await get(userId))!;
+    return userId;
   }
 
   Future<UserModel?> getLastUsedUser() async {
@@ -125,33 +118,34 @@ class UserDbProvider {
     await _database.usersDao.updateUserWithRepresentedPeople(userId, changes);
   }
 
-  Future<List<UserModel>> getAll() async {
-    final entities = await _database.usersDao.getAll();
+  Stream<List<UserModel>> getAll() {
+    final entities = _database.usersDao.getAll();
 
-    final result = entities.map(_mapUser);
-
-    return result.toList();
+    final result = entities.map(_mapUsers);
+    return result;
   }
 
-  Future<List<UserModel>> getAllRootUsers() async {
-    final entities = await _database.usersDao.getAllRootUsers();
+  Stream<List<UserModel>> getAllRootUsers() {
+    final entities = _database.usersDao.getAllRootUsers();
 
-    final result = entities.map(_mapUser);
-
-    return result.toList();
+    final result = entities.map(_mapUsers);
+    return result;
   }
 
-  Future<List<UserModel>> getByIds(Iterable<int> userIds) async {
-    final entities = await _database.usersDao.getByIds(userIds);
+  Stream<List<UserModel>> getByIds(Iterable<int> userIds) {
+    final entities = _database.usersDao.getByIds(userIds);
 
-    final result = entities.map(_mapUser);
-
-    return result.toList();
+    final result = entities.map(_mapUsers);
+    return result;
   }
 
   /// Deletes the user with the given [userId], including represented people, measurements, etc (using db cascades)
   Future<void> remove(int userId) async {
     await _database.usersDao.removeUser(userId);
+  }
+
+  List<UserModel> _mapUsers(Iterable<UserWithRepresentedPeople> entities) {
+    return entities.map(_mapUser).toList();
   }
 
   UserModel _mapUser(UserWithRepresentedPeople entity) {

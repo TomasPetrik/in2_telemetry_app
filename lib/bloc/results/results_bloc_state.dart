@@ -14,10 +14,12 @@ class ResultsBlocState with _$ResultsBlocState {
   factory ResultsBlocState({
     ResultsWhenPeriod? selectedWhenPeriod,
     List<CarePlan>? currentCarePlans,
+    List<CarePlan>? allCarePlans,
     List<MeasurementResultViewModel>? results,
     MeasurementType? measurementType,
     Set<MeasurementType>? allMeasurementTypes,
     Map<ResultsWhenPeriod, int?>? plansEvaluationPerPeriod,
     List<UserModel>? sessionUsers,
+    List<Measurement>? offlineResults,
   }) = _ResultsBlocState;
 }

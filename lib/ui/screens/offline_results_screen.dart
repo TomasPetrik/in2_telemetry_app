@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,14 +7,13 @@ import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/storage/session.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blurred_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/fixed_item_height_delegate.dart';
 import 'package:scalesoft_app/ui/widgets/process_item.dart';
-import 'package:scalesoft_app/ui/widgets/result_item.dart';
 import 'package:scalesoft_app/ui/widgets/warning_item.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
@@ -34,9 +34,9 @@ class OfflineResultsScreen extends StatelessWidget with BottomSheetMixin {
       buildWhen: (previous, current) => previous != current,
       bloc: syncBloc..add(const SyncEvent.init()),
       builder: (context, syncState) {
-        final session = getIt<Session>();
+        final session = getIt<UserCubit>();
 
-        final lastSyncAt = session.getLastSyncAt();
+        final lastSyncAt = session.state.rootUsers.map((x) => x.lastSyncAt).max;
         final offlineResults = session.getOfflineResults() ?? [];
 
         final warningWidget = syncState.whenOrNull(
@@ -144,13 +144,13 @@ class OfflineResultsScreen extends StatelessWidget with BottomSheetMixin {
                       (_, int index) {
                         bool isSameDate = true;
 
-                        final date = offlineResults[index].measurementDateTime;
+                        final date = offlineResults[index].measuredAt;
 
                         if (index == 0) {
                           isSameDate = false;
                         } else {
                           final prevDate =
-                              offlineResults[index - 1].measurementDateTime;
+                              offlineResults[index - 1].measuredAt;
                           isSameDate = date.isSameDate(prevDate);
                         }
 
@@ -171,26 +171,26 @@ class OfflineResultsScreen extends StatelessWidget with BottomSheetMixin {
                               ),
                               Gaps.gap8,
                             ],
-                            ResultItem(
-                              isMultiUser: getIt<Session>().isMultiUser == true,
-                              mResult: offlineResults[index],
-                              onRemove: () async {
-                                final confirmed =
-                                    await showResultRemovalConfirmation(
-                                  context: context,
-                                  measurementType:
-                                      offlineResults[index].measurementType!,
-                                );
-
-                                if (confirmed == true) {
-                                  syncBloc.add(
-                                    SyncEvent.removeOfflineResult(
-                                      offlineResults[index],
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
+                            // ResultItem(
+                            //   isMultiUser: getIt<Session>().isMultiUser == true,
+                            //   mResult: offlineResults[index],
+                            //   onRemove: () async {
+                            //     final confirmed =
+                            //         await showResultRemovalConfirmation(
+                            //       context: context,
+                            //       measurementType:
+                            //           offlineResults[index].measurementType!,
+                            //     );
+                            //
+                            //     if (confirmed == true) {
+                            //       syncBloc.add(
+                            //         SyncEvent.removeOfflineResult(
+                            //           offlineResults[index],
+                            //         ),
+                            //       );
+                            //     }
+                            //   },
+                            // ), TODO
                             if (index != (offlineResults.length - 1))
                               Container(
                                 margin: Paddings.horizontal16,

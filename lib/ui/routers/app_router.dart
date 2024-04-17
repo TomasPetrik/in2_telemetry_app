@@ -16,6 +16,7 @@ import 'package:scalesoft_app/ui/routers/routes/license_detail_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/licenses_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/manual_measurement_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/manual_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/manual_without_bar_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/metering_first_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/no_user_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/notification_route.dart';
@@ -95,6 +96,7 @@ class AppRouter {
             DeviceSearchRoute(navigator: navAuthManager).route,
             RegisterDeviceDetailRoute(navigator: navAuthManager).route,
             RegisterDeviceSuccessRoute(navigator: navAuthManager).route,
+            ManualWithoutBarRoute(navigator: navAuthManager).route,
           ],
         ),
       ],

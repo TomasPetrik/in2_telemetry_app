@@ -5,7 +5,7 @@ import 'package:scalesoft_app/bloc/results/results_bloc_state.dart';
 import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/data/providers/care_plan_db_provider.dart';
 import 'package:scalesoft_app/data/providers/measurements_db_provider.dart';
-import 'package:scalesoft_app/storage/session.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/results_helper.dart';
@@ -15,17 +15,18 @@ class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
   late final List<Measurement> _allMeasurements;
   late final List<CarePlan> _allCarePlans;
 
-  final Session _session;
+  final UserCubit _session;
   final CarePlanDbProvider _carePlanDbProvider;
   final MeasurementsDbProvider _measurementsDbProvider;
 
   ResultsBloc(this._session, this._carePlanDbProvider, this._measurementsDbProvider) : super(ResultsBlocState()) {
     on<ResultsBlocEvent>((event, emit) async {
-      event.when(
+      await event.when(
         init: (
           final ResultsWhenPeriod whenPeriod,
         ) async {
           final sessionAccounts = await _session.getSessionAccounts();
+          final sessionAccounts = _session.state.rootUsers;
 
           final List<CarePlan> activeCarePlans = [];
           final List<Measurement> allMeasurements = [];
@@ -71,6 +72,8 @@ class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
               allMeasurementTypes: allMeasurementTypes,
               plansEvaluationPerPeriod: plansEvaluationPerPeriod,
               sessionUsers: sessionAccounts,
+              allCarePlans: _allCarePlans,
+              offlineResults: allMeasurements,
             ),
           );
         },

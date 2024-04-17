@@ -1,7 +1,7 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
 import 'package:scalesoft_app/ui/screens/hospital_details_screen.dart';
 import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
@@ -27,19 +27,15 @@ class HospitalDetailRoute extends ApplicationRoute with PageBuilderMixin {
         builder: (state) {
           final extras = state.extra! as List;
           final hospitalTitle = extras[0] as String;
-          final usersIds = extras[1] as List<String>;
+          final usersIds = (extras[1] as List<int>);
 
-          final List<UserAccount> userAccounts = [];
-          for (final userId in usersIds) {
-            final userAccount = getIt<AccountDbProvider>().get(userId);
-            if (userAccount != null) {
-              userAccounts.add(userAccount);
-            }
-          }
+          return BlocBuilder<UserCubit, UserCubitState>(
+            bloc: getIt<UserCubit>(),
+            builder: (context, state) {
+              final users = state.rootUsers.where(usersIds.contains).toList();
 
-          return HospitalDetailScreen(
-            hospitalTitle: hospitalTitle,
-            userAccounts: userAccounts,
+              return HospitalDetailScreen(hospitalTitle: hospitalTitle, userAccounts: users);
+            },
           );
         },
       ),

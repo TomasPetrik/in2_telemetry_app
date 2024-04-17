@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
+import 'package:scalesoft_app/data/app_database.dart';
+import 'package:scalesoft_app/data/entities/json_entities/care_plan/care_plan_version.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/chart_screen_route.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -16,14 +17,16 @@ class CarePlanItem extends StatelessWidget {
     required this.viewOwnMeasurementData,
   });
 
-  final CarePlanContract carePlan;
+  final CarePlan carePlan;
   final bool viewOwnMeasurementData;
+
+  CarePlanVersion get currentVersion => carePlan.versions.last;
 
   DateTime _getOptimalDateTime() {
     final dtNow = DateTime.now();
 
-    if (carePlan.scheduledEnd?.isAfter(dtNow) == true) {
-      return carePlan.scheduledEnd!;
+    if (currentVersion.scheduledEnd?.isAfter(dtNow) == true) {
+      return currentVersion.scheduledEnd!;
     } else {
       return dtNow;
     }
@@ -84,10 +87,9 @@ class CarePlanItem extends StatelessWidget {
                       GoRouter.of(context).pushNamed(
                         ChartRoute.name,
                         params: {
-                          'userId': carePlan.userId!,
+                          'userId': carePlan.targetUserId.toString(),
                           'dateTime': _getOptimalDateTime().toIso8601String(),
-                          'measurementType':
-                              carePlan.activity.measurementType.name,
+                          'measurementType': carePlan.activity.measurementType.name,
                         },
                       );
                     },
@@ -113,13 +115,13 @@ class CarePlanItem extends StatelessWidget {
             ),
             Gaps.gap6,
             Text(
-              carePlan.scheduledEnd != null
+              currentVersion.scheduledEnd != null
                   ? localization.user_details_screen_plan_active_from_to_date(
-                      carePlan.scheduledStart.dateFormat,
-                      carePlan.scheduledEnd!.dateFormat,
+                      currentVersion.scheduledStart.dateFormat,
+                      currentVersion.scheduledEnd!.dateFormat,
                     )
                   : localization.user_details_screen_plan_active_from_date(
-                      carePlan.scheduledStart.dateFormat,
+                      currentVersion.scheduledStart.dateFormat,
                     ),
               style: ScaleTextStyles.textAccent.apply(
                 color: Theme.of(context).colorScheme.onSecondary,

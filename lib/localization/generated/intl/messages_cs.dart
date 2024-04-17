@@ -493,7 +493,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "find_device_screen_step2_p": MessageLookupByLibrary.simpleMessage(
             "Počkejte, na výzvu k párování"),
         "find_device_screen_step3": MessageLookupByLibrary.simpleMessage(
-            "Po meření stiskněte opět akční tlačítko"),
+            "Po měření stiskněte opět akční tlačítko"),
         "find_device_screen_step3_p":
             MessageLookupByLibrary.simpleMessage("Párování s tlakoměrem"),
         "find_device_screen_step4": MessageLookupByLibrary.simpleMessage(

@@ -28,7 +28,7 @@ class DeviceSearchScreen extends StatefulWidget {
     required this.devicePurpose,
   });
 
-  final String userId;
+  final int userId;
   final DevicePurpose devicePurpose;
 
   @override

@@ -1,7 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
-import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
-import 'package:scalesoft_app/api/contracts/measurement_type_contract.dart';
+import 'package:scalesoft_app/data/app_database.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 part 'care_plan_bloc_state.freezed.dart';
@@ -13,12 +12,12 @@ class CarePlanBlocState with _$CarePlanBlocState {
   factory CarePlanBlocState({
     int? timestamp,
     PlanWhenPeriod? selectedWhenPeriod,
-    List<CarePlanContract>? currentCarePlans,
+    List<CarePlan>? currentCarePlans,
     PlannedMeasurement? nextMeasurement,
     List<PlannedMeasurement>? upcomingMeasurements,
     List<PlannedMeasurement>? allTodayMeasurements,
-    List<MeasurementDataContract>? results,
-    MeasurementTypeContract? measurementType,
+    List<Measurement>? results,
+    MeasurementType? measurementType,
     Map<PlanWhenPeriod, int>? allMeasurementCountsPerPeriod,
   }) = _CarePlanBlocState;
 }

@@ -12,7 +12,7 @@ import 'package:scalesoft_app/bloc/notifications/notifications_bloc.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_event.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/ui/routers/routes/manual_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/manual_without_bar_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -139,7 +139,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           label: localization.open_manual_button,
                           buttonType: ButtonType.secondary,
                           onPressed: () async {
-                            GoRouter.of(context).pushNamed(ManualRoute.name);
+                            GoRouter.of(context).pushNamed(ManualWithoutBarRoute.name);
                           },
                         ),
                       ],

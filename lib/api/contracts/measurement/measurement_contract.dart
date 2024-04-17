@@ -6,10 +6,10 @@ import 'package:scalesoft_app/api/contracts/measurement/shortness_of_breath_cont
 import 'package:scalesoft_app/api/contracts/device/source_device_with_metadata_contract.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 
-part 'measurement.g.dart';
+part 'measurement_contract.g.dart';
 
 @JsonSerializable()
-class Measurement {
+class MeasurementContract {
   final String? note;
   final SourceDeviceWithMetadataContract sourceDeviceWithMetadata;
   final DateTime measurementDateTime;
@@ -25,7 +25,7 @@ class Measurement {
   final OverallHealthContract? overallHealth;
   final int? batteryPercentage;
 
-  Measurement({
+  MeasurementContract({
     this.note,
     required this.sourceDeviceWithMetadata,
     required this.measurementDateTime,
@@ -41,10 +41,10 @@ class Measurement {
     this.batteryPercentage,
   });
 
-  factory Measurement.fromJson(Map<String, dynamic> json) =>
-      _$MeasurementFromJson(json);
+  factory MeasurementContract.fromJson(Map<String, dynamic> json) =>
+      _$MeasurementContractFromJson(json);
 
-  Map<String, dynamic> toJson() => _$MeasurementToJson(this);
+  Map<String, dynamic> toJson() => _$MeasurementContractToJson(this);
 
   @override
   String toString() => toJson().toString();

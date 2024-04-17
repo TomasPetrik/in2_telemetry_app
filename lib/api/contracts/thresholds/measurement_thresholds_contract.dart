@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scalesoft_app/api/contracts/measurement_type_contract.dart';
-import 'package:scalesoft_app/api/contracts/measurement/measurement.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/overall_health_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/shortness_of_breath_contract.dart';
 import 'package:scalesoft_app/api/contracts/thresholds/blood_pressure_thresholds_contract.dart';
@@ -80,7 +80,7 @@ class MeasurementThresholdsContract {
     return overallHealth?.max != null && value.index > overallHealth!.max!.index;
   }
 
-  bool exceededValues(Measurement measurement) {
+  bool exceededValues(MeasurementContract measurement) {
     final measurementType = measurement.measurementType;
     switch (measurementType) {
       case MeasurementTypeContract.bloodPressure:

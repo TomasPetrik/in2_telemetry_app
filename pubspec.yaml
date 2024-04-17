@@ -80,7 +80,7 @@ dependencies:
   background_fetch: ^1.2.2
 
   # Local notifications
-  flutter_local_notifications: ^16.0.0
+  flutter_local_notifications: ^17.0.0
   timezone: ^0.9.1
 
   # Open url in webview

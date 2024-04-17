@@ -11,12 +11,13 @@ import 'package:scalesoft_app/bloc/notifications/notifications_state.dart';
 import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/data/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/data/providers/user_db_provider.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/utils/helpers/notifications_helper.dart';
 
 @singleton
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
-  final UserDbProvider _userDbProvider;
   final SettingsDbProvider _settingsDbProvider;
+  final UserCubit _userCubit;
 
   final FlutterLocalNotificationsPlugin _notificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -25,8 +26,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   bool requestedForPermission = false;
 
   NotificationsBloc(
-    this._userDbProvider,
-    this._settingsDbProvider,
+    this._settingsDbProvider, this._userCubit,
   ) : super(const NotificationsState.init()) {
     on<NotificationsEvent>(
       (event, emit) async {
@@ -52,7 +52,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
             NotificationsHelper.setNotifications(
               appSettings: appSettings,
               notificationsPlugin: _notificationsPlugin,
-              userAccounts: await _userDbProvider.getAll(),
+              userAccounts: _userCubit.state.rootUsers,
             );
           },
           initSettings: () async {
@@ -98,7 +98,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
             NotificationsHelper.setNotifications(
               appSettings: appSettings,
               notificationsPlugin: _notificationsPlugin,
-              userAccounts: await _userDbProvider.getAll(),
+              userAccounts: _userCubit.state.rootUsers,
             );
           },
           enableNotifications: (enabled) async {
@@ -120,7 +120,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
             NotificationsHelper.setNotifications(
               appSettings: newAppSettings,
               notificationsPlugin: _notificationsPlugin,
-              userAccounts: await _userDbProvider.getAll(),
+              userAccounts: _userCubit.state.rootUsers,
             );
 
             emit(
@@ -138,7 +138,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
             NotificationsHelper.setNotifications(
               appSettings: newAppSettings,
               notificationsPlugin: _notificationsPlugin,
-              userAccounts: await _userDbProvider.getAll(),
+              userAccounts: _userCubit.state.rootUsers,
             );
 
             emit(
@@ -155,7 +155,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
             NotificationsHelper.setNotifications(
               appSettings: newAppSettings,
               notificationsPlugin: _notificationsPlugin,
-              userAccounts: await _userDbProvider.getAll(),
+              userAccounts: _userCubit.state.rootUsers,
             );
 
             emit(

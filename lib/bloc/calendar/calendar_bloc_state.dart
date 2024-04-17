@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/contracts/measurement/measurement.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
+import 'package:scalesoft_app/api/model/user_model.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 part 'calendar_bloc_state.freezed.dart';
@@ -60,7 +62,7 @@ class CalendarDay with _$CalendarDay {
     bool? wasCheckedForEvaluation,
     int? carePlansEvaluation,
     List<PlannedMeasurement>? plannedMeasurements,
-    List<User>? userAccounts,
+    List<UserModel>? userAccounts,
     List<UserEvaluationDay>? usersEvaluationsDay,
     bool? isSelected,
   }) = _CalendarDay;
@@ -144,8 +146,8 @@ class UserEvaluationDay with _$UserEvaluationDay {
     //it can happened for regular measurements which started and was completed before todays midnight
     //or for periodical measurements which ending in future but was completed earlier
     futureMeasurements.removeWhere(
-      (fMeasurement) =>
-          fMeasurement.fulfillmentEvaluationItem?.wasMeasured() == true,
+          (fMeasurement) =>
+              CarePlanHelper.wasMeasured(fMeasurement.fulfillmentEvaluationItem),
     );
 
     return futureMeasurements;
@@ -167,9 +169,9 @@ class SingleDayMeasurementsOfExactType with _$SingleDayMeasurementsOfExactType {
   SingleDayMeasurementsOfExactType._();
 
   factory SingleDayMeasurementsOfExactType(
-    MeasurementTypeContract measurementType,
+    MeasurementType measurementType,
     List<PlannedMeasurement> plannedMeasurements,
-    List<Measurement> offlineResults,
+    List<MeasurementContract> offlineResults,
     List<MeasurementDataContract> measurementResults,
   ) = _CarePlanFulfillment;
 

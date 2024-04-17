@@ -1,13 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
-import 'package:scalesoft_app/api/contracts/measurement/measurement.dart';
-import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_state.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
+import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
@@ -15,18 +14,24 @@ import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 @singleton
 class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
+  final UserCubit _session;
+
   final List<Measurement> _pendingResults = [];
-  final List<CarePlanContract> _allCarePlans = [];
+  final List<CarePlan> _allCarePlans = [];
 
-  CarePlanBloc() : super(CarePlanBlocState()) {
+  CarePlanBloc(this._session) : super(CarePlanBlocState()) {
     on<CarePlanInitializeEvent>((event, emit) async {
-      _allCarePlans.clear();
-      _allCarePlans.addAll(event.carePlans);
-      _pendingResults.clear();
-      _pendingResults.addAll(event.pendingResults);
 
-      final List<MeasurementDataContract> todayOfflineResults =
-          MeasurementHelper.getOffilneResultsConverted(
+      final carePlans = await _session.getActiveCarePlans();
+      final allPendingResults = await _session.getPendingResults();
+
+      _allCarePlans.clear();
+      _allCarePlans.addAll(carePlans);
+      _pendingResults.clear();
+      _pendingResults.addAll(allPendingResults);
+
+      final List<Measurement> todayOfflineResults =
+          MeasurementHelper.filterMeasurements(
         _pendingResults,
         [ResultsWhenPeriod.today],
         null,
@@ -38,22 +43,22 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
         todayOfflineResults,
       );
 
-      final nextMeasurement = event.carePlans.isEmpty
+      final nextMeasurement = carePlans.isEmpty
           ? null
           : Calendar.getNUpcomingMeasurements(
-              carePlans: event.carePlans,
+              carePlans: carePlans,
               reqCount: 1,
               offlineResults: todayOfflineResults,
             );
 
       final upcomingMeasurements = CarePlanHelper.getMeasurementsForPeriod(
-        event.carePlans,
+        carePlans,
         event.whenPeriod,
         todayOfflineResults,
       );
 
-      final allTodayMeasurements = Calendar.getMeasurementsOfDay(
-        carePlans: event.carePlans,
+      final allTodayMeasurements = Calendar.getPlannedMeasurementsOfDay(
+        carePlans: carePlans,
         dayDt: DateTime.now().date,
         offlineResults: todayOfflineResults,
         all: true,
@@ -62,12 +67,12 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
       emit(
         CarePlanBlocState(
           timestamp: DateTime.now().microsecondsSinceEpoch,
-          currentCarePlans: event.carePlans,
+          currentCarePlans: carePlans,
           selectedWhenPeriod: event.whenPeriod,
           nextMeasurement: nextMeasurement?.first,
           upcomingMeasurements: upcomingMeasurements,
           allTodayMeasurements: allTodayMeasurements,
-          results: todayOfflineResults,
+          results:  _pendingResults,
           measurementType: null,
           allMeasurementCountsPerPeriod: allMeasurementCountsPerPeriod,
         ),
@@ -75,8 +80,8 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
     });
 
     on<TimePeriodChangeEvent>((event, emit) {
-      final List<MeasurementDataContract> todayOfflineResults =
-          MeasurementHelper.getOffilneResultsConverted(
+      final List<Measurement> todayOfflineResults =
+          MeasurementHelper.filterMeasurements(
         _pendingResults,
         [ResultsWhenPeriod.today],
         state.measurementType,
@@ -94,7 +99,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
         todayOfflineResults,
       );
 
-      final allTodayMeasurements = Calendar.getMeasurementsOfDay(
+      final allTodayMeasurements = Calendar.getPlannedMeasurementsOfDay(
         carePlans: state.currentCarePlans!,
         dayDt: DateTime.now().date,
         offlineResults: todayOfflineResults,
@@ -107,14 +112,14 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
           nextMeasurement: nextMeasurement.first,
           upcomingMeasurements: upcomingMeasurements,
           allTodayMeasurements: allTodayMeasurements,
-          results: todayOfflineResults,
+          results:  _pendingResults,
         ),
       );
     });
 
     on<CurrentPlansChangeEvent>((event, emit) {
-      final List<MeasurementDataContract> todayOfflineResults =
-          MeasurementHelper.getOffilneResultsConverted(
+      final List<Measurement> todayOfflineResults =
+          MeasurementHelper.filterMeasurements(
         _pendingResults,
         [ResultsWhenPeriod.today],
         state.measurementType,
@@ -141,7 +146,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
         todayOfflineResults,
       );
 
-      final allTodayMeasurements = Calendar.getMeasurementsOfDay(
+      final allTodayMeasurements = Calendar.getPlannedMeasurementsOfDay(
         carePlans: carePlans,
         dayDt: DateTime.now().date,
         offlineResults: todayOfflineResults,
@@ -155,7 +160,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
           upcomingMeasurements: upcomingMeasurements,
           allTodayMeasurements: allTodayMeasurements,
           measurementType: event.measurementType,
-          results: todayOfflineResults,
+          results:  _pendingResults,
         ),
       );
     });
@@ -170,8 +175,8 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
 
     on<RefreshStateEvent>(
       (event, emit) async {
-        final List<MeasurementDataContract> todayOfflineResults =
-            MeasurementHelper.getOffilneResultsConverted(
+        final List<Measurement> todayOfflineResults =
+            MeasurementHelper.filterMeasurements(
           _pendingResults,
           [ResultsWhenPeriod.today],
           state.measurementType,
@@ -192,7 +197,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
             todayOfflineResults,
           );
 
-          final allTodayMeasurements = Calendar.getMeasurementsOfDay(
+          final allTodayMeasurements = Calendar.getPlannedMeasurementsOfDay(
             carePlans: carePlans,
             dayDt: DateTime.now().date,
             offlineResults: todayOfflineResults,
@@ -206,7 +211,7 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
               nextMeasurement: nextMeasurement.first,
               upcomingMeasurements: upcomingMeasurements,
               allTodayMeasurements: allTodayMeasurements,
-              results: todayOfflineResults,
+              results:  _pendingResults,
             ),
           );
         }

@@ -11,7 +11,7 @@ import 'package:scalesoft_app/bloc/calendar_footer/calendar_footer_bloc.dart';
 import 'package:scalesoft_app/bloc/calendar_footer/calendar_footer_event.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/storage/session.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/ui/routers/routes/future_measurements_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_history_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_route.dart';
@@ -212,7 +212,7 @@ class _CalendarFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final calendarFooterBloc = getIt<CalendarFooterBloc>();
-    final session = getIt<Session>();
+    final session = getIt<UserCubit>();
     return BlocBuilder<CalendarFooterBloc, CalendarFooterState>(
       bloc: calendarFooterBloc,
       builder: (context, state) {
@@ -277,7 +277,7 @@ class _CalendarFooter extends StatelessWidget {
                             ),
                             Gaps.gap6,
                             Text(
-                              '${selectedDay.userAccounts!.first.user.fullName}'
+                              '${selectedDay.userAccounts!.first.fullName}'
                               ' ${selectedDay.userAccounts!.length > 1 ? localization.common_plus_n_others(selectedDay.userAccounts!.length - 1) : ''}',
                               style: ScaleTextStyles.label.apply(
                                 color: Theme.of(context).colorScheme.onSecondary,
