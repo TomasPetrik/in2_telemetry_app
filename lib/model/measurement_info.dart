@@ -6,16 +6,18 @@ import 'package:scalesoft_app/extensions/uint8_list_extension.dart';
 part 'measurement_info.freezed.dart';
 part 'measurement_info.g.dart';
 
-final Map<MeasurementChar, Guid> measurementCharAddress = {
-  MeasurementChar.bloodPressureMeasurement: Guid('2A35'),
-  MeasurementChar.intermediateCuffPressure: Guid('2A36'),
-  MeasurementChar.bloodPressureFeature: Guid('2A49'),
-};
-
 enum MeasurementChar {
+  recordAccessCp,
   bloodPressureMeasurement,
   intermediateCuffPressure,
-  bloodPressureFeature,
+  bloodPressureFeature;
+
+  Guid get address => switch (this) {
+        MeasurementChar.recordAccessCp => Guid('2A52'),
+        MeasurementChar.bloodPressureMeasurement => Guid('2A35'),
+        MeasurementChar.intermediateCuffPressure => Guid('2A36'),
+        MeasurementChar.bloodPressureFeature => Guid('2A49'),
+      };
 }
 
 @freezed
@@ -34,7 +36,7 @@ class MeasurementInfo with _$MeasurementInfo {
   factory MeasurementInfo.fromJson(Map<String, Object?> json) => _$MeasurementInfoFromJson(json);
 
   factory MeasurementInfo.fromIntList(List<int> btData) {
-    int flags = btData.toInt8(0, 1);  //will be always 30 (1E)
+    int flags = btData.toInt8(0, 1); //will be always 30 (1E)
     int systolic = btData.toInt16(1, 3);
     int diastolic = btData.toInt16(3, 5);
     int meanArterialPressure = btData.toInt16(5, 7);
