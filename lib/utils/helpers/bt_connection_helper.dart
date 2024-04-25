@@ -16,7 +16,7 @@ import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/model/measurement_info.dart';
 
 final Guid deviceInfo = Guid('0000180a-0000-1000-8000-00805f9b34fb');
-final Guid bloodPressure = Guid('00001810-0000-1000-8000-00805f9b34fb');
+final Guid recordAccessCpServiceUuid = Guid('5df5e817-a945-4f81-89c0-3d4e9759c07c');
 final Guid batteryService = Guid('0000180f-0000-1000-8000-00805f9b34fb');
 final Guid bloodPressureServiceUuid = Guid('1810');
 final Guid heartRateServiceUuid = Guid('180d');
@@ -39,13 +39,11 @@ class BtConnectionHelper {
     device,
     SearchMode searchMode,
   ) async {
-    final supportedBtNames = ConfigurationConstants.supportedDevices
-        .map((supDev) => supDev.bluetoothName ?? '')
-        .toList();
+    final supportedBtNames =
+        ConfigurationConstants.supportedDevices.map((supDev) => supDev.bluetoothName ?? '').toList();
 
-    final supportedBtPairingNames = ConfigurationConstants.supportedDevices
-        .map((supDev) => supDev.bluetoothPairingName ?? '')
-        .toList();
+    final supportedBtPairingNames =
+        ConfigurationConstants.supportedDevices.map((supDev) => supDev.bluetoothPairingName ?? '').toList();
 
     if ((searchMode == SearchMode.pairing &&
             supportedBtPairingNames.any((suppBtPairName) {
@@ -71,9 +69,7 @@ class BtConnectionHelper {
 
     final supportedDev = ConfigurationConstants.supportedDevices.firstWhere(
       (dev) {
-        return localName
-            .toLowerCase()
-            .contains(dev.bluetoothName!.toLowerCase());
+        return localName.toLowerCase().contains(dev.bluetoothName!.toLowerCase());
       },
     );
 
@@ -109,7 +105,7 @@ class BtConnectionHelper {
     final connectedDevices = await FlutterBluePlus.systemDevices;
 
     for (final connectedDevice in connectedDevices) {
-      debugPrint('disconecting from ${connectedDevice.platformName}');
+      debugPrint('disconnecting from ${connectedDevice.platformName}');
       await connectedDevice.disconnect();
     }
 
@@ -117,9 +113,7 @@ class BtConnectionHelper {
 
     while (true) {
       if (maxAllowedDeviceSearchingTime != null &&
-          DateTime.now()
-              .subtract(maxAllowedDeviceSearchingTime)
-              .isAfter(startSearchAt)) {
+          DateTime.now().subtract(maxAllowedDeviceSearchingTime).isAfter(startSearchAt)) {
         await FlutterBluePlus.stopScan();
         return null;
       }
@@ -131,8 +125,7 @@ class BtConnectionHelper {
       for (final scanResult in availableDevices) {
         final serviceUuids = scanResult.advertisementData.serviceUuids;
         final services = scanResult.device.servicesList;
-        if ((serviceUuids
-                    .any((btServiceUuid) => btServiceUuid == serviceUuid) ||
+        if ((serviceUuids.any((btServiceUuid) => btServiceUuid == serviceUuid) ||
                 services.any(
                   (btService) => btService.serviceUuid == serviceUuid,
                 )) &&
@@ -174,9 +167,8 @@ class BtConnectionHelper {
       FlutterBluePlus.startScan();
     }
 
-    final supportedBtNames = ConfigurationConstants.supportedDevices
-        .map((supDev) => supDev.bluetoothName ?? '')
-        .toList();
+    final supportedBtNames =
+        ConfigurationConstants.supportedDevices.map((supDev) => supDev.bluetoothName ?? '').toList();
 
     final supportedBtPairingNames = ConfigurationConstants.supportedDevices
         .where((x) => x.bluetoothPairingName != null)
@@ -195,14 +187,11 @@ class BtConnectionHelper {
             ) &&
             ((!onlyPairingMode &&
                     supportedBtNames.any((suppBtName) {
-                      return scanResult.advertisementData.advName
-                          .toLowerCase()
-                          .contains(suppBtName.toLowerCase());
+                      return scanResult.advertisementData.advName.toLowerCase().contains(suppBtName.toLowerCase());
                     })) ||
                 (onlyPairingMode &&
                     supportedBtPairingNames.any((suppBtPairName) {
-                      return scanResult.advertisementData.advName
-                          .contains(suppBtPairName);
+                      return scanResult.advertisementData.advName.contains(suppBtPairName);
                     })));
       }).toList();
 
@@ -237,9 +226,7 @@ class BtConnectionHelper {
   ) {
     final supportedDev = ConfigurationConstants.supportedDevices.firstWhere(
       (dev) {
-        return advertisementName
-            .toLowerCase()
-            .contains(dev.bluetoothName!.toLowerCase());
+        return advertisementName.toLowerCase().contains(dev.bluetoothName!.toLowerCase());
       },
     );
 
@@ -252,10 +239,10 @@ class BtConnectionHelper {
 
     // TODO
     // return supportedDev.copyWith(
-    //   bluetoothAddress:
-    //       Platform.isAndroid ? btDevice.remoteId.toString() : null,
+    //   bluetoothAddress: Platform.isAndroid ? btDevice.remoteId.toString() : null,
     //   deviceIdentifier: preferredIdName,
     // );
+
     return SourceDeviceContract();
   }
 
@@ -304,7 +291,8 @@ class BtConnectionHelper {
 
   Future<HwMeasurementResult> getHwMeasurementResult({
     required BluetoothDevice device,
-    required BluetoothService bpService,
+    required BluetoothCharacteristic bpCharacteristic,
+    required BluetoothCharacteristic recordAccessCpCharacteristic,
     required bool isPairing,
     required String devId,
     bool? isSecondAttempt,
@@ -313,7 +301,8 @@ class BtConnectionHelper {
 
     var bpData = await getBPDataFromService(
       device,
-      bpService,
+      bpCharacteristic,
+      recordAccessCpCharacteristic,
       isPairing,
       isSecondAttempt,
     );
@@ -347,14 +336,25 @@ class BtConnectionHelper {
     String devId,
   ) async {
     final services = await device.discoverServices();
-    final bpService = services.firstWhereOrNull(
-      (service) => service.serviceUuid == bloodPressure,
-    );
+    final bpCharacteristic = services
+        .firstWhereOrNull(
+          (service) => service.serviceUuid == bloodPressureServiceUuid,
+        )
+        ?.characteristics
+        .firstWhereOrNull((characteristic) => characteristic.uuid == MeasurementChar.bloodPressureMeasurement.address);
 
-    if (bpService != null) {
+    final recordAccessCpCharacteristic = services
+        .firstWhereOrNull(
+          (service) => service.serviceUuid == recordAccessCpServiceUuid,
+        )
+        ?.characteristics
+        .firstWhereOrNull((characteristic) => characteristic.uuid == MeasurementChar.recordAccessCp.address);
+
+    if (bpCharacteristic != null && recordAccessCpCharacteristic != null) {
       final hwMeasurementResult = await getHwMeasurementResult(
         device: device,
-        bpService: bpService,
+        bpCharacteristic: bpCharacteristic,
+        recordAccessCpCharacteristic: recordAccessCpCharacteristic,
         isPairing: !isMeasurement,
         devId: devId,
       );
@@ -364,7 +364,8 @@ class BtConnectionHelper {
           //repeat action in case to get fresh data
           final hwMeasurementResult2 = await getHwMeasurementResult(
             device: device,
-            bpService: bpService,
+            bpCharacteristic: bpCharacteristic,
+            recordAccessCpCharacteristic: recordAccessCpCharacteristic,
             isPairing: !isMeasurement,
             isSecondAttempt: true,
             devId: devId,
@@ -392,17 +393,11 @@ class BtConnectionHelper {
 
   Future<List<int>?> getBPDataFromService(
     BluetoothDevice device,
-    BluetoothService service,
+    BluetoothCharacteristic bpCharacteristic,
+    BluetoothCharacteristic recordAccessCpCharacteristic,
     bool isPairing,
     bool? isSecondAttempt,
   ) async {
-    final characteristics = service.characteristics;
-    final bpCharacteristic = getBloodPressureChar(characteristics);
-
-    if (bpCharacteristic == null) {
-      return null;
-    }
-
     if (isSecondAttempt == true && !bpCharacteristic.isNotifying == false) {
       return null;
     }
@@ -419,16 +414,23 @@ class BtConnectionHelper {
           return null;
         }
       }
+    } else if (Platform.isIOS && isPairing) {
+      try {
+        await recordAccessCpCharacteristic.setNotifyValue(!recordAccessCpCharacteristic.isNotifying, timeout: 30);
+        await recordAccessCpCharacteristic.write([0x00, 0x01], withoutResponse: false, timeout: 30);
+      } on FlutterBluePlusException catch (e) {
+        //Timeout error
+        if (e.code == 1) return null;
+        //Insufficient encryption error
+        if (e.code == 15) return null;
+      }
     }
 
     await bpCharacteristic.setNotifyValue(!bpCharacteristic.isNotifying);
-    debugPrint('sent notification value');
-
-    //wait for few seconds until device sends neccessary measurements in stream
+    //wait for few seconds until device sends necessary measurements in stream
     final List<List<int>> results = [];
     bpCharacteristic.lastValueStream.listen(results.add);
     await Future.delayed(const Duration(seconds: 5));
-
     return results.last;
   }
 
@@ -436,9 +438,7 @@ class BtConnectionHelper {
     List<BluetoothCharacteristic> characteristics,
     DeviceChar characteristic,
   ) async {
-    final address = deviceCharAddress.entries
-        .firstWhere((entry) => entry.key == characteristic)
-        .value;
+    final address = deviceCharAddress.entries.firstWhere((entry) => entry.key == characteristic).value;
     final specificChar = characteristics.firstWhereOrNull(
       (char) => char.characteristicUuid == address,
     );
@@ -463,13 +463,17 @@ class BtConnectionHelper {
   BluetoothCharacteristic? getBloodPressureChar(
     List<BluetoothCharacteristic> characteristics,
   ) {
-    final address = measurementCharAddress.entries
-        .firstWhere(
-          (entry) => entry.key == MeasurementChar.bloodPressureMeasurement,
-        )
-        .value;
     final specificChar = characteristics.firstWhereOrNull(
-      (char) => char.uuid == address,
+      (char) => char.uuid == MeasurementChar.bloodPressureMeasurement.address,
+    );
+    return specificChar;
+  }
+
+  BluetoothCharacteristic? getRecordAccessCpChar(
+    List<BluetoothCharacteristic> characteristics,
+  ) {
+    final specificChar = characteristics.firstWhereOrNull(
+      (char) => char.uuid == MeasurementChar.recordAccessCp.address,
     );
     return specificChar;
   }
@@ -479,18 +483,12 @@ class BtConnectionHelper {
   ) async {
     final characteristics = service.characteristics;
 
-    final modelNumber =
-        await readCharData(characteristics, DeviceChar.modelNumber);
-    final serialNumber =
-        await readCharData(characteristics, DeviceChar.serialNumber);
-    final firmwareRevision =
-        await readCharData(characteristics, DeviceChar.firmwareRevision);
-    final hardwareRevision =
-        await readCharData(characteristics, DeviceChar.hardwareRevision);
-    final softwareRevision =
-        await readCharData(characteristics, DeviceChar.softwareRevision);
-    final manufacturerName =
-        await readCharData(characteristics, DeviceChar.manufacturerName);
+    final modelNumber = await readCharData(characteristics, DeviceChar.modelNumber);
+    final serialNumber = await readCharData(characteristics, DeviceChar.serialNumber);
+    final firmwareRevision = await readCharData(characteristics, DeviceChar.firmwareRevision);
+    final hardwareRevision = await readCharData(characteristics, DeviceChar.hardwareRevision);
+    final softwareRevision = await readCharData(characteristics, DeviceChar.softwareRevision);
+    final manufacturerName = await readCharData(characteristics, DeviceChar.manufacturerName);
 
     final DeviceInfo deviceInfo = DeviceInfo(
       modelNumber: modelNumber,
@@ -511,9 +509,8 @@ class BtConnectionHelper {
   ) async {
     final characteristics = service.characteristics;
 
-    final batteryLevelAddress = deviceCharAddress.entries
-        .firstWhere((entry) => entry.key == DeviceChar.batteryLevel)
-        .value;
+    final batteryLevelAddress =
+        deviceCharAddress.entries.firstWhere((entry) => entry.key == DeviceChar.batteryLevel).value;
 
     final batteryLevelChar = characteristics.firstWhereOrNull(
       (char) => char.characteristicUuid == batteryLevelAddress,
@@ -551,13 +548,10 @@ class BtConnectionHelper {
       return false;
     }
 
-    final isBtScanStatusPermanentlyDenied =
-        await Permission.bluetoothScan.status.isPermanentlyDenied;
-    final isBtConnectStatusPermanentlyDenied =
-        await Permission.bluetoothConnect.status.isPermanentlyDenied;
+    final isBtScanStatusPermanentlyDenied = await Permission.bluetoothScan.status.isPermanentlyDenied;
+    final isBtConnectStatusPermanentlyDenied = await Permission.bluetoothConnect.status.isPermanentlyDenied;
 
-    return isBtScanStatusPermanentlyDenied ||
-        isBtConnectStatusPermanentlyDenied;
+    return isBtScanStatusPermanentlyDenied || isBtConnectStatusPermanentlyDenied;
   }
 
   Future<bool> isBTPermissionsGranted() async {
@@ -565,10 +559,8 @@ class BtConnectionHelper {
       return false;
     }
 
-    final isBtScanStatusGranted =
-        await Permission.bluetoothScan.status.isGranted;
-    final isBtConnectStatusGranted =
-        await Permission.bluetoothConnect.status.isGranted;
+    final isBtScanStatusGranted = await Permission.bluetoothScan.status.isGranted;
+    final isBtConnectStatusGranted = await Permission.bluetoothConnect.status.isGranted;
 
     return isBtScanStatusGranted && isBtConnectStatusGranted;
   }
