@@ -14,7 +14,7 @@ class MeasurementsDao extends DatabaseAccessor<AppDatabase> with _$MeasurementsD
       measurement,
       onConflict: DoUpdate(
         (old) => measurement,
-        target: [measurements.id, measurements.userId, measurements.measurementType, measurements.measuredAt],
+        target: [],
       ),
     );
   }

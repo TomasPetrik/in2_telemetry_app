@@ -19,7 +19,7 @@ class CarePlansDao extends DatabaseAccessor<AppDatabase> with _$CarePlansDaoMixi
   Future<int> save(CarePlansCompanion carePlan) async {
     return await into(carePlans).insert(
       carePlan,
-      onConflict: DoUpdate((old) => carePlan, target: [carePlans.targetUserId, carePlans.remoteId]),
+      onConflict: DoUpdate((old) => carePlan, target: []),
     );
   }
 

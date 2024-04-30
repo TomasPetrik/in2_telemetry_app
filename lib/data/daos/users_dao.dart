@@ -26,7 +26,7 @@ class UsersDao extends DatabaseAccessor<AppDatabase> with _$UsersDaoMixin {
 
   Future<int> createUser(UsersCompanion user) async {
     final entity = await into(users)
-        .insertReturning(user, onConflict: DoUpdate((old) => user, target: [users.hospitalId, users.muid]));
+        .insertReturning(user, onConflict: DoUpdate((old) => user, target: []));
 
     return entity.id;
   }
