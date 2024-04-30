@@ -1,32 +1,37 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc_event.dart';
 import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc_state.dart';
-import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/data/app_database.dart';
+import 'package:scalesoft_app/data/providers/care_plan_db_provider.dart';
+import 'package:scalesoft_app/data/providers/measurements_db_provider.dart';
 import 'package:scalesoft_app/utils/helpers/calendar_helper.dart';
+import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 @injectable
 class ChartBloc extends Bloc<ChartBlocEvent, ChartBlocState> {
+  final CarePlanDbProvider _carePlanDbProvider;
+  final MeasurementsDbProvider _measurementsDbProvider;
   late final PageController controller;
-  late final BuildContext context;
+  late final MaterialLocalizations localizations;
 
-  ChartBloc() : super(const ChartBlocState()) {
-    DateTime getVeryFirstmodelfCarePlans(
-      List<CarePlanContract> carePlans,
-      UserAccount userAccount,
-    ) {
+
+  ChartBloc(
+    this._carePlanDbProvider,
+    this._measurementsDbProvider,
+  ) : super(const ChartBlocState()) {
+    Future<DateTime> getVeryFirstDateOfCarePlans(
+      Iterable<CarePlan> carePlans,
+      int userId,
+    ) async {
       if (carePlans.isNotEmpty) {
-        return carePlans
-            .map((carePlan) => carePlan.scheduledStart)
-            .sorted((a, b) => b.compareTo(a))
-            .first;
+        return CarePlanHelper.getEarliestDateOfCarePlans(carePlans);
       } else {
-        return userAccount.measurementResults!.first.measurementDateTime;
+        (await _measurementsDbProvider.getByUser(userId)).firstOrNull?.measuredAt ?? DateTime.now();
+        return DateTime.now();
       }
     }
 
@@ -48,16 +53,18 @@ class ChartBloc extends Bloc<ChartBlocEvent, ChartBlocState> {
 
     on<ChartBlocEvent>((event, emit) async {
       await event.when(
-        init: (context, initDate, userAccount, carePlans, color) async {
-          this.context = context;
+        init: (context, initDate, userId, measurementType, color) async {
+          localizations = MaterialLocalizations.of(context);
+
+          final carePlans = (await _carePlanDbProvider.getByUser(userId)).where((x)=>x.activity.measurementType == measurementType);
 
           final fromMonthDate =
-              getVeryFirstmodelfCarePlans(carePlans, userAccount);
+              await getVeryFirstDateOfCarePlans(carePlans, userId);
           final toMonthDate =
               CalendarHelper.getDateByMonthsOffset(DateTime.now(), 0);
 
           final months = CalendarHelper.getCalendarMonths(
-            context,
+            localizations,
             fromMonthDate,
             toMonthDate,
           )!;

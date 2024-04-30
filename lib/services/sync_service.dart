@@ -5,10 +5,14 @@ import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
 import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement_type_contract.dart';
 import 'package:scalesoft_app/api/model/user_model.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
+import 'package:scalesoft_app/constants/permissions.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_evaluation_item.dart';
+import 'package:scalesoft_app/data/providers/measurements_db_provider.dart';
 import 'package:scalesoft_app/managers/background_measurement_manager.dart';
+import 'package:scalesoft_app/mapper/measurement_type_mapper.dart';
 import 'package:scalesoft_app/model/care_plan_create_model.dart';
 import 'package:scalesoft_app/data/providers/care_plan_db_provider.dart';
 import 'package:scalesoft_app/repositories/account_repository.dart';
@@ -27,37 +31,44 @@ class SyncService {
   final TimeSettingsRepository _timeSettingsRepository;
   final DeviceRepository _deviceRepository;
   final CarePlanDbProvider _carePlanDbProvider;
+  final MeasurementTypeMapper _measurementTypeMapper;
+  final MeasurementsDbProvider _measurementsDbProvider;
 
-  SyncService(
-    this._session,
-    this._accountRepository,
-    this._carePlansRepository,
-    this._timeSettingsRepository,
-    this._deviceRepository,
-    this._carePlanDbProvider,
-  );
 
-  Future<void> setUserPlans(
-    final int userid,
-    final List<CarePlanContract> newCarePlans,
-  ) async {
+  SyncService(this._session,
+      this._accountRepository,
+      this._carePlansRepository,
+      this._timeSettingsRepository,
+      this._deviceRepository,
+      this._carePlanDbProvider,
+      this._measurementTypeMapper,
+      this._measurementsDbProvider,);
+
+  Future<void> setUserPlans(final int userid,
+      final List<CarePlanContract> newCarePlans,) async {
     final currentCarePlans = await _carePlanDbProvider.getByUser(userid);
 
-    final yesterdayMidnight = DateTime.now().yesterday;
-    var tomorrowMidnight = DateTime.now().tomorrow;
+    final yesterdayMidnight = DateTime
+        .now()
+        .yesterday;
+    var tomorrowMidnight = DateTime
+        .now()
+        .tomorrow;
 
     final List<CarePlanCreateModel> results = [];
 
     for (final newCarePlan in newCarePlans) {
       final currentPlan = currentCarePlans.firstWhereOrNull(
-        (currentCarePlan) => currentCarePlan.id == newCarePlan.id,
+            (currentCarePlan) => currentCarePlan.id == newCarePlan.id,
       );
 
       var wasChanged = false;
 
       // check if plans were updated
       if (currentPlan != null) {
-        final currentVersion = currentPlan.versions.map((x) => x.versionId).max;
+        final currentVersion = currentPlan.versions
+            .map((x) => x.versionId)
+            .max;
         wasChanged = newCarePlan.versionId > currentVersion;
       }
 
@@ -103,7 +114,8 @@ class SyncService {
       }
 
       results.add(
-          CarePlanCreateModel(newCarePlan, wasChanged, carePlanVersions.items, fullPlanEvaluation, evaluationItems),);
+        CarePlanCreateModel(newCarePlan, wasChanged, carePlanVersions.items, fullPlanEvaluation, evaluationItems),
+      );
     }
 
     await _carePlanDbProvider.replaceUserCarePlans(userid, results);
@@ -148,10 +160,9 @@ class SyncService {
     //check and update assigned devices, current user data and his represented people
     //await checkForDataChanges(userAccount);
 
-    await loadFulFillmentEvaluation(userAccount);
-    await loadPartPlanEvaluation(userAccount);
-    if (userAccount.viewOwnMeasurementData) {
-      await loadMeasurementResults(userAccount);
+    await loadFulfillmentEvaluation(userId);
+    if (user.permissions.any((x) => x == Permissions.viewOwnMeasurementData)) {
+      await loadMeasurementResults(userId);
     }
 
     if (user.representedPeople.isNotEmpty) {
@@ -230,98 +241,43 @@ class SyncService {
   Future<void> loadFulFillmentEvaluation(final UserAccount userAccount) async {
     final carePlans = userAccount.carePlans;
     if (carePlans == null) {
-      return;
-    }
-
-    for (final carePlan in carePlans) {
-      try {
-        final fullPlanEvaluation = await _carePlansRepository.loadFullPlanEvaluation(
-          userAccount: userAccount,
-          carePlanVersionId: carePlan.versionId,
-        );
-        carePlan.fullPlanEvaluation = fullPlanEvaluation;
-      } catch (e) {
-        carePlan.fullPlanEvaluation = AggregatedFulfillmentEvaluationContract(
-          DateTime.now(),
-          DateTime.now(),
-          0,
-          0,
-          0,
-        );
-      }
-    }
-    userAccount.carePlans = carePlans;
-  }
-
-  Future<void> loadPartPlanEvaluation(final UserAccount userAccount) async {
-    final carePlans = userAccount.carePlans;
-    if (carePlans == null) {
-      return;
-    }
-
-    final yesterdayMidnight = DateTime.now().yesterday;
-    var tomorrowMidnight = DateTime.now().tomorrow;
-
-    for (final carePlan in carePlans) {
-      if (carePlan.scheduledEnd?.isBefore(yesterdayMidnight) == true ||
-          carePlan.scheduledStart.isAfter(tomorrowMidnight)) {
-        debugPrint(
-          'skipping load last two days evaluation for planId = ${carePlan.id}',
-        );
-        continue;
-      }
-
-      DateTime from = yesterdayMidnight;
-      if (carePlan.scheduledStart.isAfter(yesterdayMidnight)) {
-        from = carePlan.scheduledStart;
-      }
-
-      DateTime to = tomorrowMidnight;
-      if (carePlan.scheduledEnd?.isBefore(tomorrowMidnight) == true) {
-        to = carePlan.scheduledEnd!;
-      }
-
-      from = from.toUtc();
-      to = to.toUtc();
-
-      final lastTwoDaysEvaluation = await _carePlansRepository.loadPartPlanEvaluation(
-        userAccount: userAccount,
-        carePlanId: carePlan.id,
-        fromDateTime: from.toIso8601String(),
-        toDateTime: to.toIso8601String(),
-      );
-      carePlan.serverEvaluationItems = lastTwoDaysEvaluation.items;
-    }
-
-    userAccount.carePlans = carePlans;
-  }
-
   /* load today's and yesterday's measurement results */
-  Future<void> loadMeasurementResults(final UserAccount userAccount) async {
-    final carePlans = userAccount.carePlans;
-    if (carePlans == null) return;
-
-    var supportedMeasurementTypes = (userAccount.carePlans?.map((x) => x.activity.measurementType) ?? []).toSet();
-
-    if (userAccount.hospital != null) {
-      supportedMeasurementTypes
-          .addAll(userAccount.hospital!.enabledMeasurementTypes);
+  Future<void> loadMeasurementResults(int userId) async {
+    final carePlans = await _carePlanDbProvider.getByUser(userId);
+    if (carePlans.isEmpty) {
+      return;
     }
 
-    final yesterdayMidnight = DateTime.now().yesterday;
-    final tomorrowMidnight = DateTime.now().tomorrow;
+    final user = _session.state.allUsers.firstWhereOrNull((x) => x.id == userId);
+    if (user == null) {
+      return;
+    }
+
+    var supportedMeasurementTypes = carePlans.map((x) => x.activity.measurementType).toSet();
+
+    supportedMeasurementTypes.addAll(user.hospital.enabledMeasurementTypes);
+
+    final yesterdayMidnight = DateTime
+        .now()
+        .yesterday;
+    final tomorrowMidnight = DateTime
+        .now()
+        .tomorrow;
 
     final List<MeasurementDataContract> allResults = [];
     for (final measurementType in supportedMeasurementTypes) {
+      final MeasurementTypeContract measurementTypeContract = _measurementTypeMapper.convert(measurementType);
+
       final measurementResults = await _carePlansRepository.loadResults(
-        userAccount: userAccount,
-        measurementType: measurementType,
+        userId: userId,
+        measurementType: measurementTypeContract,
         startDateTime: yesterdayMidnight.toIso8601String(),
         endDateTime: tomorrowMidnight.toIso8601String(),
       );
       allResults.addAll(measurementResults);
     }
-    userAccount.measurementResults = allResults;
+
+    await _measurementsDbProvider.saveAll(allResults, userId);
   }
 
   Future<void> syncAllData({bool syncAllUsers = false}) async {

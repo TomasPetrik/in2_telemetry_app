@@ -188,36 +188,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         apiUrl: hospital.authData.baseUrl,
       );
 
-      final userAccount = UserAccount(
-        user: userInfo.currentUser,
-        assignedDevices: userInfo.assignedDevices,
-        authToken: _session.token,
-        userPermissions: _session.userPermissions,
-        hospital: _session.hospital,
-        signedIn: DateTime.now(),
-        lastActiveIn: DateTime.now(),
-        parentId: null,
-        sessionExpired: false,
-        lastSyncAt: DateTime.now(),
-        lastSyncFailed: false,
-        representedPeople: userInfo.representedPeople
-            ?.map(
-              (representedPerson) => UserAccount(
-                user: representedPerson,
-                assignedDevices: userInfo.assignedDevices,
-                authToken: _session.token,
-                hospital: _session.hospital,
-                userPermissions: _session.userPermissions,
-                signedIn: DateTime.now(),
-                lastActiveIn: null,
-                representedPeople: null,
-                parentId: userInfo.currentUser.muid,
-                sessionExpired: false,
-                lastSyncAt: DateTime.now(),
-                lastSyncFailed: false,
-              ),
-            )
-            .toList(),
       final timeSettings = await _timeSettingsRepository.loadTimeSettings(token, hospital.authData.baseUrl);
 
       final userId = await _session.createOrUpdateUser(
@@ -239,11 +209,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       await _syncService.loadDeviceModels(userId);
       await _syncService.loadWhenValues(userId);
-
-      await _syncService.loadUserData(userId);
-      //syncResults() in case if user has some offline results not synced due session expiration
-      await _syncService.syncResults();
-      // await _accountDbProvider.save(user);
 
       emit(AuthState.userVerified(userAccount: _session.state.currentUser));
     } catch (e) {

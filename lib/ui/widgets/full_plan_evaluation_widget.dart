@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
-import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
+import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -18,8 +17,8 @@ class FullPlanEvaluationWidget extends StatelessWidget {
     required this.offlineResults,
   });
 
-  final CarePlanContract carePlan;
-  final List<MeasurementDataContract> offlineResults;
+  final CarePlan carePlan;
+  final List<Measurement> offlineResults;
 
   @override
   Widget build(BuildContext context) {

@@ -26,20 +26,17 @@ class FutureMeasurementsScreen extends StatelessWidget {
 
     final bool isMultiUser = usersEvaluationsDay.length > 1;
 
-    final futureMeasurements =
-        usersEvaluationsDay.fold<List<PlannedMeasurement>>(
+    final futureMeasurements = usersEvaluationsDay.fold<List<PlannedMeasurement>>(
       [],
       (previousValue, userEvaluationsDay) => [
         ...previousValue,
         ...userEvaluationsDay.getFutureMeasurements(),
       ],
     )..sort(
-            (a, b) => b.whenStart.compareTo(a.whenStart),
-          );
+        (a, b) => b.whenStart.compareTo(a.whenStart),
+      );
 
-    final measurementTypes = futureMeasurements
-        .map((measurement) => measurement.carePlan.activity.measurementType)
-        .toSet();
+    final measurementTypes = futureMeasurements.map((measurement) => measurement.measurementType).toSet();
 
     return Material(
       child: Stack(
@@ -82,10 +79,7 @@ class FutureMeasurementsScreen extends StatelessWidget {
                             isMultiUser: isMultiUser,
                             futureMeasurements: futureMeasurements
                                 .where(
-                                  (measurement) =>
-                                      measurement
-                                          .carePlan.activity.measurementType ==
-                                      measurementType,
+                                  (measurement) => measurement.measurementType == measurementType,
                                 )
                                 .toList(),
                           ),

@@ -137,7 +137,7 @@ class ResultsHelper {
     for (final measurement in measurements) {
       final matchingResults = resultsUntilNow.where(
         (x) =>
-            x.measurementTime == measurement.measuredAt &&
+            x.measurementTime.isAtSameMomentAs(measurement.measuredAt) &&
             x.measurementType == measurement.measurementType &&
             x.user.id == measurement.userId,
       );
@@ -185,12 +185,12 @@ class ResultsHelper {
 
     final offlineResults = allOfflineResults.where((offlineResult) {
       return (measurementType == null || measurementType == offlineResult.measurementType) &&
-              (whenPeriod == ResultsWhenPeriod.today &&
+          ((whenPeriod == ResultsWhenPeriod.today &&
                   offlineResult.measuredAt.isBefore(tomorrowMidnight) &&
                   offlineResult.measuredAt.isAfter(todayMidnight)) ||
-          (whenPeriod == ResultsWhenPeriod.yesterday &&
-              offlineResult.measuredAt.isBefore(todayMidnight) &&
-              offlineResult.measuredAt.isAfter(yesterdayMidnight));
+              (whenPeriod == ResultsWhenPeriod.yesterday &&
+                  offlineResult.measuredAt.isBefore(todayMidnight) &&
+                  offlineResult.measuredAt.isAfter(yesterdayMidnight)));
     }).toList();
 
     //1. Get results within current time

@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:scalesoft_app/api/contracts/measurement/overall_health_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/shortness_of_breath_contract.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 
 class ScaleSelectFormField extends StatelessWidget {
   final Key textFormKey;
   final ValueChanged<double?> onChanged;
-  final MeasurementTypeContract measurementType;
+  final MeasurementType measurementType;
 
   ScaleSelectFormField({
     super.key,
@@ -23,7 +24,7 @@ class ScaleSelectFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return switch (measurementType) {
-      MeasurementTypeContract.shortnessOfBreath =>
+      MeasurementType.shortnessOfBreath =>
         DropdownButtonFormField<ShortnessOfBreathContract>(
           icon: SvgPicture.asset('assets/icons/icon_right.svg'),
           elevation: 0,
@@ -43,7 +44,7 @@ class ScaleSelectFormField extends StatelessWidget {
           },
           value: ShortnessOfBreathContract.none,
         ),
-      MeasurementTypeContract.overallHealth =>
+      MeasurementType.overallHealth =>
         DropdownButtonFormField<OverallHealthContract>(
           icon: SvgPicture.asset('assets/icons/icon_right.svg'),
           elevation: 0,

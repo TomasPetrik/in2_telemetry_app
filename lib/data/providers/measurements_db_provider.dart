@@ -1,15 +1,89 @@
+import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
+import 'package:scalesoft_app/data/entities/enums/overall_health_state.dart';
+import 'package:scalesoft_app/data/entities/enums/shortness_of_breath_level.dart';
+import 'package:scalesoft_app/data/entities/json_entities/measurement/blood_pressure_value.dart';
+import 'package:scalesoft_app/mapper/measurement_type_mapper.dart';
 
 @injectable
 class MeasurementsDbProvider {
   final AppDatabase _database;
+  final MeasurementTypeMapper _measurementTypeMapper;
 
-  MeasurementsDbProvider(this._database);
+  MeasurementsDbProvider(this._database, this._measurementTypeMapper);
 
-  // TODO
-  // Future<int> save(MeasurementsCompanion measurement) async {}
+  Future<void> saveAll(Iterable<MeasurementDataContract> measurements, int userId) async {
+    for (final measurement in measurements) {
+      MeasurementType measurementType = _measurementTypeMapper.convert(measurement.measurementType);
+
+      final companion = switch (measurementType) {
+        MeasurementType.temperature => MeasurementsCompanion.insert(
+            userId: userId,
+            measuredAt: measurement.measurementDateTime,
+            measurementType: measurementType,
+            temperature: Value(measurement.value),
+          ),
+        MeasurementType.bloodPressure => MeasurementsCompanion.insert(
+            userId: userId,
+            measuredAt: measurement.measurementDateTime,
+            measurementType: measurementType,
+            bloodPressure: Value(
+              BloodPressureValue(
+                systolic: measurement.composedValue?.firstValue?.round(),
+                diastolic: measurement.composedValue?.secondValue?.round(),
+              ),
+            ),
+          ),
+        MeasurementType.oxygenSaturation => MeasurementsCompanion.insert(
+            userId: userId,
+            measuredAt: measurement.measurementDateTime,
+            measurementType: measurementType,
+            oxygenSaturation: Value(measurement.value?.round()),
+          ),
+        MeasurementType.steps ||
+        MeasurementType.globalPosition ||
+        MeasurementType.battery ||
+        MeasurementType.ews =>
+          null,
+        MeasurementType.heartRate => MeasurementsCompanion.insert(
+            userId: userId,
+            measuredAt: measurement.measurementDateTime,
+            measurementType: measurementType,
+            heartRate: Value(measurement.value?.round()),
+          ),
+        MeasurementType.respiratoryRate => MeasurementsCompanion.insert(
+            userId: userId,
+            measuredAt: measurement.measurementDateTime,
+            measurementType: measurementType,
+            respiratoryRate: Value(measurement.value?.round()),
+          ),
+        MeasurementType.shortnessOfBreath => MeasurementsCompanion.insert(
+            userId: userId,
+            measuredAt: measurement.measurementDateTime,
+            measurementType: measurementType,
+            shortnessOfBreath: Value(ShortnessOfBreathLevel.fromValue(measurement.value)),
+          ),
+        MeasurementType.overallHealth => MeasurementsCompanion.insert(
+            userId: userId,
+            measuredAt: measurement.measurementDateTime,
+            measurementType: measurementType,
+            overallHealth: Value(OverallHealthState.fromValue(measurement.value)),
+          ),
+      };
+
+      if (companion == null) {
+        continue;
+      }
+      await save(companion);
+    }
+  }
+
+  Future<int> save(MeasurementsCompanion measurement) async {
+    return await _database.measurementsDao.save(measurement);
+  }
 
   Future<List<Measurement>> getByUser(
     int userId, {

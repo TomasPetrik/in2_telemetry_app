@@ -27,6 +27,8 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
 
   @override
   Widget build(BuildContext context) {
+    final wasMeasured = viewModel.actualCount >= viewModel.requiredCount;
+
     final shouldShowDates = [viewModel.measurementIntervalStart, viewModel.measurementIntervalEnd]
         .whereNotNull()
         .any((x) => x != viewModel.measurementTime);
@@ -64,7 +66,7 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                 Gaps.gap16,
                 SvgPicture.asset(
                   shouldShowDates ? 'assets/icons/icon_wave_pulse_period.svg' : 'assets/icons/icon_wave_pulse.svg',
-                  color: viewModel.result != null
+                  color: wasMeasured
                       ? Theme.of(context).colorScheme.onTertiary
                       : Theme.of(context).colorScheme.error,
                 ),
@@ -146,7 +148,7 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                           ],
                         ],
                       ),
-                      if (viewModel.result == null) ...{
+                      if (!wasMeasured) ...{
                         Expanded(
                           child: Text(
                             localization.common_not_measured,
@@ -157,7 +159,7 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                             ),
                           ),
                         ),
-                      } else if (canShowMeasuredValues) ...{
+                      } else if (canShowMeasuredValues && viewModel.result != null) ...{
                         Expanded(
                           child: Text(
                             viewModel.result!,

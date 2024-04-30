@@ -1,6 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:scalesoft_app/api/contracts/measurement_type_contract.dart';
-import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/api/model/care_plan/interval_generation/time_of_day_timing_model.dart';
 import 'package:scalesoft_app/api/model/care_plan/interval_generation/timing_model.dart';
 import 'package:scalesoft_app/data/app_database.dart';
@@ -59,18 +57,9 @@ class CarePlanHelper {
     return result;
   }
 
-  static Set<MeasurementTypeContract> getMeasurementTypesByResults(
-    List<MeasurementDataContract> results,
-  ) {
-    final measurementTypes = results.map((x) => x.measurementType);
-    final result = {...measurementTypes};
-
-    return result;
-  }
-
   static Map<PlanWhenPeriod, int> getPossibleWhenPeriods(
     final List<CarePlan> carePlans,
-    final List<MeasurementDataContract> offlineResults,
+    final List<Measurement> offlineResults,
   ) {
     Map<PlanWhenPeriod, int> periods = {
       PlanWhenPeriod.next10: 10,
@@ -123,7 +112,7 @@ class CarePlanHelper {
     List<CarePlan> carePlans,
     DateTime from,
     DateTime to,
-    List<MeasurementDataContract> offlineResults, {
+    List<Measurement> offlineResults, {
     bool ignoreOngoing = false,
     bool ignoreCompleted = false,
   }) {
@@ -177,7 +166,7 @@ class CarePlanHelper {
     CarePlan plan,
     DateTime from,
     DateTime to,
-    List<MeasurementDataContract> offlineResults, {
+    List<Measurement> offlineResults, {
     bool ignoreOngoing = false,
     bool ignoreCompleted = false,
   }) {
@@ -208,7 +197,7 @@ class CarePlanHelper {
         userId: plan.targetUserId,
         whenStart: interval.start,
         whenEnd: interval.end,
-        carePlan: plan,
+        measurementType: plan.activity.measurementType,
         reqCount: version.frequency,
         whenCode: interval.whenCode,
       ),
@@ -220,6 +209,7 @@ class CarePlanHelper {
       final fulfillmentEvaluation = MeasurementHelper.getFulfillmentEvaluation(
         plannedMeasurement,
         offlineResults,
+        plan.evaluationItems,
       );
 
       plannedMeasurement.currentCount = fulfillmentEvaluation.actualMeasurementCount;
@@ -242,7 +232,7 @@ class CarePlanHelper {
   static List<PlannedMeasurement> getMeasurementsForPeriod(
     List<CarePlan> carePlans,
     PlanWhenPeriod whenPeriod,
-    List<MeasurementDataContract> offlineResults,
+    List<Measurement> offlineResults,
   ) {
     List<PlannedMeasurement> measurements = [];
 
@@ -290,7 +280,7 @@ class CarePlanHelper {
   /// (up to the upcoming midnight).
   static List<PlannedMeasurement> getPlannedMeasurementsUpToToday(
     CarePlan plan,
-    List<MeasurementDataContract> offlineResults,
+    List<Measurement> offlineResults,
   ) {
     final from = plan.versions.map((x) => x.scheduledStart).min;
     final to = DateTime.now().endOfDay;
@@ -312,12 +302,11 @@ class CarePlanHelper {
   }
 }
 
-// TODO: Offline results should be of type Measurement (in all other methods as well...)
 class Calendar {
-  static List<PlannedMeasurement> getMeasurementsOfDay({
+  static List<PlannedMeasurement> getPlannedMeasurementsOfDay({
     required List<CarePlan> carePlans,
     required DateTime dayDt,
-    required List<MeasurementDataContract> offlineResults,
+    required List<Measurement> offlineResults,
     bool all = false,
   }) {
     final from = dayDt.startOfDay;
@@ -340,7 +329,7 @@ class Calendar {
     final currentDate = carePlan.versions.map((x) => x.scheduledStart).min;
     int daysShift = 0;
     while (upcomingMeasurements.isEmpty) {
-      final measurements = getMeasurementsOfDay(
+      final measurements = getPlannedMeasurementsOfDay(
         carePlans: [carePlan],
         dayDt: currentDate.add(Duration(days: daysShift)),
         offlineResults: [],
@@ -363,7 +352,7 @@ class Calendar {
   static List<PlannedMeasurement> getNUpcomingMeasurements({
     required List<CarePlan> carePlans,
     required int reqCount,
-    required List<MeasurementDataContract> offlineResults,
+    required List<Measurement> offlineResults,
   }) {
     final currentDt = DateTime.now();
     final upcomingMeasurements = generateUpcomingMeasurements(
@@ -425,7 +414,7 @@ class Calendar {
     List<CarePlan> carePlans,
     int reqCount,
     DateTime from,
-    List<MeasurementDataContract> offlineResults,
+    List<Measurement> offlineResults,
     bool ignoreOngoing,
   ) {
     // Using a set to remove duplicates
@@ -462,7 +451,7 @@ class PlannedMeasurement {
     required this.userId,
     required this.whenStart,
     required this.whenEnd,
-    required this.carePlan,
+    required this.measurementType,
     required this.reqCount,
     this.currentCount,
     this.whenCode,
@@ -473,12 +462,12 @@ class PlannedMeasurement {
   final DateTime whenStart;
   final DateTime whenEnd;
 
-  final CarePlan carePlan;
   final int reqCount;
   int? currentCount;
 
   FulfillmentEvaluationItem? fulfillmentEvaluationItem;
   final WhenCode? whenCode;
+  final MeasurementType measurementType;
 
   bool get isGoingOverDay => !whenStart.isSameDate(whenEnd);
 
@@ -490,11 +479,11 @@ class PlannedMeasurement {
       return false;
     }
 
-    return other.whenStart == whenStart && other.whenEnd == whenEnd && other.carePlan.id == carePlan.id;
+    return other.whenStart == whenStart && other.whenEnd == whenEnd && other.measurementType == measurementType && other.userId == userId;
   }
 
   @override
-  int get hashCode => Object.hash(whenStart, whenEnd, carePlan.id);
+  int get hashCode => Object.hash(whenStart, whenEnd, measurementType, userId);
 }
 
 enum PlanWhenPeriod {

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:scalesoft_app/api/model/user_model.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -18,9 +20,9 @@ class NoContentPlaceholder extends StatelessWidget with BottomSheetMixin {
     required this.noContentType,
   });
 
-  final UserAccount? userAccount;
+  final UserModel? userAccount;
   final bool enterMeasurementWithoutPlan;
-  final Set<MeasurementTypeContract> supportedMeasurementTypes;
+  final Set<MeasurementType> supportedMeasurementTypes;
   final NoContentType noContentType;
 
   String _getLabelByType() {
@@ -51,13 +53,13 @@ class NoContentPlaceholder extends StatelessWidget with BottomSheetMixin {
             label: _getLabelByType(),
           ),
         ),
-        if (enterMeasurementWithoutPlan) ...{
+        if (enterMeasurementWithoutPlan && userAccount != null) ...{
           PersonalMeasurementFooter(
             showInfo: false,
             onPressed: () async {
               MeasurementHelper.doMeasurement(
                 context: context,
-                userId: userAccount!.user.muid,
+                userId: userAccount!.id,
                 showAllMeasurementTypes: true,
               );
             },

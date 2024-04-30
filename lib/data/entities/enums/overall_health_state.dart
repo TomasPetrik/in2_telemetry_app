@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 enum OverallHealthState {
@@ -13,4 +14,8 @@ enum OverallHealthState {
   final num value;
 
   const OverallHealthState(this.value);
+
+  static OverallHealthState? fromValue(num? value) {
+    return values.firstWhereOrNull((x) => x.value == value);
+  }
 }

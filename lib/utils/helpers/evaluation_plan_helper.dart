@@ -1,29 +1,30 @@
-import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
-import 'package:scalesoft_app/api/contracts/measurement/measurement.dart';
-import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
+import 'package:scalesoft_app/api/model/user_model.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
-import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/data/app_database.dart';
+import 'package:scalesoft_app/data/providers/measurements_db_provider.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
-import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
-import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 import 'package:scalesoft_app/utils/helpers/results_helper.dart';
+import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_evaluation_item.dart';
 
 class EvaluationPlanHelper {
   static int getProgressFromFullPlanEvaluation({
     required CarePlanContract carePlan,
     required List<MeasurementDataContract> offlineResults,
+    required CarePlan carePlan,
+    required List<Measurement> offlineResults,
   }) {
     int actualCount = carePlan.fullPlanEvaluation!.measurementInPlanCount;
     int requiredMeasurementCount =
         carePlan.fullPlanEvaluation!.requiredMeasurementCount;
+    int actualCount = carePlan.fullPlanEvaluation.measurementInPlanCount;
+    int requiredMeasurementCount = carePlan.fullPlanEvaluation.requiredMeasurementCount;
 
     int offlineResultsCount = 0;
 
     if (offlineResults.isNotEmpty) {
       //get all planned measurements within current time since plan exists
-      final allPlannedMeasurements =
-          CarePlanHelper.getPlannedMeasurementsUpToToday(
+      final allPlannedMeasurements = CarePlanHelper.getPlannedMeasurementsUpToToday(
         carePlan,
         offlineResults,
       );
@@ -39,52 +40,32 @@ class EvaluationPlanHelper {
       offlineResultsCount = allLegitDateTimes
           .where(
             (legitDt) => offlineResults.any(
-              (offlineResult) => offlineResult.measurementDateTime == legitDt,
+              (offlineResult) => offlineResult.measuredAt.isAtSameMomentAs(legitDt),
             ),
           )
           .length;
     }
 
     int allActualCount = actualCount + offlineResultsCount;
-    requiredMeasurementCount = allActualCount > requiredMeasurementCount
-        ? allActualCount
-        : requiredMeasurementCount;
+    requiredMeasurementCount = allActualCount > requiredMeasurementCount ? allActualCount : requiredMeasurementCount;
 
-    int percentage = requiredMeasurementCount == 0
-        ? 0
-        : (allActualCount / requiredMeasurementCount * 100).round();
+    int percentage = requiredMeasurementCount == 0 ? 0 : (allActualCount / requiredMeasurementCount * 100).round();
     return percentage;
   }
 
   static int? getProgressFromPlans({
-    required List<CarePlanContract> carePlans,
+    required List<CarePlan> carePlans,
     required ResultsWhenPeriod whenPeriod,
-    required List<MeasurementDataContract> offlineResults,
+    required List<Measurement> offlineResults,
   }) {
     int expectedCount = 0;
     int actualCount = 0;
 
-    final List<PlannedMeasurement> plannedMeasurements =
-        ResultsHelper.getMeasurements(
+    final List<PlannedMeasurement> plannedMeasurements = ResultsHelper.getPlannedMeasurements(
       carePlans,
       whenPeriod,
       null,
       offlineResults,
-    );
-
-    final dtNow = DateTime.now();
-    final dayFinishAt = whenPeriod == ResultsWhenPeriod.today
-        ? dtNow.tomorrow
-        : dtNow.date;
-
-    //filter out periodical measurement
-    //which are not ending within exact day,
-    //and they still haven't been fulfilled until measurement's finish time
-    plannedMeasurements.removeWhere(
-      (pMeasurement) =>
-          pMeasurement.carePlan.isPeriodical &&
-          (!pMeasurement.whenEnd.isBefore(dayFinishAt) &&
-              !pMeasurement.fulfillmentEvaluationItem!.wasMeasured()),
     );
 
     for (final plannedMeasurement in plannedMeasurements) {
@@ -96,9 +77,7 @@ class EvaluationPlanHelper {
               : plannedMeasurement.currentCount!;
     }
 
-    return expectedCount == 0
-        ? null
-        : (actualCount / expectedCount * 100).round();
+    return expectedCount == 0 ? null : (actualCount / expectedCount * 100).round();
   }
 
   static int getProgressFromEvaluationItems(
@@ -107,9 +86,8 @@ class EvaluationPlanHelper {
     if (items.isEmpty) return 0;
 
     //1. Get required count
-    final allRequiredMeasurementCount = items
-        .map((evItem) => evItem.requiredMeasurementCount)
-        .reduce((prevVal, nextVal) => prevVal + nextVal);
+    final allRequiredMeasurementCount =
+        items.map((evItem) => evItem.requiredMeasurementCount).reduce((prevVal, nextVal) => prevVal + nextVal);
 
     //1. Get current measurement count
     final measurementTimes = items.fold<List<DateTime>>(
@@ -124,8 +102,7 @@ class EvaluationPlanHelper {
     final measurementTimesSet = measurementTimes.toSet();
     final allActualMeasurementCount = measurementTimesSet.length;
 
-    return (allActualMeasurementCount / allRequiredMeasurementCount * 100)
-        .round();
+    return (allActualMeasurementCount / allRequiredMeasurementCount * 100).round();
   }
 
   static List<UserEvaluationDay> getUserEvaluationDays(

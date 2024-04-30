@@ -13,6 +13,7 @@ import 'package:scalesoft_app/ui/routers/routes/manual_measurement_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/metering_first_route.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_flow.dart';
 
 class MeasurementHelper {
   static MeasurementTypeMapper measurementTypeMapper = getIt<MeasurementTypeMapper>();
@@ -27,8 +28,7 @@ class MeasurementHelper {
         ConfigurationConstants.supportedDevices
             .where(
               (x) =>
-                  x.measurementFlow?.hasFlag(MeasurementFlow.foreground) ??
-                  false,
+                  x.measurementFlow.hasFlag(MeasurementFlow.foreground),
             )
             .any(
               (supportedDevice) => supportedDevice.supportedMeasurementTypes.contains(selectedMeasurementType),
@@ -59,7 +59,7 @@ class MeasurementHelper {
     List<FulfillmentEvaluationItem> evaluationItems,
   ) {
     int totalCount = 0;
-    List<DateTime> measuredTimes = [];
+    Set<DateTime> measuredTimes = {};
 
     //get all datetimes in last two days
     final measurementTimes = evaluationItems.fold<List<DateTime>>(
@@ -103,9 +103,10 @@ class MeasurementHelper {
     for (final measuredTime in matchedOfflineMeasurementTimes) {
       if (measuredTime.isBefore(plannedMeasurement.whenEnd) && measuredTime.isAfter(plannedMeasurement.whenStart)) {
         measuredTimes.add(measuredTime);
-        totalCount += 1;
       }
     }
+
+    totalCount = measuredTimes.length;
 
     final minSatisfiedCount = min(totalCount, plannedMeasurement.reqCount);
 
@@ -124,14 +125,12 @@ class MeasurementHelper {
     MeasurementType? measurementType,
   ) {
     //offline (not synced results)
-    final measurementResults = pendingResults
-        .where((pResult) {
-          return ((measurementType == null || (measurementType == pResult.measurementType)) &&
-              (whenPeriods == null ||
-                  (whenPeriods.contains(ResultsWhenPeriod.today) && pResult.measuredAt.isToday == true) ||
-                  (whenPeriods.contains(ResultsWhenPeriod.yesterday) && pResult.measuredAt.wasYesterday == true)));
-        })
-        .toList();
+    final measurementResults = pendingResults.where((pResult) {
+      return ((measurementType == null || (measurementType == pResult.measurementType)) &&
+          (whenPeriods == null ||
+              (whenPeriods.contains(ResultsWhenPeriod.today) && pResult.measuredAt.isToday == true) ||
+              (whenPeriods.contains(ResultsWhenPeriod.yesterday) && pResult.measuredAt.wasYesterday == true)));
+    }).toList();
 
     return measurementResults;
   }

@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scalesoft_app/api/contracts/measurement/overall_health_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/shortness_of_breath_contract.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 
 part 'candle_data.freezed.dart';
@@ -10,7 +11,7 @@ class CandleData with _$CandleData {
   CandleData._();
 
   factory CandleData({
-    required MeasurementTypeContract? measurementType,
+    required MeasurementType? measurementType,
     required int timestamp,
     required double? high,
     required double? low,
@@ -43,17 +44,17 @@ class CandleData with _$CandleData {
   String get resultFormatted {
     return switch (measurementType) {
       null => '',
-      MeasurementTypeContract.globalPosition => 'Lat: $highVal | Lon: $lowVal',
-      MeasurementTypeContract.bloodPressure => '$highVal/$lowVal',
-      MeasurementTypeContract.shortnessOfBreath => highVal == null
+      MeasurementType.globalPosition => 'Lat: $highVal | Lon: $lowVal',
+      MeasurementType.bloodPressure => '$highVal/$lowVal',
+      MeasurementType.shortnessOfBreath => highVal == null
           ? ''
           : localization.shortness_of_breath_values(
-              ShortnessOfBreathContract.values[highVal!.toInt()],
+              ShortnessOfBreathContract.values.firstWhere((x)=>x.value==highVal!.toInt()),
             ),
-      MeasurementTypeContract.overallHealth => highVal == null
+      MeasurementType.overallHealth => highVal == null
           ? ''
           : localization.overall_health_values(
-              OverallHealthContract.values[highVal!.toInt()],
+              OverallHealthContract.values.firstWhere((x)=>x.value==highVal!.toInt()),
             ),
       _ => '$highVal',
     };
@@ -61,8 +62,8 @@ class CandleData with _$CandleData {
 
   num? get highVal {
     if ([
-      MeasurementTypeContract.temperature,
-      MeasurementTypeContract.globalPosition,
+      MeasurementType.temperature,
+      MeasurementType.globalPosition,
     ].contains(measurementType)) {
       return high;
     } else {
@@ -72,8 +73,8 @@ class CandleData with _$CandleData {
 
   num? get lowVal {
     if ([
-      MeasurementTypeContract.temperature,
-      MeasurementTypeContract.globalPosition,
+      MeasurementType.temperature,
+      MeasurementType.globalPosition,
     ].contains(measurementType)) {
       return low;
     } else {

@@ -1,36 +1,44 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:scalesoft_app/api/contracts/time_settings/time_setting_contract.dart';
+import 'package:scalesoft_app/api/contracts/time_settings/time_settings_update_contract.dart';
 import 'package:scalesoft_app/bloc/daily_times_settings/times_settings_event.dart';
 import 'package:scalesoft_app/bloc/daily_times_settings/times_settings_state.dart';
+import 'package:scalesoft_app/data/entities/json_entities/user/time_setting.dart';
+import 'package:scalesoft_app/mapper/when_code_mapper.dart';
+import 'package:scalesoft_app/data/providers/when_template_db_provider.dart';
 import 'package:scalesoft_app/repositories/time_settings_repository.dart';
 import 'package:scalesoft_app/services/internet_service.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 
 @injectable
 class TimesSettingsBloc extends Bloc<TimesSettingsEvent, TimesSettingsState> {
   final InternetService _internetService;
-  final AccountDbProvider _accountDbProvider;
   final TimeSettingsRepository _timeSettingsRepository;
+  final WhenTemplateDbProvider _whenTemplateDbProvider;
+  final WhenCodeMapper _whenCodeMapper;
+  final UserCubit _userCubit;
   bool? settingsChanged;
 
   TimesSettingsBloc(
     this._internetService,
-    this._accountDbProvider,
     this._timeSettingsRepository,
+    this._whenTemplateDbProvider,
+    this._whenCodeMapper,
+    this._userCubit,
   ) : super(const TimesSettingsState.loading()) {
     on<TimesSettingsEvent>(
       (event, emit) async {
         await event.when(
           init: (carePlan) async {
-            final bool isInternetAvailable =
-                await _internetService.isInternetAvailable();
+            final bool isInternetAvailable = await _internetService.isInternetAvailable();
             if (!isInternetAvailable) {
               emit(const TimesSettingsState.isNotAvailable());
             } else {
-              final userAccount = _accountDbProvider.get(carePlan.userId!);
-              final templateWhenValues =
-                  userAccount!.templateTimeSet!.whenTimeValues;
+              final templateWhenValues = await _whenTemplateDbProvider.getByUser(carePlan.targetUserId);
 
-              final timingsDayWhen = carePlan.timingDayWhen
+              final timingsDayWhen = carePlan.versions.last.timingDayWhen
                   .where((timingDayWhen) => timingDayWhen.whenCode != null)
                   .toList();
 
@@ -51,32 +59,44 @@ class TimesSettingsBloc extends Bloc<TimesSettingsEvent, TimesSettingsState> {
           ) async {
             try {
               //1. prepare current user settings
-              final userAccount = _accountDbProvider.get(carePlan.userId!);
-              final timeSettingItems = userAccount!.timeSettingItems!;
+              final user = _userCubit.state.rootUsers.firstWhere((x) => x.id == carePlan.targetUserId);
 
-              TimeSetting? newTimeSetting = timeSettingItems.firstWhereOrNull(
+              final timeSettingItems = user.timeSettings;
+
+              TimeSetting? changedTimeSetting = timeSettingItems.firstWhereOrNull(
                 (oldTime) => oldTime.code == timingDayWhen.whenCode,
               );
 
               //2. Add there new item if not exists
-              if (newTimeSetting != null) {
-                newTimeSetting.start = newStartTime;
-                newTimeSetting.end = newEndTime;
+              if (changedTimeSetting != null) {
+                changedTimeSetting.start = newStartTime;
+                changedTimeSetting.end = newEndTime;
               } else {
-                newTimeSetting = TimeSetting(
+                changedTimeSetting = TimeSetting(
                   code: timingDayWhen.whenCode!,
                   start: newStartTime,
                   end: newEndTime,
                 );
-                timeSettingItems.add(newTimeSetting);
+                timeSettingItems.add(changedTimeSetting);
               }
+
+              final contracts = timeSettingItems
+                  .map(
+                    (x) => TimeSettingContract(
+                      code: _whenCodeMapper.convert(x.code),
+                      start: x.start.toString(),
+                      end: x.end.toString(),
+                    ),
+                  )
+                  .toList();
+
               //3. send new TimeSettings
-              final newTimeSettings = TimeSettings(
-                timeSettingItems,
-                userAccount.user.muid,
+              final newTimeSettings = TimeSettingsUpdateContract(
+                contracts,
+                user.muid,
               );
               await _timeSettingsRepository.updateTimeSettings(
-                userAccount: userAccount,
+                userId: user.id,
                 timeSettings: newTimeSettings,
               );
 
@@ -89,19 +109,18 @@ class TimesSettingsBloc extends Bloc<TimesSettingsEvent, TimesSettingsState> {
           },
           resetTimes: (carePlan) async {
             try {
-              final timingsDayWhen = carePlan.timingDayWhen
+              final timingsDayWhen = carePlan.versions.last.timingDayWhen
                   .where((timingDayWhen) => timingDayWhen.whenCode != null)
                   .toList();
 
-              final userAccount = _accountDbProvider.get(carePlan.userId!);
-              final templateWhenValues =
-                  userAccount!.templateTimeSet!.whenTimeValues;
+              final user = _userCubit.state.rootUsers.firstWhere((x) => x.id == carePlan.targetUserId);
+              final templateWhenValues = await _whenTemplateDbProvider.getByUser(carePlan.targetUserId);
 
               List<TimeSetting> timeSettingItems = [];
 
               for (final timingDayWhen in timingsDayWhen) {
                 final templateWhenTime = templateWhenValues.firstWhereOrNull(
-                  (whenTime) => whenTime.codeValue == timingDayWhen.whenCode,
+                  (whenTime) => whenTime.whenCode == timingDayWhen.whenCode,
                 );
                 if (templateWhenTime != null) {
                   timingDayWhen.start = templateWhenTime.start;
@@ -109,7 +128,7 @@ class TimesSettingsBloc extends Bloc<TimesSettingsEvent, TimesSettingsState> {
 
                   timeSettingItems.add(
                     TimeSetting(
-                      code: templateWhenTime.codeValue,
+                      code: templateWhenTime.whenCode,
                       start: templateWhenTime.start,
                       end: templateWhenTime.end,
                     ),
@@ -119,12 +138,22 @@ class TimesSettingsBloc extends Bloc<TimesSettingsEvent, TimesSettingsState> {
 
               //send new default time settings
 
-              final newTimeSettings = TimeSettings(
-                timeSettingItems,
-                userAccount.user.muid,
+              final contracts = timeSettingItems
+                  .map(
+                    (x) => TimeSettingContract(
+                      code: _whenCodeMapper.convert(x.code),
+                      start: x.start.toString(),
+                      end: x.end.toString(),
+                    ),
+                  )
+                  .toList();
+
+              final newTimeSettings = TimeSettingsUpdateContract(
+                contracts,
+                user.muid,
               );
               await _timeSettingsRepository.updateTimeSettings(
-                userAccount: userAccount,
+                userId: user.id,
                 timeSettings: newTimeSettings,
               );
 

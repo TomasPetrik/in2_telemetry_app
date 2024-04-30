@@ -99,8 +99,10 @@ Future<_i1.GetIt> init(
   gh.factory<_i15.LogEventMapper>(() => _i15.LogEventMapper());
   gh.factory<_i16.MeasurementTypeMapper>(
       () => const _i16.MeasurementTypeMapper());
-  gh.factory<_i17.MeasurementsDbProvider>(
-      () => _i17.MeasurementsDbProvider(gh<_i3.AppDatabase>()));
+  gh.factory<_i17.MeasurementsDbProvider>(() => _i17.MeasurementsDbProvider(
+        gh<_i3.AppDatabase>(),
+        gh<_i16.MeasurementTypeMapper>(),
+      ));
   gh.factory<_i18.SettingsDbProvider>(
       () => _i18.SettingsDbProvider(gh<_i3.AppDatabase>()));
   gh.factory<_i19.TimeSettingsApiClient>(() =>
@@ -164,7 +166,6 @@ Future<_i1.GetIt> init(
     gh<_i33.UserCubit>(),
   ));
   gh.singleton<_i40.NotificationsBloc>(_i40.NotificationsBloc(
-    gh<_i31.UserDbProvider>(),
     gh<_i18.SettingsDbProvider>(),
     gh<_i33.UserCubit>(),
   ));
@@ -230,8 +231,9 @@ Future<_i1.GetIt> init(
     gh<_i37.CarePlansRepository>(),
     gh<_i43.TimeSettingsRepository>(),
     gh<_i39.DeviceRepository>(),
-    gh<_i31.UserDbProvider>(),
     gh<_i28.CarePlanDbProvider>(),
+    gh<_i16.MeasurementTypeMapper>(),
+    gh<_i17.MeasurementsDbProvider>(),
   ));
   gh.singleton<_i52.AuthBloc>(_i52.AuthBloc(
     gh<_i4.AuthService>(),

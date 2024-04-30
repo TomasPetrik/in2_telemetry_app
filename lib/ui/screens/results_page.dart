@@ -53,6 +53,14 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
               final resultsState = context.watch<ResultsBloc>().state;
               final userState = context.watch<UserCubit>().state;
 
+              syncState.whenOrNull(
+                synced: () => {
+                  resultsBloc.add(
+                    ResultsBlocEvent.init(whenPeriod: resultsState.selectedWhenPeriod ?? ResultsWhenPeriod.today),
+                  ),
+                },
+              );
+
               Future<void> openWhenSelector() async {
                 showResultsWhenSelector(
                   context,

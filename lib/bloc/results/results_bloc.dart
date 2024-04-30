@@ -12,8 +12,8 @@ import 'package:scalesoft_app/utils/helpers/results_helper.dart';
 
 @injectable
 class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
-  late final List<Measurement> _allMeasurements;
-  late final List<CarePlan> _allCarePlans;
+  late List<Measurement> _allMeasurements;
+  late List<CarePlan> _allCarePlans;
 
   final UserCubit _session;
   final CarePlanDbProvider _carePlanDbProvider;
@@ -25,8 +25,7 @@ class ResultsBloc extends Bloc<ResultsBlocEvent, ResultsBlocState> {
         init: (
           final ResultsWhenPeriod whenPeriod,
         ) async {
-          final sessionAccounts = await _session.getSessionAccounts();
-          final sessionAccounts = _session.state.rootUsers;
+          final sessionAccounts = _session.state.aggregateAllUsers ? _session.state.rootUsers : [_session.state.currentUser];
 
           final List<CarePlan> activeCarePlans = [];
           final List<Measurement> allMeasurements = [];

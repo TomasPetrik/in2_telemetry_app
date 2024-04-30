@@ -9,7 +9,6 @@ class ChartLoaderBlocState with _$ChartLoaderBlocState {
   const factory ChartLoaderBlocState({
     List<CandleData>? candles,
     CalendarMonth? month,
-    DateTime? selectedDayDt,
     bool? loading,
     bool? wasResolved,
     ChartResultType? resultType,
