@@ -1,46 +1,36 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
+import 'package:scalesoft_app/ui/viewModels/measurement_result_view_model.dart';
 import 'package:scalesoft_app/ui/widgets/progress_header.dart';
 
 class HistorySingleUserEvaluationHeader extends StatelessWidget {
   const HistorySingleUserEvaluationHeader({
     super.key,
-    required this.userEvaluationDay,
+    required this.results,
   });
 
-  final UserEvaluationDay userEvaluationDay;
+  final List<MeasurementResultViewModel> results;
 
   @override
   Widget build(BuildContext context) {
-    final measurementTypesCarePlans = userEvaluationDay.carePlanFulfillments
-        .where((carePlanFulfillment) => carePlanFulfillment.getReqCount() > 0)
-        .groupListsBy((evDay) => evDay.measurementType);
+    final plannedMeasurementsPerType =
+        results.where((x) => x.wasPlanned).groupListsBy((evDay) => evDay.measurementType);
 
-    final progressItems = measurementTypesCarePlans.entries.map(
-      (carePlanFulfillment) {
-        final measurementTypeCarePlans = carePlanFulfillment.value;
+    final progressItems = plannedMeasurementsPerType.entries.map(
+      (resultsWithType) {
+        final resultsOfType = resultsWithType.value;
 
-        final reqCounts = measurementTypeCarePlans.fold<int>(
-          0,
-          (previousValue, carePlanEvaluation) =>
-              previousValue + carePlanEvaluation.getReqCount(),
-        );
+        final reqCounts = resultsOfType.map((x) => x.requiredCount).sum;
 
-        final actualCounts = measurementTypeCarePlans.fold<int>(
-          0,
-          (previousValue, carePlanEvaluation) =>
-              previousValue + carePlanEvaluation.getActualCount(),
-        );
+        final actualCounts = resultsOfType.map((x) => x.actualCount).sum;
 
-        final measurementTypeEvaluation =
-            reqCounts == 0 ? 0 : ((actualCounts / reqCounts) * 100).toInt();
+        final measurementTypeEvaluation = reqCounts == 0 ? 0 : ((actualCounts / reqCounts) * 100).toInt();
 
         return ProgressItem(
           localization.common_measurement_types(
-            carePlanFulfillment.key.name,
+            resultsWithType.key.name,
           ),
           measurementTypeEvaluation,
         );

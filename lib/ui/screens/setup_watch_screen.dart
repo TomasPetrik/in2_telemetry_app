@@ -14,7 +14,7 @@ class SetupWatchScreen extends StatelessWidget {
   final DeviceInfoPlugin _deviceInfoPlugin = DeviceInfoPlugin();
   final loaderCubit = getIt<LoaderCubit>()..loading();
 
-  SetupWatchScreen({Key? key}) : super(key: key);
+  SetupWatchScreen({super.key});
 
   Future<AndroidDeviceInfo> getDeviceInfo() async {
     loaderCubit.loading();

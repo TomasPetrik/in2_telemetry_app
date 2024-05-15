@@ -56,7 +56,15 @@ class CarePlanDbProvider {
     return await _database.carePlansDao.getByUser(userId);
   }
 
+  Future<List<CarePlan>> getByUsers(Iterable<int> userIds) async {
+    return await _database.carePlansDao.getByUsers(userIds);
+  }
+
   Future<CarePlan?> get(int carePlanId) async {
     return await _database.carePlansDao.get(carePlanId);
+  }
+
+  Future<List<CarePlan>> getPlans(Iterable<int> ids) async {
+    return await _database.carePlansDao.getPlans(ids);
   }
 }

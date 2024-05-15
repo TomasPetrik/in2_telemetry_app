@@ -7,7 +7,7 @@ part 'measurements_dao.drift.dart';
 
 @DriftAccessor(tables: [Measurements])
 class MeasurementsDao extends DatabaseAccessor<AppDatabase> with _$MeasurementsDaoMixin {
-  MeasurementsDao(AppDatabase db) : super(db);
+  MeasurementsDao(super.db);
 
   Future<int> save(MeasurementsCompanion measurement) async {
     return await into(measurements).insert(
@@ -39,7 +39,7 @@ class MeasurementsDao extends DatabaseAccessor<AppDatabase> with _$MeasurementsD
     }
 
     if (to != null) {
-      query.where((x) => x.measuredAt.isBiggerOrEqualValue(to));
+      query.where((x) => x.measuredAt.isSmallerThanValue(to));
     }
 
     if (isUploaded != null) {

@@ -10,7 +10,6 @@ import 'package:scalesoft_app/bloc/notifications/notifications_event.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_state.dart';
 import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/data/providers/settings_db_provider.dart';
-import 'package:scalesoft_app/data/providers/user_db_provider.dart';
 import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/utils/helpers/notifications_helper.dart';
 

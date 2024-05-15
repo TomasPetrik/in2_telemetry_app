@@ -1331,11 +1331,11 @@ class I10n {
     );
   }
 
-  /// `Periodické měření`
-  String get dashboard_screen_periodical_measurements {
+  /// `Vícedenní měření`
+  String get multi_day_measurements {
     return Intl.message(
-      'Periodické měření',
-      name: 'dashboard_screen_periodical_measurements',
+      'Vícedenní měření',
+      name: 'multi_day_measurements',
       desc: '',
       args: [],
     );

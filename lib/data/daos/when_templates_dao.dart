@@ -6,7 +6,7 @@ part 'when_templates_dao.drift.dart';
 
 @DriftAccessor(tables: [WhenTemplates])
 class WhenTemplatesDao extends DatabaseAccessor<AppDatabase> with _$WhenTemplatesDaoMixin {
-  WhenTemplatesDao(AppDatabase db) : super(db);
+  WhenTemplatesDao(super.db);
 
   Future<List<WhenTemplate>> getByUser(int userId) async {
     return await (select(whenTemplates)..where((x) => x.userId.equals(userId))).get();

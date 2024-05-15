@@ -159,44 +159,41 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                         ],
                       ),
                     },
-                    ...supportedMeasurementTypes
-                        .map(
-                          (measurementType) => NavigationTabBarItem(
-                            label: localization.common_measurement_types(
-                              measurementType.name,
+                    ...supportedMeasurementTypes.map(
+                      (measurementType) => NavigationTabBarItem(
+                        label: localization.common_measurement_types(
+                          measurementType.name,
+                        ),
+                        slivers: [
+                          if (carePlanState.nextMeasurement != null)
+                            MeasurementsList(
+                              whenPeriod: carePlanState.selectedWhenPeriod!,
+                              carePlans: [...carePlanState.currentCarePlans!],
+                              measurements: carePlanState.upcomingMeasurements!,
+                              nextMeasurement: carePlanState.nextMeasurement!,
+                              planWhenPeriod: carePlanState.selectedWhenPeriod!,
+                              results: carePlanState.results!,
                             ),
-                            slivers: [
-                              if (carePlanState.nextMeasurement != null)
-                                MeasurementsList(
-                                  whenPeriod: carePlanState.selectedWhenPeriod!,
-                                  carePlans: [...carePlanState.currentCarePlans!],
-                                  measurements: carePlanState.upcomingMeasurements!,
-                                  nextMeasurement: carePlanState.nextMeasurement!,
-                                  planWhenPeriod: carePlanState.selectedWhenPeriod!,
-                                  results: carePlanState.results!,
-                                ),
-                            ],
-                            bottomSlivers: [
-                              if (!userState.aggregateAllUsers &&
-                                  (userState.currentUser.permissions
-                                      .contains(Permissions.enterMeasurementWithoutPlan))) ...{
-                                PersonalMeasurementFooter(
-                                  showInfo: carePlanState.upcomingMeasurements?.isNotEmpty == true,
-                                  onPressed: () async {
-                                    MeasurementHelper.doMeasurement(
-                                      context: context,
-                                      userId: userState.currentUser.id,
-                                      selectedMeasurementType:
-                                          carePlanState.currentCarePlans![0].activity.measurementType,
-                                      showAllMeasurementTypes: true,
-                                    );
-                                  },
-                                ),
+                        ],
+                        bottomSlivers: [
+                          if (!userState.aggregateAllUsers &&
+                              (userState.currentUser.permissions
+                                  .contains(Permissions.enterMeasurementWithoutPlan))) ...{
+                            PersonalMeasurementFooter(
+                              showInfo: carePlanState.upcomingMeasurements?.isNotEmpty == true,
+                              onPressed: () async {
+                                MeasurementHelper.doMeasurement(
+                                  context: context,
+                                  userId: userState.currentUser.id,
+                                  selectedMeasurementType: carePlanState.currentCarePlans![0].activity.measurementType,
+                                  showAllMeasurementTypes: true,
+                                );
                               },
-                            ],
-                          ),
-                        )
-                        .toList(),
+                            ),
+                          },
+                        ],
+                      ),
+                    ),
                   ],
                 );
               }

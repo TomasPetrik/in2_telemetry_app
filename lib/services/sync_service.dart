@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
+import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
@@ -9,8 +10,10 @@ import 'package:scalesoft_app/api/contracts/measurement_type_contract.dart';
 import 'package:scalesoft_app/api/model/user_model.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/constants/permissions.dart';
+import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_evaluation_item.dart';
 import 'package:scalesoft_app/data/providers/measurements_db_provider.dart';
+import 'package:scalesoft_app/data/providers/user_db_provider.dart';
 import 'package:scalesoft_app/managers/background_measurement_manager.dart';
 import 'package:scalesoft_app/mapper/measurement_type_mapper.dart';
 import 'package:scalesoft_app/model/care_plan_create_model.dart';
@@ -33,42 +36,41 @@ class SyncService {
   final CarePlanDbProvider _carePlanDbProvider;
   final MeasurementTypeMapper _measurementTypeMapper;
   final MeasurementsDbProvider _measurementsDbProvider;
+  final UserDbProvider _userDbProvider;
 
+  SyncService(
+    this._session,
+    this._accountRepository,
+    this._carePlansRepository,
+    this._timeSettingsRepository,
+    this._deviceRepository,
+    this._carePlanDbProvider,
+    this._measurementTypeMapper,
+    this._measurementsDbProvider,
+    this._userDbProvider,
+  );
 
-  SyncService(this._session,
-      this._accountRepository,
-      this._carePlansRepository,
-      this._timeSettingsRepository,
-      this._deviceRepository,
-      this._carePlanDbProvider,
-      this._measurementTypeMapper,
-      this._measurementsDbProvider,);
-
-  Future<void> setUserPlans(final int userid,
-      final List<CarePlanContract> newCarePlans,) async {
+  Future<void> setUserPlans(
+    final int userid,
+    final List<CarePlanContract> newCarePlans,
+  ) async {
     final currentCarePlans = await _carePlanDbProvider.getByUser(userid);
 
-    final yesterdayMidnight = DateTime
-        .now()
-        .yesterday;
-    var tomorrowMidnight = DateTime
-        .now()
-        .tomorrow;
+    final yesterdayMidnight = DateTime.now().yesterday;
+    var tomorrowMidnight = DateTime.now().tomorrow;
 
     final List<CarePlanCreateModel> results = [];
 
     for (final newCarePlan in newCarePlans) {
       final currentPlan = currentCarePlans.firstWhereOrNull(
-            (currentCarePlan) => currentCarePlan.id == newCarePlan.id,
+        (currentCarePlan) => currentCarePlan.id == newCarePlan.id,
       );
 
       var wasChanged = false;
 
       // check if plans were updated
       if (currentPlan != null) {
-        final currentVersion = currentPlan.versions
-            .map((x) => x.versionId)
-            .max;
+        final currentVersion = currentPlan.versions.map((x) => x.versionId).max;
         wasChanged = newCarePlan.versionId > currentVersion;
       }
 
@@ -129,6 +131,7 @@ class SyncService {
     for (final UserAccount representedPerson in userAccount.representedPeople!) {
       representedPerson.timeSettingItems = timeSettingItems;
     }
+  Future<void> loadWhenValues(final int userId) async {
   }
 
   Future<void> loadDeviceModels(final int userId) async {
@@ -155,7 +158,9 @@ class SyncService {
       userId: userId,
     );
 
-    await setUserPlans(userId, activeCarePlans.items);
+    final plansOfUser = activeCarePlans.items.where((x)=>x.targetUserMuid == user.muid).toList();
+
+    await setUserPlans(userId, plansOfUser);
 
     //check and update assigned devices, current user data and his represented people
     //await checkForDataChanges(userAccount);
@@ -171,9 +176,9 @@ class SyncService {
           userId: representedPerson.id,
         );
 
-        await setUserPlans(representedPerson.id, activeCarePlans.items);
+        final plansOfPerson = activeCarePlans.items.where((x)=>x.targetUserMuid == representedPerson.muid).toList();
 
-        representedPerson.carePlans = activeCarePlans.items;
+        await setUserPlans(representedPerson.id, plansOfPerson);
 
         await loadPartPlanEvaluation(representedPerson);
 
@@ -208,7 +213,9 @@ class SyncService {
   }
 
   List<SourceDeviceContract>? parseAssignedDevices(
-      List<SourceDeviceContract>? devices, List<SourceDeviceContract>? originalDevices,) {
+    List<SourceDeviceContract>? devices,
+    List<SourceDeviceContract>? originalDevices,
+  ) {
     if (devices == null) {
       return null;
     }
@@ -241,6 +248,7 @@ class SyncService {
   Future<void> loadFulFillmentEvaluation(final UserAccount userAccount) async {
     final carePlans = userAccount.carePlans;
     if (carePlans == null) {
+  Future<void> loadFulfillmentEvaluation(final int userId) async {
   /* load today's and yesterday's measurement results */
   Future<void> loadMeasurementResults(int userId) async {
     final carePlans = await _carePlanDbProvider.getByUser(userId);
@@ -257,12 +265,8 @@ class SyncService {
 
     supportedMeasurementTypes.addAll(user.hospital.enabledMeasurementTypes);
 
-    final yesterdayMidnight = DateTime
-        .now()
-        .yesterday;
-    final tomorrowMidnight = DateTime
-        .now()
-        .tomorrow;
+    final yesterdayMidnight = DateTime.now().yesterday;
+    final tomorrowMidnight = DateTime.now().tomorrow;
 
     final List<MeasurementDataContract> allResults = [];
     for (final measurementType in supportedMeasurementTypes) {
@@ -285,16 +289,19 @@ class SyncService {
 
     for (final user in users) {
       try {
-        await loadUserData(userAccount);
-        userAccount.lastSyncAt = DateTime.now();
-        userAccount.lastSyncFailed = false;
-        await updateUserData(userAccount);
-        await _accountDbProvider.save(userAccount);
+        await loadUserData(user.id);
+
+        await _userDbProvider.updateUser(
+          user.id,
+          UsersCompanion(
+            lastSyncAt: Value(DateTime.now()),
+            lastSyncFailed: const Value(false),
+            isSessionExpired: const Value(false),
+          ),
+        );
       } on DioException {
         //for any failed sync set flag and go on next account
-        userAccount.lastSyncFailed = true;
-        await _accountDbProvider.save(userAccount);
-        //return;
+        await _userDbProvider.updateUser(user.id, const UsersCompanion(lastSyncFailed: Value(true)));
       }
     }
     NotificationsHelper.setNotifications(

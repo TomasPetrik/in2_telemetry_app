@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 
 class LoadingIndicator extends StatelessWidget {
   const LoadingIndicator({
-    Key? key,
+    super.key,
     this.activeColor,
     this.backgroundColor,
-  }) : super(key: key);
+  });
 
   final Color? activeColor;
   final Color? backgroundColor;

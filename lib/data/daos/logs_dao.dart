@@ -7,7 +7,7 @@ part 'logs_dao.drift.dart';
 
 @DriftAccessor(tables: [LogEvents, Users])
 class LogsDao extends DatabaseAccessor<AppDatabase> with _$LogsDaoMixin {
-  LogsDao(AppDatabase db) : super(db);
+  LogsDao(super.db);
 
   Future<int> save(LogEventsCompanion logEvent) async {
     return await into(logEvents).insert(logEvent);

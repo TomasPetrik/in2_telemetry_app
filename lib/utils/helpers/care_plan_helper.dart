@@ -7,6 +7,7 @@ import 'package:scalesoft_app/data/entities/enums/timing_day_when_type.dart';
 import 'package:scalesoft_app/data/entities/enums/when_code.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/care_plan_version.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_evaluation_item.dart';
+import 'package:scalesoft_app/model/fulfillment_evaluation_model.dart';
 import 'package:scalesoft_app/providers/interval_generation/timing_interval_generator.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
@@ -14,9 +15,9 @@ import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 class CarePlanHelper {
   static DateTime getEarliestDateOfCarePlans(Iterable<CarePlan> carePlans) {
-    final minDate = carePlans.map((plan) => plan.versions.map((version) => version.scheduledStart).min).min;
+    final minDate = carePlans.map((plan) => plan.versions.map((version) => version.scheduledStart).min).minOrNull;
 
-    return minDate;
+    return minDate ?? DateTime.now();
   }
 
   static List<CarePlan> getCarePlansContainingMeasurements({
@@ -115,6 +116,7 @@ class CarePlanHelper {
     List<Measurement> offlineResults, {
     bool ignoreOngoing = false,
     bool ignoreCompleted = false,
+    List<FulfillmentEvaluationModel>? evaluationItems,
   }) {
     List<PlannedMeasurement> result = [];
 
@@ -123,6 +125,8 @@ class CarePlanHelper {
         (x) => x.activeFrom.isBefore(to) && (x.activeTo?.isAfter(from) ?? true),
       );
 
+      final evaluationItemsOfPlan = evaluationItems?.where((x) => x.carePlanId == plan.id).toList() ?? plan.evaluationItems;
+
       for (final version in activeVersions) {
         final versionMeasurements = getMeasurementsForVersion(
           version,
@@ -130,6 +134,7 @@ class CarePlanHelper {
           from,
           to,
           offlineResults,
+          evaluationItemsOfPlan,
           ignoreOngoing: ignoreOngoing,
           ignoreCompleted: ignoreCompleted,
         );
@@ -166,7 +171,8 @@ class CarePlanHelper {
     CarePlan plan,
     DateTime from,
     DateTime to,
-    List<Measurement> offlineResults, {
+    List<Measurement> offlineResults,
+    List<FulfillmentEvaluationItem> evaluationItems, {
     bool ignoreOngoing = false,
     bool ignoreCompleted = false,
   }) {
@@ -205,11 +211,13 @@ class CarePlanHelper {
 
     List<PlannedMeasurement> result = [];
 
+    final evaluationItemsInBounds = evaluationItems.where((x) => x.start.isBefore(to) && x.end.isAfterOrAt(from));
+
     for (final plannedMeasurement in plannedMeasurements) {
       final fulfillmentEvaluation = MeasurementHelper.getFulfillmentEvaluation(
         plannedMeasurement,
         offlineResults,
-        plan.evaluationItems,
+        evaluationItemsInBounds,
       );
 
       plannedMeasurement.currentCount = fulfillmentEvaluation.actualMeasurementCount;
@@ -308,6 +316,7 @@ class Calendar {
     required DateTime dayDt,
     required List<Measurement> offlineResults,
     bool all = false,
+    List<FulfillmentEvaluationModel>? evaluationItems,
   }) {
     final from = dayDt.startOfDay;
     final to = dayDt.endOfDay;
@@ -318,6 +327,7 @@ class Calendar {
       to,
       offlineResults,
       ignoreCompleted: !all,
+      evaluationItems: evaluationItems,
     );
   }
 
@@ -479,7 +489,10 @@ class PlannedMeasurement {
       return false;
     }
 
-    return other.whenStart == whenStart && other.whenEnd == whenEnd && other.measurementType == measurementType && other.userId == userId;
+    return other.whenStart == whenStart &&
+        other.whenEnd == whenEnd &&
+        other.measurementType == measurementType &&
+        other.userId == userId;
   }
 
   @override

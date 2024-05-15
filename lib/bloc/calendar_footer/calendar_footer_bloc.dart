@@ -7,12 +7,11 @@ import 'package:scalesoft_app/bloc/calendar_footer/calendar_footer_event.dart';
 @singleton
 class CalendarFooterBloc
     extends Bloc<CalendarFooterEvent, CalendarFooterState> {
-  CalendarFooterBloc() : super(CalendarFooterState()) {
+  CalendarFooterBloc() : super(CalendarFooterState(timestamp: DateTime.now().millisecondsSinceEpoch)) {
     on<CalendarFooterEvent>((event, emit) async {
       await event.when(
         selectDay: (CalendarDay? calendarDay) async {
-          await Future.delayed(const Duration(seconds: 1));
-          emit(CalendarFooterState(selectedDay: calendarDay));
+          emit(CalendarFooterState(selectedDay: calendarDay, timestamp: DateTime.now().millisecondsSinceEpoch));
         },
       );
     });

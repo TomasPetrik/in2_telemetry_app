@@ -2,31 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
+import 'package:scalesoft_app/ui/viewModels/measurement_result_view_model.dart';
 import 'package:scalesoft_app/ui/widgets/future_measurement_item.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
-import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class FutureMeasurementsList extends StatelessWidget {
   const FutureMeasurementsList({
     super.key,
     required this.dayDt,
-    required this.isMultiUser,
+    required this.showUserNames,
     required this.futureMeasurements,
   });
-  final DateTime dayDt;
-  final bool isMultiUser;
-  final List<PlannedMeasurement> futureMeasurements;
 
-  List<PlannedMeasurement> get _pMeasurements => futureMeasurements
+  final DateTime dayDt;
+  final bool showUserNames;
+  final List<MeasurementResultViewModel> futureMeasurements;
+
+  List<MeasurementResultViewModel> get multiDayMeasurements => futureMeasurements
       .where(
-        (measurement) => measurement.isLongPeriod,
+        (measurement) => measurement.spansMultipleDays,
       )
       .toList();
 
-  List<PlannedMeasurement> get _rMeasurements => futureMeasurements
+  List<MeasurementResultViewModel> get singleDayMeasurements => futureMeasurements
       .where(
-        (measurement) => !measurement.isLongPeriod,
+        (measurement) => !measurement.spansMultipleDays,
       )
       .toList();
 
@@ -34,7 +35,7 @@ class FutureMeasurementsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiSliver(
       children: [
-        if (_pMeasurements.isNotEmpty) ...[
+        if (multiDayMeasurements.isNotEmpty) ...[
           SliverToBoxAdapter(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,7 +44,7 @@ class FutureMeasurementsList extends StatelessWidget {
                 Padding(
                   padding: Paddings.left16,
                   child: Text(
-                    localization.dashboard_screen_periodical_measurements,
+                    localization.multi_day_measurements,
                     style: ScaleTextStyles.label.apply(
                       color: Theme.of(context).colorScheme.onPrimary,
                     ),
@@ -60,12 +61,11 @@ class FutureMeasurementsList extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     FutureMeasurementItem(
-                      isMultiUser: isMultiUser,
-                      futureMeasurement: _pMeasurements[index],
+                      showUserName: showUserNames,
+                      measurement: multiDayMeasurements[index],
                     ),
-                    if (index != (_pMeasurements.length - 1) ||
-                        (index == (_pMeasurements.length - 1) &&
-                            _pMeasurements.isNotEmpty))
+                    if (index != (multiDayMeasurements.length - 1) ||
+                        (index == (multiDayMeasurements.length - 1) && multiDayMeasurements.isNotEmpty))
                       Container(
                         margin: Paddings.horizontal16,
                         height: 0.5,
@@ -74,12 +74,12 @@ class FutureMeasurementsList extends StatelessWidget {
                   ],
                 );
               },
-              childCount: _pMeasurements.length,
+              childCount: multiDayMeasurements.length,
             ),
           ),
         ],
-        if (_rMeasurements.isNotEmpty) ...[
-          if (_pMeasurements.isNotEmpty)
+        if (singleDayMeasurements.isNotEmpty) ...[
+          if (multiDayMeasurements.isNotEmpty)
             SliverToBoxAdapter(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,10 +105,10 @@ class FutureMeasurementsList extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     FutureMeasurementItem(
-                      isMultiUser: isMultiUser,
-                      futureMeasurement: _rMeasurements[index],
+                      showUserName: showUserNames,
+                      measurement: singleDayMeasurements[index],
                     ),
-                    if (index != (_rMeasurements.length - 1))
+                    if (index != (singleDayMeasurements.length - 1))
                       Container(
                         margin: Paddings.horizontal16,
                         height: 0.5,
@@ -117,7 +117,7 @@ class FutureMeasurementsList extends StatelessWidget {
                   ],
                 );
               },
-              childCount: _rMeasurements.length,
+              childCount: singleDayMeasurements.length,
             ),
           ),
         ],

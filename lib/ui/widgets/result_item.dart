@@ -31,7 +31,7 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
 
     final shouldShowDates = [viewModel.measurementIntervalStart, viewModel.measurementIntervalEnd]
         .whereNotNull()
-        .any((x) => x != viewModel.measurementTime);
+        .any((x) => !x.isSameDate(viewModel.measurementTime)) && !wasMeasured;
     final canShowMeasuredValues = viewModel.user.permissions.any((x) => x == Permissions.viewOwnMeasurementData);
 
     return InkWell(
@@ -41,7 +41,7 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
         if (canShowMeasuredValues) {
           GoRouter.of(context).pushNamed(
             ChartRoute.name,
-            params: {
+            pathParameters: {
               'userId': viewModel.user.id.toString(),
               'dateTime': viewModel.measurementTime.toIso8601String(),
               'measurementType': viewModel.measurementType.name,
@@ -66,9 +66,7 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                 Gaps.gap16,
                 SvgPicture.asset(
                   shouldShowDates ? 'assets/icons/icon_wave_pulse_period.svg' : 'assets/icons/icon_wave_pulse.svg',
-                  color: wasMeasured
-                      ? Theme.of(context).colorScheme.onTertiary
-                      : Theme.of(context).colorScheme.error,
+                  color: wasMeasured ? Theme.of(context).colorScheme.onTertiary : Theme.of(context).colorScheme.error,
                 ),
               ],
             ),
@@ -112,22 +110,26 @@ class ResultItem extends StatelessWidget with BottomSheetMixin {
                             ),
                           ),
                           if (viewModel.measurementIntervalStart != null &&
-                              viewModel.measurementIntervalEnd != null) ...[
+                              viewModel.measurementIntervalEnd != null ) ...[
                             Gaps.gap6,
-                            Text(
-                              shouldShowDates
-                                  ? localization.dashboard_screen_measurement_periodical_interval(
-                                      viewModel.measurementIntervalStart!.dateFormatLong,
-                                      viewModel.measurementIntervalEnd!.dateFormatLong,
-                                    )
-                                  : localization.dashboard_screen_measurement_interval(
-                                      viewModel.measurementIntervalStart!.toLocal().toTimeOfDay().toString(),
-                                      viewModel.measurementIntervalEnd!.toLocal().toTimeOfDay().toString(),
-                                    ),
-                              style: ScaleTextStyles.label.apply(
-                                color: Theme.of(context).colorScheme.onSecondary,
+                            if (!wasMeasured) ...[
+                              Text(
+                                shouldShowDates
+                                    ? localization.dashboard_screen_measurement_periodical_interval(
+                                        viewModel.measurementIntervalStart!.dateFormatLong,
+                                        viewModel.measurementIntervalEnd!.dateFormatLong,
+                                      )
+                                    : localization.dashboard_screen_measurement_interval(
+                                        viewModel.measurementIntervalStart!.toLocal().toTimeOfDay().toString(),
+                                        viewModel.measurementIntervalEnd!.toLocal().toTimeOfDay().toString(),
+                                      ),
+                                style: ScaleTextStyles.label.apply(
+                                  color: Theme.of(context).colorScheme.onSecondary,
+                                ),
                               ),
-                            ),
+                            ] else if (shouldShowDates) ...[
+                              Text(viewModel.measurementTime.toLocal().dateFormatLong),
+                            ],
                             if (viewModel.requiredCount > 1) //for periodical show count
                               Text(
                                 localization.results_screen_measurements_completed(

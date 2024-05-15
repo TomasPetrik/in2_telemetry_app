@@ -21,13 +21,12 @@ class ProgressHeader extends StatelessWidget {
   final Function? openWhenSelector;
   final List<ProgressItem> progressItems;
   final String label;
+
   @override
   Widget build(BuildContext context) {
     int parts = (progressItems.length < 5 ? progressItems.length : 5);
 
-    var itemWidth =
-        (MediaQuery.of(context).size.width - (4 * Dimensions.padding16)) /
-            parts;
+    var itemWidth = (MediaQuery.of(context).size.width - (4 * Dimensions.padding16)) / parts;
 
     if (parts > 4) {
       itemWidth *= 1.15;
@@ -99,20 +98,18 @@ class ProgressHeader extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ...progressItems
-                          .map(
-                            (progressItem) => SizedBox(
-                              width: itemWidth,
-                              child: Padding(
-                                padding: Paddings.horizontal4,
-                                child: CircularIndicator(
-                                  label: progressItem.label,
-                                  percent: progressItem.progress / 100,
-                                ),
-                              ),
+                      ...progressItems.map(
+                        (progressItem) => SizedBox(
+                          width: itemWidth,
+                          child: Padding(
+                            padding: Paddings.horizontal4,
+                            child: CircularIndicator(
+                              label: progressItem.label,
+                              percent: progressItem.progress / 100,
                             ),
-                          )
-                          .toList(),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

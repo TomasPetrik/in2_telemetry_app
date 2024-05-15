@@ -6,7 +6,6 @@ import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/contracts/time_settings/time_setting_contract.dart';
 import 'package:scalesoft_app/api/contracts/user/user_contract.dart';
 import 'package:scalesoft_app/api/model/user_model.dart';
-import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
@@ -108,7 +107,13 @@ class UserCubit extends Cubit<UserCubitState> {
     List<TimeSettingContract> timeSettingContracts,
   ) async {
     final userId = await _userDbProvider.createOrUpdateUser(
-        rootUser, representedPeople, hospitalId, authToken, permissions, timeSettingContracts);
+      rootUser,
+      representedPeople,
+      hospitalId,
+      authToken,
+      permissions,
+      timeSettingContracts,
+    );
 
     if (!state.allUsers.any((x) => x.id == userId)) {
       await _allUsersStream.firstWhere((list) => list.any((user) => user.id == userId)).timeout(
@@ -130,10 +135,6 @@ class UserCubit extends Cubit<UserCubitState> {
   void toggleAllUserAggregation(bool newValue) {
     emit(UserCubitState(state._userId, state.rootUsers, newValue));
   }
-
-  // TODO: Delet this
-  //For history and future details restoration
-  List<UserEvaluationDay>? usersEvaluationsDayRestoration;
 
   //For calendar restoration
   DateTime? preSelectedDtRestoration;

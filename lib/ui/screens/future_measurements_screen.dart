@@ -1,40 +1,32 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/navigation_screen.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/viewModels/measurement_result_view_model.dart';
 import 'package:scalesoft_app/ui/widgets/blurred_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/future_measurements_list.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
-import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 class FutureMeasurementsScreen extends StatelessWidget {
   FutureMeasurementsScreen({
     super.key,
-    required this.usersEvaluationsDay,
+    required this.results,
   }) : assert(
-          usersEvaluationsDay.isNotEmpty,
+          results.isNotEmpty,
           'To show future page must be included at least one evaluation day !',
         );
 
-  final List<UserEvaluationDay> usersEvaluationsDay;
+  final List<MeasurementResultViewModel> results;
 
   @override
   Widget build(BuildContext context) {
-    final date = usersEvaluationsDay.first.dt;
-    final userNames = usersEvaluationsDay.map((evDay) => evDay.userName);
+    final date = results.first.measurementTime;
+    final users = results.map((evDay) => evDay.user);
 
-    final bool isMultiUser = usersEvaluationsDay.length > 1;
+    final bool showUserNames = users.length > 1;
 
-    final futureMeasurements = usersEvaluationsDay.fold<List<PlannedMeasurement>>(
-      [],
-      (previousValue, userEvaluationsDay) => [
-        ...previousValue,
-        ...userEvaluationsDay.getFutureMeasurements(),
-      ],
-    )..sort(
-        (a, b) => b.whenStart.compareTo(a.whenStart),
-      );
+    final futureMeasurements = results.sortedBy((x)=>x.measurementTime).toList();
 
     final measurementTypes = futureMeasurements.map((measurement) => measurement.measurementType).toSet();
 
@@ -60,7 +52,7 @@ class FutureMeasurementsScreen extends StatelessWidget {
                     slivers: [
                       FutureMeasurementsList(
                         dayDt: date,
-                        isMultiUser: isMultiUser,
+                        showUserNames: showUserNames,
                         futureMeasurements: futureMeasurements,
                       ),
                     ],
@@ -76,7 +68,7 @@ class FutureMeasurementsScreen extends StatelessWidget {
                         slivers: [
                           FutureMeasurementsList(
                             dayDt: date,
-                            isMultiUser: isMultiUser,
+                            showUserNames: showUserNames,
                             futureMeasurements: futureMeasurements
                                 .where(
                                   (measurement) => measurement.measurementType == measurementType,
@@ -87,7 +79,7 @@ class FutureMeasurementsScreen extends StatelessWidget {
                         bottomSlivers: [],
                       ),
                     )
-                    .toList(),
+                    ,
               ],
             ),
           ),
@@ -98,7 +90,7 @@ class FutureMeasurementsScreen extends StatelessWidget {
             child: BlurredScaleAppBar(
               title: date.dateFormat,
               subTitle:
-                  '${userNames.first}${userNames.length > 1 ? ' ${localization.common_plus_n_others(userNames.length - 1)}' : ''}',
+                  '${users.first.fullName}${users.length > 1 ? ' ${localization.common_plus_n_others(users.length - 1)}' : ''}',
               showClose: true,
               onCloseTap: () {},
               onBackTap: () {},

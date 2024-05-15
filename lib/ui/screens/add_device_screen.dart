@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
-import 'package:scalesoft_app/api/contracts/measurement_type_contract.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -18,7 +18,7 @@ class AddDeviceScreen extends StatelessWidget {
   });
 
   final String userId;
-  final MeasurementTypeContract measurementType;
+  final MeasurementType measurementType;
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +39,10 @@ class AddDeviceScreen extends StatelessWidget {
                         onTap: () {
                           GoRouter.of(context).pushNamed(
                             OmronFlowRoute.name,
-                            queryParams: {
+                            queryParameters: {
                               'userId': userId,
                               'measurementType': measurementType.name,
-                              'modelName': '${supportedDevice.modelName}',
+                              'modelName': supportedDevice.modelName,
                               'deviceManufacturer':
                                   '${supportedDevice.deviceManufacturer}',
                             },

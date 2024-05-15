@@ -1,5 +1,6 @@
 import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement_type_contract.dart';
+import 'package:scalesoft_app/api/model/server_measurement_model.dart';
 import 'package:scalesoft_app/api/model/user_model.dart';
 import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
@@ -81,11 +82,9 @@ class ResultsHelper {
     required final List<Measurement> measurements,
     required final DateTime startOfDay,
     required final List<UserModel> users,
+    final List<ServerMeasurementModel>? serverMeasurements,
   }) {
     final List<MeasurementResultViewModel> allResults = [];
-
-    //sort by isPeriodical because later on we want to add periodicals partials
-    // measurements which haven't been included in previous measurements
 
     final resultsUntilNow =
         plannedMeasurements.fold<List<MeasurementResultViewModel>>([], (prevMeasurements, plannedMeasurement) {
@@ -93,7 +92,7 @@ class ResultsHelper {
 
       final evaluationItem = plannedMeasurement.fulfillmentEvaluationItem!;
 
-      final measurementTimes = evaluationItem.actualMeasurementTimes.where((time) => time.isAfter(startOfDay));
+      final measurementTimes = evaluationItem.actualMeasurementTimes.where((time) => time.isAfterOrAt(startOfDay) && time.isBefore(startOfDay.endOfDay));
       // Add one item per measurement time
       // If requiredCount > actualCount, add another item representing the remaining measurements
       final user = users.firstWhere((x) => x.id == plannedMeasurement.userId);
@@ -107,6 +106,9 @@ class ResultsHelper {
             1,
             1,
             plannedMeasurement.whenCode,
+            measurementIntervalStart: plannedMeasurement.fulfillmentEvaluationItem?.start,
+            measurementIntervalEnd: plannedMeasurement.fulfillmentEvaluationItem?.end,
+            wasPlanned: true,
           ),
         );
       }
@@ -120,6 +122,9 @@ class ResultsHelper {
             plannedMeasurement.reqCount,
             evaluationItem.actualMeasurementCount,
             plannedMeasurement.whenCode,
+            measurementIntervalStart: plannedMeasurement.fulfillmentEvaluationItem?.start,
+            measurementIntervalEnd: plannedMeasurement.fulfillmentEvaluationItem?.end,
+            wasPlanned: true,
           ),
         );
       }
@@ -142,7 +147,7 @@ class ResultsHelper {
             x.user.id == measurement.userId,
       );
 
-      if (matchingResults.isEmpty) {
+      if (matchingResults.isEmpty && measurement.measuredAt.isAfterOrAt(startOfDay) && measurement.measuredAt.isBefore(startOfDay.endOfDay)) {
         allResults.add(
           MeasurementResultViewModel(
             measurement.measurementType,
@@ -157,6 +162,34 @@ class ResultsHelper {
       } else {
         for (final computedResult in matchingResults) {
           computedResult.result = MeasurementHelper.measurementToString(measurement);
+        }
+      }
+    }
+
+    // Add server results, if any
+    for (final ServerMeasurementModel measurement in serverMeasurements ?? []) {
+      final matchingResults = resultsUntilNow.where(
+        (x) =>
+            x.measurementTime.isAtSameMomentAs(measurement.measurementDateTime) &&
+            x.measurementType == measurement.measurementType &&
+            x.user.id == measurement.userId,
+      );
+
+      if (matchingResults.isEmpty && measurement.measurementDateTime.isAfterOrAt(startOfDay) && measurement.measurementDateTime.isBefore(startOfDay.endOfDay)) {
+        allResults.add(
+          MeasurementResultViewModel(
+            measurement.measurementType,
+            measurement.measurementDateTime,
+            users.firstWhere((x) => x.id == measurement.userId),
+            1,
+            1,
+            null,
+            result: measurement.formattedValue,
+          ),
+        );
+      } else {
+        for (final computedResult in matchingResults) {
+          computedResult.result = measurement.formattedValue;
         }
       }
     }

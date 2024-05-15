@@ -14,10 +14,10 @@ import 'package:scalesoft_app/ui/widgets/tab_icon_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({
-    Key? key,
+    super.key,
     required this.child,
     required this.path,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final String path;

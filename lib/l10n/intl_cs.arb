@@ -319,7 +319,7 @@
         }
     },
     "dashboard_screen_no_todays_measurements": "Dnes nemáte naplánované žádné měření.",
-    "dashboard_screen_periodical_measurements": "Periodické měření",
+    "multi_day_measurements": "Vícedenní měření",
     "measurement_dialog_device_desc": "{deviceModel, select, beurerBm77{Akční tlačítko je pod displejem} omronM7{Akční tlačítko je vedle displeje} other{Nedefinováno}}",
     "@measurement_dialog_device_desc": {
         "description": "Device model",

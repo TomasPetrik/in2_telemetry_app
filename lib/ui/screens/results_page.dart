@@ -77,7 +77,6 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                   } else if (selected?.showCalendar == true) {
                     GoRouter.of(context).pushNamed(
                       CalendarRoute.name,
-                      extra: resultsState.allCarePlans?.map((carePlan) => carePlan.id).toList(),
                     );
                   }
                 });
@@ -173,26 +172,24 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                         bottomSlivers: [],
                       ),
                     },
-                    ...allMeasurementTypes
-                        .map(
-                          (measurementType) => NavigationTabBarItem(
-                            label: localization.common_measurement_types(
-                              measurementType.name,
-                            ),
-                            slivers: [
-                              ResultsList(
-                                dayDt: resultsState.selectedWhenPeriod == ResultsWhenPeriod.today
-                                    ? DateTime.now().date
-                                    : DateTime.now().yesterday,
-                                showUserNames: userState.aggregateAllUsers,
-                                mResults: resultsState.results!,
-                                canOpenChart: true,
-                              ),
-                            ],
-                            bottomSlivers: [],
+                    ...allMeasurementTypes.map(
+                      (measurementType) => NavigationTabBarItem(
+                        label: localization.common_measurement_types(
+                          measurementType.name,
+                        ),
+                        slivers: [
+                          ResultsList(
+                            dayDt: resultsState.selectedWhenPeriod == ResultsWhenPeriod.today
+                                ? DateTime.now().date
+                                : DateTime.now().yesterday,
+                            showUserNames: userState.aggregateAllUsers,
+                            mResults: resultsState.results!,
+                            canOpenChart: true,
                           ),
-                        )
-                        .toList(),
+                        ],
+                        bottomSlivers: [],
+                      ),
+                    ),
                   ],
                 );
               }

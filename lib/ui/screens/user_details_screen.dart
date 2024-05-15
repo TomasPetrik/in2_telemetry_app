@@ -239,7 +239,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                           onPressed: () {
                             GoRouter.of(context).pushNamed<SourceDeviceContract?>(
                               DeviceSearchRoute.name,
-                              params: {
+                              pathParameters: {
                                 'userId': userAccount.id.toString(),
                                 'devicePurpose':
                                     DevicePurpose.registerDevice.name,
@@ -248,7 +248,7 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                               if (device != null) {
                                 GoRouter.of(context).pushNamed(
                                   RegisterDeviceDetailRoute.name,
-                                  params: {
+                                  pathParameters: {
                                     'userId': userAccount.id.toString(),
                                   },
                                   extra: device,

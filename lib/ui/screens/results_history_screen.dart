@@ -1,9 +1,9 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
-import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/navigation_screen.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
+import 'package:scalesoft_app/ui/viewModels/measurement_result_view_model.dart';
 import 'package:scalesoft_app/ui/widgets/blurred_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/history_multi_user_evaluation_header.dart';
 import 'package:scalesoft_app/ui/widgets/history_single_user_evaluation_header.dart';
@@ -13,35 +13,24 @@ import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 class ResultsHistoryScreen extends StatelessWidget {
   ResultsHistoryScreen({
     super.key,
-    required this.usersEvaluationsDay,
+    required this.results,
   }) : assert(
-          usersEvaluationsDay.isNotEmpty,
+          results.isNotEmpty,
           'To show history page must be included at least one evaluation date !',
         );
 
-  final List<UserEvaluationDay> usersEvaluationsDay;
+  final List<MeasurementResultViewModel> results;
 
   @override
   Widget build(BuildContext context) {
-    final date = usersEvaluationsDay.first.dt;
-    final userNames = usersEvaluationsDay.map((evDay) => evDay.userName);
+    final date = results.first.measurementTime;
+    final users = results.map((x) => x.user).toSet();
 
-    final bool isMultiUser = usersEvaluationsDay.length > 1;
+    final bool isMultiUser = users.length > 1;
 
-    final measurementResults =
-        usersEvaluationsDay.fold<List<MeasurementDataContract>>(
-      [],
-      (previousValue, userEvaluationsDay) => [
-        ...previousValue,
-        ...userEvaluationsDay.getMeasurementResults(),
-      ],
-    )..sort(
-            (a, b) => b.measurementDateTime.compareTo(a.measurementDateTime),
-          );
+    final measurementResults = results.sortedBy((x) => x.measurementTime).toList();
 
-    final measurementTypes = measurementResults
-        .map((measurement) => measurement.measurementType!)
-        .toSet();
+    final measurementTypes = measurementResults.map((measurement) => measurement.measurementType).toSet();
 
     return Material(
       child: Stack(
@@ -51,10 +40,10 @@ class ResultsHistoryScreen extends StatelessWidget {
               topSlivers: [
                 isMultiUser
                     ? HistoryMultiUserEvaluationHeader(
-                        usersEvaluationsDay: usersEvaluationsDay,
+                        results: results,
                       )
                     : HistorySingleUserEvaluationHeader(
-                        userEvaluationDay: usersEvaluationsDay[0],
+                        results: results,
                       ),
               ],
               navigationHeader: Row(
@@ -74,7 +63,7 @@ class ResultsHistoryScreen extends StatelessWidget {
                     slivers: [
                       ResultsList(
                         dayDt: date,
-                        isMultiUser: isMultiUser,
+                        showUserNames: isMultiUser,
                         mResults: measurementResults,
                       ),
                     ],
@@ -90,12 +79,10 @@ class ResultsHistoryScreen extends StatelessWidget {
                         slivers: [
                           ResultsList(
                             dayDt: date,
-                            isMultiUser: isMultiUser,
+                            showUserNames: isMultiUser,
                             mResults: measurementResults
                                 .where(
-                                  (measurement) =>
-                                      measurement.measurementType ==
-                                      measurementType,
+                                  (measurement) => measurement.measurementType == measurementType,
                                 )
                                 .toList(),
                           ),
@@ -103,7 +90,7 @@ class ResultsHistoryScreen extends StatelessWidget {
                         bottomSlivers: [],
                       ),
                     )
-                    .toList(),
+                    ,
               ],
             ),
           ),
@@ -114,7 +101,7 @@ class ResultsHistoryScreen extends StatelessWidget {
             child: BlurredScaleAppBar(
               title: date.dateFormat,
               subTitle:
-                  '${userNames.first}${userNames.length > 1 ? ' ${localization.common_plus_n_others(userNames.length - 1)}' : ''}',
+                  '${users.first.fullName}${users.length > 1 ? ' ${localization.common_plus_n_others(users.length - 1)}' : ''}',
               showClose: true,
               onCloseTap: () {},
               onBackTap: () {},

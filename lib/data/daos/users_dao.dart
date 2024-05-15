@@ -9,7 +9,7 @@ part 'users_dao.drift.dart';
 
 @DriftAccessor(tables: [Users])
 class UsersDao extends DatabaseAccessor<AppDatabase> with _$UsersDaoMixin {
-  UsersDao(AppDatabase db) : super(db);
+  UsersDao(super.db);
 
   Stream<UserWithRepresentedPeople?> getUser(int userId) {
     return _getUser((user) => user.id.equals(userId));

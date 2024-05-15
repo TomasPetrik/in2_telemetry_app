@@ -11,7 +11,9 @@ class ShortnessOfBreathThresholdsContract {
   ShortnessOfBreathThresholdsContract({this.max});
 
   factory ShortnessOfBreathThresholdsContract.fromJson(
-      Map<String, dynamic> json) => _$ShortnessOfBreathThresholdsContractFromJson(json);
+    Map<String, dynamic> json,
+  ) =>
+      _$ShortnessOfBreathThresholdsContractFromJson(json);
 
   Map<String, dynamic> toJson() => _$ShortnessOfBreathThresholdsContractToJson(this);
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/contracts/time_settings/timing_day_when_contract.dart';
-import 'package:scalesoft_app/api/contracts/user/when_setting_contract.dart';
+import 'package:scalesoft_app/data/app_database.dart';
+import 'package:scalesoft_app/data/entities/json_entities/care_plan/time_only.dart';
+import 'package:scalesoft_app/data/entities/json_entities/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/when_code_set.dart';
@@ -14,11 +15,11 @@ class TimeSettingRow extends StatefulWidget {
     required this.onNewEndTimeSet,
   });
 
-  final TimingDayWhenContract timingDayWhen;
-  final WhenTimeValue templateWhenTime;
+  final TimingDayWhen timingDayWhen;
+  final WhenTemplate templateWhenTime;
 
-  final Function(TimeOfDayContract dailyTime) onNewStartTimeSet;
-  final Function(TimeOfDayContract dailyTime) onNewEndTimeSet;
+  final Function(TimeOnly dailyTime) onNewStartTimeSet;
+  final Function(TimeOnly dailyTime) onNewEndTimeSet;
 
   @override
   State<TimeSettingRow> createState() => _TimeSettingRowState();
@@ -28,10 +29,9 @@ class _TimeSettingRowState extends State<TimeSettingRow> with BottomSheetMixin {
   late TextEditingController startTimeTextController;
   late TextEditingController endTimeTextController;
 
-  late TimeOfDayContract startDateTime;
-  late TimeOfDayContract endDateTime;
-  late WhenTimeValue whenTimeValue;
-  late WhenTimeValue templateWhenTime;
+  late TimeOnly startDateTime;
+  late TimeOnly endDateTime;
+  late WhenTemplate templateWhenTime;
 
   @override
   void initState() {

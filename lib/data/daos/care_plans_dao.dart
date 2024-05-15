@@ -6,7 +6,7 @@ part 'care_plans_dao.drift.dart';
 
 @DriftAccessor(tables: [CarePlans])
 class CarePlansDao extends DatabaseAccessor<AppDatabase> with _$CarePlansDaoMixin {
-  CarePlansDao(AppDatabase db) : super(db);
+  CarePlansDao(super.db);
 
   Future<void> updatePlan(int carePlanId, CarePlansCompanion changes) async {
     await (update(carePlans)..where((x) => x.id.equals(carePlanId))).write(changes);
@@ -29,5 +29,13 @@ class CarePlansDao extends DatabaseAccessor<AppDatabase> with _$CarePlansDaoMixi
 
   Future<CarePlan?> get(int id) async {
     return await (select(carePlans)..where((x) => x.id.equals(id))).getSingleOrNull();
+  }
+
+  Future<List<CarePlan>> getPlans(Iterable<int> ids) async {
+    return await (select(carePlans)..where((x) => x.id.isIn(ids))).get();
+  }
+
+  Future<List<CarePlan>> getByUsers(Iterable<int> userIds) async {
+    return await (select(carePlans)..where((x)=>x.targetUserId.isIn(userIds))).get();
   }
 }

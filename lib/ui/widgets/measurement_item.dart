@@ -1,8 +1,10 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
+import 'package:scalesoft_app/api/model/user_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/storage/session.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -18,7 +20,6 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
   });
 
   // TimingDayWhen get timingDayWhen => plannedMeasurement.timingDayWhen;
-  CarePlanContract get carePlan => plannedMeasurement.carePlan;
 
   MeasurementNeed get measurementNeed => getMeasurementNeed(plannedMeasurement);
 
@@ -32,14 +33,14 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
 
   final PlannedMeasurement plannedMeasurement;
 
-  bool get showAsLongPeriodical =>
-      carePlan.isPeriodical && carePlan.periodUnit != TimeUnitContract.hour;
+  bool get showAsLongPeriodical => false;
+
+  // carePlan.isPeriodical && carePlan.periodUnit != TimeUnitContract.hour; TODO: wtf
 
   MeasurementNeed getMeasurementNeed(PlannedMeasurement measurement) {
     final dtNow = DateTime.now();
 
-    if (dtNow.isBefore(measurement.whenEnd) &&
-        dtNow.isAfter(measurement.whenStart)) {
+    if (dtNow.isBefore(measurement.whenEnd) && dtNow.isAfter(measurement.whenStart)) {
       return MeasurementNeed.now;
     } else {
       return MeasurementNeed.upcoming;
@@ -48,160 +49,155 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
 
   @override
   Widget build(BuildContext context) {
-    final isMultiUser = getIt<Session>().isMultiUser == true;
-    UserAccount? userAccount;
-    if (carePlan.userId != null && isMultiUser) {
-      userAccount = getIt<AccountDbProvider>().get(carePlan.userId!);
-    }
+    return BlocBuilder<UserCubit, UserCubitState>(
+      bloc: getIt<UserCubit>(),
+      builder: (context, state) {
+        final isMultiUser = state.aggregateAllUsers;
+        UserModel? userAccount;
+        if (isMultiUser) {
+          userAccount = state.rootUsers.firstWhereOrNull((x) => x.id == plannedMeasurement.userId);
+        }
 
-    return Padding(
-      padding: Paddings.all16,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+        return Padding(
+          padding: Paddings.all16,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                showAsLongPeriodical
-                    ? '00:00'
-                    : plannedMeasurement.whenStart.toTimeOfDay().toString(),
-                style: ScaleTextStyles.label.apply(
-                  color: showAsLongPeriodical
-                      ? Colors.transparent
-                      : (measurementNeed == MeasurementNeed.now
-                          ? Theme.of(context).colorScheme.onPrimary
-                          : Theme.of(context).colorScheme.tertiary),
-                ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    showAsLongPeriodical ? '00:00' : plannedMeasurement.whenStart.toTimeOfDay().toString(),
+                    style: ScaleTextStyles.label.apply(
+                      color: showAsLongPeriodical
+                          ? Colors.transparent
+                          : (measurementNeed == MeasurementNeed.now
+                              ? Theme.of(context).colorScheme.onPrimary
+                              : Theme.of(context).colorScheme.tertiary),
+                    ),
+                  ),
+                  Gaps.gap16,
+                  SvgPicture.asset(
+                    measurementNeed == MeasurementNeed.now
+                        ? (showAsLongPeriodical
+                            ? 'assets/icons/icon_wave_pulse_period.svg'
+                            : 'assets/icons/icon_wave_pulse.svg')
+                        : 'assets/icons/icon_clock.svg',
+                    color: measurementNeed == MeasurementNeed.now
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.tertiary,
+                  ),
+                ],
               ),
               Gaps.gap16,
-              SvgPicture.asset(
-                measurementNeed == MeasurementNeed.now
-                    ? (showAsLongPeriodical
-                        ? 'assets/icons/icon_wave_pulse_period.svg'
-                        : 'assets/icons/icon_wave_pulse.svg')
-                    : 'assets/icons/icon_clock.svg',
-                color: measurementNeed == MeasurementNeed.now
-                    ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).colorScheme.tertiary,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (userAccount != null) ...[
+                      Text(
+                        userAccount.fullName,
+                        style: ScaleTextStyles.textAccent.apply(
+                          color: measurementNeed == MeasurementNeed.now
+                              ? Theme.of(context).colorScheme.onPrimary
+                              : Theme.of(context).colorScheme.tertiary,
+                        ),
+                      ),
+                      Gaps.gap6,
+                      Text(
+                        userAccount.hospital.title,
+                        style: ScaleTextStyles.label.apply(
+                          color: measurementNeed == MeasurementNeed.now
+                              ? Theme.of(context).colorScheme.onPrimary
+                              : Theme.of(context).colorScheme.tertiary,
+                        ),
+                      ),
+                      Gaps.gap16,
+                      Container(
+                        height: 0.5,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                      Gaps.gap16,
+                    ],
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              localization.common_measurement_types(
+                                plannedMeasurement.measurementType.name,
+                              ),
+                              style: ScaleTextStyles.textAccent.apply(
+                                color: measurementNeed == MeasurementNeed.now
+                                    ? Theme.of(context).colorScheme.onPrimary
+                                    : Theme.of(context).colorScheme.tertiary,
+                              ),
+                            ),
+                            Gaps.gap6,
+                            Text(
+                              showAsLongPeriodical
+                                  ? localization.dashboard_screen_measurement_periodical_interval(
+                                      whenStart.dateFormatLong,
+                                      whenEnd.dateFormatLong,
+                                    )
+                                  : localization.dashboard_screen_measurement_interval(
+                                      plannedMeasurement.whenStart.toTimeOfDay().toString(),
+                                      plannedMeasurement.whenEnd.toTimeOfDay().toString(),
+                                    ),
+                              style: ScaleTextStyles.label.apply(
+                                color: measurementNeed == MeasurementNeed.now
+                                    ? Theme.of(context).colorScheme.onSecondary
+                                    : Theme.of(context).colorScheme.tertiary,
+                              ),
+                            ),
+                            if (plannedMeasurement.whenCode != null)
+                              Text(
+                                localization.common_when_code(plannedMeasurement.whenCode!.name),
+                                style: ScaleTextStyles.label.apply(
+                                  color: measurementNeed == MeasurementNeed.now
+                                      ? Theme.of(context).colorScheme.onSecondary
+                                      : Theme.of(context).colorScheme.tertiary,
+                                ),
+                              ),
+                            if (requiredCount > 1 && currentCount != null)
+                              Text(
+                                localization.dashboard_screen_measurements_left(
+                                  requiredCount - currentCount!,
+                                  requiredCount,
+                                ),
+                                style: ScaleTextStyles.label.apply(
+                                  color: measurementNeed == MeasurementNeed.now
+                                      ? Theme.of(context).colorScheme.onSecondary
+                                      : Theme.of(context).colorScheme.tertiary,
+                                ),
+                              ),
+                          ],
+                        ),
+                        const Spacer(),
+                        if (measurementNeed == MeasurementNeed.now) ...{
+                          NavigationTabChip(
+                            label: localization.common_measure,
+                            isSelected: true,
+                            onTap: () {
+                              MeasurementHelper.doMeasurement(
+                                context: context,
+                                userId: plannedMeasurement.userId,
+                                selectedMeasurementType: plannedMeasurement.measurementType,
+                              );
+                            },
+                          ),
+                        },
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
-          Gaps.gap16,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (userAccount != null) ...[
-                  Text(
-                    userAccount.user.fullName,
-                    style: ScaleTextStyles.textAccent.apply(
-                      color: measurementNeed == MeasurementNeed.now
-                          ? Theme.of(context).colorScheme.onPrimary
-                          : Theme.of(context).colorScheme.tertiary,
-                    ),
-                  ),
-                  Gaps.gap6,
-                  Text(
-                    userAccount.hospital!.title,
-                    style: ScaleTextStyles.label.apply(
-                      color: measurementNeed == MeasurementNeed.now
-                          ? Theme.of(context).colorScheme.onPrimary
-                          : Theme.of(context).colorScheme.tertiary,
-                    ),
-                  ),
-                  Gaps.gap16,
-                  Container(
-                    height: 0.5,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                  Gaps.gap16,
-                ],
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          localization.common_measurement_types(
-                            carePlan.activity.measurementType.name,
-                          ),
-                          style: ScaleTextStyles.textAccent.apply(
-                            color: measurementNeed == MeasurementNeed.now
-                                ? Theme.of(context).colorScheme.onPrimary
-                                : Theme.of(context).colorScheme.tertiary,
-                          ),
-                        ),
-                        Gaps.gap6,
-                        Text(
-                          showAsLongPeriodical
-                              ? localization
-                                  .dashboard_screen_measurement_periodical_interval(
-                                  whenStart.dateFormatLong,
-                                  whenEnd.dateFormatLong,
-                                )
-                              : localization
-                                  .dashboard_screen_measurement_interval(
-                                  plannedMeasurement.whenStart
-                                      .toTimeOfDay()
-                                      .toString(),
-                                  plannedMeasurement.whenEnd
-                                      .toTimeOfDay()
-                                      .toString(),
-                                ),
-                          style: ScaleTextStyles.label.apply(
-                            color: measurementNeed == MeasurementNeed.now
-                                ? Theme.of(context).colorScheme.onSecondary
-                                : Theme.of(context).colorScheme.tertiary,
-                          ),
-                        ),
-                        if (plannedMeasurement.whenCode != null)
-                          Text(
-                            localization
-                                .common_when_code(plannedMeasurement.whenCode!.name),
-                            style: ScaleTextStyles.label.apply(
-                              color: measurementNeed == MeasurementNeed.now
-                                  ? Theme.of(context).colorScheme.onSecondary
-                                  : Theme.of(context).colorScheme.tertiary,
-                            ),
-                          ),
-                        if (requiredCount > 1 && currentCount != null)
-                          Text(
-                            localization.dashboard_screen_measurements_left(
-                              requiredCount - currentCount!,
-                              requiredCount,
-                            ),
-                            style: ScaleTextStyles.label.apply(
-                              color: measurementNeed == MeasurementNeed.now
-                                  ? Theme.of(context).colorScheme.onSecondary
-                                  : Theme.of(context).colorScheme.tertiary,
-                            ),
-                          ),
-                      ],
-                    ),
-                    const Spacer(),
-                    if (measurementNeed == MeasurementNeed.now) ...{
-                      NavigationTabChip(
-                        label: localization.common_measure,
-                        isSelected: true,
-                        onTap: () {
-                          MeasurementHelper.doMeasurement(
-                            context: context,
-                            userId: carePlan.userId!,
-                            selectedMeasurementType:
-                                carePlan.activity.measurementType,
-                          );
-                        },
-                      ),
-                    },
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

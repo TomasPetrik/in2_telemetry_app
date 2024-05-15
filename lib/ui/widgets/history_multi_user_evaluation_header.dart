@@ -1,38 +1,36 @@
+import 'dart:core';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
+import 'package:scalesoft_app/ui/viewModels/measurement_result_view_model.dart';
 import 'package:scalesoft_app/ui/widgets/progress_header.dart';
 
 class HistoryMultiUserEvaluationHeader extends StatelessWidget {
   const HistoryMultiUserEvaluationHeader({
     super.key,
-    required this.usersEvaluationsDay,
+    required this.results,
   });
 
-  final List<UserEvaluationDay> usersEvaluationsDay;
+  final List<MeasurementResultViewModel> results;
 
   @override
   Widget build(BuildContext context) {
-    List<ProgressItem> progressItems =
-        usersEvaluationsDay.map((userEvaluationDay) {
-      final reqCounts = userEvaluationDay.carePlanFulfillments.fold<int>(
-        0,
-        (previousValue, carePlanEvaluation) =>
-            previousValue + carePlanEvaluation.getReqCount(),
-      );
+    final resultsPerUser = results.where((x) => x.wasPlanned).groupListsBy((x) => x.user);
 
-      final actualCounts = userEvaluationDay.carePlanFulfillments.fold<int>(
-        0,
-        (previousValue, carePlanEvaluation) =>
-            previousValue + carePlanEvaluation.getActualCount(),
-      );
+    final progressItems = resultsPerUser.entries.map((entry) {
+      final reqCounts = entry.value
+          .map(
+            (x) => x.requiredCount,
+          )
+          .sum;
 
-      final evaluation =
-          reqCounts == 0 ? 0 : ((actualCounts / reqCounts) * 100).toInt();
+      final actualCounts = entry.value.map((x) => x.actualCount).sum;
+
+      final evaluation = reqCounts == 0 ? 0 : ((actualCounts / reqCounts) * 100).toInt();
 
       return ProgressItem(
-        userEvaluationDay.userName,
+        entry.key.fullName,
         evaluation,
       );
     }).toList();

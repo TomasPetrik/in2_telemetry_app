@@ -60,4 +60,16 @@ class UserModel {
 
     return buffer.toString();
   }
+
+  // hash needs two input parameters, but we only care about the id.
+  @override
+  int get hashCode => Object.hash(id, id);
+
+  @override
+  bool operator ==(Object other) {
+    if(other is! UserModel){
+      return false;
+    }
+    return id == other.id;
+  }
 }

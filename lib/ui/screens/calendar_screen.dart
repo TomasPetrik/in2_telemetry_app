@@ -11,7 +11,6 @@ import 'package:scalesoft_app/bloc/calendar_footer/calendar_footer_bloc.dart';
 import 'package:scalesoft_app/bloc/calendar_footer/calendar_footer_event.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/ui/routers/routes/future_measurements_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_history_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_route.dart';
@@ -27,15 +26,15 @@ class CalendarScreen extends StatelessWidget {
   const CalendarScreen({
     super.key,
     this.preSelectedDt,
-    required this.carePlansIds,
+    required this.carePlanIds,
   });
 
   final DateTime? preSelectedDt;
-  final List<int> carePlansIds;
+  final List<int>? carePlanIds;
 
   @override
   Widget build(BuildContext context) {
-    final calendarBloc = getIt<CalendarBloc>()..add(CalendarBlocEvent.init(context, preSelectedDt, carePlansIds));
+    final calendarBloc = getIt<CalendarBloc>()..add(CalendarBlocEvent.init(context, preSelectedDt, carePlanIds));
 
     void onWillPop() {
       calendarBloc.add(const CalendarBlocEvent.nullDefaultDay());
@@ -98,7 +97,6 @@ class CalendarScreen extends StatelessWidget {
                                 child: CalendarMonthWidget(
                                   calendarMonth: month,
                                   calendarBloc: calendarBloc,
-                                  carePlansIds: carePlansIds,
                                 ),
                               );
                             },
@@ -212,7 +210,6 @@ class _CalendarFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final calendarFooterBloc = getIt<CalendarFooterBloc>();
-    final session = getIt<UserCubit>();
     return BlocBuilder<CalendarFooterBloc, CalendarFooterState>(
       bloc: calendarFooterBloc,
       builder: (context, state) {
@@ -226,13 +223,13 @@ class _CalendarFooter extends StatelessWidget {
 
           return InkWell(
             onTap: () {
-              session.usersEvaluationsDayRestoration = selectedDay.usersEvaluationsDay;
-
               switch (selectedDay.dayPeriod) {
                 case CalendarDayPeriod.past:
-                  if (selectedDay.wasCheckedForEvaluation == true) {
+                  if (selectedDay.wasCheckedForEvaluation == true &&
+                      (selectedDay.measurementResults?.isNotEmpty ?? false)) {
                     GoRouter.of(context).pushNamed(
                       ResultsHistoryRoute.name,
+                      extra: selectedDay.measurementResults,
                     );
                   }
                   break;
@@ -244,6 +241,7 @@ class _CalendarFooter extends StatelessWidget {
                 case CalendarDayPeriod.future:
                   GoRouter.of(context).pushNamed(
                     FutureMeasurementsRoute.name,
+                    extra: selectedDay.measurementResults,
                   );
                   break;
               }

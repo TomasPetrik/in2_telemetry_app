@@ -3,11 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
-import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
+import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/calendar_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
@@ -28,8 +27,8 @@ class CarePlanDetailScreen extends StatefulWidget with BottomSheetMixin {
     required this.offlineResults,
   });
 
-  final CarePlanContract carePlan;
-  final List<MeasurementDataContract> offlineResults;
+  final CarePlan carePlan;
+  final List<Measurement> offlineResults;
 
   @override
   State<CarePlanDetailScreen> createState() => _CarePlanDetailScreenState();
@@ -58,8 +57,9 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.carePlan.timingDayWhen
-        .any((timingDayWhen) => timingDayWhen.whenCode != null)) {
+    final currentVersion = widget.carePlan.versions.last;
+
+    if (currentVersion.timingDayWhen.any((timingDayWhen) => timingDayWhen.whenCode != null)) {
       timeSettingsForm = TimesSettingsForm(
         carePlan: widget.carePlan,
       );
@@ -68,24 +68,23 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
     return BlocBuilder<SyncBloc, SyncState>(
       bloc: syncBloc,
       builder: (context, state) {
+        final currentVersion = widget.carePlan.versions.last;
+
         return Material(
           child: Stack(
             children: [
               CustomScrollView(
                 slivers: [
                   SliverGap(
-                    MediaQuery.of(context).viewPadding.top +
-                        Dimensions.appBarHeight,
+                    MediaQuery.of(context).viewPadding.top + Dimensions.appBarHeight,
                   ),
                   const SliverGap(Dimensions.padding24),
                   if (widget.carePlan.wasChanged == true) ...[
                     SliverPadding(
                       padding: Paddings.horizontal16,
                       sliver: WarningItem(
-                        title: localization
-                            .notification_widget_plan_changed_title,
-                        description:
-                            localization.notification_widget_plan_changed_desc(
+                        title: localization.notification_widget_plan_changed_title,
+                        description: localization.notification_widget_plan_changed_desc(
                           localization
                               .common_measurement_types_genitive(
                                 widget.carePlan.activity.measurementType.name,
@@ -100,18 +99,17 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
                         ),
                         onTap: () {
                           syncBloc.add(
-                            SyncEvent.resolveUpdatedUserPlan(widget.carePlan),
+                            SyncEvent.resolveUpdatedUserPlan(widget.carePlan.id),
                           );
                         },
                       ),
                     ),
                     const SliverGap(Dimensions.padding24),
                   ],
-                  if (widget.carePlan.fullPlanEvaluation != null)
-                    FullPlanEvaluationWidget(
-                      carePlan: widget.carePlan,
-                      offlineResults: widget.offlineResults,
-                    ),
+                  FullPlanEvaluationWidget(
+                    carePlan: widget.carePlan,
+                    offlineResults: widget.offlineResults,
+                  ),
                   const SliverGap(Dimensions.padding42),
                   SliverPadding(
                     padding: Paddings.left16,
@@ -131,16 +129,14 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
                   ),
                   const SliverGap(Dimensions.padding8),
                   SliverNameValueRow(
-                    name:
-                        localization.care_plan_detail_screen_active_from_date,
-                    value: widget.carePlan.scheduledStart.dateFormat,
+                    name: localization.care_plan_detail_screen_active_from_date,
+                    value: currentVersion.scheduledStart.dateFormat,
                   ),
-                  if (widget.carePlan.scheduledEnd != null) ...[
+                  if (currentVersion.scheduledEnd != null) ...[
                     const SliverGap(Dimensions.padding8),
                     SliverNameValueRow(
-                      name:
-                          localization.care_plan_detail_screen_active_to_date,
-                      value: widget.carePlan.scheduledEnd!.dateFormat,
+                      name: localization.care_plan_detail_screen_active_to_date,
+                      value: currentVersion.scheduledEnd!.dateFormat,
                     ),
                   ],
                   const SliverGap(Dimensions.padding8),
@@ -155,8 +151,7 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
                     child: Padding(
                       padding: Paddings.horizontal16,
                       child: HighlightedElevatedButton(
-                        label:
-                            localization.care_plan_detail_screen_show_calendar,
+                        label: localization.care_plan_detail_screen_show_calendar,
                         buttonType: ButtonType.primary,
                         onPressed: () async {
                           GoRouter.of(context).pushNamed(

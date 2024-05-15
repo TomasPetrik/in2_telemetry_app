@@ -17,7 +17,7 @@ class TimingDayWhenContract {
     required this.start,
     required this.end,
     this.timeOfDay,
-    this.whenCode
+    this.whenCode,
   });
 
   factory TimingDayWhenContract.fromJson(Map<String, dynamic> json) => _$TimingDayWhenContractFromJson(json);

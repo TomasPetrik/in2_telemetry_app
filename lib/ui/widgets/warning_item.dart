@@ -37,20 +37,13 @@ class WarningItem extends StatelessWidget {
 
 class _WarningItem extends WarningItem {
   const _WarningItem({
-    required String title,
-    required String description,
-    required String buttonLabel,
-    required SmallButtonType buttonType,
-    required Widget icon,
-    required VoidCallback onTap,
-  }) : super(
-          title: title,
-          description: description,
-          buttonLabel: buttonLabel,
-          buttonType: buttonType,
-          icon: icon,
-          onTap: onTap,
-        );
+    required super.title,
+    required super.description,
+    required super.buttonLabel,
+    required super.buttonType,
+    required super.icon,
+    required super.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {

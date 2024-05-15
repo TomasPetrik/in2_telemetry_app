@@ -36,7 +36,7 @@ class UserWarningItem extends StatelessWidget {
         onTap: () {
           getIt<AuthBloc>().add(
             Authenticate(
-              hospital: userAccount.hospital!,
+              hospital: userAccount.hospital,
             ),
           );
         },

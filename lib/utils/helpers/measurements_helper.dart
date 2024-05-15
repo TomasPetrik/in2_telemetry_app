@@ -35,7 +35,7 @@ class MeasurementHelper {
             )) {
       GoRouter.of(context).pushNamed(
         MeteringFirstRoute.name,
-        params: {
+        pathParameters: {
           'userId': userId.toString(),
           'measurementType': selectedMeasurementType != null ? selectedMeasurementType.name : 'anyType',
           'showAllMeasurementTypes': showAllMeasurementTypes.toString(),
@@ -44,7 +44,7 @@ class MeasurementHelper {
     } else {
       GoRouter.of(context).pushNamed(
         ManualMeasurementRoute.name,
-        params: {
+        pathParameters: {
           'userId': userId.toString(),
           'measurementType': selectedMeasurementType.name,
           'showAllMeasurementTypes': showAllMeasurementTypes.toString(),
@@ -56,7 +56,7 @@ class MeasurementHelper {
   static FulfillmentEvaluationItem getFulfillmentEvaluation(
     PlannedMeasurement plannedMeasurement,
     List<Measurement> measurements,
-    List<FulfillmentEvaluationItem> evaluationItems,
+    Iterable<FulfillmentEvaluationItem> evaluationItems,
   ) {
     int totalCount = 0;
     Set<DateTime> measuredTimes = {};

@@ -86,7 +86,7 @@ class CarePlanItem extends StatelessWidget {
                     onTap: () {
                       GoRouter.of(context).pushNamed(
                         ChartRoute.name,
-                        params: {
+                        pathParameters: {
                           'userId': carePlan.targetUserId.toString(),
                           'dateTime': _getOptimalDateTime().toIso8601String(),
                           'measurementType': carePlan.activity.measurementType.name,

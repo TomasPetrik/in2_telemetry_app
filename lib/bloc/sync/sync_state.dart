@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/api/model/user_model.dart';
 import 'package:scalesoft_app/data/app_database.dart';
