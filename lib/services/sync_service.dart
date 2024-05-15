@@ -151,7 +151,7 @@ class SyncService {
   }
 
   Future<void> loadUserData(final int userId) async {
-    final user = _session.state.rootUsers.firstWhere((x) => x.id == userId);
+    final user = _session.state.allUsers.firstWhere((x) => x.id == userId);
 
     //load active care plans, fulfillment_evaluation, results
     final activeCarePlans = await _carePlansRepository.loadActiveCarePlans(
@@ -180,10 +180,9 @@ class SyncService {
 
         await setUserPlans(representedPerson.id, plansOfPerson);
 
-        await loadPartPlanEvaluation(representedPerson);
-
-        if (userAccount.viewOwnMeasurementData) {
-          await loadMeasurementResults(representedPerson);
+        await loadFulfillmentEvaluation(representedPerson.id);
+        if(representedPerson.permissions.any((x)=>x==Permissions.viewOwnMeasurementData)){
+          await loadMeasurementResults(representedPerson.id);
         }
       }
     }

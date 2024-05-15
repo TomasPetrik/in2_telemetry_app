@@ -61,17 +61,20 @@ class UserCubit extends Cubit<UserCubitState> {
   final Stream<List<UserModel>> _allUsersStream;
 
   UserCubit._(this._userDbProvider, this._allUsersStream, UserCubitState initialState) : super(initialState) {
-    _allUsersStream.listen((users) {
+    _allUsersStream.listen((rootUsers) {
       var activeUserId = state._userId;
-      if (users.none((x) => x.id == activeUserId)) {
-        activeUserId = maxBy(users, (x) => x.lastActive)?.id;
+
+      final allUsers = [...rootUsers, ...rootUsers.expand((x) => x.representedPeople)];
+
+      if (allUsers.none((x) => x.id == activeUserId)) {
+        activeUserId = maxBy(allUsers, (x) => x.lastActive)?.id;
 
         if (activeUserId != null) {
           _userDbProvider.updateUser(activeUserId, UsersCompanion(lastActive: Value(DateTime.now())));
         }
       }
 
-      emit(UserCubitState(activeUserId, users, state.aggregateAllUsers));
+      emit(UserCubitState(activeUserId, rootUsers, state.aggregateAllUsers));
     });
   }
 
