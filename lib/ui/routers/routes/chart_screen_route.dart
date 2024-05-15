@@ -26,10 +26,10 @@ class ChartRoute extends ApplicationRoute with PageBuilderMixin {
       pageBuilder: pageBuilder(
         withTransition: false,
         builder: (state) {
-          final userId = int.parse(state.params['userId']!);
-          final dateTimeString = state.params['dateTime']!;
+          final userId = int.parse(state.pathParameters['userId']!);
+          final dateTimeString = state.pathParameters['dateTime']!;
           final initDt = DateTime.parse(dateTimeString);
-          final measurementTypeName = state.params['measurementType']!;
+          final measurementTypeName = state.pathParameters['measurementType']!;
           final measurementType = MeasurementType.values.firstWhere(
             (measurementType) => measurementType.name == measurementTypeName,
           );

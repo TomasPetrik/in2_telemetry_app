@@ -24,10 +24,10 @@ class MeteringFirstRoute extends ApplicationRoute with PageBuilderMixin {
       pageBuilder: pageBuilder(
         withTransition: false,
         builder: (state) {
-          final userId = int.parse(state.params['userId']!);
-          final measurementTypeName = state.params['measurementType'];
+          final userId = int.parse(state.pathParameters['userId']!);
+          final measurementTypeName = state.pathParameters['measurementType'];
           final showAllMeasurementTypes =
-              bool.parse(state.params['showAllMeasurementTypes'] ?? 'false');
+              bool.parse(state.pathParameters['showAllMeasurementTypes'] ?? 'false');
           MeasurementType? measurementType;
           if (measurementTypeName?.isNotEmpty == true) {
             measurementType = MeasurementType.values.firstWhereOrNull(

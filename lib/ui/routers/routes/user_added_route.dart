@@ -24,7 +24,7 @@ class UserAddedRoute extends ApplicationRoute {
       routes: routes,
       parentNavigatorKey: navigator,
       builder: (context, state) {
-        final userId = int.parse(state.params['userId']!);
+        final userId = int.parse(state.pathParameters['userId']!);
 
         return BlocBuilder<UserCubit, UserCubitState>(
           bloc: getIt<UserCubit>(),

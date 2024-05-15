@@ -41,23 +41,23 @@ dependencies:
   sliver_tools: ^0.2.10
 
   # API
-  dio: ^5.0.3
+  dio: ^5.4.3+1
   retrofit: ^4.0.1
-  json_annotation: ^4.8.1
+  json_annotation: ^4.9.0
   freezed_annotation: ^2.4.1
   equatable: ^2.0.5
 
   # BLoC
-  flutter_bloc: ^8.1.3
+  flutter_bloc: ^8.1.5
 
   # IoC
-  injectable: ^2.2.0
-  get_it: ^7.6.0
+  injectable: ^2.4.0
+  get_it: ^7.7.0
 
   # MISC
-  intl: ^0.18.0
+  intl: ^0.19.0
   app_settings: ^5.0.0
-  permission_handler: ^11.1.0
+  permission_handler: ^11.3.1
   collection: ^1.17.0
   pretty_dio_logger: ^1.2.0-beta-1
   path: ^1.8.3
@@ -67,24 +67,24 @@ dependencies:
   jwt_decode: ^0.3.1
 
   # Bluetooth Comm
-  flutter_blue_plus: 1.30.3
+  flutter_blue_plus: 1.32.6
 
   flutter_svg: ^1.1.6
 
-  go_router: ^6.5.1
-  package_info_plus: ^4.1.0
+  go_router: ^14.1.1
+  package_info_plus: ^8.0.0
   device_info_plus: ^9.0.3
   unique_identifier: ^0.3.0
 
   # Background fetching service
-  background_fetch: ^1.2.2
+  background_fetch: ^1.3.4
 
   # Local notifications
-  flutter_local_notifications: ^17.0.0
-  timezone: ^0.9.1
+  flutter_local_notifications: ^17.1.2
+  timezone: ^0.9.3
 
   # Open url in webview
-  url_launcher: ^6.2.5
+  url_launcher: ^6.2.6
   wakelock: ^0.6.2
   notification_permissions: ^0.6.1
 
@@ -95,36 +95,34 @@ dependencies:
   pdfx: ^2.6.0
 
   # Database
-  drift: ^2.17.0
-  drift_dev: ^2.17.0
-  sqlite3_flutter_libs: ^0.5.15
-  path_provider: ^2.1.0
+  drift: ^2.18.0
+  drift_dev: ^2.18.0
+  sqlite3_flutter_libs: ^0.5.21
+  path_provider: ^2.1.3
   auto_mappr_annotation: ^2.1.0
+  async: ^2.11.0
 
 dependency_overrides:
   win32: ^5.0.0
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
   # API
-  retrofit_generator: 7.0.6
-  injectable_generator: ^2.3.0
-  build_runner: ^2.4.8
-  json_serializable: ^6.7.1
+  retrofit_generator: 8.1.0
+  injectable_generator: ^2.6.1
+  build_runner: ^2.4.9
+  json_serializable: ^6.8.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.2
-  freezed: ^2.4.1
+  flutter_lints: ^4.0.0
+  freezed: ^2.5.2
   flutter_launcher_icons: ^0.13.1
-  flutter_oss_licenses: ^2.0.1
-  test: ^1.24.0
-  auto_mappr: ^2.3.0
+  flutter_oss_licenses: ^3.0.2
+  test: ^1.25.2
+  auto_mappr: ^2.4.0
 
 flutter_icons:
   android: true

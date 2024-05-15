@@ -114,7 +114,7 @@ Future<void> _main({
 }
 
 class ScalesoftApp extends StatefulWidget {
-  const ScalesoftApp({Key? key}) : super(key: key);
+  const ScalesoftApp({super.key});
 
   @override
   State<ScalesoftApp> createState() => _ScalesoftAppState();

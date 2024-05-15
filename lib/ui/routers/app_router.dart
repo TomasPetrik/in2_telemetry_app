@@ -57,7 +57,7 @@ class AppRouter {
               navigatorKey: navTabBar,
               builder: (context, state, child) {
                 return HomeScreen(
-                  path: state.location,
+                  path: state.uri.toString(),
                   child: child,
                 );
               },

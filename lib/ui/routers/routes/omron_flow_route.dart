@@ -25,13 +25,13 @@ class OmronFlowRoute extends ApplicationRoute with PageBuilderMixin {
       pageBuilder: pageBuilder(
         withTransition: false,
         builder: (state) {
-          final userId = state.queryParams['userId']!;
-          final deviceId = state.queryParams['deviceId'];
-          final measurementTypeName = state.queryParams['measurementType']!;
-          final modelName = state.queryParams['modelName'];
-          final deviceManufacturer = state.queryParams['deviceManufacturer'];
-          final MeasurementTypeContract measurementType =
-              MeasurementTypeContract.values.firstWhere(
+          final userId = int.parse(state.uri.queryParameters['userId']!);
+          final deviceId = state.uri.queryParameters['deviceId'];
+          final measurementTypeName = state.uri.queryParameters['measurementType']!;
+          final modelName = state.uri.queryParameters['modelName'];
+          final deviceManufacturer = state.uri.queryParameters['deviceManufacturer'];
+          final MeasurementType measurementType =
+              MeasurementType.values.firstWhere(
             (measurementType) => measurementType.name == measurementTypeName,
           );
 

@@ -25,10 +25,10 @@ class ManualMeasurementRoute extends ApplicationRoute with PageBuilderMixin {
       pageBuilder: pageBuilder(
         withTransition: false,
         builder: (state) {
-          final userId = state.params['userId']!;
-          final measurementTypeName = state.params['measurementType'];
+          final userId = state.pathParameters['userId']!;
+          final measurementTypeName = state.pathParameters['measurementType'];
           final showAllMeasurementTypes =
-              bool.parse(state.params['showAllMeasurementTypes'] ?? 'false');
+              bool.parse(state.pathParameters['showAllMeasurementTypes'] ?? 'false');
 
           final measurementType = MeasurementTypeContract.values.firstWhere(
             (measurementType) => measurementType.name == measurementTypeName,

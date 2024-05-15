@@ -23,8 +23,8 @@ class AddDeviceRoute extends ApplicationRoute with PageBuilderMixin {
       pageBuilder: pageBuilder(
         withTransition: false,
         builder: (state) {
-          final userId = state.params['userId']!;
-          final measurementTypeName = state.params['measurementType'];
+          final userId = state.pathParameters['userId']!;
+          final measurementTypeName = state.pathParameters['measurementType'];
           final MeasurementType measurementType =
               MeasurementType.values.firstWhere(
             (measurementType) => measurementType.name == measurementTypeName,

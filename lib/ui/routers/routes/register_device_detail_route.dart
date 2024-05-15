@@ -28,6 +28,7 @@ class RegisterDeviceDetailRoute extends ApplicationRoute with PageBuilderMixin {
           final userId = state.params['userId']!;
           final userAccount = getIt<AccountDbProvider>().get(userId)!;
           final deviceParam = state.extra as Device;
+          final userId = state.pathParameters['userId']!;
 
           final device = ConfigurationConstants.supportedDevices
               .firstWhere((device) => device.localId == deviceParam.localId)
