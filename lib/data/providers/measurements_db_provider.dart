@@ -95,6 +95,16 @@ class MeasurementsDbProvider {
     return await _database.measurementsDao.getByUser(userId, ofType, from, to, isUploaded);
   }
 
+  Future<List<Measurement>> getByUsers(
+    Iterable<int> userIds, {
+    MeasurementType? ofType,
+    DateTime? from,
+    DateTime? to,
+    bool? isUploaded,
+  }) async {
+    return await _database.measurementsDao.getByUsers(userIds, ofType, from, to, isUploaded);
+  }
+
 // /// Applies the given [changes] to all measurements of a given user.
 // /// Primarily used for marking measurements as uploaded.
 // Future<void> updateAllUserMeasurements(int userId, MeasurementsCompanion changes) async {

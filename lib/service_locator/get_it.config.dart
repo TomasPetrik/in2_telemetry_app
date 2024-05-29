@@ -152,8 +152,11 @@ Future<_i1.GetIt> init(
         gh<_i31.CarePlanDbProvider>(),
         gh<_i19.MeasurementsDbProvider>(),
       ));
-  gh.singleton<_i36.CarePlanBloc>(
-      () => _i36.CarePlanBloc(gh<_i33.UserCubit>()));
+  gh.singleton<_i36.CarePlanBloc>(() => _i36.CarePlanBloc(
+        gh<_i33.UserCubit>(),
+        gh<_i31.CarePlanDbProvider>(),
+        gh<_i19.MeasurementsDbProvider>(),
+      ));
   gh.singleton<_i37.DeviceRepository>(() => _i37.DeviceRepository(
         gh<_i29.DeviceApiClient>(),
         gh<_i33.UserCubit>(),

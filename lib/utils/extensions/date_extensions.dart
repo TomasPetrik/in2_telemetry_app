@@ -18,7 +18,7 @@ extension DateParse on DateTime {
 
   DateTime get date => DateTime(year, month, day);
 
-  // to prevent DST skew, add one day to UTC and then return local time of it
+  // to prevent DST skew, subtract one day from UTC and then return local time of it
   DateTime get yesterday {
     final utcDate = DateTime.utc(year, month, day);
     final yesterday = utcDate.subtract(const Duration(days: 1));

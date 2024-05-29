@@ -49,6 +49,36 @@ class MeasurementsDao extends DatabaseAccessor<AppDatabase> with _$MeasurementsD
     return await query.get();
   }
 
+  Future<List<Measurement>> getByUsers(
+      Iterable<int> userIds,
+      MeasurementType? ofType,
+      DateTime? from,
+      DateTime? to,
+      bool? isUploaded,
+      ) async {
+    final query = select(measurements)
+      ..where((x) => x.userId.isIn(userIds))
+      ..orderBy([(measurement) => OrderingTerm(expression: measurement.measuredAt, mode: OrderingMode.asc)]);
+
+    if (ofType != null) {
+      query.where((x) => x.measurementType.equalsValue(ofType));
+    }
+
+    if (from != null) {
+      query.where((x) => x.measuredAt.isBiggerOrEqualValue(from));
+    }
+
+    if (to != null) {
+      query.where((x) => x.measuredAt.isSmallerThanValue(to));
+    }
+
+    if (isUploaded != null) {
+      query.where((x) => x.isUploaded.equals(isUploaded));
+    }
+
+    return await query.get();
+  }
+
   /// Applies the given [changes] to all measurements of a given user.
   /// Primarily used for marking measurements as uploaded.
   Future<void> updateAllUserMeasurements(int userId, MeasurementsCompanion changes) async {

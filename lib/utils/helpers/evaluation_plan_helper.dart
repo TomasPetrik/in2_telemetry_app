@@ -9,14 +9,9 @@ import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_
 
 class EvaluationPlanHelper {
   static int getProgressFromFullPlanEvaluation({
-    required CarePlanContract carePlan,
-    required List<MeasurementDataContract> offlineResults,
     required CarePlan carePlan,
     required List<Measurement> offlineResults,
   }) {
-    int actualCount = carePlan.fullPlanEvaluation!.measurementInPlanCount;
-    int requiredMeasurementCount =
-        carePlan.fullPlanEvaluation!.requiredMeasurementCount;
     int actualCount = carePlan.fullPlanEvaluation.measurementInPlanCount;
     int requiredMeasurementCount = carePlan.fullPlanEvaluation.requiredMeasurementCount;
 

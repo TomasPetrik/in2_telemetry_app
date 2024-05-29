@@ -1,49 +1,38 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:scalesoft_app/api/model/user_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
+import 'package:scalesoft_app/ui/viewModels/measurement_result_view_model.dart';
 import 'package:scalesoft_app/ui/widgets/navigation_tab_chip.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
-import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 class MeasurementItem extends StatelessWidget with BottomSheetMixin {
   const MeasurementItem({
     super.key,
-    required this.plannedMeasurement,
+    required this.measurement,
   });
 
-  // TimingDayWhen get timingDayWhen => plannedMeasurement.timingDayWhen;
+  DateTime get measurementStart => measurement.measurementIntervalStart ?? measurement.measurementTime;
 
-  MeasurementNeed get measurementNeed => getMeasurementNeed(plannedMeasurement);
+  DateTime get measurementEnd => measurement.measurementIntervalEnd ?? measurement.measurementTime;
 
-  int get requiredCount => plannedMeasurement.reqCount;
+  final MeasurementResultViewModel measurement;
 
-  int? get currentCount => plannedMeasurement.currentCount;
+  bool get showMeasurementDates => measurement.spansMultipleDays;
 
-  DateTime get whenStart => plannedMeasurement.whenStart;
+  MeasurementTiming determineMeasurementTiming() {
+    final now = DateTime.now();
 
-  DateTime get whenEnd => plannedMeasurement.whenEnd;
-
-  final PlannedMeasurement plannedMeasurement;
-
-  bool get showAsLongPeriodical => false;
-
-  // carePlan.isPeriodical && carePlan.periodUnit != TimeUnitContract.hour; TODO: wtf
-
-  MeasurementNeed getMeasurementNeed(PlannedMeasurement measurement) {
-    final dtNow = DateTime.now();
-
-    if (dtNow.isBefore(measurement.whenEnd) && dtNow.isAfter(measurement.whenStart)) {
-      return MeasurementNeed.now;
+    if (now.isBefore(measurement.measurementIntervalEnd ?? measurement.measurementTime) &&
+        now.isAfterOrAt(measurement.measurementIntervalStart ?? measurement.measurementTime)) {
+      return MeasurementTiming.now;
     } else {
-      return MeasurementNeed.upcoming;
+      return MeasurementTiming.upcoming;
     }
   }
 
@@ -52,11 +41,7 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
     return BlocBuilder<UserCubit, UserCubitState>(
       bloc: getIt<UserCubit>(),
       builder: (context, state) {
-        final isMultiUser = state.aggregateAllUsers;
-        UserModel? userAccount;
-        if (isMultiUser) {
-          userAccount = state.rootUsers.firstWhereOrNull((x) => x.id == plannedMeasurement.userId);
-        }
+        final showUserNames = state.aggregateAllUsers;
 
         return Padding(
           padding: Paddings.all16,
@@ -67,23 +52,23 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    showAsLongPeriodical ? '00:00' : plannedMeasurement.whenStart.toTimeOfDay().toString(),
+                    showMeasurementDates ? '00:00' : measurementStart.toTimeOfDay().toString(),
                     style: ScaleTextStyles.label.apply(
-                      color: showAsLongPeriodical
+                      color: showMeasurementDates
                           ? Colors.transparent
-                          : (measurementNeed == MeasurementNeed.now
+                          : (determineMeasurementTiming() == MeasurementTiming.now
                               ? Theme.of(context).colorScheme.onPrimary
                               : Theme.of(context).colorScheme.tertiary),
                     ),
                   ),
                   Gaps.gap16,
                   SvgPicture.asset(
-                    measurementNeed == MeasurementNeed.now
-                        ? (showAsLongPeriodical
+                    determineMeasurementTiming() == MeasurementTiming.now
+                        ? (showMeasurementDates
                             ? 'assets/icons/icon_wave_pulse_period.svg'
                             : 'assets/icons/icon_wave_pulse.svg')
                         : 'assets/icons/icon_clock.svg',
-                    color: measurementNeed == MeasurementNeed.now
+                    color: determineMeasurementTiming() == MeasurementTiming.now
                         ? Theme.of(context).colorScheme.primary
                         : Theme.of(context).colorScheme.tertiary,
                   ),
@@ -94,20 +79,20 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (userAccount != null) ...[
+                    if (showUserNames) ...[
                       Text(
-                        userAccount.fullName,
+                        measurement.user.fullName,
                         style: ScaleTextStyles.textAccent.apply(
-                          color: measurementNeed == MeasurementNeed.now
+                          color: determineMeasurementTiming() == MeasurementTiming.now
                               ? Theme.of(context).colorScheme.onPrimary
                               : Theme.of(context).colorScheme.tertiary,
                         ),
                       ),
                       Gaps.gap6,
                       Text(
-                        userAccount.hospital.title,
+                        measurement.user.hospital.title,
                         style: ScaleTextStyles.label.apply(
-                          color: measurementNeed == MeasurementNeed.now
+                          color: determineMeasurementTiming() == MeasurementTiming.now
                               ? Theme.of(context).colorScheme.onPrimary
                               : Theme.of(context).colorScheme.tertiary,
                         ),
@@ -127,48 +112,48 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
                           children: [
                             Text(
                               localization.common_measurement_types(
-                                plannedMeasurement.measurementType.name,
+                                measurement.measurementType.name,
                               ),
                               style: ScaleTextStyles.textAccent.apply(
-                                color: measurementNeed == MeasurementNeed.now
+                                color: determineMeasurementTiming() == MeasurementTiming.now
                                     ? Theme.of(context).colorScheme.onPrimary
                                     : Theme.of(context).colorScheme.tertiary,
                               ),
                             ),
                             Gaps.gap6,
                             Text(
-                              showAsLongPeriodical
+                              showMeasurementDates
                                   ? localization.dashboard_screen_measurement_periodical_interval(
-                                      whenStart.dateFormatLong,
-                                      whenEnd.dateFormatLong,
+                                      measurementStart.dateFormatLong,
+                                      measurementEnd.dateFormatLong,
                                     )
                                   : localization.dashboard_screen_measurement_interval(
-                                      plannedMeasurement.whenStart.toTimeOfDay().toString(),
-                                      plannedMeasurement.whenEnd.toTimeOfDay().toString(),
+                                      measurementStart.toTimeOfDay().toString(),
+                                      measurementEnd.toTimeOfDay().toString(),
                                     ),
                               style: ScaleTextStyles.label.apply(
-                                color: measurementNeed == MeasurementNeed.now
+                                color: determineMeasurementTiming() == MeasurementTiming.now
                                     ? Theme.of(context).colorScheme.onSecondary
                                     : Theme.of(context).colorScheme.tertiary,
                               ),
                             ),
-                            if (plannedMeasurement.whenCode != null)
+                            if (measurement.whenCode != null)
                               Text(
-                                localization.common_when_code(plannedMeasurement.whenCode!.name),
+                                localization.common_when_code(measurement.whenCode!.name),
                                 style: ScaleTextStyles.label.apply(
-                                  color: measurementNeed == MeasurementNeed.now
+                                  color: determineMeasurementTiming() == MeasurementTiming.now
                                       ? Theme.of(context).colorScheme.onSecondary
                                       : Theme.of(context).colorScheme.tertiary,
                                 ),
                               ),
-                            if (requiredCount > 1 && currentCount != null)
+                            if (measurement.requiredCount > 1)
                               Text(
                                 localization.dashboard_screen_measurements_left(
-                                  requiredCount - currentCount!,
-                                  requiredCount,
+                                  measurement.requiredCount - measurement.actualCount,
+                                  measurement.requiredCount,
                                 ),
                                 style: ScaleTextStyles.label.apply(
-                                  color: measurementNeed == MeasurementNeed.now
+                                  color: determineMeasurementTiming() == MeasurementTiming.now
                                       ? Theme.of(context).colorScheme.onSecondary
                                       : Theme.of(context).colorScheme.tertiary,
                                 ),
@@ -176,15 +161,15 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
                           ],
                         ),
                         const Spacer(),
-                        if (measurementNeed == MeasurementNeed.now) ...{
+                        if (determineMeasurementTiming() == MeasurementTiming.now) ...{
                           NavigationTabChip(
                             label: localization.common_measure,
                             isSelected: true,
                             onTap: () {
                               MeasurementHelper.doMeasurement(
                                 context: context,
-                                userId: plannedMeasurement.userId,
-                                selectedMeasurementType: plannedMeasurement.measurementType,
+                                userId: measurement.user.id,
+                                selectedMeasurementType: measurement.measurementType,
                               );
                             },
                           ),
@@ -202,4 +187,4 @@ class MeasurementItem extends StatelessWidget with BottomSheetMixin {
   }
 }
 
-enum MeasurementNeed { now, upcoming }
+enum MeasurementTiming { now, upcoming }

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement_type_contract.dart';
 import 'package:scalesoft_app/api/model/server_measurement_model.dart';
@@ -194,13 +195,7 @@ class ResultsHelper {
       }
     }
 
-    allResults.sort((a, b) {
-      final dtA = a.measurementTime;
-      final dtB = b.measurementTime;
-
-      return dtB.millisecondsSinceEpoch.compareTo(dtA.millisecondsSinceEpoch);
-    });
-    return allResults;
+    return allResults.sortedBy((x) => x.measurementIntervalStart ?? x.measurementTime);
   }
 
   static List<MeasurementResultViewModel> getResultsByWhenPeriod({

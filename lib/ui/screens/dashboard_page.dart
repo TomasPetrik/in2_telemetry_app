@@ -24,17 +24,30 @@ import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 class DashboardPage extends StatelessWidget with BottomSheetMixin {
   const DashboardPage({super.key});
 
+  void initCarePlanBloc(CarePlanBloc bloc, UserCubitState userState){
+    final users = userState.aggregateAllUsers?userState.allUsers.toList():[userState.currentUser];
+
+    bloc.add(
+      CarePlanInitializeEvent(
+        whenPeriod: PlanWhenPeriod.today,
+        users: users,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final syncBloc = getIt<SyncBloc>();
     syncBloc.add(const SyncEvent.init());
 
+    final userCubit = getIt<UserCubit>();
+
     final carePlanBloc = getIt<CarePlanBloc>();
-    carePlanBloc.add(
-      const CarePlanInitializeEvent(
-        whenPeriod: PlanWhenPeriod.today,
-      ),
-    );
+    initCarePlanBloc(carePlanBloc, userCubit.state);
+
+    userCubit.stream.listen((state){
+      initCarePlanBloc(carePlanBloc, state);
+    });
 
     return Stack(
       children: [
@@ -51,26 +64,35 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
               final userState = context.watch<UserCubit>().state;
 
               if (carePlanState.selectedWhenPeriod == null ||
-                  carePlanState.currentCarePlans == null ||
+                  carePlanState.carePlansOfType == null ||
+                  carePlanState.allCarePlans == null ||
                   carePlanState.allTodayMeasurements == null ||
                   carePlanState.results == null) {
                 return const SizedBox.shrink();
               } else {
                 // final allCarePlans = session.getActiveCarePlans();
                 final supportedMeasurementTypes = CarePlanHelper.getMeasurementTypes(
-                  carePlanState.currentCarePlans!,
+                  carePlanState.allCarePlans!,
                 );
+
+                final now = DateTime.now();
+
+                final upcomingMeasurements = carePlanState.allTodayMeasurements
+                    ?.where((x) => x.wasPlanned)
+                    .where((x) => x.requiredCount > x.actualCount)
+                    .where((x) => (x.measurementIntervalEnd ?? x.measurementTime).isAfter(now))
+                    .toList();
 
                 return NavigationScreen(
                   key: ValueKey(carePlanState.timestamp),
                   onTabSelected: (tabIndex) {
                     if (tabIndex == 0) {
                       carePlanBloc.add(
-                        const CurrentPlansChangeEvent(null),
+                        const MeasurementTypeChangeEvent(null),
                       );
                     } else {
                       carePlanBloc.add(
-                        CurrentPlansChangeEvent(
+                        MeasurementTypeChangeEvent(
                           supportedMeasurementTypes.toList()[tabIndex - 1],
                         ),
                       );
@@ -86,13 +108,13 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                       SliverToBoxAdapter(
                         child: ActionWidget(
                           whenPeriod: carePlanState.selectedWhenPeriod!,
-                          upcomingMeasurements: carePlanState.upcomingMeasurements ?? [],
+                          upcomingMeasurements: upcomingMeasurements ?? [],
                           allTodayMeasurements: carePlanState.allTodayMeasurements!,
                         ),
                       ),
                     },
                   ],
-                  noContentWidget: carePlanState.currentCarePlans?.isEmpty ?? true
+                  noContentWidget: carePlanState.allCarePlans?.isEmpty ?? true
                       ? NoContentPlaceholder(
                           userAccount: userState.aggregateAllUsers ? null : userState.currentUser,
                           enterMeasurementWithoutPlan: !userState.aggregateAllUsers &&
@@ -119,7 +141,6 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                               } else if (selected?.showCalendar == true) {
                                 GoRouter.of(context).pushNamed(
                                   CalendarRoute.name,
-                                  extra: carePlanState.currentCarePlans!.map((carePlan) => carePlan.id).toList(),
                                 );
                               }
                             });
@@ -134,11 +155,10 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                           if (carePlanState.nextMeasurement != null)
                             MeasurementsList(
                               whenPeriod: carePlanState.selectedWhenPeriod!,
-                              carePlans: [...carePlanState.currentCarePlans!],
-                              measurements: carePlanState.upcomingMeasurements!,
+                              carePlans: [...carePlanState.carePlansOfType!],
                               nextMeasurement: carePlanState.nextMeasurement!,
                               planWhenPeriod: carePlanState.selectedWhenPeriod!,
-                              results: carePlanState.results!,
+                              measurementsOfDay: carePlanState.allTodayMeasurements!,
                             ),
                         ],
                         bottomSlivers: [
@@ -146,7 +166,7 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                               (userState.currentUser.permissions
                                   .contains(Permissions.enterMeasurementWithoutPlan))) ...{
                             PersonalMeasurementFooter(
-                              showInfo: carePlanState.upcomingMeasurements?.isNotEmpty == true,
+                              showInfo: upcomingMeasurements?.isNotEmpty == true,
                               onPressed: () async {
                                 MeasurementHelper.doMeasurement(
                                   context: context,
@@ -168,11 +188,10 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                           if (carePlanState.nextMeasurement != null)
                             MeasurementsList(
                               whenPeriod: carePlanState.selectedWhenPeriod!,
-                              carePlans: [...carePlanState.currentCarePlans!],
-                              measurements: carePlanState.upcomingMeasurements!,
+                              carePlans: [...carePlanState.carePlansOfType!],
                               nextMeasurement: carePlanState.nextMeasurement!,
                               planWhenPeriod: carePlanState.selectedWhenPeriod!,
-                              results: carePlanState.results!,
+                              measurementsOfDay: carePlanState.allTodayMeasurements!,
                             ),
                         ],
                         bottomSlivers: [
@@ -180,12 +199,12 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                               (userState.currentUser.permissions
                                   .contains(Permissions.enterMeasurementWithoutPlan))) ...{
                             PersonalMeasurementFooter(
-                              showInfo: carePlanState.upcomingMeasurements?.isNotEmpty == true,
+                              showInfo: upcomingMeasurements?.isNotEmpty == true,
                               onPressed: () async {
                                 MeasurementHelper.doMeasurement(
                                   context: context,
                                   userId: userState.currentUser.id,
-                                  selectedMeasurementType: carePlanState.currentCarePlans![0].activity.measurementType,
+                                  selectedMeasurementType: measurementType,
                                   showAllMeasurementTypes: true,
                                 );
                               },

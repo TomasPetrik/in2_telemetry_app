@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scalesoft_app/api/model/user_model.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
@@ -10,9 +11,11 @@ abstract class CarePlanBlocEvent {
 class CarePlanInitializeEvent extends CarePlanBlocEvent {
   const CarePlanInitializeEvent({
     required this.whenPeriod,
+    required this.users,
   });
 
   final PlanWhenPeriod whenPeriod;
+  final List<UserModel> users;
 }
 
 class TimePeriodChangeEvent extends CarePlanBlocEvent {
@@ -20,8 +23,8 @@ class TimePeriodChangeEvent extends CarePlanBlocEvent {
   final PlanWhenPeriod whenPeriod;
 }
 
-class CurrentPlansChangeEvent extends CarePlanBlocEvent {
-  const CurrentPlansChangeEvent(
+class MeasurementTypeChangeEvent extends CarePlanBlocEvent {
+  const MeasurementTypeChangeEvent(
     this.measurementType,
   );
   final MeasurementType? measurementType;

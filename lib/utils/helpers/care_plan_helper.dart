@@ -125,7 +125,8 @@ class CarePlanHelper {
         (x) => x.activeFrom.isBefore(to) && (x.activeTo?.isAfter(from) ?? true),
       );
 
-      final evaluationItemsOfPlan = evaluationItems?.where((x) => x.carePlanId == plan.id).toList() ?? plan.evaluationItems;
+      final evaluationItemsOfPlan =
+          evaluationItems?.where((x) => x.carePlanId == plan.id).toList() ?? plan.evaluationItems;
 
       for (final version in activeVersions) {
         final versionMeasurements = getMeasurementsForVersion(
@@ -143,6 +144,7 @@ class CarePlanHelper {
       }
     }
 
+    result.sortBy((x) => x.whenStart);
     return result;
   }
 
@@ -240,20 +242,21 @@ class CarePlanHelper {
   static List<PlannedMeasurement> getMeasurementsForPeriod(
     List<CarePlan> carePlans,
     PlanWhenPeriod whenPeriod,
-    List<Measurement> offlineResults,
-  ) {
+    List<Measurement> offlineResults, {
+    bool all = false,
+  }) {
     List<PlannedMeasurement> measurements = [];
 
     switch (whenPeriod) {
       case PlanWhenPeriod.today:
-        final from = DateTime.now();
+        final from = all ? DateTime.now().startOfDay : DateTime.now();
         final to = from.endOfDay;
         measurements = getMeasurements(
           carePlans,
           from,
           to,
           offlineResults,
-          ignoreCompleted: true,
+          ignoreCompleted: !all,
         );
         break;
       case PlanWhenPeriod.tomorrow:
@@ -264,7 +267,7 @@ class CarePlanHelper {
           from,
           to,
           offlineResults,
-          ignoreCompleted: true,
+          ignoreCompleted: !all,
         );
         break;
       case PlanWhenPeriod.next10:
