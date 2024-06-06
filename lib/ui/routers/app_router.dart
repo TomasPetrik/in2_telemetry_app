@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/ui/managers/auth_manager.dart';
-import 'package:scalesoft_app/ui/routers/routes/add_device_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/appearance_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/blank_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/calendar_route.dart';
@@ -92,7 +91,6 @@ class AppRouter {
             FutureMeasurementsRoute(navigator: navAuthManager).route,
             ChartRoute(navigator: navAuthManager).route,
             MeteringFirstRoute(navigator: navAuthManager).route,
-            AddDeviceRoute(navigator: navAuthManager).route,
             DeviceSearchRoute(navigator: navAuthManager).route,
             RegisterDeviceDetailRoute(navigator: navAuthManager).route,
             RegisterDeviceSuccessRoute(navigator: navAuthManager).route,
