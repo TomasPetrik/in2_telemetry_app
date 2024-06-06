@@ -88,8 +88,8 @@ class _DeviceSearchScreenState extends State<DeviceSearchScreen>
               listener: (BuildContext context, RegisterDeviceBlocState state) {
                 state.whenOrNull(
                   popDevice: (devToPop) => Navigator.of(context).pop(devToPop),
-                  disabledLocalizationService: (_) {
-                    showLocalizationSettings(context: context)
+                  disabledLocationService: (_) {
+                    showLocationSettings(context: context)
                         .then((openLocationSettings) async {
                       if (openLocationSettings == true) {
                         await AppSettings.openAppSettings(

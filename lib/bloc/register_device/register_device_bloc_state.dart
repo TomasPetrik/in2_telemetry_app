@@ -13,7 +13,7 @@ class RegisterDeviceBlocState with _$RegisterDeviceBlocState {
   const factory RegisterDeviceBlocState.noBtPermissions({
     required int timestamp,
   }) = _NoBtPermissions;
-  const factory RegisterDeviceBlocState.disabledLocalizationService({
+  const factory RegisterDeviceBlocState.disabledLocationService({
     required int timestamp,
   }) = _DisabledLocalizationService;
   const factory RegisterDeviceBlocState.searching({

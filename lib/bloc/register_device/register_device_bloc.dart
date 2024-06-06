@@ -62,9 +62,9 @@ class RegisterDeviceBloc extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlo
             return;
           }
 
-          final isBTPermissionsPermanentylDenied = await _btConnectionHelper.isBTPermissionsPermanentylDenied();
+          final isBTPermissionsPermanentlyDenied = await _btConnectionHelper.isBTPermissionsPermanentylDenied();
 
-          if (isBTPermissionsPermanentylDenied) {
+          if (isBTPermissionsPermanentlyDenied) {
             shouldRequestPermission = true;
             emit(
               RegisterDeviceBlocState.noBtPermissions(
@@ -98,10 +98,10 @@ class RegisterDeviceBloc extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlo
             _reportsService.trackEvent(
               userId: _userId,
               severity: LogSeverity.warning,
-              message: EventsConstants.eventDisabledLocalizationService,
+              message: EventsConstants.eventDisabledLocationService,
             );
             emit(
-              RegisterDeviceBlocState.disabledLocalizationService(
+              RegisterDeviceBlocState.disabledLocationService(
                 timestamp: DateTime.now().microsecondsSinceEpoch,
               ),
             );

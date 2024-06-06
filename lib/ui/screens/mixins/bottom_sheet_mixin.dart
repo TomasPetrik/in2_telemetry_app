@@ -118,7 +118,7 @@ mixin BottomSheetMixin {
     return result;
   }
 
-  Future<bool?> showLocalizationSettings({
+  Future<bool?> showLocationSettings({
     required final BuildContext context,
   }) async {
     final result = await showModalBottomSheet<bool?>(

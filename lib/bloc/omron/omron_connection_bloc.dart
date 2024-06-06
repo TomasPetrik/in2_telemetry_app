@@ -356,12 +356,12 @@ class OmronConnectionBloc
           if (!hasLocationServiceEnabled) {
             debugPrint('disabled location service !');
             _reportsService.trackEvent(
-              userAccount: _userAccount,
-              severity: Severity.warning,
-              message: EventsConstants.eventDisabledLocalizationService,
+              userId: _userAccount.id,
+              severity: LogSeverity.warning,
+              message: EventsConstants.eventDisabledLocationService,
             );
             emit(
-              OmronConnectionState.disabledLocalizationService(
+              OmronConnectionState.disabledLocationService(
                 timestamp: DateTime.now().microsecondsSinceEpoch,
               ),
             );

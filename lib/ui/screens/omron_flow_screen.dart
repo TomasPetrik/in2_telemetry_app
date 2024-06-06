@@ -123,8 +123,8 @@ class _OmronFlowScreenState extends State<OmronFlowScreen>
                         }
                       });
                     },
-                    disabledLocalizationService: (_) {
-                      showLocalizationSettings(context: context)
+                    disabledLocationService: (_) {
+                      showLocationSettings(context: context)
                           .then((openLocationSettings) async {
                         if (openLocationSettings == true) {
                           await AppSettings.openAppSettings(

@@ -80,8 +80,8 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
             emit(const SyncState.none());
           }
         },
-        removeOfflineResult: (MeasurementDataContract measurementResult) async {
-          await _syncService.removeOfflineResult(measurementResult);
+        removeOfflineResult: (MeasurementResultViewModel measurementResult) async {
+          await _syncService.removeOfflineResult(measurementResult.measurementTime, measurementResult.measurementType);
           final syncState = await _session.detectSyncState();
 
           if (syncState != const SyncState.synced()) {

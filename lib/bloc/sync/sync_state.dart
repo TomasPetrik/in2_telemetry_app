@@ -13,18 +13,18 @@ class SyncState with _$SyncState {
   factory SyncState.userSessionExpired(UserModel userAccount) =
       _SingleUserExpired;
   factory SyncState.syncUserDataFailed(
-    List<MeasurementDataContract>? offlinResults,
+    List<MeasurementResultViewModel>? offlineResults,
     DateTime? lastSyncAt,
   ) = _SyncUserDataFailed;
   const factory SyncState.syncSomeUsersDataFailed(
-    List<MeasurementDataContract>? offlinResults,
+    List<MeasurementResultViewModel>? offlineResults,
   ) = _SyncSomeUsersDataFailed;
   const factory SyncState.userResultsFailed(
-    List<MeasurementDataContract>? offlineResults,
+    List<MeasurementResultViewModel>? offlineResults,
     DateTime? lastSyncAt,
   ) = _UserResultsFailed;
   const factory SyncState.someUsersResultsFailed(
-    List<MeasurementDataContract>? offlinResults,
+    List<MeasurementResultViewModel>? offlineResults,
   ) = _SomeUsersResultsFailed;
   const factory SyncState.userCarePlanChanged(CarePlan carePlan) =
       _UserCarePlanChanged;
