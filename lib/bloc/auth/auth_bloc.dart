@@ -114,7 +114,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         codeVerifier,
       );
 
-      _settingsDbProvider.updateAppSettings(
+      await _settingsDbProvider.updateAppSettings(
         AppSettingsCompanion(lastHospitalId: Value(event.hospital.id), currentCodeVerifier: Value(codeVerifier)),
       );
 

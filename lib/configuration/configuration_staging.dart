@@ -77,7 +77,7 @@ class StagingConfiguration extends BaseConfiguration {
           .toList(),
     ),
     Hospital(
-      id: 4,
+      id: 5,
       title: '[Test] in2',
       iconPath: 'assets/icons/icon_hospital_user.svg',
       authData: const AuthData(
