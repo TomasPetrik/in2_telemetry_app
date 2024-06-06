@@ -1,10 +1,10 @@
 import 'package:auto_mappr_annotation/auto_mappr_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/model/hospital.dart';
-import 'package:scalesoft_app/api/model/user_model.dart';
+import 'package:scalesoft_app/model/hospital.dart';
 import 'package:scalesoft_app/config.dart';
 import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/mapper/user_mapper.auto_mappr.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 
 @injectable
 @AutoMappr([

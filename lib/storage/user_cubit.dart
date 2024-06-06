@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/contracts/time_settings/time_setting_contract.dart';
 import 'package:scalesoft_app/api/contracts/user/user_contract.dart';
-import 'package:scalesoft_app/api/model/user_model.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
@@ -13,10 +12,11 @@ import 'package:scalesoft_app/data/entities/json_entities/user/auth_token.dart';
 import 'package:scalesoft_app/data/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/data/providers/user_db_provider.dart';
 import 'package:scalesoft_app/managers/background_measurement_manager.dart';
-import 'package:scalesoft_app/model/enum/user_problem_type.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 import 'package:scalesoft_app/no_users_exception.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/report_service.dart';
+import 'package:scalesoft_app/ui/viewModels/measurement_result_view_model.dart';
 
 class UserCubitState {
   final int? _userId;

@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
+import 'package:scalesoft_app/ui/viewModels/measurement_result_view_model.dart';
 
 part 'sync_event.freezed.dart';
 

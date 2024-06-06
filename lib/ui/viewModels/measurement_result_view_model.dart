@@ -1,6 +1,6 @@
-import 'package:scalesoft_app/api/model/user_model.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/data/entities/enums/when_code.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 class MeasurementResultViewModel {

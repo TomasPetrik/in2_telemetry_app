@@ -1,4 +1,4 @@
-import 'package:scalesoft_app/api/model/hospital.dart';
+import 'package:scalesoft_app/model/hospital.dart';
 
 abstract class BaseConfiguration {
   abstract final List<Hospital> hospitals;

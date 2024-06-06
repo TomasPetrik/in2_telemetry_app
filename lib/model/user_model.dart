@@ -1,6 +1,7 @@
-import 'package:scalesoft_app/api/model/hospital.dart';
+import 'package:scalesoft_app/model/hospital.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/auth_token.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/time_setting.dart';
+import 'package:scalesoft_app/model/enum/user_problem_type.dart';
 
 class UserModel {
   final int id;
@@ -20,6 +21,7 @@ class UserModel {
   final bool lastSyncFailed;
   final List<int> notificationIds;
   final List<TimeSetting> timeSettings;
+  UserProblemType? problem;
 
   UserModel({
     required this.id,
@@ -39,6 +41,7 @@ class UserModel {
     required this.lastSyncFailed,
     required this.notificationIds,
     required this.timeSettings,
+    this.problem,
   });
 
   bool get isRepresentedPerson => parentId != null;
@@ -67,7 +70,7 @@ class UserModel {
 
   @override
   bool operator ==(Object other) {
-    if(other is! UserModel){
+    if (other is! UserModel) {
       return false;
     }
     return id == other.id;

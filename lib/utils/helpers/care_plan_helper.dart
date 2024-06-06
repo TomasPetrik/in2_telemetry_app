@@ -1,6 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:scalesoft_app/api/model/care_plan/interval_generation/time_of_day_timing_model.dart';
-import 'package:scalesoft_app/api/model/care_plan/interval_generation/timing_model.dart';
 import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/data/entities/enums/timing_day_when_type.dart';
@@ -8,6 +6,8 @@ import 'package:scalesoft_app/data/entities/enums/when_code.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/care_plan_version.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_evaluation_item.dart';
 import 'package:scalesoft_app/model/fulfillment_evaluation_model.dart';
+import 'package:scalesoft_app/model/interval_generation/time_of_day_timing_model.dart';
+import 'package:scalesoft_app/model/interval_generation/timing_model.dart';
 import 'package:scalesoft_app/providers/interval_generation/timing_interval_generator.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';

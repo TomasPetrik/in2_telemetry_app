@@ -2,7 +2,6 @@ import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/contracts/time_settings/time_setting_contract.dart';
 import 'package:scalesoft_app/api/contracts/user/user_contract.dart';
-import 'package:scalesoft_app/api/model/user_model.dart';
 import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/data/entities/combined_entities/user_with_represented_people.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/time_only.dart';
@@ -10,6 +9,8 @@ import 'package:scalesoft_app/data/entities/json_entities/user/auth_token.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/time_setting.dart';
 import 'package:scalesoft_app/mapper/user_mapper.dart';
 import 'package:scalesoft_app/mapper/when_code_mapper.dart';
+import 'package:scalesoft_app/model/enum/user_problem_type.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 
 @injectable
 class UserDbProvider {

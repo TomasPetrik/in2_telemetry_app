@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:oauth2/oauth2.dart';
-import 'package:scalesoft_app/api/model/user_model.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 
 part 'auth_state.freezed.dart';
 

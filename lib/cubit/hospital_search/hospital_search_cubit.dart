@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/model/hospital.dart';
+import 'package:scalesoft_app/model/hospital.dart';
 import 'package:scalesoft_app/cubit/hospital_search/hospital_search_state.dart';
 
 @singleton

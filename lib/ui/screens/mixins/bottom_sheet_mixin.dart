@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/model/hospital.dart';
-import 'package:scalesoft_app/api/model/user_model.dart';
+import 'package:scalesoft_app/model/hospital.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/time_only.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 import 'package:scalesoft_app/ui/dialogs/bottom_dialog.dart';
 import 'package:scalesoft_app/ui/dialogs/hospital_selection_dialog.dart';
 import 'package:scalesoft_app/ui/dialogs/planned_measurement_time_dialog.dart';

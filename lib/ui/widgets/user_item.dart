@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/model/user_model.dart';
-import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 import 'package:scalesoft_app/ui/painters/user_item_painter.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';

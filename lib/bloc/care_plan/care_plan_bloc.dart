@@ -189,7 +189,6 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
           state.measurementType,
         );
 
-        final carePlans = state.currentCarePlans;
         final carePlans = state.carePlansOfType;
 
         if (carePlans != null && carePlans.isNotEmpty) {

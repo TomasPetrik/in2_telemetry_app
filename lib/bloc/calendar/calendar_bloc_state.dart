@@ -2,9 +2,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scalesoft_app/api/contracts/measurement/measurement_contract.dart';
-import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
-import 'package:scalesoft_app/api/model/user_model.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 import 'package:scalesoft_app/ui/viewModels/measurement_result_view_model.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
@@ -123,9 +122,9 @@ class UserEvaluationDay with _$UserEvaluationDay {
     return futureMeasurements;
   }
 
-  List<MeasurementDataContract> getMeasurementResults() {
+  List<MeasurementResultViewModel> getMeasurementResults() {
     final measurementResults =
-        carePlanFulfillments.fold<List<MeasurementDataContract>>(
+        carePlanFulfillments.fold<List<MeasurementResultViewModel>>(
       [],
       (previousValue, carePlanFulfillments) =>
           [...previousValue, ...carePlanFulfillments.measurementResults],
@@ -142,7 +141,7 @@ class SingleDayMeasurementsOfExactType with _$SingleDayMeasurementsOfExactType {
     MeasurementType measurementType,
     List<PlannedMeasurement> plannedMeasurements,
     List<MeasurementContract> offlineResults,
-    List<MeasurementDataContract> measurementResults,
+    List<MeasurementResultViewModel> measurementResults,
   ) = _CarePlanFulfillment;
 
   int get evaluationPercentage => getActualCount() == 0
