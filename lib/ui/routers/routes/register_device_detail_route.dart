@@ -26,17 +26,9 @@ class RegisterDeviceDetailRoute extends ApplicationRoute with PageBuilderMixin {
       pageBuilder: pageBuilder(
         withTransition: false,
         builder: (state) {
-          final userId = state.params['userId']!;
-          final userAccount = getIt<AccountDbProvider>().get(userId)!;
-          final deviceParam = state.extra as Device;
-          final userId = state.pathParameters['userId']!;
-
-          final device = ConfigurationConstants.supportedDevices
-              .firstWhere((device) => device.localId == deviceParam.localId)
-              .copyWith(
-                deviceIdentifier: deviceParam.deviceIdentifier,
-                bluetoothAddress: deviceParam.bluetoothAddress,
-              );
+          final userId = int.parse(state.pathParameters['userId']!);
+          final userAccount = getIt<UserCubit>().state.allUsers.firstWhere((x)=>x.id == userId);
+          final device = state.extra as DeviceModel;
 
           return RegisterDeviceDetailScreen(
             userAccount: userAccount,

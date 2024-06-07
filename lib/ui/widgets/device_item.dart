@@ -4,6 +4,7 @@ import 'package:scalesoft_app/model/device_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
+import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 class DeviceItem extends StatelessWidget {
   const DeviceItem({
@@ -12,7 +13,7 @@ class DeviceItem extends StatelessWidget {
     this.onRemove,
   });
 
-  final SourceDeviceContract device;
+  final DeviceModel device;
   final VoidCallback? onRemove;
 
   String getSubTitle(BuildContext context) {
@@ -23,17 +24,13 @@ class DeviceItem extends StatelessWidget {
     );
     */
 
-    if (device.deviceIdentifier != null) {
-      subTitle += device.deviceIdentifier!;
-    }
+    subTitle += device.deviceIdentifier;
 
     if (device.assignedIdentifier != null) {
-      subTitle +=
-          '\n(${device.assignedIdentifier!})'; //for assigned devices show assigned identifier
+      subTitle += '\n(${device.assignedIdentifier!})'; //for assigned devices show assigned identifier
     } else if (device.addedAt != null) {
       //for own devices show when device was added
-      subTitle +=
-          '\n${localization.common_addded_at_time(device.addedAt!.dateFormatLong)}';
+      subTitle += '\n${localization.common_addded_at_time(device.addedAt!.dateFormatLong)}';
     }
 
     return subTitle;
@@ -48,7 +45,7 @@ class DeviceItem extends StatelessWidget {
           child: SizedBox(
             height: 64,
             width: 64,
-            child: Image.asset(device.imagePath!),
+            child: Image.asset(device.prototype.imagePath),
           ),
         ),
         Gaps.gap16,
@@ -57,7 +54,7 @@ class DeviceItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                device.visibleName ?? '',
+                device.prototype.visibleName,
                 style: ScaleTextStyles.text.apply(
                   color: Theme.of(context).colorScheme.onPrimary,
                 ),

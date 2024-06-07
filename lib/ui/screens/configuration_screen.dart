@@ -105,16 +105,12 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                               final hospital = hospitalUserEntries[index];
 
                               final bool showWarning = hospital.value.any(
-                                (userAccount) =>
-                                    getIt<Session>()
-                                        .getProblemIfExists(userAccount) !=
-                                    null,
+                                (user) => user.problem != null,
                               );
 
                               return SettingsItem(
                                 key: ObjectKey(hospital),
-                                showWarning: false,
-                                // showWarning, TODO
+                                showWarning: showWarning,
                                 label: hospital.key.title,
                                 subLabel: '${hospital.value[0].fullName}'
                                     ' ${hospital.value.length > 1 ? localization.common_plus_n_others(hospital.value.length - 1) : ''}',

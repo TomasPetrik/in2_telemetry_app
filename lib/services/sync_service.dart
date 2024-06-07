@@ -10,7 +10,9 @@ import 'package:scalesoft_app/api/contracts/measurement_type_contract.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/constants/permissions.dart';
 import 'package:scalesoft_app/data/app_database.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_evaluation_item.dart';
+import 'package:scalesoft_app/data/providers/device_prototype_db_provider.dart';
 import 'package:scalesoft_app/data/providers/measurements_db_provider.dart';
 import 'package:scalesoft_app/data/providers/user_db_provider.dart';
 import 'package:scalesoft_app/managers/background_measurement_manager.dart';
@@ -37,6 +39,7 @@ class SyncService {
   final MeasurementTypeMapper _measurementTypeMapper;
   final MeasurementsDbProvider _measurementsDbProvider;
   final UserDbProvider _userDbProvider;
+  final DevicePrototypeDbProvider _devicePrototypeDbProvider;
 
   SyncService(
     this._session,
@@ -48,6 +51,7 @@ class SyncService {
     this._measurementTypeMapper,
     this._measurementsDbProvider,
     this._userDbProvider,
+    this._devicePrototypeDbProvider,
   );
 
   Future<void> setUserPlans(
@@ -136,12 +140,16 @@ class SyncService {
 
   Future<void> loadDeviceModels(final int userId) async {
     try {
+      final user = _session.state.allUsers.firstWhere((x) => x.id == userId);
+
       final deviceModels = await _deviceRepository.getDeviceModels(
         userId: userId,
       );
-      userAccount.supportedDeviceModels = deviceModels;
-      for (final UserAccount representedPerson in userAccount.representedPeople!) {
-        representedPerson.supportedDeviceModels = deviceModels;
+
+      await _devicePrototypeDbProvider.replaceUserPrototypes(userId, deviceModels);
+
+      for (final representedPerson in user.representedPeople) {
+        await _devicePrototypeDbProvider.replaceUserPrototypes(representedPerson.id, deviceModels);
       }
     } on Exception {
       debugPrint(

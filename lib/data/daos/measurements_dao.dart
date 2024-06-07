@@ -50,12 +50,12 @@ class MeasurementsDao extends DatabaseAccessor<AppDatabase> with _$MeasurementsD
   }
 
   Future<List<Measurement>> getByUsers(
-      Iterable<int> userIds,
-      MeasurementType? ofType,
-      DateTime? from,
-      DateTime? to,
-      bool? isUploaded,
-      ) async {
+    Iterable<int> userIds,
+    MeasurementType? ofType,
+    DateTime? from,
+    DateTime? to,
+    bool? isUploaded,
+  ) async {
     final query = select(measurements)
       ..where((x) => x.userId.isIn(userIds))
       ..orderBy([(measurement) => OrderingTerm(expression: measurement.measuredAt, mode: OrderingMode.asc)]);
@@ -95,5 +95,13 @@ class MeasurementsDao extends DatabaseAccessor<AppDatabase> with _$MeasurementsD
         .getSingleOrNull();
 
     return result;
+  }
+
+  Future<void> removeOfflineMeasurement(DateTime measurementTime, MeasurementType measurementType) async {
+    await (delete(measurements)
+          ..where((x) => x.measuredAt.equals(measurementTime))
+          ..where((x) => x.measurementType.equalsValue(measurementType))
+          ..where((x) => x.isUploaded.equals(false)))
+        .go();
   }
 }

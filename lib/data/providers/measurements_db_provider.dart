@@ -105,6 +105,10 @@ class MeasurementsDbProvider {
     return await _database.measurementsDao.getByUsers(userIds, ofType, from, to, isUploaded);
   }
 
+  Future<void> removeOfflineMeasurement(DateTime measurementTime, MeasurementType measurementType) async {
+    return await _database.measurementsDao.removeOfflineMeasurement(measurementTime, measurementType);
+  }
+
 // /// Applies the given [changes] to all measurements of a given user.
 // /// Primarily used for marking measurements as uploaded.
 // Future<void> updateAllUserMeasurements(int userId, MeasurementsCompanion changes) async {

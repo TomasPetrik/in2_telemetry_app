@@ -6,13 +6,13 @@ part 'device_prototype_contract.g.dart';
 class DevicePrototypeContract {
   final int id;
   final String? manufacturer;
-  final String? modelName;
+  final String modelName;
   final String? aboutUrl;
 
   DevicePrototypeContract({
     required this.id,
     this.manufacturer,
-    this.modelName,
+    required this.modelName,
     this.aboutUrl,
   });
 

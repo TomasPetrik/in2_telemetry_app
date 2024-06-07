@@ -9,6 +9,7 @@ import 'package:injectable/injectable.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:scalesoft_app/data/daos/care_plans_dao.dart';
+import 'package:scalesoft_app/data/daos/device_prototypes_dao.dart';
 import 'package:scalesoft_app/data/daos/logs_dao.dart';
 import 'package:scalesoft_app/data/daos/measurements_dao.dart';
 import 'package:scalesoft_app/data/daos/users_dao.dart';
@@ -68,6 +69,7 @@ part 'app_database.drift.dart';
     MeasurementsDao,
     WhenTemplatesDao,
     CarePlansDao,
+    DevicePrototypesDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {

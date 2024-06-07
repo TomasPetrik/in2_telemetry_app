@@ -70,7 +70,6 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                   carePlanState.results == null) {
                 return const SizedBox.shrink();
               } else {
-                // final allCarePlans = session.getActiveCarePlans();
                 final supportedMeasurementTypes = CarePlanHelper.getMeasurementTypes(
                   carePlanState.allCarePlans!,
                 );

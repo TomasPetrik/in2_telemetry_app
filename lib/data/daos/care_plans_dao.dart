@@ -36,6 +36,13 @@ class CarePlansDao extends DatabaseAccessor<AppDatabase> with _$CarePlansDaoMixi
   }
 
   Future<List<CarePlan>> getByUsers(Iterable<int> userIds) async {
-    return await (select(carePlans)..where((x)=>x.targetUserId.isIn(userIds))).get();
+    return await (select(carePlans)..where((x) => x.targetUserId.isIn(userIds))).get();
+  }
+
+  Future<List<CarePlan>> getChangedPlans(Iterable<int> userIds) async {
+    return await (select(carePlans)
+          ..where((x) => x.targetUserId.isIn(userIds))
+          ..where((x) => x.wasChanged.equals(true)))
+        .get();
   }
 }

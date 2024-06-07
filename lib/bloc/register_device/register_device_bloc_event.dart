@@ -21,15 +21,15 @@ class RegisterDeviceBlocEvent with _$RegisterDeviceBlocEvent {
 
   const factory RegisterDeviceBlocEvent.notifyAboutNewDevices({
     required int timestamp,
-    required List<SourceDeviceContract> foundDevices,
+    required List<DeviceModel> foundDevices,
   }) = _NotifyAboutNewDevices;
 
-  const factory RegisterDeviceBlocEvent.selectDevice(SourceDeviceContract device) =
+  const factory RegisterDeviceBlocEvent.selectDevice(DeviceModel device) =
       _SelectDevice;
 
   const factory RegisterDeviceBlocEvent.registerDevice(
     UserModel userAccount,
-    SourceDeviceContract device,
+      DeviceModel device,
     String assignedIdentifier,
   ) = _RegisterDevice;
 }

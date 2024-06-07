@@ -153,6 +153,7 @@ class RegisterDeviceBloc extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlo
           _btConnectionHelper.searchDevicesByService(
             serviceUuids: [bloodPressureServiceUuid, heartRateServiceUuid],
             onlyPairingMode: _onlyPairingMode,
+            userId: _userId,
             onResult: (btDevices) {
               add(
                 RegisterDeviceBlocEvent.notifyAboutNewDevices(
@@ -180,7 +181,7 @@ class RegisterDeviceBloc extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlo
           await Wakelock.disable();
           await FlutterBluePlus.stopScan();
         },
-        selectDevice: (SourceDeviceContract device) async {
+        selectDevice: (DeviceModel device) async {
           await Wakelock.disable();
           await FlutterBluePlus.stopScan();
           emit(RegisterDeviceBlocState.popDevice(device));
@@ -189,38 +190,26 @@ class RegisterDeviceBloc extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlo
           try {
             //1. Load device models for lookup what's the device id
             _reportsService.trackEvent(
-              userId: _userId,
+              userId: userAccount.id,
               severity: LogSeverity.info,
               message: EventsConstants.eventDeviceRegistering,
             );
             emit(const RegisterDeviceBlocState.registering());
 
-            final deviceModels = await _deviceRepository.getDeviceModels(
-              userId: _userId,
-            );
-
-            final int deviceModelId = deviceModels
-                .firstWhere(
-                  (deviceModel) =>
-                      deviceModel.manufacturer == device.deviceManufacturer &&
-                      deviceModel.modelName == device.modelName,
-                )
-                .id;
-
             final deviceToRegister = DeviceCreateContract(
-              deviceModelId: deviceModelId,
+              deviceModelId: device.prototype.remoteId,
               assignedIdentifier: assignedIdentifier,
               deviceIdentifier: device.deviceIdentifier,
-              // bluetoothAddress: TODO
+              bluetoothAddress: device.bluetoothAddress,
             );
 
             await _deviceRepository.registerDevice(
-              userId: _userId,
+              userId: userAccount.id,
               deviceToRegister: deviceToRegister,
             );
 
             _reportsService.trackEvent(
-              userId: _userId,
+              userId: userAccount.id,
               severity: LogSeverity.info,
               message: EventsConstants.eventDeviceRegistered,
             );
@@ -228,7 +217,7 @@ class RegisterDeviceBloc extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlo
           } on DioException catch (exception) {
             if (exception.response?.statusCode == 500) {
               _reportsService.trackEvent(
-                userId: _userId,
+                userId: userAccount.id,
                 severity: LogSeverity.warning,
                 message: EventsConstants.eventDeviceAlreadyRegistered,
               );
@@ -237,7 +226,7 @@ class RegisterDeviceBloc extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlo
               );
             } else {
               _reportsService.trackEvent(
-                userId: _userId,
+                userId: userAccount.id,
                 severity: LogSeverity.warning,
                 message: EventsConstants.eventDeviceRegistrationFailed,
               );

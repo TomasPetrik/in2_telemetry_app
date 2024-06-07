@@ -18,7 +18,7 @@ class RegisterDeviceBlocState with _$RegisterDeviceBlocState {
   }) = _DisabledLocalizationService;
   const factory RegisterDeviceBlocState.searching({
     required int timestamp,
-    List<SourceDeviceContract>? devices,
+    List<DeviceModel>? devices,
   }) = _Searching;
   const factory RegisterDeviceBlocState.registering() = _Registering;
 
@@ -28,5 +28,5 @@ class RegisterDeviceBlocState with _$RegisterDeviceBlocState {
   const factory RegisterDeviceBlocState.failedRegistration(Key key) =
       _FailedRegistration;
 
-  const factory RegisterDeviceBlocState.popDevice(SourceDeviceContract device) = _PopDevice;
+  const factory RegisterDeviceBlocState.popDevice(DeviceModel device) = _PopDevice;
 }
