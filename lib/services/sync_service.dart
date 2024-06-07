@@ -158,7 +158,7 @@ class SyncService {
       userId: userId,
     );
 
-    final plansOfUser = activeCarePlans.items.where((x)=>x.targetUserMuid == user.muid).toList();
+    final plansOfUser = activeCarePlans.items.where((x) => x.targetUserMuid == user.muid).toList();
 
     await setUserPlans(userId, plansOfUser);
 
@@ -176,21 +176,20 @@ class SyncService {
           userId: representedPerson.id,
         );
 
-        final plansOfPerson = activeCarePlans.items.where((x)=>x.targetUserMuid == representedPerson.muid).toList();
+        final plansOfPerson = activeCarePlans.items.where((x) => x.targetUserMuid == representedPerson.muid).toList();
 
         await setUserPlans(representedPerson.id, plansOfPerson);
 
         await loadFulfillmentEvaluation(representedPerson.id);
-        if(representedPerson.permissions.any((x)=>x==Permissions.viewOwnMeasurementData)){
+        if (representedPerson.permissions.any((x) => x == Permissions.viewOwnMeasurementData)) {
           await loadMeasurementResults(representedPerson.id);
         }
       }
     }
   }
 
-  Future<void> removeOfflineResult(MeasurementDataContract measurementResult) async {
-    await _pendingResultsDbProvider
-        .removeByDateTime(measurementResult.measurementDateTime);
+  Future<void> removeOfflineResult(DateTime measurementTime, MeasurementType measurementType) async {
+    await _measurementsDbProvider.removeOfflineMeasurement(measurementTime, measurementType);
   }
 
   Future<void> updateUserData(UserModel userAccount) async {
@@ -290,14 +289,18 @@ class SyncService {
       try {
         await loadUserData(user.id);
 
+        final now = DateTime.now();
         await _userDbProvider.updateUser(
           user.id,
           UsersCompanion(
-            lastSyncAt: Value(DateTime.now()),
+            lastSyncAt: Value(now),
             lastSyncFailed: const Value(false),
             isSessionExpired: const Value(false),
           ),
+
         );
+
+        await _session.waitForChange((x)=>x.id == user.id && x.lastSyncAt.isAtSameMomentAs(now));
       } on DioException {
         //for any failed sync set flag and go on next account
         await _userDbProvider.updateUser(user.id, const UsersCompanion(lastSyncFailed: Value(true)));

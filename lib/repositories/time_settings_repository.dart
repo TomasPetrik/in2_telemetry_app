@@ -18,9 +18,10 @@ class TimeSettingsRepository {
     required int userId,
   }) async {
     TokenInterceptor.userId = userId;
+    final user = session.getUser(userId);
 
     return await timeSettingsApiClient.loadPlanTemplate(
-      session.state.currentUser.hospital.authData.baseUrl,
+      user.hospital.authData.baseUrl,
     );
   }
 
@@ -36,9 +37,10 @@ class TimeSettingsRepository {
     required TimeSettingsUpdateContract timeSettings,
   }) async {
     TokenInterceptor.userId = userId;
+    final user = session.getUser(userId);
 
     return timeSettingsApiClient.updateTimeSettings(
-      session.state.currentUser.hospital.authData.baseUrl,
+      user.hospital.authData.baseUrl,
       timeSettings,
     );
   }

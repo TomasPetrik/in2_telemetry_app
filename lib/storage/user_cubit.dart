@@ -9,6 +9,8 @@ import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/auth_token.dart';
+import 'package:scalesoft_app/data/providers/care_plan_db_provider.dart';
+import 'package:scalesoft_app/data/providers/measurements_db_provider.dart';
 import 'package:scalesoft_app/data/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/data/providers/user_db_provider.dart';
 import 'package:scalesoft_app/managers/background_measurement_manager.dart';
@@ -57,10 +59,18 @@ class UserCubitState {
 @lazySingleton
 class UserCubit extends Cubit<UserCubitState> {
   final UserDbProvider _userDbProvider;
+  final MeasurementsDbProvider _measurementsDbProvider;
+  final CarePlanDbProvider _carePlanDbProvider;
 
   final Stream<List<UserModel>> _allUsersStream;
 
-  UserCubit._(this._userDbProvider, this._allUsersStream, UserCubitState initialState) : super(initialState) {
+  UserCubit._(
+    this._userDbProvider,
+    this._allUsersStream,
+    this._measurementsDbProvider,
+    this._carePlanDbProvider,
+    UserCubitState initialState,
+  ) : super(initialState) {
     _allUsersStream.listen((rootUsers) {
       var activeUserId = state._userId;
 
@@ -82,6 +92,8 @@ class UserCubit extends Cubit<UserCubitState> {
   static Future<UserCubit> create(
     UserDbProvider userDbProvider,
     SettingsDbProvider settingsDbProvider,
+    MeasurementsDbProvider measurementsDbProvider,
+    CarePlanDbProvider carePlanDbProvider,
   ) async {
     final usersStream = userDbProvider.getAllRootUsers().asBroadcastStream();
 
@@ -93,7 +105,13 @@ class UserCubit extends Cubit<UserCubitState> {
 
     final state = UserCubitState(initialUserId, initialUsers, settings.showAllUsers);
 
-    return UserCubit._(userDbProvider, usersStream, state);
+    return UserCubit._(
+      userDbProvider,
+      usersStream,
+      measurementsDbProvider,
+      carePlanDbProvider,
+      state,
+    );
   }
 
   Future<void> setActiveUser(int userId) async {
@@ -118,11 +136,7 @@ class UserCubit extends Cubit<UserCubitState> {
       timeSettingContracts,
     );
 
-    if (!state.allUsers.any((x) => x.id == userId)) {
-      await _allUsersStream.firstWhere((list) => list.any((user) => user.id == userId)).timeout(
-            const Duration(seconds: 5),
-          );
-    }
+    await waitForChange((x)=>x.id == userId);
 
     return userId;
   }
@@ -142,60 +156,31 @@ class UserCubit extends Cubit<UserCubitState> {
   //For calendar restoration
   DateTime? preSelectedDtRestoration;
 
-  Future<List<CarePlan>> getActiveCarePlans() async {
-    List<CarePlan> carePlans = [];
-    for (final userAccount in state.rootUsers) {
-      // for (final CarePlanContract carePlan in userAccount.carePlans!) {
-      //   if (carePlan.isActiveToday()) {
-      //     carePlans.add(carePlan);
-      //   }
-      // }
-    }
-
-    return carePlans;
-  }
-
-  Future<List<CarePlan>> getAllCarePlans() async {
-    // return getSessionAccounts().fold<List<CarePlanContract>>(
-    //   [],
-    //   (prevCarePlans, userAccount) => [...prevCarePlans, ...userAccount.carePlans ?? []],
-    // ); TODO
-
-    return [];
-  }
-
   Future<List<Measurement>> getPendingResults() async {
-    List<Measurement> pendingResults = [];
-    for (final userAccount in state.rootUsers) {
-      // final userPendingResults = _pendingResultsDbProvider.getPerUser(userAccount.user.muid);
-      // if (userPendingResults.isNotEmpty == true) {
-      //   pendingResults.addAll(userPendingResults);
-      // } TODO
-    }
+    final userIds = state.allUsers.map((x) => x.id);
+
+    final pendingResults = await _measurementsDbProvider.getByUsers(userIds, isUploaded: false);
 
     return pendingResults;
   }
 
-  List<Measurement> getOfflineResults() {
-    return [];
-    // TODO
-    // final offlineResults = getPendingResults();
-    //
-    // if (offlineResults.isEmpty) return null;
-    //
-    // final List<MeasurementDataContract> offlineResultsConverted =
-    //     MeasurementHelper.getOfflineResultsConverted(
-    //   offlineResults,
-    //   null,
-    //   null,
-    // );
-    //
-    // offlineResultsConverted.sort(
-    //   (a, b) => b.measurementDateTime.millisecondsSinceEpoch
-    //       .compareTo(a.measurementDateTime.millisecondsSinceEpoch),
-    // );
-    //
-    // return offlineResultsConverted;
+  Future<List<MeasurementResultViewModel>> getOfflineResults() async {
+    final offlineResults = await getPendingResults();
+
+    final users = state.allUsers;
+
+    final viewModels = offlineResults.map(
+      (x) => MeasurementResultViewModel(
+        x.measurementType,
+        x.measuredAt,
+        users.firstWhere((user) => user.id == x.userId),
+        1,
+        1,
+        null,
+      ),
+    );
+
+    return viewModels.sortedBy((x) => x.measurementTime);
   }
 
   Future<SyncState> detectSyncState() async {
@@ -208,49 +193,39 @@ class UserCubit extends Cubit<UserCubitState> {
       return SyncState.userSessionExpired(expiredAccount);
     }
 
-    final offlineResults = getOfflineResults();
+    final offlineResults = await getOfflineResults();
 
     //2. check if user data sync failed
-    final someUserSessionExpired = userAccounts.any((userAccount) => userAccount.lastSyncFailed == true);
+    final someUserSessionExpired = userAccounts.any((userAccount) => userAccount.lastSyncFailed);
     if (userAccounts.length == 1) {
       if (someUserSessionExpired) {
-        // return SyncState.syncUserDataFailed(
-        //   offlineResults,
-        //   userAccounts[0].lastSyncAt,
-        // );
+        return SyncState.syncUserDataFailed(
+          offlineResults,
+          userAccounts[0].lastSyncAt,
+        );
       }
     } else if (someUserSessionExpired) {
-      // return SyncState.syncSomeUsersDataFailed(
-      //   offlineResults,
-      // ); TODO
+      return SyncState.syncSomeUsersDataFailed(
+        offlineResults,
+      );
     }
 
     //3. check if user results sync failed
-    // if (userAccounts.length == 1) {
-    // if (offlineResults?.isNotEmpty == true) {
-    //   return SyncState.userResultsFailed(
-    //     offlineResults,
-    //     userAccounts[0].lastSyncAt,
-    //   );
-    // }
-    // } else if (offlineResults?.isNotEmpty == true) {
-    //   return SyncState.someUsersResultsFailed(
-    //     offlineResults,
-    //   );
-    // } TODO
+    if (offlineResults.isNotEmpty) {
+      if (userAccounts.length == 1) {
+        return SyncState.userResultsFailed(offlineResults, userAccounts[0].lastSyncAt);
+      }
+      return SyncState.someUsersResultsFailed(offlineResults);
+    }
 
     //4. check if user plan was updated
-    final List<CarePlan> changedCarePlans = [];
-    for (final userAccount in userAccounts) {
-      // final changedUserPlans = userAccount.carePlans!.where((carePlan) => carePlan.wasChanged == true);
-      // changedCarePlans.addAll(changedUserPlans); TODO
-    }
+    final allUserIds = state.allUsers.map((x) => x.id);
+    final changedCarePlans = await _carePlanDbProvider.getChangedPlans(allUserIds);
 
     final someCarePlansChanged = changedCarePlans.isNotEmpty;
     if (userAccounts.length == 1 && someCarePlansChanged) {
       return SyncState.userCarePlanChanged(changedCarePlans[0]);
     } else if (someCarePlansChanged) {
-      // TODO: ChangedCarePlans should be entities? Or probably rewrite most of this
       final userAccount = state.rootUsers.firstWhereOrNull((x) => x.id == changedCarePlans[0].targetUserId);
 
       if (userAccount != null) {
@@ -268,24 +243,17 @@ class UserCubit extends Cubit<UserCubitState> {
     return const SyncState.synced();
   }
 
-  Future<UserProblemType?> getProblemIfExists(UserModel user) async {
-    if (user.isSessionExpired) {
-      return UserProblemType.sessionExpired;
+  /// Waits until a change is propagated, using the given [test] on [state.allUsers].
+  /// If the change isn't detected in [timeout] seconds, a [TimeoutException] is thrown.
+  Future<void> waitForChange(bool Function(UserModel user) test, {int timeout = 5}) async {
+    if (!state.allUsers.any(test)) {
+      await _allUsersStream.firstWhere((users) => users.any(test)).timeout(
+            Duration(seconds: timeout),
+          );
     }
+  }
 
-    if (user.lastSyncFailed) {
-      return UserProblemType.lastSyncFailed;
-    }
-    // TODO
-    // if (carePlans?.any((carePlan) => carePlan.wasChanged == true) == true) {
-    //   return UserProblemType.carePlanUpdated;
-    // }
-
-    // TODO
-    // final pendingResults = _pendingResultsDbProvider.getPerUser(user.user.muid);
-    // if (pendingResults.isNotEmpty == true) {
-    //   return UserProblemType.syncResultsFailed;
-    // }
-    return null;
+  UserModel getUser(int userId){
+    return state.allUsers.firstWhere((x)=>x.id == userId);
   }
 }

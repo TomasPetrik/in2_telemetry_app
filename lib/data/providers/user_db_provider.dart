@@ -29,7 +29,7 @@ class UserDbProvider {
   Stream<UserModel?> getByMuid(String muid) {
     final stream = _database.usersDao.getUserByMuid(muid);
 
-    return stream.map((x)=>x==null?null: _mapUser(x));
+    return stream.map((x) => x == null ? null : _mapUser(x));
   }
 
   /// Saves the given user with represented people. If the user already exists, represented people not in [representedPeople] will be deleted.
@@ -122,21 +122,21 @@ class UserDbProvider {
   Stream<List<UserModel>> getAll() {
     final entities = _database.usersDao.getAll();
 
-    final result = entities.map(_mapUsers);
+    final result = entities.asyncMap(_mapUsers);
     return result;
   }
 
   Stream<List<UserModel>> getAllRootUsers() {
     final entities = _database.usersDao.getAllRootUsers();
 
-    final result = entities.map(_mapUsers);
+    final result = entities.asyncMap(_mapUsers);
     return result;
   }
 
   Stream<List<UserModel>> getByIds(Iterable<int> userIds) {
     final entities = _database.usersDao.getByIds(userIds);
 
-    final result = entities.map(_mapUsers);
+    final result = entities.asyncMap(_mapUsers);
     return result;
   }
 
@@ -145,8 +145,38 @@ class UserDbProvider {
     await _database.usersDao.removeUser(userId);
   }
 
-  List<UserModel> _mapUsers(Iterable<UserWithRepresentedPeople> entities) {
-    return entities.map(_mapUser).toList();
+  Future<List<UserModel>> _mapUsers(Iterable<UserWithRepresentedPeople> entities) async {
+    final result = entities.map(_mapUser).toList();
+
+    for (final user in [...result, ...result.expand((x) => x.representedPeople)]) {
+      final problem = await getProblemIfExists(user);
+      user.problem = problem;
+    }
+
+    return result;
+  }
+
+  Future<UserProblemType?> getProblemIfExists(UserModel user) async {
+    if (user.isSessionExpired) {
+      return UserProblemType.sessionExpired;
+    }
+
+    if (user.lastSyncFailed) {
+      return UserProblemType.lastSyncFailed;
+    }
+
+    final changedPlans = await _database.carePlansDao.getChangedPlans([user.id]);
+    if (changedPlans.isNotEmpty) {
+      return UserProblemType.carePlanUpdated;
+    }
+
+    final pendingResults = await _database.measurementsDao.getByUser(user.id, null, null, null, false);
+
+    if (pendingResults.isNotEmpty) {
+      return UserProblemType.syncResultsFailed;
+    }
+
+    return null;
   }
 
   UserModel _mapUser(UserWithRepresentedPeople entity) {

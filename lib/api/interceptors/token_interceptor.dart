@@ -38,19 +38,22 @@ class TokenInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    final user = userCubit.state.allUsers.firstWhereOrNull((x)=>x.id == userId);
+    final user = userCubit.state.allUsers.firstWhereOrNull((x) => x.id == userId);
 
     // TODO: Remove temporary hack for avoiding infinite recursion.
-    if (options.headers.containsKey(HttpHeaders.authorizationHeader) || options.path.endsWith('token') || user == null) {
+    if (options.headers.containsKey(HttpHeaders.authorizationHeader) ||
+        options.path.endsWith('token') ||
+        user == null) {
       return handler.next(options);
     }
 
+    AuthToken? refreshedToken;
 
     if (user.authToken.isExpiring()) {
-      await refreshToken(user);
+      refreshedToken = await refreshToken(user);
     }
 
-    final accessToken = user.authToken.accessToken;
+    final accessToken = (refreshedToken ?? user.authToken).accessToken;
 
     options.headers[HttpHeaders.authorizationHeader] = 'Bearer $accessToken';
 
@@ -62,9 +65,11 @@ class TokenInterceptor extends Interceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
+    UserModel? user;
+
     if (err.requestOptions.headers.containsKey(HttpHeaders.authorizationHeader)) {
       final originalToken = err.requestOptions.headers[HttpHeaders.authorizationHeader].toString().split(' ')[1];
-      final user = await userDbProvider.getByAccessToken(originalToken);
+      user = await userDbProvider.getByAccessToken(originalToken);
       if (user != null) {
         reportService.trackEvent(
           userId: user.id,
@@ -77,11 +82,27 @@ class TokenInterceptor extends Interceptor {
     switch (err.response?.statusCode) {
       case 400:
       case 401:
-        final refreshToken = err.requestOptions.data['refresh_token'];
-        if (refreshToken != null) {
+        // If the error is a result of trying to refresh an access token, fail.
+        final refreshTokenValue = err.requestOptions.data?['refresh_token'];
+        if (refreshTokenValue != null) {
           getIt<SyncBloc>().add(
-            SyncEvent.userSessionExpired(refreshToken),
+            SyncEvent.userSessionExpired(refreshTokenValue),
           );
+        } else if (user != null) {
+          // Otherwise, try to refresh the access token and retry the request.
+          final newToken = (await refreshToken(user))?.accessToken;
+          final authHeaderValue = 'Bearer $newToken';
+
+          final headers = err.requestOptions.headers;
+          headers.update(HttpHeaders.authorizationHeader, (_) => authHeaderValue, ifAbsent: () => authHeaderValue);
+
+          final response = await Dio().request(
+            err.requestOptions.path,
+            data: err.requestOptions.data,
+            queryParameters: err.requestOptions.queryParameters,
+            options: Options(method: err.requestOptions.method, headers: headers),
+          );
+          return handler.resolve(response);
         }
         handler.next(err);
         throw InvalidRequestException();
@@ -120,8 +141,9 @@ class TokenInterceptor extends Interceptor {
     final newUserPermissions = JwtParser(jwtToken: newToken.accessToken).getUserPermissions();
 
     await userDbProvider.updateAuthParameters(user.id, newToken, newUserPermissions);
-    // TODO: Wait until change is propagated instead?
-    user.authToken.accessToken = newToken.accessToken;
+
+    // Wait for the change to propagate.
+    await userCubit.waitForChange((x) => x.id == userId && x.authToken.accessToken == newToken.accessToken);
 
     return newToken;
   }

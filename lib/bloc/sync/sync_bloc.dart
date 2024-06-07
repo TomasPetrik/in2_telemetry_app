@@ -41,7 +41,7 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
 
           await _syncService.syncResults();
 
-          await _syncService.syncAllData();
+          await _syncService.syncAllData(syncAllUsers: true);
 
           final currentSyncState = await _session.detectSyncState();
           emit(currentSyncState);

@@ -16,9 +16,10 @@ class DeviceRepository {
     required int userId,
   }) async {
     TokenInterceptor.userId = userId;
+    final user = session.getUser(userId);
 
     return await deviceApiClient.getDeviceModels(
-      session.state.currentUser.hospital.authData.baseUrl,
+      user.hospital.authData.baseUrl,
     );
   }
 
@@ -27,9 +28,10 @@ class DeviceRepository {
     required DeviceCreateContract deviceToRegister,
   }) async {
     TokenInterceptor.userId = userId;
+    final user = session.getUser(userId);
 
     return await deviceApiClient.registerDevice(
-      session.state.currentUser.hospital.authData.baseUrl,
+      user.hospital.authData.baseUrl,
       deviceToRegister,
     );
   }

@@ -23,10 +23,11 @@ class CarePlansRepository {
     int count = 100,
   }) async {
     TokenInterceptor.userId = userId;
+    final user = userCubit.getUser(userId);
 
     final resp = await carePlanApiClient.loadActiveCarePlans(
-      userCubit.state.currentUser.hospital.authData.baseUrl,
-      userCubit.state.currentUser.muid,
+      user.hospital.authData.baseUrl,
+      user.muid,
       start,
       count,
     );
@@ -41,9 +42,10 @@ class CarePlansRepository {
     int count = 100,
   }) async {
     TokenInterceptor.userId = userId;
+    final user = userCubit.getUser(userId);
 
     final resp = await carePlanApiClient.loadCarePlanVersions(
-      userCubit.state.currentUser.hospital.authData.baseUrl,
+      user.hospital.authData.baseUrl,
       carePlanId,
       start,
       count,
@@ -59,10 +61,11 @@ class CarePlansRepository {
     required String endDateTime,
   }) async {
     TokenInterceptor.userId = userId;
+    final user = userCubit.getUser(userId);
 
     final results = await carePlanApiClient.loadResults(
-      userCubit.state.currentUser.hospital.authData.baseUrl,
-      userCubit.state.currentUser.muid,
+      user.hospital.authData.baseUrl,
+      user.muid,
       measurementType.key,
       startDateTime,
       endDateTime,
@@ -76,9 +79,10 @@ class CarePlansRepository {
     required int carePlanVersionId,
   }) async {
     TokenInterceptor.userId = userId;
+    final user = userCubit.getUser(userId);
 
     final fulfillmentPlan = await carePlanApiClient.loadFullPlanEvaluation(
-      userCubit.state.currentUser.hospital.authData.baseUrl,
+      user.hospital.authData.baseUrl,
       carePlanVersionId,
     );
     return fulfillmentPlan;
@@ -91,9 +95,10 @@ class CarePlansRepository {
     required String toDateTime,
   }) async {
     TokenInterceptor.userId = userId;
+    final user = userCubit.getUser(userId);
 
     final items = await carePlanApiClient.loadPartPlanEvaluation(
-      userCubit.state.currentUser.hospital.authData.baseUrl,
+      user.hospital.authData.baseUrl,
       carePlanId,
       fromDateTime,
       toDateTime,
@@ -107,9 +112,10 @@ class CarePlansRepository {
     required MeasurementContract measurement,
   }) async {
     TokenInterceptor.userId = userId;
+    final user = userCubit.getUser(userId);
 
     return carePlanApiClient.sendMeasurementFromDevice(
-      userCubit.state.currentUser.hospital.authData.baseUrl,
+      user.hospital.authData.baseUrl,
       [measurement],
     );
   }
@@ -119,9 +125,10 @@ class CarePlansRepository {
     required MeasurementContract manualMeasurement,
   }) async {
     TokenInterceptor.userId = userId;
+    final user = userCubit.getUser(userId);
 
     return carePlanApiClient.sendManualMeasurement(
-      userCubit.state.currentUser.hospital.authData.baseUrl,
+      user.hospital.authData.baseUrl,
       manualMeasurement,
     );
   }
