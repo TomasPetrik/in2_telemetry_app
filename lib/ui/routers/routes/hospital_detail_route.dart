@@ -32,7 +32,7 @@ class HospitalDetailRoute extends ApplicationRoute with PageBuilderMixin {
           return BlocBuilder<UserCubit, UserCubitState>(
             bloc: getIt<UserCubit>(),
             builder: (context, state) {
-              final users = state.rootUsers.where(usersIds.contains).toList();
+              final users = state.rootUsers.where((x) => usersIds.contains(x.id)).toList();
 
               return HospitalDetailScreen(hospitalTitle: hospitalTitle, userAccounts: users);
             },

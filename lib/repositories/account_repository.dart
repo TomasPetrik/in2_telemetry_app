@@ -24,7 +24,7 @@ class AccountRepository {
   Future<void> sendUserAppReports({
     required int userId,
     required LogsContract reportRequest,
-  }) async {
+  }) {
     TokenInterceptor.userId = userId;
 
     return accountApiClient.sendUserAppReports(

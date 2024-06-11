@@ -148,11 +148,11 @@ mixin BottomSheetMixin {
     return result;
   }
 
-  Future<bool?> showAccounRemovalConfirmation({
+  Future<bool> showAccountRemovalConfirmation({
     required final BuildContext context,
     required final String accountName,
   }) async {
-    final result = await showModalBottomSheet<bool?>(
+    final result = await showModalBottomSheet<bool>(
       context: context,
       useRootNavigator: true,
       isScrollControlled: true,
@@ -164,7 +164,7 @@ mixin BottomSheetMixin {
         );
       },
     );
-    return result;
+    return result ?? false;
   }
 
   Future<bool?> showResetWhenTimeValuesConfirmation({
@@ -263,19 +263,15 @@ mixin BottomSheetMixin {
       },
     ).then((userHospitalSelectionResult) async {
       SwitchUserResult switchUserResult;
-      if (userHospitalSelectionResult?.action ==
-          SwitchUserAction.selectedMultiUser) {
+      if (userHospitalSelectionResult?.action == SwitchUserAction.selectedMultiUser) {
         switchUserResult = SwitchUserResult(activeMultiUser: true);
-      } else if (userHospitalSelectionResult?.action ==
-          SwitchUserAction.addUserAccount) {
+      } else if (userHospitalSelectionResult?.action == SwitchUserAction.addUserAccount) {
         switchUserResult = SwitchUserResult(addNewUser: true);
-      } else if (userHospitalSelectionResult?.action ==
-          SwitchUserAction.selectedUser) {
+      } else if (userHospitalSelectionResult?.action == SwitchUserAction.selectedUser) {
         switchUserResult = SwitchUserResult(
           selectedUser: userHospitalSelectionResult!.selectedUser,
         );
-      } else if (userHospitalSelectionResult?.action ==
-          SwitchUserAction.selectedHospital) {
+      } else if (userHospitalSelectionResult?.action == SwitchUserAction.selectedHospital) {
         final userSelection = await _selectUserFromHospital(
           context: context,
           hospital: userHospitalSelectionResult!.selectedHospital!,
@@ -284,8 +280,7 @@ mixin BottomSheetMixin {
         if (userSelection?.action == SwitchUserAction.addUserAccount) {
           switchUserResult = SwitchUserResult(addNewUser: true);
         } else {
-          switchUserResult =
-              SwitchUserResult(selectedUser: userSelection?.selectedUser);
+          switchUserResult = SwitchUserResult(selectedUser: userSelection?.selectedUser);
         }
       } else {
         switchUserResult = SwitchUserResult();

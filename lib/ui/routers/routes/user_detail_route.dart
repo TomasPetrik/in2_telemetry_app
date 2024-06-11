@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:scalesoft_app/cubit/care_plan/care_plan_cubit.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
@@ -28,18 +29,24 @@ class UserDetailRoute extends ApplicationRoute with PageBuilderMixin {
         withTransition: true,
         builder: (state) {
           final userId = state.extra! as int;
+          final carePlanCubit = CarePlanCubit()..init(userId);
 
-          return BlocBuilder<UserCubit, UserCubitState>(
-            bloc: getIt<UserCubit>(),
-            builder: (context, state) {
-              final user = state.rootUsers.firstWhereOrNull((x) => x.id == userId);
+          // Use BlocProvider to preserve carePlanCubit inside UserDetailsScreen when sync state changes
+          // (Prevent care plan list flickering after synchronization)
+          return BlocProvider(
+            create: (_) => carePlanCubit,
+            child: BlocBuilder<UserCubit, UserCubitState>(
+              bloc: getIt<UserCubit>(),
+              builder: (context, state) {
+                final user = state.allUsers.firstWhereOrNull((x) => x.id == userId);
 
-              if (user == null) {
-                return const BlankScreen();
-              }
+                if (user == null) {
+                  return const BlankScreen();
+                }
 
-              return UserDetailScreen(userAccount: user);
-            },
+                return UserDetailScreen(userAccount: user);
+              },
+            ),
           );
         },
       ),

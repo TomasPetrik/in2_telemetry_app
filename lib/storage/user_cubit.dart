@@ -77,7 +77,9 @@ class UserCubit extends Cubit<UserCubitState> {
       final allUsers = [...rootUsers, ...rootUsers.expand((x) => x.representedPeople)];
 
       if (allUsers.none((x) => x.id == activeUserId)) {
-        activeUserId = maxBy(allUsers, (x) => x.lastActive)?.id;
+        activeUserId = maxBy(allUsers.where((x)=>x.lastActive!=null), (x) => x.lastActive)?.id;
+
+        activeUserId ??= rootUsers.firstOrNull?.id;
 
         if (activeUserId != null) {
           _userDbProvider.updateUser(activeUserId, UsersCompanion(lastActive: Value(DateTime.now())));

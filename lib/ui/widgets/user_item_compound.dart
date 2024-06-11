@@ -16,13 +16,11 @@ class UserItemCompound extends StatelessWidget {
     required this.userAccount,
     required this.onUserSelected,
     required this.userItemCompoundType,
-    this.showWarning,
   });
 
   final UserModel userAccount;
   final Function(UserModel) onUserSelected;
   final UserItemCompoundType userItemCompoundType;
-  final bool? showWarning;
 
   int get _itemCount {
     return userAccount.representedPeople.isNotEmpty == true
@@ -82,8 +80,8 @@ class UserItemCompound extends StatelessWidget {
             children: [
               UserItem(
                 key: ValueKey(index),
-                showWarning: showWarning,
-                userAccount: userAccount,
+                showWarning: userAccount.problem != null,
+                user: userAccount,
                 hasNavigationIcon:
                     userItemCompoundType == UserItemCompoundType.settings,
                 userItemType: _getUserItemTypeByIndex(index),

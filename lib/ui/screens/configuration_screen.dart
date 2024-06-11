@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -103,6 +104,8 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                             physics: const NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
                               final hospital = hospitalUserEntries[index];
+                              final allHospitalUsersCount =
+                                  hospital.value.map((x) => x.representedPeople.length).sum + hospital.value.length;
 
                               final bool showWarning = hospital.value.any(
                                 (user) => user.problem != null,
@@ -113,14 +116,14 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                                 showWarning: showWarning,
                                 label: hospital.key.title,
                                 subLabel: '${hospital.value[0].fullName}'
-                                    ' ${hospital.value.length > 1 ? localization.common_plus_n_others(hospital.value.length - 1) : ''}',
+                                    ' ${allHospitalUsersCount > 1 ? localization.common_plus_n_others(allHospitalUsersCount - 1) : ''}',
                                 iconWidget: Padding(
                                   padding: Paddings.all8,
                                   child: ImageWidget(hospital.key.iconPath),
                                 ),
                                 iconBackground: ScaleColorsLight.content20,
                                 onTap: () {
-                                  if (hospital.value.length == 1) {
+                                  if (allHospitalUsersCount == 1) {
                                     GoRouter.of(context).pushNamed(
                                       UserDetailRoute.name,
                                       extra: hospital.value[0].id,
