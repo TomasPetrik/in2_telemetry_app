@@ -1,10 +1,11 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:scalesoft_app/api/contracts/time_settings/when_code_contract.dart';
 
 part 'when_setting_contract.g.dart';
 
 @JsonSerializable()
 class WhenSettingContract {
-  final String codeValue;
+  final WhenCodeContract codeValue;
   final String start;
   final String end;
   final String? userEditMin;

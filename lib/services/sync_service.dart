@@ -15,6 +15,7 @@ import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_
 import 'package:scalesoft_app/data/providers/device_prototype_db_provider.dart';
 import 'package:scalesoft_app/data/providers/measurements_db_provider.dart';
 import 'package:scalesoft_app/data/providers/user_db_provider.dart';
+import 'package:scalesoft_app/data/providers/when_template_db_provider.dart';
 import 'package:scalesoft_app/managers/background_measurement_manager.dart';
 import 'package:scalesoft_app/mapper/measurement_type_mapper.dart';
 import 'package:scalesoft_app/model/care_plan_create_model.dart';
@@ -40,6 +41,7 @@ class SyncService {
   final MeasurementsDbProvider _measurementsDbProvider;
   final UserDbProvider _userDbProvider;
   final DevicePrototypeDbProvider _devicePrototypeDbProvider;
+  final WhenTemplateDbProvider _whenTemplateDbProvider;
 
   SyncService(
     this._session,
@@ -52,6 +54,7 @@ class SyncService {
     this._measurementsDbProvider,
     this._userDbProvider,
     this._devicePrototypeDbProvider,
+    this._whenTemplateDbProvider,
   );
 
   Future<void> setUserPlans(
@@ -136,6 +139,14 @@ class SyncService {
       representedPerson.timeSettingItems = timeSettingItems;
     }
   Future<void> loadWhenValues(final int userId) async {
+    final user = _session.state.allUsers.firstWhere((x) => x.id == userId);
+
+    final whenTimeValuesResponse = await _timeSettingsRepository.loadPlanTemplate(userId: userId);
+    await _whenTemplateDbProvider.replaceUserTemplates(userId, whenTimeValuesResponse.whenTimeValues);
+
+    for (final representedPerson in user.representedPeople) {
+      await _whenTemplateDbProvider.replaceUserTemplates(representedPerson.id, whenTimeValuesResponse.whenTimeValues);
+    }
   }
 
   Future<void> loadDeviceModels(final int userId) async {
@@ -305,10 +316,9 @@ class SyncService {
             lastSyncFailed: const Value(false),
             isSessionExpired: const Value(false),
           ),
-
         );
 
-        await _session.waitForChange((x)=>x.id == user.id && x.lastSyncAt.isAtSameMomentAs(now));
+        await _session.waitForChange((x) => x.id == user.id && x.lastSyncAt.isAtSameMomentAs(now));
       } on DioException {
         //for any failed sync set flag and go on next account
         await _userDbProvider.updateUser(user.id, const UsersCompanion(lastSyncFailed: Value(true)));

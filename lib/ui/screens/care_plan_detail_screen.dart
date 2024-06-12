@@ -24,11 +24,9 @@ class CarePlanDetailScreen extends StatefulWidget with BottomSheetMixin {
   const CarePlanDetailScreen({
     super.key,
     required this.carePlan,
-    required this.offlineResults,
   });
 
   final CarePlan carePlan;
-  final List<Measurement> offlineResults;
 
   @override
   State<CarePlanDetailScreen> createState() => _CarePlanDetailScreenState();
@@ -108,7 +106,6 @@ class _CarePlanDetailScreenState extends State<CarePlanDetailScreen> {
                   ],
                   FullPlanEvaluationWidget(
                     carePlan: widget.carePlan,
-                    offlineResults: widget.offlineResults,
                   ),
                   const SliverGap(Dimensions.padding42),
                   SliverPadding(

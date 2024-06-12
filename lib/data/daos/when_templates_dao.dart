@@ -11,4 +11,12 @@ class WhenTemplatesDao extends DatabaseAccessor<AppDatabase> with _$WhenTemplate
   Future<List<WhenTemplate>> getByUser(int userId) async {
     return await (select(whenTemplates)..where((x) => x.userId.equals(userId))).get();
   }
+
+  Future<void> deleteByUser(int userId) async {
+    await (delete(whenTemplates)..where((x) => x.userId.equals(userId))).go();
+  }
+
+  Future<void> create(WhenTemplatesCompanion companion) async {
+    await into(whenTemplates).insert(companion);
+  }
 }
