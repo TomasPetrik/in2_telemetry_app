@@ -5,11 +5,11 @@ enum OverallHealthState {
   @JsonValue('good')
   good(0),
   @JsonValue('variable')
-  low(10),
+  variable(10),
   @JsonValue('bad')
-  medium(20),
+  bad(20),
   @JsonValue('veryBad')
-  high(30);
+  veryBad(30);
 
   final num value;
 

@@ -7,6 +7,7 @@ import 'package:scalesoft_app/data/entities/enums/overall_health_state.dart';
 import 'package:scalesoft_app/data/entities/enums/shortness_of_breath_level.dart';
 import 'package:scalesoft_app/data/entities/json_entities/measurement/blood_pressure_value.dart';
 import 'package:scalesoft_app/mapper/measurement_type_mapper.dart';
+import 'package:scalesoft_app/model/measurement_create_model.dart';
 
 @injectable
 class MeasurementsDbProvider {
@@ -81,6 +82,26 @@ class MeasurementsDbProvider {
     }
   }
 
+  Future<int> saveModel(MeasurementCreateModel model) async {
+    final companion = MeasurementsCompanion.insert(
+      userId: model.userId,
+      measuredAt: model.measuredAt,
+      measurementType: model.measurementType,
+      deviceId: Value(model.deviceId),
+      temperature: Value(model.temperature),
+      bloodPressure: Value(model.bloodPressure),
+      heartRate: Value(model.heartRate),
+      oxygenSaturation: Value(model.oxygenSaturation),
+      respiratoryRate: Value(model.respiratoryRate),
+      shortnessOfBreath: Value(model.shortnessOfBreath),
+      overallHealth: Value(model.overallHealth),
+      batteryPercentage: Value(model.batteryPercentage),
+      isUploaded: const Value(false),
+    );
+
+    return await save(companion);
+  }
+
   Future<int> save(MeasurementsCompanion measurement) async {
     return await _database.measurementsDao.save(measurement);
   }
@@ -107,6 +128,10 @@ class MeasurementsDbProvider {
 
   Future<void> removeOfflineMeasurement(DateTime measurementTime, MeasurementType measurementType) async {
     return await _database.measurementsDao.removeOfflineMeasurement(measurementTime, measurementType);
+  }
+
+  Future<void> updateUserMeasurements(int userId, MeasurementsCompanion changes) async {
+    return await _database.measurementsDao.updateAllUserMeasurements(userId, changes);
   }
 
 // /// Applies the given [changes] to all measurements of a given user.

@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
+import 'package:scalesoft_app/constants/permissions.dart';
+import 'package:scalesoft_app/cubit/care_plan/care_plan_cubit.dart';
+import 'package:scalesoft_app/cubit/care_plan/care_plan_cubit_state.dart';
 import 'package:scalesoft_app/cubit/device_management/device_management_cubit.dart';
+import 'package:scalesoft_app/cubit/device_management/device_management_state.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_flow.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
-import 'package:scalesoft_app/model/user_model.dart';
+import 'package:scalesoft_app/model/device_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/ui/routers/routes/device_search_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/manual_measurement_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
@@ -21,412 +26,356 @@ import 'package:scalesoft_app/ui/widgets/navigation_tab_chip.dart';
 import 'package:scalesoft_app/ui/widgets/settings_item.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
-class MeteringFirstScreen extends StatefulWidget {
-  const MeteringFirstScreen({
+class MeteringFirstScreen extends StatelessWidget with BottomSheetMixin {
+  MeteringFirstScreen({
     super.key,
     required this.userId,
     this.selectedMeasurementType,
     required this.showAllMeasurementTypes,
   });
 
-  final String userId;
-  final MeasurementTypeContract? selectedMeasurementType;
+  final int userId;
+  final MeasurementType? selectedMeasurementType;
   final bool showAllMeasurementTypes;
 
-  @override
-  State<MeteringFirstScreen> createState() => _MeteringFirstScreenState();
-}
+  final DeviceManagementCubit devManagementCubit = getIt<DeviceManagementCubit>();
+  final UserCubit userCubit = getIt<UserCubit>();
+  final CarePlanCubit carePlanCubit = CarePlanCubit();
 
-class _MeteringFirstScreenState extends State<MeteringFirstScreen>
-    with BottomSheetMixin {
-  late UserAccount userAccount;
-  final DeviceManagementCubit devManagementCubit =
-      getIt<DeviceManagementCubit>();
-  late MeasurementTypeContract defaultMeasurementType;
-  late Set<MeasurementTypeContract> displayedMeasurementTypes;
-
-  @override
-  void initState() {
-    userAccount = getIt<AccountDbProvider>().get(widget.userId)!;
-
-    final supportedUserMeasurementTypes =
-        CarePlanHelper.getMeasurementTypes(userAccount.carePlans!);
-
-    if (widget.showAllMeasurementTypes ||
-        supportedUserMeasurementTypes.isEmpty) {
-      displayedMeasurementTypes =
-          userAccount.hospital?.enabledMeasurementTypes.toSet() ??
-              ConfigurationConstants.supportedMeasurementTypes;
-    } else {
-      displayedMeasurementTypes = supportedUserMeasurementTypes;
-    }
-
-    defaultMeasurementType =
-        widget.selectedMeasurementType ?? displayedMeasurementTypes.first;
-
-    super.initState();
-  }
-
-  String getTitle() {
+  String getTitle(MeasurementType defaultMeasurementType) {
     String title = localization.common_measurement;
-    if (widget.selectedMeasurementType != null) {
-      title +=
-          ' ${localization.common_measurement_types_genitive(defaultMeasurementType.name).toLowerCase()}';
+    if (selectedMeasurementType != null) {
+      title += ' ${localization.common_measurement_types_genitive(defaultMeasurementType.name).toLowerCase()}';
     }
     return title;
   }
 
-  void goToMetering(Device device, MeasurementTypeContract measurementType) {
+  void goToMetering(DeviceModel device, MeasurementType measurementType, BuildContext context) {
     GoRouter.of(context).pushNamed(
       OmronFlowRoute.name,
-      queryParams: {
-        'userId': widget.userId,
+      queryParameters: {
+        'userId': userId,
         'measurementType': measurementType.name,
-        'deviceId': device.deviceIdentifier!,
-        'modelName': '${device.modelName}',
-        'deviceManufacturer': '${device.deviceManufacturer}',
+        'deviceId': device.deviceIdentifier,
+        'modelName': device.prototype.modelName,
+        'deviceManufacturer': device.prototype.deviceManufacturer,
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Stack(
-        children: [
-          Container(
-            padding: Paddings.horizontal16,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Gap(
-                  MediaQuery.of(context).viewPadding.top +
-                      Dimensions.appBarHeight,
+    return BlocBuilder<UserCubit, UserCubitState>(
+      bloc: userCubit,
+      builder: (context, userState) {
+        return BlocBuilder<CarePlanCubit, CarePlanCubitState>(
+          bloc: carePlanCubit..init(userId),
+          builder: (context, carePlanState) {
+            final userAccount = userState.allUsers.firstWhere((x) => x.id == userId);
+            final userCarePlans = carePlanState.carePlans;
+
+            final measurementTypesInPlans = CarePlanHelper.getMeasurementTypes(userCarePlans);
+            final displayedMeasurementTypes = (showAllMeasurementTypes || measurementTypesInPlans.isEmpty)
+                ? userAccount.hospital.enabledMeasurementTypes.toSet()
+                : measurementTypesInPlans;
+
+            final defaultMeasurementType = selectedMeasurementType ?? displayedMeasurementTypes.first;
+
+            return BlocBuilder<DeviceManagementCubit, DeviceManagementState>(
+              bloc: devManagementCubit
+                ..init(
+                  selectedMeasurementType ?? displayedMeasurementTypes.first,
+                  displayedMeasurementTypes,
+                  userId,
                 ),
-                BlocBuilder<DeviceManagementCubit, DeviceManagementState>(
-                  bloc: devManagementCubit
-                    ..init(
-                      widget.selectedMeasurementType ??
-                          displayedMeasurementTypes.first,
-                      displayedMeasurementTypes,
-                      widget.userId,
-                    ),
-                  builder: (context, state) {
-                    final selectedMeasurementType =
-                        state.selectedMeasurementType;
-                    final supportDeviceMeasurement =
-                        state.supportDeviceMeasurement;
+              builder: (context, deviceManagementState) {
+                final selectedMeasurementType = deviceManagementState.selectedMeasurementType;
+                final supportDeviceMeasurement = deviceManagementState.supportDeviceMeasurement;
 
-                    final assignedDevices = state.assignedDevices
-                            ?.where(
-                              (x) =>
-                                  x.measurementFlow
-                                      ?.hasFlag(MeasurementFlow.foreground) ??
-                                  true,
-                            )
-                            .toList() ??
-                        [];
-                    final personalDevices = state.personalDevices ?? [];
+                final assignedDevices = deviceManagementState.assignedDevices
+                        ?.where(
+                          (x) => x.prototype.measurementFlow.hasFlag(MeasurementFlow.foreground),
+                        )
+                        .toList() ??
+                    [];
+                final personalDevices = deviceManagementState.personalDevices ?? [];
 
-                    if (selectedMeasurementType == null ||
-                        supportDeviceMeasurement == null) {
-                      return const SizedBox.shrink();
-                    }
-
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (state.hasMeasurementTabs == true) ...[
-                          Gaps.gap16,
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                ...state.allMeasurementTypes!
-                                    .map(
-                                      (measurementType) => Row(
+                return Material(
+                  child: Stack(
+                    children: [
+                      Container(
+                        padding: Paddings.horizontal16,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Gap(
+                              MediaQuery.of(context).viewPadding.top + Dimensions.appBarHeight,
+                            ),
+                            if (selectedMeasurementType == null || supportDeviceMeasurement == null)
+                              const SizedBox.shrink()
+                            else
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (deviceManagementState.hasMeasurementTabs == true) ...[
+                                    Gaps.gap16,
+                                    SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(
                                         children: [
-                                          NavigationTabChip(
-                                            label: localization
-                                                .common_measurement_types(
-                                              measurementType.name,
-                                            ),
-                                            isSelected:
-                                                selectedMeasurementType ==
-                                                    measurementType,
-                                            onTap: () {
-                                              if (selectedMeasurementType ==
-                                                  measurementType) {
-                                                return;
-                                              }
+                                          ...deviceManagementState.allMeasurementTypes!.map(
+                                            (measurementType) => Row(
+                                              children: [
+                                                NavigationTabChip(
+                                                  label: localization.common_measurement_types(
+                                                    measurementType.name,
+                                                  ),
+                                                  isSelected: selectedMeasurementType == measurementType,
+                                                  onTap: () {
+                                                    if (selectedMeasurementType == measurementType) {
+                                                      return;
+                                                    }
 
-                                              devManagementCubit
-                                                  .selectMeasurementType(
-                                                measurementType,
-                                              );
-                                            },
+                                                    devManagementCubit.selectMeasurementType(
+                                                      measurementType,
+                                                    );
+                                                  },
+                                                ),
+                                                Gaps.gap8,
+                                              ],
+                                            ),
                                           ),
-                                          Gaps.gap8,
                                         ],
                                       ),
-                                    )
-                                    .toList(),
-                              ],
-                            ),
-                          ),
-                        ],
-                        if (supportDeviceMeasurement == false) ...[
-                          Gaps.gap24,
-                          Center(
-                            child: SvgPicture.asset(
-                              'assets/icons/icon_wave_pulse_big.svg',
-                              color: Theme.of(context).colorScheme.tertiary,
-                            ),
-                          ),
-                          Gaps.gap24,
-                          Padding(
-                            padding: Paddings.horizontal48,
-                            child: Center(
-                              child: Text(
-                                localization
-                                    .device_selector_unsupported_devices,
-                                style: ScaleTextStyles.text.apply(
-                                  color:
-                                      Theme.of(context).colorScheme.onSecondary,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ] else if (assignedDevices.isNotEmpty ||
-                            personalDevices.isNotEmpty) ...[
-                          if (assignedDevices.isNotEmpty) ...[
-                            Gaps.gap24,
-                            Text(
-                              localization.metering_screen_lended_devices,
-                              style: ScaleTextStyles.label.copyWith(
-                                color: Theme.of(context).colorScheme.onPrimary,
-                              ),
-                            ),
-                            ...assignedDevices
-                                .map(
-                                  (assignedDevice) => InkWell(
-                                    onTap: () {
-                                      goToMetering(
-                                        assignedDevice,
-                                        selectedMeasurementType,
-                                      );
-                                    },
-                                    child: Container(
-                                      padding: Paddings.top24,
-                                      child: DeviceItem(
-                                        device: assignedDevice,
-                                        onRemove:
-                                            assignedDevice.wasPaired == true
-                                                ? () async {
-                                                    final confirmed =
-                                                        await showDeviceRemovalConfirmation(
-                                                      context: context,
-                                                    );
-
-                                                    if (confirmed == true) {
-                                                      devManagementCubit
-                                                          .removeDevice(
-                                                        assignedDevice,
-                                                        selectedMeasurementType,
-                                                      );
-                                                    }
-                                                  }
-                                                : null,
+                                    ),
+                                  ],
+                                  if (supportDeviceMeasurement == false) ...[
+                                    Gaps.gap24,
+                                    Center(
+                                      child: SvgPicture.asset(
+                                        'assets/icons/icon_wave_pulse_big.svg',
+                                        color: Theme.of(context).colorScheme.tertiary,
                                       ),
                                     ),
-                                  ),
-                                )
-                                .toList(),
-                          ],
-                          if (personalDevices.isNotEmpty) ...[
-                            Gaps.gap24,
-                            Text(
-                              localization.metering_screen_personal_devices,
-                              style: ScaleTextStyles.label.copyWith(
-                                color: Theme.of(context).colorScheme.onPrimary,
-                              ),
-                            ),
-                            ...personalDevices
-                                .map(
-                                  (personalDevice) => InkWell(
-                                    onTap: () {
-                                      goToMetering(
-                                        personalDevice,
-                                        selectedMeasurementType,
-                                      );
-                                    },
-                                    child: Container(
-                                      padding: Paddings.top24,
-                                      child: DeviceItem(
-                                        device: personalDevice,
-                                        onRemove:
-                                            personalDevice.isLendedDevice !=
-                                                    true
-                                                ? () async {
-                                                    final confirmed =
-                                                        await showDeviceRemovalConfirmation(
-                                                      context: context,
-                                                    );
-
-                                                    if (confirmed == true) {
-                                                      devManagementCubit
-                                                          .removeDevice(
-                                                        personalDevice,
-                                                        selectedMeasurementType,
-                                                      );
-                                                    }
-                                                  }
-                                                : null,
+                                    Gaps.gap24,
+                                    Padding(
+                                      padding: Paddings.horizontal48,
+                                      child: Center(
+                                        child: Text(
+                                          localization.device_selector_unsupported_devices,
+                                          style: ScaleTextStyles.text.apply(
+                                            color: Theme.of(context).colorScheme.onSecondary,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                )
-                                .toList(),
-                          ],
-                        ] else if (userAccount.canMeasureWithUnknowDevice) ...[
-                          Gaps.gap24,
-                          Center(
-                            child: SvgPicture.asset(
-                              'assets/icons/icon_bluetooth_signal_big.svg',
-                              color: Theme.of(context).colorScheme.tertiary,
-                            ),
-                          ),
-                          Gaps.gap24,
-                          Padding(
-                            padding: Paddings.horizontal48,
-                            child: Center(
-                              child: Text(
-                                localization
-                                    .metering_screen_no_added_device_yet,
-                                style: ScaleTextStyles.text.apply(
-                                  color:
-                                      Theme.of(context).colorScheme.onSecondary,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ] else ...[
-                          Gaps.gap24,
-                          Center(
-                            child: SvgPicture.asset(
-                              'assets/icons/icon_triangle_exclamation_big.svg',
-                              color: Theme.of(context).colorScheme.tertiary,
-                            ),
-                          ),
-                          Gaps.gap24,
-                          Padding(
-                            padding: Paddings.horizontal48,
-                            child: Center(
-                              child: Text(
-                                localization
-                                    .metering_screen_no_eligible_to_measure_with_uknow_device,
-                                style: ScaleTextStyles.text.apply(
-                                  color:
-                                      Theme.of(context).colorScheme.onSecondary,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ],
-                        if (supportDeviceMeasurement &&
-                            userAccount.canMeasureWithUnknowDevice) ...[
-                          Gaps.gap24,
-                          SettingsItem(
-                            label: localization.metering_screen_add_device,
-                            iconWidget: SvgPicture.asset(
-                              'assets/icons/icon_plus.svg',
-                              color: Theme.of(context).colorScheme.onSecondary,
-                            ),
-                            hasNavigationIcon: false,
-                            onTap: () async {
-                              GoRouter.of(context).pushNamed<Device?>(
-                                DeviceSearchRoute.name,
-                                params: {
-                                  'userId': userAccount.user.muid,
-                                  'devicePurpose': DevicePurpose.addDevice.name,
-                                },
-                              ).then((final Device? device) {
-                                if (device != null) {
-                                  GoRouter.of(context).replaceNamed(
-                                    OmronFlowRoute.name,
-                                    queryParams: {
-                                      'userId': widget.userId,
-                                      'measurementType':
-                                          selectedMeasurementType.name,
-                                      'modelName': '${device.modelName}',
-                                      'deviceManufacturer':
-                                          '${device.deviceManufacturer}',
-                                    },
-                                  );
-                                }
-                              });
+                                  ] else if (assignedDevices.isNotEmpty || personalDevices.isNotEmpty) ...[
+                                    if (assignedDevices.isNotEmpty) ...[
+                                      Gaps.gap24,
+                                      Text(
+                                        localization.metering_screen_lended_devices,
+                                        style: ScaleTextStyles.label.copyWith(
+                                          color: Theme.of(context).colorScheme.onPrimary,
+                                        ),
+                                      ),
+                                      ...assignedDevices.map(
+                                        (assignedDevice) => InkWell(
+                                          onTap: () {
+                                            goToMetering(
+                                              assignedDevice,
+                                              selectedMeasurementType,
+                                              context,
+                                            );
+                                          },
+                                          child: Container(
+                                            padding: Paddings.top24,
+                                            child: DeviceItem(
+                                              device: assignedDevice,
+                                              onRemove: assignedDevice.isPaired
+                                                  ? () async {
+                                                      final confirmed = await showDeviceRemovalConfirmation(
+                                                        context: context,
+                                                      );
 
-                              /*
-                              GoRouter.of(context).pushNamed(
-                                AddDeviceRoute.name,
-                                params: {
-                                  'userId': widget.userId,
-                                  'measurementType':
-                                      selectedMeasurementType.name,
-                                },
-                              );
-                              */
-                            },
-                          ),
-                        ],
-                        if (userAccount.userPermissions!.contains(
-                          UserPermission.canManuallyEnterMeasurement,
-                        )) ...[
-                          Gaps.gap24,
-                          SettingsItem(
-                            label: localization.common_personal_record,
-                            iconWidget: SvgPicture.asset(
-                              'assets/icons/icon_square_pen_medium.svg',
-                              color: Theme.of(context).colorScheme.onSecondary,
-                            ),
-                            hasNavigationIcon: false,
-                            onTap: () {
-                              GoRouter.of(context).pushNamed(
-                                ManualMeasurementRoute.name,
-                                params: {
-                                  'userId': widget.userId,
-                                  'measurementType':
-                                      selectedMeasurementType.name,
-                                  'showAllMeasurementTypes':
-                                      widget.showAllMeasurementTypes.toString(),
-                                },
-                              );
-                            },
-                          ),
-                        ],
-                        Gaps.gap48,
-                      ],
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: BlurredScaleAppBar(
-              title: getTitle(),
-              showClose: true,
-            ),
-          ),
-        ],
-      ),
+                                                      if (confirmed == true) {
+                                                        devManagementCubit.removeDevice(
+                                                          assignedDevice,
+                                                          selectedMeasurementType,
+                                                        );
+                                                      }
+                                                    }
+                                                  : null,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                    if (personalDevices.isNotEmpty) ...[
+                                      Gaps.gap24,
+                                      Text(
+                                        localization.metering_screen_personal_devices,
+                                        style: ScaleTextStyles.label.copyWith(
+                                          color: Theme.of(context).colorScheme.onPrimary,
+                                        ),
+                                      ),
+                                      ...personalDevices.map(
+                                        (personalDevice) => InkWell(
+                                          onTap: () {
+                                            goToMetering(
+                                              personalDevice,
+                                              selectedMeasurementType,
+                                              context,
+                                            );
+                                          },
+                                          child: Container(
+                                            padding: Paddings.top24,
+                                            child: DeviceItem(
+                                              device: personalDevice,
+                                              onRemove: personalDevice.isPersonal
+                                                  // TODO?
+                                                  ? () async {
+                                                      final confirmed = await showDeviceRemovalConfirmation(
+                                                        context: context,
+                                                      );
+
+                                                      if (confirmed == true) {
+                                                        devManagementCubit.removeDevice(
+                                                          personalDevice,
+                                                          selectedMeasurementType,
+                                                        );
+                                                      }
+                                                    }
+                                                  : null,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ] else if (userAccount.permissions
+                                      .contains(Permissions.measureWithUnknownDevice)) ...[
+                                    Gaps.gap24,
+                                    Center(
+                                      child: SvgPicture.asset(
+                                        'assets/icons/icon_bluetooth_signal_big.svg',
+                                        color: Theme.of(context).colorScheme.tertiary,
+                                      ),
+                                    ),
+                                    Gaps.gap24,
+                                    Padding(
+                                      padding: Paddings.horizontal48,
+                                      child: Center(
+                                        child: Text(
+                                          localization.metering_screen_no_added_device_yet,
+                                          style: ScaleTextStyles.text.apply(
+                                            color: Theme.of(context).colorScheme.onSecondary,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                  ] else ...[
+                                    Gaps.gap24,
+                                    Center(
+                                      child: SvgPicture.asset(
+                                        'assets/icons/icon_triangle_exclamation_big.svg',
+                                        color: Theme.of(context).colorScheme.tertiary,
+                                      ),
+                                    ),
+                                    Gaps.gap24,
+                                    Padding(
+                                      padding: Paddings.horizontal48,
+                                      child: Center(
+                                        child: Text(
+                                          localization.metering_screen_no_eligible_to_measure_with_uknow_device,
+                                          style: ScaleTextStyles.text.apply(
+                                            color: Theme.of(context).colorScheme.onSecondary,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                  if (supportDeviceMeasurement &&
+                                      userAccount.permissions.contains(Permissions.measureWithUnknownDevice)) ...[
+                                    Gaps.gap24,
+                                    SettingsItem(
+                                      label: localization.metering_screen_add_device,
+                                      iconWidget: SvgPicture.asset(
+                                        'assets/icons/icon_plus.svg',
+                                        color: Theme.of(context).colorScheme.onSecondary,
+                                      ),
+                                      hasNavigationIcon: false,
+                                      onTap: () async {
+                                        GoRouter.of(context).pushNamed<DeviceModel?>(
+                                          DeviceSearchRoute.name,
+                                          pathParameters: {
+                                            'userId': userAccount.id.toString(),
+                                            'devicePurpose': DevicePurpose.addDevice.name,
+                                          },
+                                        ).then((final DeviceModel? device) {
+                                          if (device != null) {
+                                            GoRouter.of(context).replaceNamed(
+                                              OmronFlowRoute.name,
+                                              queryParameters: {
+                                                'userId': userId,
+                                                'measurementType': selectedMeasurementType.name,
+                                                'modelName': device.prototype.modelName,
+                                                'deviceManufacturer': '${device.prototype.deviceManufacturer}',
+                                              },
+                                            );
+                                          }
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                  if (userAccount.permissions.contains(
+                                    Permissions.manuallyEnterMeasurement,
+                                  )) ...[
+                                    Gaps.gap24,
+                                    SettingsItem(
+                                      label: localization.common_personal_record,
+                                      iconWidget: SvgPicture.asset(
+                                        'assets/icons/icon_square_pen_medium.svg',
+                                        color: Theme.of(context).colorScheme.onSecondary,
+                                      ),
+                                      hasNavigationIcon: false,
+                                      onTap: () {
+                                        GoRouter.of(context).pushNamed(
+                                          ManualMeasurementRoute.name,
+                                          pathParameters: {
+                                            'userId': userId.toString(),
+                                            'measurementType': selectedMeasurementType.name,
+                                          },
+                                          extra: displayedMeasurementTypes,
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                  Gaps.gap48,
+                                ],
+                              ),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        child: BlurredScaleAppBar(
+                          title: getTitle(defaultMeasurementType),
+                          showClose: true,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_evaluation_item.dart';
+import 'package:scalesoft_app/data/providers/care_plan_db_provider.dart';
 import 'package:scalesoft_app/mapper/measurement_type_mapper.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
@@ -42,13 +43,24 @@ class MeasurementHelper {
         },
       );
     } else {
-      GoRouter.of(context).pushNamed(
+      final router = GoRouter.of(context);
+
+      Set<MeasurementType> measurementTypes;
+      if(showAllMeasurementTypes){
+        final plans = await getIt<CarePlanDbProvider>().getByUser(userId);
+        measurementTypes = CarePlanHelper.getMeasurementTypes(plans);
+      } else {
+        measurementTypes = {selectedMeasurementType};
+      }
+
+
+      router.pushNamed(
         ManualMeasurementRoute.name,
         pathParameters: {
           'userId': userId.toString(),
           'measurementType': selectedMeasurementType.name,
-          'showAllMeasurementTypes': showAllMeasurementTypes.toString(),
         },
+        extra: measurementTypes,
       );
     }
   }

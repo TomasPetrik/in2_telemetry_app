@@ -4,6 +4,7 @@ import 'package:retrofit/retrofit.dart';
 import 'package:scalesoft_app/api/contracts/care_pan/active_care_plans_contract.dart';
 import 'package:scalesoft_app/api/contracts/care_pan/aggregated_fulfillment_evaluation_contract.dart';
 import 'package:scalesoft_app/api/contracts/care_pan/care_plan_versions_response.dart';
+import 'package:scalesoft_app/api/contracts/measurement/manual_measurement_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/measurement_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
@@ -80,6 +81,6 @@ abstract class CarePlanApiClient {
   @POST('{apiUrl}/patient/manual-measurement')
   Future<void> sendManualMeasurement(
     @Path('apiUrl') String apiUrl,
-    @Body() MeasurementContract manualMeasurement,
+    @Body() ManualMeasurementContract manualMeasurement,
   );
 }

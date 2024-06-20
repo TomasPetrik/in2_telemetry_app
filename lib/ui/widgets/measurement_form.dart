@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/contracts/measurement/blood_pressure_contract.dart';
-import 'package:scalesoft_app/api/contracts/measurement/measurement.dart';
-import 'package:scalesoft_app/api/contracts/measurement/overall_health_contract.dart';
-import 'package:scalesoft_app/api/contracts/measurement/shortness_of_breath_contract.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
+import 'package:scalesoft_app/data/entities/enums/overall_health_state.dart';
+import 'package:scalesoft_app/data/entities/enums/shortness_of_breath_level.dart';
+import 'package:scalesoft_app/data/entities/json_entities/measurement/blood_pressure_value.dart';
 import 'package:scalesoft_app/model/measurement_config.dart';
+import 'package:scalesoft_app/model/measurement_create_model.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -22,71 +24,58 @@ class MeasurementForm extends StatelessWidget {
   MeasurementForm({
     super.key,
     required this.measurementType,
-    required this.userId,
+    required this.user,
   });
 
-  final MeasurementTypeContract measurementType;
-  final String userId;
+  final MeasurementType measurementType;
+  final UserModel user;
 
   double? _value1;
   double? _value2;
 
-  Measurement? getMeasurement() {
+  MeasurementCreateModel? getMeasurement() {
     if (formKey.currentState?.validate() == true) {
-      Measurement? measurement = Measurement(
-        patientMuid: userId,
-        measurementType: measurementType,
+      final measurement = MeasurementCreateModel(
+        user.id,
+        DateTime.now(),
+        measurementType,
       );
       switch (measurementType) {
-        case MeasurementTypeContract.temperature:
-          return measurement.copyWith(
-            temperature: _value1,
-          );
-        case MeasurementTypeContract.bloodPressure:
-          return measurement.copyWith(
-            bloodPressure: _value1 == null || _value2 == null
-                ? null
-                : BloodPressureContract(
-                    systolic: _value1!.toInt(),
-                    diastolic: _value2!.toInt(),
-                  ),
-          );
-        case MeasurementTypeContract.oxygenSaturation:
-          return measurement.copyWith(
-            oxygenSaturation: _value1?.toInt(),
-          );
-        case MeasurementTypeContract.steps:
-          return measurement.copyWith();
-        case MeasurementTypeContract.globalPosition:
-          return measurement.copyWith();
-        case MeasurementTypeContract.heartRate:
-          return measurement.copyWith(
-            heartRate: _value1?.toInt(),
-          );
-        case MeasurementTypeContract.ews:
-          return measurement.copyWith(
-            heartRate: _value1?.toInt(),
-          );
-        case MeasurementTypeContract.respiratoryRate:
-          return measurement.copyWith(
-            respiratoryRate: _value1?.toInt(),
-          );
-        case MeasurementTypeContract.shortnessOfBreath:
-          return measurement.copyWith(
-            shortnessOfBreath: _value1 == null
-                ? null
-                : ShortnessOfBreathContract.values[_value1!.toInt()],
-          );
-        case MeasurementTypeContract.overallHealth:
-          return measurement.copyWith(
-            overallHealth: _value1 == null
-                ? null
-                : OverallHealthContract.values[_value1!.toInt()],
-          );
-        case MeasurementTypeContract.battery:
-          return measurement.copyWith(
-              batteryPercentage: _value1?.toInt(),
-          );
+        case MeasurementType.temperature:
+          measurement.temperature = _value1;
+          return measurement;
+        case MeasurementType.bloodPressure:
+          measurement.bloodPressure = _value1 == null || _value2 == null
+              ? null
+              : BloodPressureValue(
+                  systolic: _value1!.toInt(),
+                  diastolic: _value2!.toInt(),
+                );
+          return measurement;
+        case MeasurementType.oxygenSaturation:
+          measurement.oxygenSaturation = _value1?.toInt();
+          return measurement;
+        case MeasurementType.steps:
+          return measurement;
+        case MeasurementType.globalPosition:
+          return measurement;
+        case MeasurementType.heartRate:
+          measurement.heartRate = _value1?.toInt();
+          return measurement;
+        case MeasurementType.ews:
+          return measurement;
+        case MeasurementType.respiratoryRate:
+          measurement.respiratoryRate = _value1?.toInt();
+          return measurement;
+        case MeasurementType.shortnessOfBreath:
+          measurement.shortnessOfBreath = _value1 == null ? null : ShortnessOfBreathLevel.values[_value1!.toInt()];
+          return measurement;
+        case MeasurementType.overallHealth:
+          measurement.overallHealth = _value1 == null ? null : OverallHealthState.values[_value1!.toInt()];
+          return measurement;
+        case MeasurementType.battery:
+          measurement.batteryPercentage = _value1?.toInt();
+          return measurement;
       }
     }
 
@@ -144,8 +133,7 @@ class MeasurementForm extends StatelessWidget {
                             ? Text(
                                 measurementConfig.units![0],
                                 style: ScaleTextStyles.text.apply(
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
+                                  color: Theme.of(context).colorScheme.onPrimary,
                                 ),
                               )
                             : null,
@@ -157,10 +145,8 @@ class MeasurementForm extends StatelessWidget {
 
                           final parsedValue = value.toDouble();
 
-                          if (measurementConfig.min != null &&
-                                  measurementConfig.min! > parsedValue ||
-                              measurementConfig.max != null &&
-                                  measurementConfig.max! < parsedValue) {
+                          if (measurementConfig.min != null && measurementConfig.min! > parsedValue ||
+                              measurementConfig.max != null && measurementConfig.max! < parsedValue) {
                             return localization.common_wrong_value;
                           } else {
                             _value1 = parsedValue;
@@ -195,8 +181,7 @@ class MeasurementForm extends StatelessWidget {
                             ? Text(
                                 measurementConfig.units![1],
                                 style: ScaleTextStyles.text.apply(
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
+                                  color: Theme.of(context).colorScheme.onPrimary,
                                 ),
                               )
                             : null,
@@ -208,14 +193,11 @@ class MeasurementForm extends StatelessWidget {
 
                           final parsedValue = value.toDouble();
 
-                          if (measurementConfig.min != null &&
-                                  measurementConfig.min! > parsedValue ||
-                              measurementConfig.max != null &&
-                                  measurementConfig.max! < parsedValue) {
+                          if (measurementConfig.min != null && measurementConfig.min! > parsedValue ||
+                              measurementConfig.max != null && measurementConfig.max! < parsedValue) {
                             return localization.common_wrong_value;
                           }
-                          if (measurementType ==
-                                  MeasurementTypeContract.bloodPressure &&
+                          if (measurementType == MeasurementType.bloodPressure &&
                               _value1 != null &&
                               _value1! < parsedValue) {
                             return localization.common_diastolic_gt_systolic;

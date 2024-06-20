@@ -143,14 +143,6 @@ class ConfigurationConstants {
     ),
   };
 
-  /* Supported measurement types */
-
-  static const Set<MeasurementType> supportedMeasurementTypes = {
-    MeasurementType.bloodPressure,
-  };
-
-  /* EGoverment authorization */
-
   /* Supported Devices */
 
   static final List<DevicePrototypeTemplate> supportedDevices = [

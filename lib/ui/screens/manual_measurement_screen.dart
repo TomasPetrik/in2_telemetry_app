@@ -6,6 +6,10 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
+import 'package:scalesoft_app/data/entities/json_entities/care_plan/time_only.dart';
+import 'package:scalesoft_app/data/providers/measurements_db_provider.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
@@ -19,27 +23,25 @@ import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 class ManualMeasurementScreen extends StatefulWidget {
   const ManualMeasurementScreen({
     super.key,
-    required this.userId,
+    required this.user,
     required this.measurementType,
     required this.enabledMeasurementTypes,
   });
 
-  final MeasurementTypeContract measurementType;
-  final String userId;
-  final List<MeasurementTypeContract> enabledMeasurementTypes;
+  final MeasurementType measurementType;
+  final UserModel user;
+  final List<MeasurementType> enabledMeasurementTypes;
 
   @override
-  State<ManualMeasurementScreen> createState() =>
-      _ManualMeasurementScreenState();
+  State<ManualMeasurementScreen> createState() => _ManualMeasurementScreenState();
 }
 
-class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
-    with BottomSheetMixin {
-  late MeasurementTypeContract dropdownValue;
+class _ManualMeasurementScreenState extends State<ManualMeasurementScreen> with BottomSheetMixin {
+  late MeasurementType dropdownValue;
 
   late TextEditingController timeEditingController;
-  late TimeOfDay measurementTime;
-  late List<MeasurementTypeContract> enabledMeasurementTypes;
+  late TimeOnly measurementTime;
+  late List<MeasurementType> enabledMeasurementTypes;
 
   @override
   void initState() {
@@ -63,15 +65,14 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
   Widget build(BuildContext context) {
     final measurementForm = MeasurementForm(
       key: UniqueKey(),
-      userId: widget.userId,
+      user: widget.user,
       measurementType: dropdownValue,
     );
 
     return Material(
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        onVerticalDragDown: (_) =>
-            FocusManager.instance.primaryFocus?.unfocus(),
+        onVerticalDragDown: (_) => FocusManager.instance.primaryFocus?.unfocus(),
         child: Stack(
           children: [
             Positioned.fill(
@@ -82,8 +83,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Gap(
-                      MediaQuery.of(context).viewPadding.top +
-                          Dimensions.appBarHeight,
+                      MediaQuery.of(context).viewPadding.top + Dimensions.appBarHeight,
                     ),
                     Gaps.gap16,
                     Text(
@@ -93,27 +93,25 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                       ),
                     ),
                     Gaps.gap16,
-                    DropdownButtonFormField<MeasurementTypeContract>(
+                    DropdownButtonFormField<MeasurementType>(
                       value: dropdownValue,
                       icon: SvgPicture.asset('assets/icons/icon_right.svg'),
                       elevation: 0,
                       style: ScaleTextStyles.text.apply(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
-                      onChanged: (MeasurementTypeContract? value) {
+                      onChanged: (MeasurementType? value) {
                         measurementForm.reset;
                         setState(() {
                           dropdownValue = value!;
                         });
                       },
                       items: enabledMeasurementTypes
-                          .map<DropdownMenuItem<MeasurementTypeContract>>(
-                              (MeasurementTypeContract measurementType) {
-                        return DropdownMenuItem<MeasurementTypeContract>(
+                          .map<DropdownMenuItem<MeasurementType>>((MeasurementType measurementType) {
+                        return DropdownMenuItem<MeasurementType>(
                           value: measurementType,
                           child: Text(
-                            localization
-                                .common_measurement_types(measurementType.name),
+                            localization.common_measurement_types(measurementType.name),
                           ),
                         );
                       }).toList(),
@@ -167,12 +165,7 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
                       onPressed: () async {
                         final measurement = measurementForm.getMeasurement();
                         if (measurement != null) {
-                          final measurementWithTime = measurement.copyWith(
-                            measurementDateTime:
-                                measurementTime.todayDateTime().toUtc(),
-                          );
-                          await getIt<PendingResultsDbProvider>()
-                              .save(measurementWithTime);
+                          await getIt<MeasurementsDbProvider>().saveModel(measurement);
                           _goToMainAndSync();
                         }
                       },

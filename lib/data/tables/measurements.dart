@@ -17,7 +17,7 @@ class Measurements extends Table {
 
   TextColumn get measurementType => textEnum<MeasurementType>()();
 
-  BoolColumn get isUploaded => boolean().withDefault(const Constant(false))();
+  BoolColumn get isUploaded => boolean().withDefault(const Constant(true))();
 
   RealColumn get temperature => real().nullable()();
 

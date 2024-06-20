@@ -40,10 +40,11 @@ class OfflineResultsScreen extends StatelessWidget with BottomSheetMixin {
 
           final lastSyncAt = userState.rootUsers.map((x) => x.lastSyncAt).max;
           final offlineResults = syncState.whenOrNull(
-                  syncUserDataFailed: (results, _) => results,
-                  userResultsFailed: (results, _) => results,
-                  someUsersResultsFailed: (results) => results,
-                  syncSomeUsersDataFailed: (results) => results) ??
+                syncUserDataFailed: (results, _) => results,
+                userResultsFailed: (results, _) => results,
+                someUsersResultsFailed: (results) => results,
+                syncSomeUsersDataFailed: (results) => results,
+              ) ??
               [];
 
           final warningWidget = syncState.whenOrNull(

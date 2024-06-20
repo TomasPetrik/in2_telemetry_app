@@ -3,6 +3,7 @@ import 'package:scalesoft_app/api/client/care_plan_api_client.dart';
 import 'package:scalesoft_app/api/contracts/care_pan/active_care_plans_contract.dart';
 import 'package:scalesoft_app/api/contracts/care_pan/aggregated_fulfillment_evaluation_contract.dart';
 import 'package:scalesoft_app/api/contracts/care_pan/care_plan_versions_response.dart';
+import 'package:scalesoft_app/api/contracts/measurement/manual_measurement_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/measurement_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement_type_contract.dart';
@@ -122,7 +123,7 @@ class CarePlansRepository {
 
   Future<void> sendManualMeasurement({
     required int userId,
-    required MeasurementContract manualMeasurement,
+    required ManualMeasurementContract manualMeasurement,
   }) async {
     TokenInterceptor.userId = userId;
     final user = userCubit.getUser(userId);

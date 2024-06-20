@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
 import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement/manual_measurement_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement_type_contract.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
@@ -184,7 +185,6 @@ class SyncService {
     //check and update assigned devices, current user data and his represented people
     //await checkForDataChanges(userAccount);
 
-    await loadFulfillmentEvaluation(userId);
     if (user.permissions.any((x) => x == Permissions.viewOwnMeasurementData)) {
       await loadMeasurementResults(userId);
     }
@@ -199,7 +199,6 @@ class SyncService {
 
         await setUserPlans(representedPerson.id, plansOfPerson);
 
-        await loadFulfillmentEvaluation(representedPerson.id);
         if (representedPerson.permissions.any((x) => x == Permissions.viewOwnMeasurementData)) {
           await loadMeasurementResults(representedPerson.id);
         }
@@ -262,10 +261,6 @@ class SyncService {
     return result;
   }
 
-  Future<void> loadFulFillmentEvaluation(final UserAccount userAccount) async {
-    final carePlans = userAccount.carePlans;
-    if (carePlans == null) {
-  Future<void> loadFulfillmentEvaluation(final int userId) async {
   /* load today's and yesterday's measurement results */
   Future<void> loadMeasurementResults(int userId) async {
     final carePlans = await _carePlanDbProvider.getByUser(userId);
@@ -332,51 +327,59 @@ class SyncService {
   }
 
   Future<void> syncResults() async {
-    final users = _session.state.rootUsers;
+    final users = _session.state.allUsers;
 
-    for (final userId in allowedUsersMuids) {
-      final userAccount = _accountDbProvider.get(userId);
-      if (userAccount == null) {
-        _pendingResultsDbProvider.removeUserResults(userId);
-        continue;
-      }
-
+    for (final user in users) {
       try {
-        final userMeasurements = _pendingResultsDbProvider.getPerUser(userId);
-        if (userMeasurements.isEmpty) {
-          continue;
+        final userMeasurements = await _measurementsDbProvider.getByUser(user.id, isUploaded: false);
+        final manualMeasurements = userMeasurements
+            .where((x) => x.deviceId == null)
+            .map((x) => ManualMeasurementContract.fromEntity(user.muid, x));
+        final deviceMeasurements = userMeasurements.where((x) => x.deviceId != null).toList();
+
+        final deviceIds = deviceMeasurements.map((x) => x.deviceId);
+
+        for (final manualMeasurement in manualMeasurements) {
+          await _carePlansRepository.sendManualMeasurement(userId: user.id, manualMeasurement: manualMeasurement);
+        }
+        // for (final userMeasurement in userMeasurements) {
+        //   if (userMeasurement.sourceDeviceWithMetadata != null) {
+        //     await _carePlansRepository.sendMeasurementFromDevice(
+        //       userAccount: userAccount,
+        //       measurement: userMeasurement,
+        //     );
+        //   } else {
+        //     await _carePlansRepository.sendManualMeasurement(
+        //       userAccount: userAccount,
+        //       manualMeasurement: userMeasurement,
+        //     );
+        //   }
+        //   await _pendingResultsDbProvider.remove(userMeasurement);
+        // }
+
+        await _measurementsDbProvider.updateUserMeasurements(
+            user.id, const MeasurementsCompanion(isUploaded: Value(true)));
+
+        if (user.permissions.contains(Permissions.viewOwnMeasurementData)) {
+          await loadMeasurementResults(user.id);
         }
 
-        for (final userMeasurement in userMeasurements) {
-          if (userMeasurement.sourceDeviceWithMetadata != null) {
-            await _carePlansRepository.sendMeasurementFromDevice(
-              userAccount: userAccount,
-              measurement: userMeasurement,
-            );
-          } else {
-            await _carePlansRepository.sendManualMeasurement(
-              userAccount: userAccount,
-              manualMeasurement: userMeasurement,
-            );
-          }
-          await _pendingResultsDbProvider.remove(userMeasurement);
-        }
-        //TODO.. here is gap when we should wait until backend will update date in their dbs
-        await Future.delayed(const Duration(seconds: 3));
-        //reload user results
-        await loadFulFillmentEvaluation(userAccount);
-        await loadPartPlanEvaluation(userAccount);
-        if (userAccount.viewOwnMeasurementData) {
-          await loadMeasurementResults(userAccount);
-        }
-        userAccount.lastSyncAt = DateTime.now();
-        userAccount.lastSyncFailed = false;
-        await _accountDbProvider.save(userAccount);
+        await _userDbProvider.updateUser(
+          user.id,
+          UsersCompanion(
+            lastSyncAt: Value(DateTime.now()),
+            lastSyncFailed: const Value(false),
+            isSessionExpired: const Value(false),
+          ),
+        );
       } catch (e) {
         //for any failed sync set flag
-        userAccount.lastSyncFailed = true;
-        await _accountDbProvider.save(userAccount);
-        return;
+        await _userDbProvider.updateUser(
+          user.id,
+          const UsersCompanion(
+            lastSyncFailed: Value(true),
+          ),
+        );
       }
     }
   }
