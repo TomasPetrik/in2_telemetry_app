@@ -50,17 +50,6 @@ class StagingConfiguration extends BaseConfiguration {
       ),
       enabledMeasurementTypes: [MeasurementType.bloodPressure, MeasurementType.heartRate],
     ),
-    // TODO: Add URLs and uncomment #IN2-8308
-    // const Hospital(
-    //   id: 3,
-    //   title: '[Test] Krajská nemocnice Tomáše Bati ve Zlíně',
-    //   iconPath: 'assets/icons/icon_hospital_kntb.svg',
-    //   authData: AuthData(
-    //     baseUrl: '???',
-    //     authUrl: '???',
-    //     tokenUrl: '???',
-    //   ),
-    // ),
     Hospital(
       id: 4,
       title: '[Test] in2-win',

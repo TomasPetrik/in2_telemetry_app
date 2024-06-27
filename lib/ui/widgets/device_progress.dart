@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
+import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -17,7 +17,7 @@ class DeviceProgress extends StatelessWidget {
     required this.reqPairing,
   });
 
-  final SourceDeviceContract device;
+  final DeviceCreateModel device;
   final int activeIndex;
   final Widget header;
   final bool reqPairing;
@@ -46,15 +46,15 @@ class DeviceProgress extends StatelessWidget {
           activeIndex: activeIndex,
         ),
         const SliverGap(Dimensions.padding60),
-        if (device.aboutUrl != null) ...[
+        if (device.prototype.aboutUrl != null) ...[
           ActionItem(
             label: localization.find_device_screen_device_reference,
             onTap: () async {
               if (!await launchUrl(
-                Uri.parse(device.aboutUrl!),
+                Uri.parse(device.prototype.aboutUrl!),
                 mode: LaunchMode.externalApplication,
               )) {
-                throw Exception('Could not launch ${device.aboutUrl}');
+                throw Exception('Could not launch ${device.prototype.aboutUrl}');
               }
             },
           ),

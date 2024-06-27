@@ -1,5 +1,5 @@
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/model/device_model.dart';
+import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
@@ -28,7 +28,7 @@ class RegisterDeviceDetailRoute extends ApplicationRoute with PageBuilderMixin {
         builder: (state) {
           final userId = int.parse(state.pathParameters['userId']!);
           final userAccount = getIt<UserCubit>().state.allUsers.firstWhere((x)=>x.id == userId);
-          final device = state.extra as DeviceModel;
+          final device = state.extra as DeviceCreateModel;
 
           return RegisterDeviceDetailScreen(
             userAccount: userAccount,

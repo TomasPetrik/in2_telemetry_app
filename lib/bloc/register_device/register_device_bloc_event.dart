@@ -1,6 +1,6 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/model/device_model.dart';
+import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/model/user_model.dart';
 
 part 'register_device_bloc_event.freezed.dart';
@@ -21,15 +21,15 @@ class RegisterDeviceBlocEvent with _$RegisterDeviceBlocEvent {
 
   const factory RegisterDeviceBlocEvent.notifyAboutNewDevices({
     required int timestamp,
-    required List<DeviceModel> foundDevices,
+    required List<DeviceCreateModel> foundDevices,
   }) = _NotifyAboutNewDevices;
 
-  const factory RegisterDeviceBlocEvent.selectDevice(DeviceModel device) =
+  const factory RegisterDeviceBlocEvent.selectDevice(DeviceCreateModel device) =
       _SelectDevice;
 
   const factory RegisterDeviceBlocEvent.registerDevice(
     UserModel userAccount,
-      DeviceModel device,
+      DeviceCreateModel device,
     String assignedIdentifier,
   ) = _RegisterDevice;
 }

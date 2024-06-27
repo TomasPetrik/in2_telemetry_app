@@ -8,13 +8,12 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/data/entities/enums/device_model_type.dart';
 import 'package:scalesoft_app/data/providers/device_prototype_db_provider.dart';
 import 'package:scalesoft_app/extensions/uint8_list_extension.dart';
 import 'package:scalesoft_app/model/device_info.dart';
-import 'package:scalesoft_app/model/device_model.dart';
+import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/model/device_prototype_model.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/model/measurement_info.dart';
@@ -68,7 +67,7 @@ class BtConnectionHelper {
     }
   }
 
-  bool matchDeviceId(SourceDeviceContract device, String localName) {
+  bool matchDeviceId(DeviceCreateModel device, String localName) {
     final supportedDev = ConfigurationConstants.supportedDevices.firstWhere(
       (dev) {
         return localName.toLowerCase().contains(dev.bluetoothName.toLowerCase());
@@ -94,7 +93,7 @@ class BtConnectionHelper {
 
   Future<DeviceSearchResult?> searchDevice({
     required Guid serviceUuid,
-    required SourceDeviceContract device,
+    required DeviceCreateModel device,
     required SearchMode searchMode,
     Duration? maxAllowedDeviceSearchingTime,
   }) async {
@@ -161,7 +160,7 @@ class BtConnectionHelper {
   Future<void> searchDevicesByService({
     required List<Guid> serviceUuids,
     required onlyPairingMode,
-    required Function(List<DeviceModel> devices) onResult,
+    required Function(List<DeviceCreateModel> devices) onResult,
     required int userId,
   }) async {
     syncMode = false;
@@ -213,7 +212,7 @@ class BtConnectionHelper {
     }
   }
 
-  DeviceModel convertToModel(
+  DeviceCreateModel convertToModel(
     String advertisementName,
     BluetoothDevice btDevice,
     List<DevicePrototypeModel> supportedPrototypes,
@@ -230,7 +229,7 @@ class BtConnectionHelper {
       preferredIdName = advertisementName.split('_').last;
     }
 
-    return DeviceModel(
+    return DeviceCreateModel(
       preferredIdName,
       prototype,
       bluetoothAddress: Platform.isAndroid ? btDevice.remoteId.toString() : null,
@@ -285,7 +284,6 @@ class BtConnectionHelper {
     required BluetoothCharacteristic bpCharacteristic,
     required BluetoothCharacteristic recordAccessCpCharacteristic,
     required bool isPairing,
-    required String devId,
     bool? isSecondAttempt,
   }) async {
     final dtNow = DateTime.now().toUtc();
@@ -302,13 +300,11 @@ class BtConnectionHelper {
       return HwMeasurementResult(
         resultState: ResultState.connectionError,
         measurementDt: dtNow,
-        devId: devId,
       );
     } else if (bpData.isEmpty) {
       return HwMeasurementResult(
         resultState: isPairing ? ResultState.success : ResultState.noData,
         measurementDt: dtNow,
-        devId: devId,
       );
     } else {
       final measurementInfo = MeasurementInfo.fromIntList(bpData);
@@ -316,7 +312,6 @@ class BtConnectionHelper {
         resultState: ResultState.success,
         measurementInfo: measurementInfo,
         measurementDt: dtNow,
-        devId: devId,
       );
     }
   }
@@ -324,7 +319,6 @@ class BtConnectionHelper {
   Future<HwMeasurementResult> requestBPData(
     BluetoothDevice device,
     bool isMeasurement,
-    String devId,
   ) async {
     final services = await device.discoverServices();
     final bpCharacteristic = services
@@ -347,7 +341,6 @@ class BtConnectionHelper {
         bpCharacteristic: bpCharacteristic,
         recordAccessCpCharacteristic: recordAccessCpCharacteristic,
         isPairing: !isMeasurement,
-        devId: devId,
       );
       if (isMeasurement) {
         try {
@@ -359,7 +352,6 @@ class BtConnectionHelper {
             recordAccessCpCharacteristic: recordAccessCpCharacteristic,
             isPairing: !isMeasurement,
             isSecondAttempt: true,
-            devId: devId,
           );
           if (hwMeasurementResult2.resultState == ResultState.success) {
             debugPrint('fetched more updated result');
@@ -377,7 +369,6 @@ class BtConnectionHelper {
       return HwMeasurementResult(
         resultState: ResultState.connectionError,
         measurementDt: DateTime.now(),
-        devId: devId,
       );
     }
   }
@@ -389,7 +380,7 @@ class BtConnectionHelper {
     bool isPairing,
     bool? isSecondAttempt,
   ) async {
-    if (isSecondAttempt == true && !bpCharacteristic.isNotifying == false) {
+    if (isSecondAttempt == true && bpCharacteristic.isNotifying) {
       return null;
     }
 

@@ -13,7 +13,7 @@ import 'package:scalesoft_app/constants/permissions.dart';
 import 'package:scalesoft_app/cubit/care_plan/care_plan_cubit.dart';
 import 'package:scalesoft_app/cubit/loader/loader_cubit.dart';
 import 'package:scalesoft_app/cubit/loader/loader_state.dart';
-import 'package:scalesoft_app/model/device_model.dart';
+import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/model/enum/user_problem_type.dart';
 import 'package:scalesoft_app/model/user_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -240,13 +240,13 @@ class UserDetailScreen extends StatelessWidget with BottomSheetMixin {
                       label: localization.user_detail_screen_register_device_button,
                       buttonType: ButtonType.primary,
                       onPressed: () {
-                        GoRouter.of(context).pushNamed<DeviceModel?>(
+                        GoRouter.of(context).pushNamed<DeviceCreateModel?>(
                           DeviceSearchRoute.name,
                           pathParameters: {
                             'userId': userAccount.id.toString(),
                             'devicePurpose': DevicePurpose.registerDevice.name,
                           },
-                        ).then((final DeviceModel? device) {
+                        ).then((final DeviceCreateModel? device) {
                           if (device != null) {
                             GoRouter.of(context).pushNamed(
                               RegisterDeviceDetailRoute.name,

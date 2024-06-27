@@ -107,17 +107,16 @@ class CarePlansRepository {
     return items;
   }
 
-  // TODO: Batch measurements #IN2-9144
-  Future<void> sendMeasurementFromDevice({
+  Future<void> sendMeasurementsFromDevice({
     required int userId,
-    required MeasurementContract measurement,
+    required List<MeasurementContract> measurements,
   }) async {
     TokenInterceptor.userId = userId;
     final user = userCubit.getUser(userId);
 
     return carePlanApiClient.sendMeasurementFromDevice(
       user.hospital.authData.baseUrl,
-      [measurement],
+      measurements,
     );
   }
 

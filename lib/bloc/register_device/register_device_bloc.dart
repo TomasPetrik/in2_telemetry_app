@@ -7,7 +7,7 @@ import 'package:scalesoft_app/api/contracts/device/device_create_contract.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_event.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_state.dart';
 import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
-import 'package:scalesoft_app/model/device_model.dart';
+import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/repositories/device_repository.dart';
 import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/utils/events_constants.dart';
@@ -181,7 +181,7 @@ class RegisterDeviceBloc extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlo
           await Wakelock.disable();
           await FlutterBluePlus.stopScan();
         },
-        selectDevice: (DeviceModel device) async {
+        selectDevice: (DeviceCreateModel device) async {
           await Wakelock.disable();
           await FlutterBluePlus.stopScan();
           emit(RegisterDeviceBlocState.popDevice(device));

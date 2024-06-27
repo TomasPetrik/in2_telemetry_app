@@ -10,7 +10,7 @@ import 'package:scalesoft_app/cubit/device_management/device_management_cubit.da
 import 'package:scalesoft_app/cubit/device_management/device_management_state.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_flow.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
-import 'package:scalesoft_app/model/device_model.dart';
+import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/ui/routers/routes/device_search_route.dart';
@@ -50,16 +50,14 @@ class MeteringFirstScreen extends StatelessWidget with BottomSheetMixin {
     return title;
   }
 
-  void goToMetering(DeviceModel device, MeasurementType measurementType, BuildContext context) {
+  void goToMetering(DeviceCreateModel device, MeasurementType measurementType, BuildContext context) {
     GoRouter.of(context).pushNamed(
       OmronFlowRoute.name,
       queryParameters: {
-        'userId': userId,
+        'userId': userId.toString(),
         'measurementType': measurementType.name,
-        'deviceId': device.deviceIdentifier,
-        'modelName': device.prototype.modelName,
-        'deviceManufacturer': device.prototype.deviceManufacturer,
       },
+      extra: device,
     );
   }
 
@@ -234,7 +232,6 @@ class MeteringFirstScreen extends StatelessWidget with BottomSheetMixin {
                                             child: DeviceItem(
                                               device: personalDevice,
                                               onRemove: personalDevice.isPersonal
-                                                  // TODO?
                                                   ? () async {
                                                       final confirmed = await showDeviceRemovalConfirmation(
                                                         context: context,
@@ -308,22 +305,21 @@ class MeteringFirstScreen extends StatelessWidget with BottomSheetMixin {
                                       ),
                                       hasNavigationIcon: false,
                                       onTap: () async {
-                                        GoRouter.of(context).pushNamed<DeviceModel?>(
+                                        GoRouter.of(context).pushNamed<DeviceCreateModel?>(
                                           DeviceSearchRoute.name,
                                           pathParameters: {
                                             'userId': userAccount.id.toString(),
                                             'devicePurpose': DevicePurpose.addDevice.name,
                                           },
-                                        ).then((final DeviceModel? device) {
+                                        ).then((final DeviceCreateModel? device) {
                                           if (device != null) {
                                             GoRouter.of(context).replaceNamed(
                                               OmronFlowRoute.name,
                                               queryParameters: {
-                                                'userId': userId,
+                                                'userId': userId.toString(),
                                                 'measurementType': selectedMeasurementType.name,
-                                                'modelName': device.prototype.modelName,
-                                                'deviceManufacturer': '${device.prototype.deviceManufacturer}',
                                               },
+                                              extra: device,
                                             );
                                           }
                                         });

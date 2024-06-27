@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_event.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_state.dart';
-import 'package:scalesoft_app/model/device_model.dart';
+import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/model/user_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/routers/routes/register_device_success_route.dart';
@@ -30,7 +30,7 @@ class RegisterDeviceDetailScreen extends StatelessWidget with BottomSheetMixin {
   });
 
   final UserModel userAccount;
-  final DeviceModel device;
+  final DeviceCreateModel device;
   final RegisterDeviceBloc registerDeviceBloc = getIt<RegisterDeviceBloc>();
   final TextEditingController assignedIdentifierController = TextEditingController();
 

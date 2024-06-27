@@ -1,100 +1,63 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
+import 'package:scalesoft_app/constants/permissions.dart';
 import 'package:scalesoft_app/cubit/device_management/device_management_state.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
+import 'package:scalesoft_app/data/providers/device_db_provider.dart';
+import 'package:scalesoft_app/data/providers/device_prototype_db_provider.dart';
+import 'package:scalesoft_app/model/device_model.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 
 @injectable
 class DeviceManagementCubit extends Cubit<DeviceManagementState> {
-  final AccountDbProvider _accountDbProvider;
-  final PairedDevicesDbProvider _pairedDevicesDbProvider;
-  late UserAccount userAccount;
+  final UserCubit _userCubit;
+  final DeviceDbProvider _deviceDbProvider;
+  final DevicePrototypeDbProvider _devicePrototypeDbProvider;
+  late int userId;
 
-  bool supportedDeviceMeasurement(MeasurementTypeContract measurementType) {
+  bool supportedDeviceMeasurement(MeasurementType measurementType) {
     return ConfigurationConstants.supportedDevices.any(
-      (device) => device.supportedMeasurementTypes!.contains(
+      (device) => device.supportedMeasurementTypes.contains(
         measurementType,
       ),
     );
   }
 
-  List<SourceDeviceContract> getAssignedDevices(MeasurementTypeContract measurementType) {
-    List<SourceDeviceContract> prioritisedDevices = [];
-
-    final allPairedDevices = _pairedDevicesDbProvider.box.values
-        .where(
-          (device) => device.supportedMeasurementTypes!.contains(
-            measurementType,
-          ),
-        )
-        .toList();
-
-    //1. Add all user assigned devices with flag if was previously paired
-    if (userAccount.assignedDevices?.isNotEmpty == true) {
-      for (final assignedDevice in userAccount.assignedDevices!) {
-        final suppDev = ConfigurationConstants.supportedDevices.firstWhereOrNull(
-          (suppDev) =>
-              suppDev.modelName == assignedDevice.modelName &&
-              suppDev.deviceManufacturer == assignedDevice.deviceManufacturer,
-        );
-
-        if (suppDev == null) continue;
-
-        bool wasPaired = allPairedDevices.any(
-          (dev) =>
-              dev.deviceIdentifier?.toLowerCase() ==
-              assignedDevice.deviceIdentifier?.toLowerCase(),
-        );
-
-        // TODO: Rewrite this with new db entities
-        // prioritisedDevices.add(
-        //   suppDev.copyWith(
-        //     deviceIdentifier: assignedDevice.deviceIdentifier,
-        //     assignedIdentifier: assignedDevice.assignedIdentifier,
-        //     bluetoothAddress: assignedDevice.bluetoothAddress,
-        //     wasPaired: wasPaired,
-        //     isLendedDevice: true,
-        //   ),
-        // );
-      }
-    }
-
-    return prioritisedDevices;
+  Future<List<DeviceModel>> getAssignedDevices(MeasurementType measurementType) async {
+    final userDevices = await _deviceDbProvider.getByUser(userId);
+    return userDevices.where((x) => !x.isPersonal).toList();
   }
 
   //Personal devices which are not matching with user devices and user has also permission
-  //for measurements with unknow devices <canMeasureWithUnknowDevice>
-  List<SourceDeviceContract> getPersonalDevices(MeasurementTypeContract measurementType) {
-    final allPairedDevices = _pairedDevicesDbProvider.box.values
-        .where(
-          (device) => device.supportedMeasurementTypes!.contains(
-            measurementType,
-          ),
-        )
-        .toList();
+  //for measurements with unknown devices <canMeasureWithUnknownDevice>
+  Future<List<DeviceModel>> getPersonalDevices(MeasurementType measurementType) async {
+    final user = _userCubit.state.allUsers.firstWhere((x) => x.id == userId);
+    if (user.permissions.none((x) => x == Permissions.measureWithUnknownDevice)) {
+      return [];
+    }
 
-    final assignedDevices = getAssignedDevices(measurementType);
+    // Get paired devices of all users
+    final pairedDevices = await _deviceDbProvider.getDistinctPairedDevices();
 
-    final List<String> userAssignedDevicesIds = assignedDevices
-        .map((dev) => dev.deviceIdentifier!.toLowerCase())
-        .toList();
+    final enabledDevicePrototypes = await _devicePrototypeDbProvider.getByUser(userId);
 
-    final personalDevices = allPairedDevices
-        .where(
-          (dev) =>
-              userAccount.canMeasureWithUnknowDevice &&
-              !userAssignedDevicesIds
-                  .contains(dev.deviceIdentifier?.toLowerCase()),
-        )
-        .toList();
+    // Filter out devices not enabled in user's hospital
+    final allowedDevices = pairedDevices.where(
+      (device) => enabledDevicePrototypes.any((prototype) => device.prototype.templateId == prototype.templateId),
+    );
 
-    return personalDevices;
+    // Filter out devices assigned to this user - these aren't personal devices.
+    final result = allowedDevices.where((x) => x.isPersonal || x.prototype.userId != userId);
+
+    return result.toList();
   }
 
   DeviceManagementCubit(
-    this._accountDbProvider,
-    this._pairedDevicesDbProvider,
+    this._deviceDbProvider,
+    this._userCubit,
+    this._devicePrototypeDbProvider,
   ) : super(
           const DeviceManagementState(
             assignedDevices: null,
@@ -104,17 +67,16 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
         );
 
   void init(
-    MeasurementTypeContract measurementType,
-    Set<MeasurementTypeContract>? allMeasurementTypes,
-    String userId,
-  ) {
-    userAccount = _accountDbProvider.get(userId)!;
-    final supportDeviceMeasurement =
-        supportedDeviceMeasurement(measurementType);
-    final assignedDevices = getAssignedDevices(measurementType);
-    final personalDevices = getPersonalDevices(measurementType);
-    final hasMeasurementTabs =
-        allMeasurementTypes != null && allMeasurementTypes.length > 1;
+    MeasurementType measurementType,
+    Set<MeasurementType>? allMeasurementTypes,
+    int userId,
+  ) async {
+    this.userId = userId;
+
+    final supportDeviceMeasurement = supportedDeviceMeasurement(measurementType);
+    final assignedDevices = await getAssignedDevices(measurementType);
+    final personalDevices = await getPersonalDevices(measurementType);
+    final hasMeasurementTabs = allMeasurementTypes != null && allMeasurementTypes.length > 1;
 
     emit(
       DeviceManagementState(
@@ -128,11 +90,10 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
     );
   }
 
-  void selectMeasurementType(MeasurementTypeContract measurementType) {
-    final supportDeviceMeasurement =
-        supportedDeviceMeasurement(measurementType);
-    final assignedDevices = getAssignedDevices(measurementType);
-    final personalDevices = getPersonalDevices(measurementType);
+  void selectMeasurementType(MeasurementType measurementType) async {
+    final supportDeviceMeasurement = supportedDeviceMeasurement(measurementType);
+    final assignedDevices = await getAssignedDevices(measurementType);
+    final personalDevices = await getPersonalDevices(measurementType);
 
     emit(
       state.copyWith(
@@ -144,10 +105,15 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
     );
   }
 
-  void removeDevice(SourceDeviceContract device, MeasurementTypeContract measurementType) async {
-    await _pairedDevicesDbProvider.remove(device);
-    final assignedDevices = getAssignedDevices(measurementType);
-    final personalDevices = getPersonalDevices(measurementType);
+  void removeDevice(DeviceModel device, MeasurementType measurementType) async {
+    if (device.isPersonal) {
+      await _deviceDbProvider.removeDevice(device.id);
+    } else {
+      await _deviceDbProvider.markAsUnpaired(device.id);
+    }
+
+    final assignedDevices = await getAssignedDevices(measurementType);
+    final personalDevices = await getPersonalDevices(measurementType);
 
     emit(
       state.copyWith(

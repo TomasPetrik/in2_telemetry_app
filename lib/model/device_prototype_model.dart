@@ -1,9 +1,11 @@
+import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/data/entities/enums/action_button_type.dart';
 import 'package:scalesoft_app/data/entities/enums/device_model_type.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_flow.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 
 class DevicePrototypeModel {
+  final int id;
   final int templateId;
   final String modelName;
   final String? deviceManufacturer;
@@ -26,6 +28,7 @@ class DevicePrototypeModel {
   final int userId;
 
   DevicePrototypeModel(
+    this.id,
     this.templateId,
     this.modelName,
     this.deviceManufacturer,
@@ -44,4 +47,27 @@ class DevicePrototypeModel {
     this.remoteId, {
     this.aboutUrl,
   });
+
+  factory DevicePrototypeModel.fromEntity(DevicePrototype entity) {
+    return DevicePrototypeModel(
+      entity.id,
+      entity.templateData.localId,
+      entity.templateData.modelName,
+      entity.templateData.deviceManufacturer,
+      entity.templateData.visibleName,
+      entity.templateData.bluetoothName,
+      entity.templateData.bluetoothPairingName,
+      entity.templateData.deviceModelType,
+      entity.userId,
+      entity.templateData.supportedMeasurementTypes,
+      entity.templateData.requiresPairing,
+      entity.templateData.askToActivateBt,
+      entity.templateData.askToConfirmMeasurement,
+      entity.templateData.imagePath,
+      entity.templateData.measurementFlow,
+      entity.templateData.actionButtonType,
+      entity.remoteId,
+      aboutUrl: entity.aboutUrl,
+    );
+  }
 }

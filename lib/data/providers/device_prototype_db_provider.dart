@@ -38,28 +38,6 @@ class DevicePrototypeDbProvider {
   Future<List<DevicePrototypeModel>> getByUser(int userId) async {
     final entities = await _database.devicePrototypesDao.getByUser(userId);
 
-    return entities.map(_fromEntity).toList();
-  }
-
-  DevicePrototypeModel _fromEntity(DevicePrototype entity) {
-    return DevicePrototypeModel(
-      entity.templateData.localId,
-      entity.templateData.modelName,
-      entity.templateData.deviceManufacturer,
-      entity.templateData.visibleName,
-      entity.templateData.bluetoothName,
-      entity.templateData.bluetoothPairingName,
-      entity.templateData.deviceModelType,
-      entity.userId,
-      entity.templateData.supportedMeasurementTypes,
-      entity.templateData.requiresPairing,
-      entity.templateData.askToActivateBt,
-      entity.templateData.askToConfirmMeasurement,
-      entity.templateData.imagePath,
-      entity.templateData.measurementFlow,
-      entity.templateData.actionButtonType,
-      entity.remoteId,
-      aboutUrl: entity.aboutUrl,
-    );
+    return entities.map(DevicePrototypeModel.fromEntity).toList();
   }
 }

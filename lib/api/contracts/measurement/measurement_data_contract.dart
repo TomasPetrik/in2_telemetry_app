@@ -32,8 +32,6 @@ class MeasurementDataContract {
   String toString() => _$MeasurementDataContractToJson(this).toString();
 
 
-  // TODO: Deduplicate this and the same method in measurement_contract.dart
-  // Ideally change the API and replace MeasurementResult with Measurement
   String getFormattedValue() {
     final stringValue = switch (measurementType) {
       MeasurementTypeContract.temperature => value?.toStringAsFixed(1),

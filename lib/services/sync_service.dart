@@ -4,15 +4,15 @@ import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
-import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/manual_measurement_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement/measurement_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/measurement_data_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement_type_contract.dart';
-import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/constants/permissions.dart';
 import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_evaluation_item.dart';
+import 'package:scalesoft_app/data/providers/device_db_provider.dart';
 import 'package:scalesoft_app/data/providers/device_prototype_db_provider.dart';
 import 'package:scalesoft_app/data/providers/measurements_db_provider.dart';
 import 'package:scalesoft_app/data/providers/user_db_provider.dart';
@@ -43,6 +43,7 @@ class SyncService {
   final UserDbProvider _userDbProvider;
   final DevicePrototypeDbProvider _devicePrototypeDbProvider;
   final WhenTemplateDbProvider _whenTemplateDbProvider;
+  final DeviceDbProvider _deviceDbProvider;
 
   SyncService(
     this._session,
@@ -56,6 +57,7 @@ class SyncService {
     this._userDbProvider,
     this._devicePrototypeDbProvider,
     this._whenTemplateDbProvider,
+    this._deviceDbProvider,
   );
 
   Future<void> setUserPlans(
@@ -131,14 +133,6 @@ class SyncService {
     await _carePlanDbProvider.replaceUserCarePlans(userid, results);
   }
 
-  Future<void> loadTimeSettings(final UserAccount userAccount) async {
-    final timeSettingItems = await _timeSettingsRepository.loadTimeSettings(
-      userAccount: userAccount,
-    );
-    userAccount.timeSettingItems = timeSettingItems;
-    for (final UserAccount representedPerson in userAccount.representedPeople!) {
-      representedPerson.timeSettingItems = timeSettingItems;
-    }
   Future<void> loadWhenValues(final int userId) async {
     final user = _session.state.allUsers.firstWhere((x) => x.id == userId);
 
@@ -222,43 +216,10 @@ class SyncService {
     );
 
     //1. Update assigned devices
-    // userAccount.assignedDevices = parseAssignedDevices(userInfo.assignedDevices, userAccount.assignedDevices);
+    _deviceDbProvider.updateUserDevices(userAccount.id, userInfo.assignedDevices ?? []);
     getIt<BackgroundMeasurementManager>().removeUnassignedDevices();
 
     // userAccount.user = userInfo.currentUser;
-  }
-
-  List<SourceDeviceContract>? parseAssignedDevices(
-    List<SourceDeviceContract>? devices,
-    List<SourceDeviceContract>? originalDevices,
-  ) {
-    if (devices == null) {
-      return null;
-    }
-
-    final List<SourceDeviceContract> result = [];
-
-    for (final device in devices) {
-      final devicePrototype = ConfigurationConstants.supportedDevices.firstWhereOrNull(
-        (suppDev) => suppDev.modelName == device.modelName && suppDev.deviceManufacturer == device.deviceManufacturer,
-      );
-
-      if (devicePrototype == null) continue;
-
-      final existingDevice = originalDevices?.firstWhereOrNull((x) => x.isEquivalentTo(device));
-
-      result.add(
-        devicePrototype.copyWith(
-          deviceIdentifier: device.deviceIdentifier,
-          assignedIdentifier: device.assignedIdentifier,
-          bluetoothAddress: device.bluetoothAddress,
-          isLendedDevice: true,
-          lastMeasurementTime: existingDevice?.lastMeasurementTime,
-        ),
-      );
-    }
-
-    return result;
   }
 
   /* load today's and yesterday's measurement results */
@@ -314,16 +275,20 @@ class SyncService {
         );
 
         await _session.waitForChange((x) => x.id == user.id && x.lastSyncAt.isAtSameMomentAs(now));
+        final updatedUser = _session.state.allUsers.firstWhere((x) => x.id == user.id);
+
+        await updateUserData(updatedUser);
       } on DioException {
         //for any failed sync set flag and go on next account
         await _userDbProvider.updateUser(user.id, const UsersCompanion(lastSyncFailed: Value(true)));
       }
     }
-    NotificationsHelper.setNotifications(
-      appSettings: _appSettingsDbProvider.read(),
-      notificationsPlugin: FlutterLocalNotificationsPlugin(),
-      userAccounts: _accountDbProvider.getAll(),
-    );
+    // TODO
+    // NotificationsHelper.setNotifications(
+    //   appSettings: _appSettingsDbProvider.read(),
+    //   notificationsPlugin: FlutterLocalNotificationsPlugin(),
+    //   userAccounts: _accountDbProvider.getAll(),
+    // );
   }
 
   Future<void> syncResults() async {
@@ -337,28 +302,38 @@ class SyncService {
             .map((x) => ManualMeasurementContract.fromEntity(user.muid, x));
         final deviceMeasurements = userMeasurements.where((x) => x.deviceId != null).toList();
 
-        final deviceIds = deviceMeasurements.map((x) => x.deviceId);
+        final deviceIds = deviceMeasurements.map((x) => x.deviceId).nonNulls;
+        final devices = await _deviceDbProvider.getByIds(deviceIds);
 
         for (final manualMeasurement in manualMeasurements) {
           await _carePlansRepository.sendManualMeasurement(userId: user.id, manualMeasurement: manualMeasurement);
         }
-        // for (final userMeasurement in userMeasurements) {
-        //   if (userMeasurement.sourceDeviceWithMetadata != null) {
-        //     await _carePlansRepository.sendMeasurementFromDevice(
-        //       userAccount: userAccount,
-        //       measurement: userMeasurement,
-        //     );
-        //   } else {
-        //     await _carePlansRepository.sendManualMeasurement(
-        //       userAccount: userAccount,
-        //       manualMeasurement: userMeasurement,
-        //     );
-        //   }
-        //   await _pendingResultsDbProvider.remove(userMeasurement);
-        // }
+
+        final List<MeasurementContract> measurementContracts = [];
+        for (final deviceMeasurement in deviceMeasurements) {
+          final device = devices.firstWhereOrNull((x) => x.id == deviceMeasurement.deviceId);
+          if (device == null) {
+            continue;
+          }
+          final contract = MeasurementContract.fromEntity(
+            user.muid,
+            deviceMeasurement,
+            device.deviceIdentifier,
+            device.prototype.modelName,
+            device.prototype.deviceManufacturer,
+          );
+          measurementContracts.add(contract);
+        }
+
+        await _carePlansRepository.sendMeasurementsFromDevice(
+          userId: user.id,
+          measurements: measurementContracts,
+        );
 
         await _measurementsDbProvider.updateUserMeasurements(
-            user.id, const MeasurementsCompanion(isUploaded: Value(true)));
+          user.id,
+          const MeasurementsCompanion(isUploaded: Value(true)),
+        );
 
         if (user.permissions.contains(Permissions.viewOwnMeasurementData)) {
           await loadMeasurementResults(user.id);

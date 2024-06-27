@@ -4,7 +4,10 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
-import 'package:scalesoft_app/model/device_info.dart';
+import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
+import 'package:scalesoft_app/data/providers/measurements_db_provider.dart';
+import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/report_service.dart';
@@ -21,17 +24,15 @@ class SyncedResult extends StatelessWidget {
   const SyncedResult({
     super.key,
     required this.userId,
-    required this.deviceId,
     required this.hwMeasurementResult,
     required this.measurementType,
-    this.deviceInfo,
+    required this.device,
   });
 
-  final String userId;
-  final String deviceId;
+  final int userId;
   final HwMeasurementResult hwMeasurementResult;
-  final MeasurementTypeContract measurementType;
-  final DeviceInfo? deviceInfo;
+  final MeasurementType measurementType;
+  final DeviceCreateModel device;
 
   String _getDesc(BuildContext context) {
     switch (hwMeasurementResult.resultState) {
@@ -106,10 +107,8 @@ class SyncedResult extends StatelessWidget {
                     Gaps.gap6,
                     Text(
                       _exceededValues()
-                          ? localization
-                              .measurement_summary_screen_exceeded_values
-                          : localization
-                              .measurement_summary_screen_success_subtitle,
+                          ? localization.measurement_summary_screen_exceeded_values
+                          : localization.measurement_summary_screen_success_subtitle,
                       style: ScaleTextStyles.label.apply(
                         color: _exceededValues()
                             ? Theme.of(context).colorScheme.error
@@ -187,19 +186,16 @@ class SyncedResult extends StatelessWidget {
             child: HighlightedElevatedButton(
               label: localization.measurement_summary_screen_send_results,
               onPressed: () async {
-                await getIt<PendingResultsDbProvider>()
-                    .save(hwMeasurementResult.measurement!)
-                    .then(
-                  (_) {
-                    getIt<ReportService>().trackEvent(
-                      userId: userId,
-                      severity: Severity.info,
-                      message: EventsConstants.eventMeasurementSent,
-                    );
-                    getIt<SyncBloc>().add(const SyncEvent.syncResults());
-                    GoRouter.of(context).goNamed(DashboardRoute.name);
-                  },
+                final router = GoRouter.of(context);
+
+                await getIt<MeasurementsDbProvider>().saveModel(hwMeasurementResult.measurement!);
+                await getIt<ReportService>().trackEvent(
+                  userId: userId,
+                  severity: LogSeverity.info,
+                  message: EventsConstants.eventMeasurementSent,
                 );
+                getIt<SyncBloc>().add(const SyncEvent.syncResults());
+                router.goNamed(DashboardRoute.name);
               },
               buttonType: ButtonType.primary,
             ),
@@ -208,21 +204,20 @@ class SyncedResult extends StatelessWidget {
           const SliverGap(Dimensions.padding24),
           SliverToBoxAdapter(
             child: HighlightedElevatedButton(
-              label: localization
-                  .measurement_summary_screen_no_data_repeat_measurement,
+              label: localization.measurement_summary_screen_no_data_repeat_measurement,
               onPressed: () {
                 getIt<ReportService>().trackEvent(
                   userId: userId,
-                  severity: Severity.info,
+                  severity: LogSeverity.info,
                   message: EventsConstants.eventMeasurementRepeat,
                 );
                 GoRouter.of(context).pushReplacementNamed(
                   OmronFlowRoute.name,
-                  queryParams: {
+                  queryParameters: {
                     'userId': userId,
                     'measurementType': measurementType.name,
-                    'deviceId': deviceId,
                   },
+                  extra: device,
                 );
               },
               buttonType: ButtonType.primary,
@@ -239,7 +234,7 @@ class SyncedResult extends StatelessWidget {
                   onTap: () {
                     getIt<ReportService>().trackEvent(
                       userId: userId,
-                      severity: Severity.info,
+                      severity: LogSeverity.info,
                       message: EventsConstants.eventMeasurementWontSend,
                     );
                     GoRouter.of(context).goNamed(DashboardRoute.name);
