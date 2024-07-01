@@ -7,8 +7,8 @@ part 'fulfillment_evaluation_aggregated.g.dart';
 
 @JsonSerializable()
 class FulfillmentEvaluationAggregated {
-  DateTime start;
-  DateTime end;
+  DateTime? start;
+  DateTime? end;
   int requiredMeasurementCount;
   int totalMeasurementCount;
   int measurementInPlanCount;

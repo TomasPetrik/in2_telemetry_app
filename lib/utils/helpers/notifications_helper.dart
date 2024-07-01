@@ -160,16 +160,16 @@ class NotificationsHelper {
     String message = '';
     message += '${userAccount.fullName} - ${localization.common_measurement} ';
     message += '${localization.common_measurement_types_genitive(
-          plannedMeasurement.carePlan.activity.measurementType.name,
+          plannedMeasurement.measurementType.name,
         ).toLowerCase()} ';
 
-    if (CarePlanHelper.isPeriodical(plannedMeasurement.carePlan)) {
+    if (plannedMeasurement.reqCount > 1) {
       message += localization.notification_periodical_frequency_from_to(
-        plannedMeasurement.carePlan.versions.last.frequency,
-        plannedMeasurement.isLongPeriod
+        plannedMeasurement.reqCount,
+        plannedMeasurement.isGoingOverDay
             ? plannedMeasurement.whenStart.dateFormatLong
             : plannedMeasurement.whenStart.toLocal().toTimeOfDay().toString(),
-        plannedMeasurement.isLongPeriod
+        plannedMeasurement.isGoingOverDay
             ? plannedMeasurement.whenEnd.dateFormatLong
             : plannedMeasurement.whenEnd.toLocal().toTimeOfDay().toString(),
       );

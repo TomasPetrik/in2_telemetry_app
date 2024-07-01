@@ -18,4 +18,17 @@ class TemperatureThresholds {
     fromJson: (json) => TemperatureThresholds.fromJson(json as Map<String, Object?>),
     toJson: (obj) => obj.toJson(),
   );
+
+  bool exceeds(double? value) {
+    if (value != null) {
+      if (min != null && value < min!) {
+        return true;
+      }
+      if (max != null && value > max!) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 }

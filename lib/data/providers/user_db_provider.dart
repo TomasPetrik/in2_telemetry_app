@@ -6,7 +6,9 @@ import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/data/entities/combined_entities/user_with_represented_people.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/time_only.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/auth_token.dart';
+import 'package:scalesoft_app/data/entities/json_entities/user/measurement_thresholds.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/time_setting.dart';
+import 'package:scalesoft_app/mapper/thresholds_mapper.dart';
 import 'package:scalesoft_app/mapper/user_mapper.dart';
 import 'package:scalesoft_app/mapper/when_code_mapper.dart';
 import 'package:scalesoft_app/model/enum/user_problem_type.dart';
@@ -17,8 +19,9 @@ class UserDbProvider {
   final AppDatabase _database;
   final UserMapper _userMapper;
   final WhenCodeMapper _whenCodeMapper;
+  final ThresholdsMapper _thresholdsMapper;
 
-  UserDbProvider(this._database, this._userMapper, this._whenCodeMapper);
+  UserDbProvider(this._database, this._userMapper, this._whenCodeMapper, this._thresholdsMapper);
 
   Stream<UserModel?> get(int userId) {
     final entity = _database.usersDao.getUser(userId);
@@ -53,6 +56,8 @@ class UserDbProvider {
 
     final now = DateTime.now();
 
+    MeasurementThresholds? thresholds = _thresholdsMapper.tryConvert(rootUser.measurementThresholds);
+
     final rootUserCompanion = UsersCompanion.insert(
       hospitalId: hospitalId,
       muid: rootUser.muid,
@@ -65,6 +70,7 @@ class UserDbProvider {
       permissions: permissions,
       phoneNumbers: rootUser.phoneNumbers ?? [],
       emailAddresses: rootUser.emailAddresses ?? [],
+      thresholds: Value(thresholds),
     );
 
     final userId = await _database.usersDao.createUser(rootUserCompanion);
@@ -72,6 +78,8 @@ class UserDbProvider {
     final List<int> representedPeopleIds = [];
 
     for (final representedPerson in representedPeople ?? []) {
+      MeasurementThresholds? thresholds = _thresholdsMapper.tryConvert(representedPerson.measurementThresholds);
+
       final companion = UsersCompanion.insert(
         parentId: Value(userId),
         hospitalId: hospitalId,
@@ -84,6 +92,7 @@ class UserDbProvider {
         permissions: permissions,
         phoneNumbers: representedPerson.phoneNumbers ?? [],
         emailAddresses: representedPerson.emailAddresses ?? [],
+        thresholds: Value(thresholds),
       );
 
       final id = await _database.usersDao.createUser(companion);
@@ -202,5 +211,20 @@ class UserDbProvider {
 
   Future<void> updateUser(int userId, UsersCompanion changes) async {
     await _database.usersDao.updateUser(userId, changes);
+  }
+
+  Future<void> updateUserFromContract(int userId, UserContract contract) async {
+    // TODO: Represented people #IN2-9956
+    MeasurementThresholds? thresholds = _thresholdsMapper.tryConvert(contract.measurementThresholds);
+
+    final changes = UsersCompanion(
+      firstNames: Value(contract.firstNames.join(' ')),
+      lastNames: Value(contract.lastNames.join(' ')),
+      phoneNumbers: Value(contract.phoneNumbers ?? []),
+      emailAddresses: Value(contract.emailAddresses ?? []),
+      thresholds: Value(thresholds),
+    );
+
+    await updateUser(userId, changes);
   }
 }

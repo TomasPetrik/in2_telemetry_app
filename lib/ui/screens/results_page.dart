@@ -96,7 +96,7 @@ class ResultsPage extends StatelessWidget with BottomSheetMixin {
                 final allMeasurementTypes = resultsState.allMeasurementTypes!;
                 final user = userState.aggregateAllUsers
                     ? null
-                    : resultsState.sessionUsers?[0]; // TODO: Use userState.currentUser?
+                    : resultsState.sessionUsers?[0];
 
                 return NavigationScreen(
                   onTabSelected: (tabIndex) {

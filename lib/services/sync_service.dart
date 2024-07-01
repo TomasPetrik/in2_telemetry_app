@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/manual_measurement_contract.dart';
@@ -15,6 +16,7 @@ import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_
 import 'package:scalesoft_app/data/providers/device_db_provider.dart';
 import 'package:scalesoft_app/data/providers/device_prototype_db_provider.dart';
 import 'package:scalesoft_app/data/providers/measurements_db_provider.dart';
+import 'package:scalesoft_app/data/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/data/providers/user_db_provider.dart';
 import 'package:scalesoft_app/data/providers/when_template_db_provider.dart';
 import 'package:scalesoft_app/managers/background_measurement_manager.dart';
@@ -29,6 +31,7 @@ import 'package:scalesoft_app/repositories/time_settings_repository.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
+import 'package:scalesoft_app/utils/helpers/notifications_helper.dart';
 
 @singleton
 class SyncService {
@@ -44,6 +47,7 @@ class SyncService {
   final DevicePrototypeDbProvider _devicePrototypeDbProvider;
   final WhenTemplateDbProvider _whenTemplateDbProvider;
   final DeviceDbProvider _deviceDbProvider;
+  final SettingsDbProvider _settingsDbProvider;
 
   SyncService(
     this._session,
@@ -58,6 +62,7 @@ class SyncService {
     this._devicePrototypeDbProvider,
     this._whenTemplateDbProvider,
     this._deviceDbProvider,
+    this._settingsDbProvider,
   );
 
   Future<void> setUserPlans(
@@ -219,7 +224,7 @@ class SyncService {
     _deviceDbProvider.updateUserDevices(userAccount.id, userInfo.assignedDevices ?? []);
     getIt<BackgroundMeasurementManager>().removeUnassignedDevices();
 
-    // userAccount.user = userInfo.currentUser;
+    _userDbProvider.updateUserFromContract(userAccount.id, userInfo.currentUser);
   }
 
   /* load today's and yesterday's measurement results */
@@ -262,6 +267,8 @@ class SyncService {
 
     for (final user in users) {
       try {
+        await updateUserData(user);
+
         await loadUserData(user.id);
 
         final now = DateTime.now();
@@ -275,20 +282,19 @@ class SyncService {
         );
 
         await _session.waitForChange((x) => x.id == user.id && x.lastSyncAt.isAtSameMomentAs(now));
-        final updatedUser = _session.state.allUsers.firstWhere((x) => x.id == user.id);
-
-        await updateUserData(updatedUser);
       } on DioException {
         //for any failed sync set flag and go on next account
         await _userDbProvider.updateUser(user.id, const UsersCompanion(lastSyncFailed: Value(true)));
       }
     }
-    // TODO
-    // NotificationsHelper.setNotifications(
-    //   appSettings: _appSettingsDbProvider.read(),
-    //   notificationsPlugin: FlutterLocalNotificationsPlugin(),
-    //   userAccounts: _accountDbProvider.getAll(),
-    // );
+
+    var appSettings = await _settingsDbProvider.getSettings();
+
+    NotificationsHelper.setNotifications(
+      appSettings: appSettings,
+      notificationsPlugin: FlutterLocalNotificationsPlugin(),
+      userAccounts: _session.state.allUsers.toList(),
+    );
   }
 
   Future<void> syncResults() async {
@@ -325,10 +331,12 @@ class SyncService {
           measurementContracts.add(contract);
         }
 
-        await _carePlansRepository.sendMeasurementsFromDevice(
-          userId: user.id,
-          measurements: measurementContracts,
-        );
+        if (measurementContracts.isNotEmpty) {
+          await _carePlansRepository.sendMeasurementsFromDevice(
+            userId: user.id,
+            measurements: measurementContracts,
+          );
+        }
 
         await _measurementsDbProvider.updateUserMeasurements(
           user.id,

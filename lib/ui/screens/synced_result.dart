@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -9,8 +10,10 @@ import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/data/providers/measurements_db_provider.dart';
 import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/report_service.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -74,11 +77,8 @@ class SyncedResult extends StatelessWidget {
     return null;
   }
 
-  bool _exceededValues() {
-    final UserAccount userAccount = getIt<AccountDbProvider>().get(userId)!;
-    return userAccount.user.measurementThresholds
-            ?.exceededValues(hwMeasurementResult.measurement!) ==
-        true;
+  bool _exceededValues(UserModel user) {
+    return user.thresholds?.exceededLimits(hwMeasurementResult.measurement) ?? false;
   }
 
   @override
@@ -105,15 +105,22 @@ class SyncedResult extends StatelessWidget {
                       ),
                     ),
                     Gaps.gap6,
-                    Text(
-                      _exceededValues()
-                          ? localization.measurement_summary_screen_exceeded_values
-                          : localization.measurement_summary_screen_success_subtitle,
-                      style: ScaleTextStyles.label.apply(
-                        color: _exceededValues()
-                            ? Theme.of(context).colorScheme.error
-                            : Theme.of(context).colorScheme.onSecondary,
-                      ),
+                    BlocBuilder<UserCubit, UserCubitState>(
+                      bloc: getIt<UserCubit>(),
+                      builder: (context, state) {
+                        final user = state.allUsers.firstWhere((x) => x.id == userId);
+                        final thresholdsExceeded = _exceededValues(user);
+                        return Text(
+                          thresholdsExceeded
+                              ? localization.measurement_summary_screen_exceeded_values
+                              : localization.measurement_summary_screen_success_subtitle,
+                          style: ScaleTextStyles.label.apply(
+                            color: thresholdsExceeded
+                                ? Theme.of(context).colorScheme.error
+                                : Theme.of(context).colorScheme.onSecondary,
+                          ),
+                        );
+                      },
                     ),
                     Gaps.gap16,
                     Container(

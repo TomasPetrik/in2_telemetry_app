@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:scalesoft_app/data/entities/json_entities/list_converters.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/auth_token.dart';
+import 'package:scalesoft_app/data/entities/json_entities/user/measurement_thresholds.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/time_setting.dart';
 
 class Users extends Table {
@@ -36,6 +37,8 @@ class Users extends Table {
   TextColumn get notificationIds => text().map(const IntListConverter()).withDefault(const Constant('[]'))();
 
   TextColumn get timeSettings => text().map(TimeSetting.listConverter)();
+
+  TextColumn get thresholds => text().map(MeasurementThresholds.converter).nullable()();
 
   @override
   List<Set<Column>> get uniqueKeys => [

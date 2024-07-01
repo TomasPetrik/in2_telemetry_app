@@ -20,19 +20,13 @@ import 'package:scalesoft_app/data/entities/json_entities/care_plan/care_plan_au
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/care_plan_version.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_evaluation_aggregated.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_evaluation_item.dart';
-import 'package:scalesoft_app/data/entities/json_entities/measurement_thresholds/blood_pressure_thresholds.dart';
-import 'package:scalesoft_app/data/entities/json_entities/measurement_thresholds/heart_rate_thresholds.dart';
-import 'package:scalesoft_app/data/entities/json_entities/measurement_thresholds/overall_health_thresholds.dart';
-import 'package:scalesoft_app/data/entities/json_entities/measurement_thresholds/oxygen_saturation_thresholds.dart';
-import 'package:scalesoft_app/data/entities/json_entities/measurement_thresholds/shortness_of_breath_thresholds.dart';
-import 'package:scalesoft_app/data/entities/json_entities/measurement_thresholds/temperature_thresholds.dart';
 import 'package:scalesoft_app/data/entities/json_entities/list_converters.dart';
+import 'package:scalesoft_app/data/entities/json_entities/user/measurement_thresholds.dart';
 import 'package:scalesoft_app/data/tables/app_settings.dart';
 import 'package:scalesoft_app/data/tables/care_plans.dart';
 import 'package:scalesoft_app/data/tables/device_prototypes.dart';
 import 'package:scalesoft_app/data/tables/devices.dart';
 import 'package:scalesoft_app/data/tables/log_events.dart';
-import 'package:scalesoft_app/data/tables/measurement_thresholds.dart';
 import 'package:scalesoft_app/data/tables/measurements.dart';
 import 'package:scalesoft_app/data/tables/physical_devices.dart';
 import 'package:scalesoft_app/data/tables/users.dart';
@@ -55,7 +49,6 @@ part 'app_database.drift.dart';
   tables: [
     CarePlans,
     Users,
-    MeasurementThresholds,
     WhenTemplates,
     DevicePrototypes,
     Devices,
@@ -109,6 +102,12 @@ LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
     final file = File(p.join(dbFolder.path, 'db.sqlite'));
+
+    // Uncomment to reset database on app startup - useful for development
+    // if (await file.exists()) {
+    //   await file.delete();
+    // }
+
     return NativeDatabase.createInBackground(file);
   });
 }

@@ -18,4 +18,17 @@ class OxygenSaturationThresholds {
     fromJson: (json) => OxygenSaturationThresholds.fromJson(json as Map<String, Object?>),
     toJson: (obj) => obj.toJson(),
   );
+
+  bool exceeds(int? value) {
+    if (value != null) {
+      if (percentageMin != null && value < percentageMin!) {
+        return true;
+      }
+      if (percentageMax != null && value > percentageMax!) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 }

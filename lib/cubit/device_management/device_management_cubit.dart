@@ -27,7 +27,10 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
 
   Future<List<DeviceModel>> getAssignedDevices(MeasurementType measurementType) async {
     final userDevices = await _deviceDbProvider.getByUser(userId);
-    return userDevices.where((x) => !x.isPersonal).toList();
+    return userDevices
+        .where((x) => x.prototype.supportedMeasurementTypes.contains(measurementType))
+        .where((x) => !x.isPersonal)
+        .toList();
   }
 
   //Personal devices which are not matching with user devices and user has also permission
@@ -49,7 +52,9 @@ class DeviceManagementCubit extends Cubit<DeviceManagementState> {
     );
 
     // Filter out devices assigned to this user - these aren't personal devices.
-    final result = allowedDevices.where((x) => x.isPersonal || x.prototype.userId != userId);
+    final result = allowedDevices
+        .where((x) => x.prototype.supportedMeasurementTypes.contains(measurementType))
+        .where((x) => x.isPersonal || x.prototype.userId != userId);
 
     return result.toList();
   }

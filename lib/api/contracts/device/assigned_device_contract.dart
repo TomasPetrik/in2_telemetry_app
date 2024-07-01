@@ -24,12 +24,4 @@ class AssignedDeviceContract {
 
   @override
   String toString() => toJson().toString();
-
-  // TODO: Move this
-  /// Checks if [this] and [other] device refer to the same real-world device
-  bool isEquivalentTo(AssignedDeviceContract other) {
-    return (deviceIdentifier == other.deviceIdentifier &&
-        modelName == other.modelName &&
-        deviceManufacturer == other.deviceManufacturer);
-  }
 }

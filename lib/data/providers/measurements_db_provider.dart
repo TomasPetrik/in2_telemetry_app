@@ -133,22 +133,4 @@ class MeasurementsDbProvider {
   Future<void> updateUserMeasurements(int userId, MeasurementsCompanion changes) async {
     return await _database.measurementsDao.updateAllUserMeasurements(userId, changes);
   }
-
-// /// Applies the given [changes] to all measurements of a given user.
-// /// Primarily used for marking measurements as uploaded.
-// Future<void> updateAllUserMeasurements(int userId, MeasurementsCompanion changes) async {
-//   await (update(measurements)..where((x) => x.userId.equals(userId))).write(changes);
-// }
-//
-// Future<DateTime?> getUserEarliestMeasurementTime(int userId) async {
-//   final result = await (selectOnly(measurements)
-//     ..where(measurements.userId.equals(userId))
-//     ..orderBy([OrderingTerm(expression: measurements.measuredAt, mode: OrderingMode.asc)])
-//     ..addColumns([measurements.measuredAt])
-//     ..limit(1))
-//       .map((row) => row.read(measurements.measuredAt))
-//       .getSingleOrNull();
-//
-//   return result;
-// }
 }

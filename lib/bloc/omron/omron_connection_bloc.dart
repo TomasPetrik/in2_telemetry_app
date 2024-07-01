@@ -366,7 +366,13 @@ class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnection
           severity: LogSeverity.info,
           message: EventsConstants.eventDeviceFound,
         );
-        await foundDevice.device.connect(autoConnect: false);
+        try {
+          await foundDevice.device.connect(autoConnect: false);
+        } catch (e) {
+          debugPrint('dev is already connected');
+          await foundDevice.device.disconnect();
+          await foundDevice.device.connect(autoConnect: false);
+        }
         await pairOrGetMeasurement(foundDevice.device, deviceInfo, emit);
       }
     }

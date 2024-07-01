@@ -1,3 +1,4 @@
+import 'package:scalesoft_app/data/entities/json_entities/user/measurement_thresholds.dart';
 import 'package:scalesoft_app/model/hospital.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/auth_token.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/time_setting.dart';
@@ -22,6 +23,7 @@ class UserModel {
   final List<int> notificationIds;
   final List<TimeSetting> timeSettings;
   UserProblemType? problem;
+  final MeasurementThresholds? thresholds;
 
   UserModel({
     required this.id,
@@ -42,6 +44,7 @@ class UserModel {
     required this.notificationIds,
     required this.timeSettings,
     this.problem,
+    this.thresholds,
   });
 
   bool get isRepresentedPerson => parentId != null;

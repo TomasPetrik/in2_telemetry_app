@@ -20,4 +20,24 @@ class BloodPressureThresholds {
     fromJson: (json) => BloodPressureThresholds.fromJson(json as Map<String, Object?>),
     toJson: (obj) => obj.toJson(),
   );
+
+  bool exceeds(int? systolic, int? diastolic) {
+    if (systolic != null) {
+      if (systolicMin != null && systolic < systolicMin!) {
+        return true;
+      }
+      if (systolicMax != null && systolic > systolicMax!) {
+        return true;
+      }
+    }
+    if (diastolic != null) {
+      if (diastolicMin != null && diastolic < diastolicMin!) {
+        return true;
+      }
+      if (diastolicMax != null && diastolic > diastolicMax!) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

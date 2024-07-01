@@ -7,7 +7,7 @@ part 'shortness_of_breath_thresholds.g.dart';
 
 @JsonSerializable()
 class ShortnessOfBreathThresholds {
-  ShortnessOfBreathLevel max;
+  ShortnessOfBreathLevel? max;
 
   ShortnessOfBreathThresholds(this.max);
 
@@ -20,4 +20,14 @@ class ShortnessOfBreathThresholds {
     fromJson: (json) => ShortnessOfBreathThresholds.fromJson(json as Map<String, Object?>),
     toJson: (obj) => obj.toJson(),
   );
+
+  bool exceeds(ShortnessOfBreathLevel? value) {
+    if (value != null) {
+      if (max != null && value.value > max!.value) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 }

@@ -5,10 +5,10 @@ part 'heart_rate_thresholds.g.dart';
 
 @JsonSerializable()
 class HeartRateThresholds {
-  int? percentageMin;
-  int? percentageMax;
+  int? min;
+  int? max;
 
-  HeartRateThresholds(this.percentageMin, this.percentageMax);
+  HeartRateThresholds(this.min, this.max);
 
   factory HeartRateThresholds.fromJson(Map<String, dynamic> json) => _$HeartRateThresholdsFromJson(json);
 
@@ -18,4 +18,17 @@ class HeartRateThresholds {
     fromJson: (json) => HeartRateThresholds.fromJson(json as Map<String, Object?>),
     toJson: (obj) => obj.toJson(),
   );
+
+  bool exceeds(int? heartRate) {
+    if (heartRate != null) {
+      if (min != null && heartRate < min!) {
+        return true;
+      }
+      if (max != null && heartRate > max!) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 }
