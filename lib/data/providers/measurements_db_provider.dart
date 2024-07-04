@@ -23,13 +23,13 @@ class MeasurementsDbProvider {
       final companion = switch (measurementType) {
         MeasurementType.temperature => MeasurementsCompanion.insert(
             userId: userId,
-            measuredAt: measurement.measurementDateTime,
+            measuredAt: measurement.measurementDateTime.toUtc(),
             measurementType: measurementType,
             temperature: Value(measurement.value),
           ),
         MeasurementType.bloodPressure => MeasurementsCompanion.insert(
             userId: userId,
-            measuredAt: measurement.measurementDateTime,
+            measuredAt: measurement.measurementDateTime.toUtc(),
             measurementType: measurementType,
             bloodPressure: Value(
               BloodPressureValue(
@@ -40,7 +40,7 @@ class MeasurementsDbProvider {
           ),
         MeasurementType.oxygenSaturation => MeasurementsCompanion.insert(
             userId: userId,
-            measuredAt: measurement.measurementDateTime,
+            measuredAt: measurement.measurementDateTime.toUtc(),
             measurementType: measurementType,
             oxygenSaturation: Value(measurement.value?.round()),
           ),
@@ -51,25 +51,25 @@ class MeasurementsDbProvider {
           null,
         MeasurementType.heartRate => MeasurementsCompanion.insert(
             userId: userId,
-            measuredAt: measurement.measurementDateTime,
+            measuredAt: measurement.measurementDateTime.toUtc(),
             measurementType: measurementType,
             heartRate: Value(measurement.value?.round()),
           ),
         MeasurementType.respiratoryRate => MeasurementsCompanion.insert(
             userId: userId,
-            measuredAt: measurement.measurementDateTime,
+            measuredAt: measurement.measurementDateTime.toUtc(),
             measurementType: measurementType,
             respiratoryRate: Value(measurement.value?.round()),
           ),
         MeasurementType.shortnessOfBreath => MeasurementsCompanion.insert(
             userId: userId,
-            measuredAt: measurement.measurementDateTime,
+            measuredAt: measurement.measurementDateTime.toUtc(),
             measurementType: measurementType,
             shortnessOfBreath: Value(ShortnessOfBreathLevel.fromValue(measurement.value)),
           ),
         MeasurementType.overallHealth => MeasurementsCompanion.insert(
             userId: userId,
-            measuredAt: measurement.measurementDateTime,
+            measuredAt: measurement.measurementDateTime.toUtc(),
             measurementType: measurementType,
             overallHealth: Value(OverallHealthState.fromValue(measurement.value)),
           ),
@@ -85,7 +85,7 @@ class MeasurementsDbProvider {
   Future<int> saveModel(MeasurementCreateModel model) async {
     final companion = MeasurementsCompanion.insert(
       userId: model.userId,
-      measuredAt: model.measuredAt,
+      measuredAt: model.measuredAt.toUtc(),
       measurementType: model.measurementType,
       deviceId: Value(model.deviceId),
       temperature: Value(model.temperature),

@@ -24,7 +24,7 @@ class ScaleApp extends StatelessWidget {
       stream: getIt<SettingsDbProvider>().watchSettings().map<ThemeMode>((x) => x.themeMode),
       initialData: settings.themeMode,
       builder: (ctx, snapshot) {
-        final ThemeMode themeMode = snapshot.data!;
+        final ThemeMode themeMode = snapshot.data ?? ThemeMode.dark;
         return MaterialApp.router(
           title: 'FONS Care',
           debugShowCheckedModeBanner: false,

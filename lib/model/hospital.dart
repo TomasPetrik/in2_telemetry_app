@@ -22,4 +22,9 @@ class Hospital {
 
   @override
   int get hashCode => id.hashCode;
+
+  @override
+  String toString() {
+    return "Hospital $title, id:$id, measurementTypes:$enabledMeasurementTypes";
+  }
 }

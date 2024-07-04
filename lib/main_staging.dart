@@ -8,5 +8,6 @@ Future<void> main() async {
 
 @pragma('vm:entry-point')
 Future<void> watchSyncBackgroundTask() async {
+  Config.appFlavor = Flavor.staging;
   await watchSyncBackgroundTaskImpl();
 }

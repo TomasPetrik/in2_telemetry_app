@@ -61,7 +61,7 @@ class StagingConfiguration extends BaseConfiguration {
       ),
       enabledMeasurementTypes: MeasurementType.values
           .where(
-            (x) => x != MeasurementType.battery,
+            (x) => ![MeasurementType.globalPosition, MeasurementType.battery].any((y) => y == x),
           )
           .toList(),
     ),

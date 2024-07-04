@@ -81,6 +81,7 @@ class AppDatabase extends _$AppDatabase {
           await validateDatabaseSchema();
         }
         await customStatement('PRAGMA foreign_keys = ON');
+        await customStatement('PRAGMA journal_mode=WAL;');
       },
       onCreate: (Migrator m) async {
         await m.createAll();

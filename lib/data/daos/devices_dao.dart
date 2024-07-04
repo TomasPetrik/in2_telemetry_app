@@ -54,6 +54,21 @@ class DevicesDao extends DatabaseAccessor<AppDatabase> with _$DevicesDaoMixin {
     return result;
   }
 
+  Future<List<DeviceDbResult>> getAll() async {
+    final query = select(devices).join([
+      innerJoin(physicalDevices, devices.physicalDeviceId.equalsExp(physicalDevices.id)),
+      innerJoin(devicePrototypes, devices.prototypeId.equalsExp(devicePrototypes.id)),
+    ]);
+
+    final result = await query
+        .map(
+          (row) =>
+          DeviceDbResult(row.readTable(devices), row.readTable(devicePrototypes), row.readTable(physicalDevices)),
+    )
+        .get();
+    return result;
+  }
+
   Future<DeviceDbResult?> getByPhysicalDeviceAndUser(int userId, int physicalDeviceId) async {
     final query = select(devices).join([
       innerJoin(physicalDevices, devices.physicalDeviceId.equalsExp(physicalDevices.id)),

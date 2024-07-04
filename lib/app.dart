@@ -1,16 +1,15 @@
 import 'dart:async';
 
 import 'package:background_fetch/background_fetch.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/interceptors/token_interceptor.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_bloc.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_event.dart';
-import 'package:scalesoft_app/constants/configuration_constants.dart';
+import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
+import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
 import 'package:scalesoft_app/globals.dart';
 import 'package:scalesoft_app/globals_initialization.dart';
@@ -45,13 +44,6 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
   /* Initialize assets first */
   tz.initializeTimeZones();
   await configureDependencies();
-  getIt<BackgroundMeasurementManager>().configureBackgroundServiceMethodCallHandler();
-  final dio = getIt<Dio>(instanceName: ConfigurationConstants.privateDioName);
-  final tokenInterceptor = getIt<TokenInterceptor>();
-  if (!dio.interceptors.contains(tokenInterceptor)) {
-    getIt<ReportService>().trackEvent(severity: LogSeverity.info, message: 'BS - added interceptor');
-    dio.interceptors.add(tokenInterceptor);
-  }
 
   getIt<ReportService>().trackEvent(severity: LogSeverity.info, message: 'BS - backgroundFetchHeadlessTask() called');
 
@@ -80,6 +72,7 @@ Future<void> run() async {
 }
 
 Future<void> watchSyncBackgroundTaskImpl() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
 
   getIt<BackgroundMeasurementManager>().configureBackgroundServiceMethodCallHandler();
@@ -95,6 +88,9 @@ Future<void> _main({
 
       tz.initializeTimeZones();
       initializeGlobals(themeMode: themeMode, locale: locale);
+      await configureDependencies();
+
+      getIt<ContentBloc>().add(const CheckLastLoggedUserContentEvent());
 
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
@@ -182,10 +178,6 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
   }
 
   Future<AppSetting> init() async {
-    await configureDependencies();
-
-    getIt<Dio>(instanceName: ConfigurationConstants.privateDioName).interceptors.add(getIt<TokenInterceptor>());
-
     final settingsDbProvider = getIt<SettingsDbProvider>();
 
     var appSettings = await settingsDbProvider.getSettings();

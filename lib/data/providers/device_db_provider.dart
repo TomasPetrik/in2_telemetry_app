@@ -101,6 +101,11 @@ class DeviceDbProvider {
     return entities.map(DeviceModel.fromEntity).toList();
   }
 
+  Future<List<DeviceModel>> getAll() async {
+    final entities = await _database.devicesDao.getAll();
+    return entities.map(DeviceModel.fromEntity).toList();
+  }
+
   Future<List<DeviceModel>> getDistinctPairedDevices() async {
     final entities = await _database.devicesDao.getAllPairedDevices();
     final distinct = entities.distinctBy((x) => x.physicalDevice.id);
@@ -128,7 +133,7 @@ class DeviceDbProvider {
     );
 
     const changes = PhysicalDevicesCompanion(isPaired: Value(true));
-    _database.devicesDao.updatePhysicalDevice(physicalDevice.id, changes);
+    await _database.devicesDao.updatePhysicalDevice(physicalDevice.id, changes);
 
     final existingDevice = await _database.devicesDao.getByPhysicalDeviceAndUser(userId, physicalDevice.id);
     if (existingDevice != null) {
@@ -147,5 +152,9 @@ class DeviceDbProvider {
 
       return DeviceModel.fromEntity(newDevice!);
     }
+  }
+
+  Future<void> updateDevice(int deviceId, DevicesCompanion changes) async {
+    await _database.devicesDao.updateDevice(deviceId, changes);
   }
 }

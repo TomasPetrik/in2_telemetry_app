@@ -42,7 +42,7 @@ extension DateParse on DateTime {
 
   DateTime get endOfDay => tomorrow;
 
-  TimeOnly toTimeOfDay() => TimeOnly.fromDateTime(this);
+  TimeOnly toTimeOfDay() => TimeOnly.fromDateTime(toLocal());
 
   bool isSameDate(DateTime other) => year == other.year && month == other.month && day == other.day;
 

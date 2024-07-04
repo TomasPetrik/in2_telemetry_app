@@ -93,7 +93,8 @@ class ResultsHelper {
 
       final evaluationItem = plannedMeasurement.fulfillmentEvaluationItem!;
 
-      final measurementTimes = evaluationItem.actualMeasurementTimes.where((time) => time.isAfterOrAt(startOfDay) && time.isBefore(startOfDay.endOfDay));
+      final measurementTimes = evaluationItem.actualMeasurementTimes
+          .where((time) => time.isAfterOrAt(startOfDay) && time.isBefore(startOfDay.endOfDay));
       // Add one item per measurement time
       // If requiredCount > actualCount, add another item representing the remaining measurements
       final user = users.firstWhere((x) => x.id == plannedMeasurement.userId);
@@ -148,7 +149,9 @@ class ResultsHelper {
             x.user.id == measurement.userId,
       );
 
-      if (matchingResults.isEmpty && measurement.measuredAt.isAfterOrAt(startOfDay) && measurement.measuredAt.isBefore(startOfDay.endOfDay)) {
+      if (matchingResults.isEmpty &&
+          measurement.measuredAt.isAfterOrAt(startOfDay) &&
+          measurement.measuredAt.isBefore(startOfDay.endOfDay)) {
         allResults.add(
           MeasurementResultViewModel(
             measurement.measurementType,
@@ -176,7 +179,9 @@ class ResultsHelper {
             x.user.id == measurement.userId,
       );
 
-      if (matchingResults.isEmpty && measurement.measurementDateTime.isAfterOrAt(startOfDay) && measurement.measurementDateTime.isBefore(startOfDay.endOfDay)) {
+      if (matchingResults.isEmpty &&
+          measurement.measurementDateTime.isAfterOrAt(startOfDay) &&
+          measurement.measurementDateTime.isBefore(startOfDay.endOfDay)) {
         allResults.add(
           MeasurementResultViewModel(
             measurement.measurementType,
@@ -242,7 +247,10 @@ class ResultsHelper {
       users: users,
     );
 
-    return resultsOfDay;
+    // Filter out unsupported metrics - usually battery measurements.
+    return resultsOfDay
+        .where((x) => x.wasPlanned || x.user.hospital.enabledMeasurementTypes.contains(x.measurementType))
+        .toList();
   }
 
   static CandleData getCandleByMeasurementResult(

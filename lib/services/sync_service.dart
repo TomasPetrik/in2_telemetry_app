@@ -297,7 +297,7 @@ class SyncService {
     );
   }
 
-  Future<void> syncResults() async {
+  Future<void> syncResults({bool fetchMeasurementResults = true}) async {
     final users = _session.state.allUsers;
 
     for (final user in users) {
@@ -343,7 +343,7 @@ class SyncService {
           const MeasurementsCompanion(isUploaded: Value(true)),
         );
 
-        if (user.permissions.contains(Permissions.viewOwnMeasurementData)) {
+        if (user.permissions.contains(Permissions.viewOwnMeasurementData) && fetchMeasurementResults) {
           await loadMeasurementResults(user.id);
         }
 
