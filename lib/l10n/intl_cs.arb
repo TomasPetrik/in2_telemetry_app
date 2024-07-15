@@ -97,6 +97,8 @@
     },
     "server_error_title": "Chyba",
     "server_error_desc": "Zde je něco v nepořádku. Zkuste akci opakovat později.",
+    "login_needed_title": "Znovu se přihlaste",
+    "login_needed_desc": "Došlo k zásadním změnám v aplikaci, proto je nyní jednorázově nutné znovu provést přihlášení.",
     "common_measurement_types": "{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} shortnessOfBreath{Dušnost} overallHealth{Celkový zdravotní stav} other{Jiný}}",
     "@common_measurement_types": {
         "description": "Measurement types",

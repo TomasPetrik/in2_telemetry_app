@@ -466,6 +466,26 @@ class I10n {
     );
   }
 
+  /// `Znovu se přihlaste`
+  String get login_needed_title {
+    return Intl.message(
+      'Znovu se přihlaste',
+      name: 'login_needed_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Došlo k zásadním změnám v aplikaci, proto je nyní jednorázově nutné znovu provést přihlášení.`
+  String get login_needed_desc {
+    return Intl.message(
+      'Došlo k zásadním změnám v aplikaci, proto je nyní jednorázově nutné znovu provést přihlášení.',
+      name: 'login_needed_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} shortnessOfBreath{Dušnost} overallHealth{Celkový zdravotní stav} other{Jiný}}`
   String common_measurement_types(Object measurementType) {
     return Intl.select(

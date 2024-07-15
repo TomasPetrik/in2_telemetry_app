@@ -4,6 +4,7 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:scalesoft_app/bloc/notifications/notifications_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
+import 'package:scalesoft_app/data/providers/user_db_provider.dart';
 import 'package:scalesoft_app/globals.dart';
 import 'package:scalesoft_app/globals_initialization.dart';
 import 'package:scalesoft_app/locales.dart';
@@ -29,6 +31,7 @@ import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/no_user_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_added_route.dart';
 import 'package:scalesoft_app/ui/scale_app.dart';
+import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/screens/splash_screen.dart';
 import 'package:scalesoft_app/utils/helpers/appearance_helper.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -120,6 +123,7 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
   GoRouter? _goRouter;
   bool _isInitializing = true;
   AppSetting? settings;
+  bool shouldShowLoginNeeded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +162,7 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
       goRouter: _goRouter!,
       onInit: (context, state) {
         final path = state.whenOrNull(
-          unauthenticated: () => '/${NoUserRoute.name}',
+          unauthenticated: () => '/${NoUserRoute.name}?${NoUserRoute.showLoginNeededKey}=$shouldShowLoginNeeded',
           onUserAdded: (UserModel userAccount) => '/${UserAddedRoute.name}/${userAccount.id}',
           onDaylightAppearanceChanged: (originalLocation) => originalLocation,
           activeMode: (key) => '/${DashboardRoute.name}',
@@ -178,6 +182,25 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
   }
 
   Future<AppSetting> init() async {
+    final dbFolder = await getApplicationDocumentsDirectory();
+    final hiveFiles = await dbFolder.list().where((x)=>x.path.endsWith("hive")).toList();
+
+    final oldDatabaseExists = hiveFiles.isNotEmpty;
+    if(oldDatabaseExists){
+      for(final file in hiveFiles){
+        await file.delete();
+      }
+    }
+
+    final userProvider = getIt<UserDbProvider>();
+    final userCount = await userProvider.countUsers();
+
+    final shouldShowLoginNeeded = oldDatabaseExists && userCount == 0;
+    setState(() {
+      this.shouldShowLoginNeeded = shouldShowLoginNeeded;
+    });
+
+
     final settingsDbProvider = getIt<SettingsDbProvider>();
 
     var appSettings = await settingsDbProvider.getSettings();

@@ -342,6 +342,20 @@ mixin BottomSheetMixin {
       },
     );
   }
+
+  Future<void> showLoginNeeded(
+    BuildContext context,
+  ) async {
+    await showModalBottomSheet(
+      context: context,
+      useRootNavigator: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return BottomDialog.loginNeeded(context: context);
+      },
+    );
+  }
 }
 
 enum SwitchUserAction {

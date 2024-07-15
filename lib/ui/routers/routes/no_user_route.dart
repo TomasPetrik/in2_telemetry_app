@@ -5,6 +5,7 @@ import 'package:scalesoft_app/ui/screens/onboarding_screen.dart';
 class NoUserRoute extends ApplicationRoute {
   static const name = 'no-user';
   static const path = '/no-user';
+  static const showLoginNeededKey = 'showLoginNeeded';
 
   NoUserRoute({
     required super.navigator,
@@ -19,7 +20,13 @@ class NoUserRoute extends ApplicationRoute {
       routes: routes,
       parentNavigatorKey: navigator,
       builder: (context, state) {
-        return const OnboardingScreen();
+        bool showLoginNeeded = false;
+        
+        if(state.uri.queryParameters.containsKey(showLoginNeededKey)){
+          showLoginNeeded = bool.parse(state.uri.queryParameters[showLoginNeededKey]!);
+        }
+
+        return OnboardingScreen(showLoginNeeded);
       },
     );
   }

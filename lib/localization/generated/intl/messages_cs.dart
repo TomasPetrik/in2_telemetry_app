@@ -515,6 +515,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Použité licence"),
         "licenses_screen_title":
             MessageLookupByLibrary.simpleMessage("Použité licence"),
+        "login_needed_desc": MessageLookupByLibrary.simpleMessage(
+            "Došlo k zásadním změnám v aplikaci, proto je nyní jednorázově nutné znovu provést přihlášení."),
+        "login_needed_title":
+            MessageLookupByLibrary.simpleMessage("Znovu se přihlaste"),
         "manual_measurement_screen_measurement_time":
             MessageLookupByLibrary.simpleMessage("Čas odečtu"),
         "manual_measurement_screen_title":

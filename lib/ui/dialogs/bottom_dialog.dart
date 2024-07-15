@@ -237,6 +237,22 @@ class BottomDialog extends StatelessWidget {
     );
   }
 
+  factory BottomDialog.loginNeeded({
+    Key? key,
+    required BuildContext context,
+  }) {
+    return _BottomDialog(
+      title: localization.login_needed_title,
+      description: localization.login_needed_desc,
+      iconPath: 'assets/icons/icon_triangle_exclamation_big.svg',
+      iconColor: Theme.of(context).colorScheme.tertiary,
+      positiveButtonStyle: ButtonStyle(
+        buttonType: ButtonType.secondary,
+        label: localization.common_close,
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
