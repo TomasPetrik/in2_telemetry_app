@@ -7,6 +7,8 @@ class Hospital {
   final String iconPath;
   final AuthData authData;
   final List<MeasurementType> enabledMeasurementTypes;
+  final String clientSecret;
+  final bool isStaging;
 
   const Hospital({
     required this.id,
@@ -14,6 +16,8 @@ class Hospital {
     required this.iconPath,
     required this.authData,
     required this.enabledMeasurementTypes,
+    required this.clientSecret,
+    this.isStaging = false,
   });
 
   @override

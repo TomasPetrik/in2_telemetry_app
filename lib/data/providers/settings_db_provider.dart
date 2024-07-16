@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/config.dart';
+import 'package:scalesoft_app/configuration/hospitals_configuration.dart';
 import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/globals.dart';
 
@@ -19,15 +19,15 @@ class SettingsDbProvider {
     return await _createDefaultAppSettings();
   }
 
-  Stream<AppSetting> watchSettings()  {
+  Stream<AppSetting> watchSettings() {
     final stream = _database.select(_database.appSettings).watchSingleOrNull();
     stream.first.then((initialValue) {
-      if(initialValue == null){
+      if (initialValue == null) {
         _createDefaultAppSettings();
       }
     });
 
-    return stream.where((event) => event!=null).cast();
+    return stream.where((event) => event != null).cast();
   }
 
   Future<AppSetting> updateAppSettings(AppSettingsCompanion changes) async {
@@ -38,6 +38,10 @@ class SettingsDbProvider {
     }
 
     return (await _database.update(_database.appSettings).writeReturning(changes)).first;
+  }
+
+  Future<void> enableStagingHospitals() async {
+    await updateAppSettings(const AppSettingsCompanion(enableStagingHospitals: Value(true)));
   }
 
   Future<AppSetting> _createDefaultAppSettings() async {
@@ -51,7 +55,7 @@ class SettingsDbProvider {
             enableNotifications: true,
             notifyAtStartOfMeasurement: true,
             notify10minBeforeMeasurement: false,
-            lastHospitalId: Config.value.hospitals.first.id,
+            lastHospitalId: HospitalsConfiguration.hospitals.firstWhere((x) => !x.isStaging).id,
             showAllUsers: false,
             currentCodeVerifier: '',
           ),

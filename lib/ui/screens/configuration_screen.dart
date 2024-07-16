@@ -34,6 +34,7 @@ import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blurred_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/image_widget.dart';
 import 'package:scalesoft_app/ui/widgets/settings_item.dart';
+import 'package:scalesoft_app/ui/widgets/staging_hospital_unlocker.dart';
 
 class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
   final List<MapEntry<Hospital, List<UserModel>>> hospitalUserEntries;
@@ -280,13 +281,14 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                       return Column(
                         children: [
                           Gaps.gap24,
-                          Center(
+                          StagingHospitalUnlocker(
+                          child: Center(
                             child: Text(
                               localization.app_version(packageInfo.version),
                               style: ScaleTextStyles.label.apply(
                                 color: Theme.of(context).colorScheme.tertiary,
                               ),
-                            ),
+                            ),),
                           ),
                         ],
                       );

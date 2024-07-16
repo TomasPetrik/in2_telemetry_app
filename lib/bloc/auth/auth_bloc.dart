@@ -5,12 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
 import 'package:oauth2/oauth2.dart';
+import 'package:scalesoft_app/configuration/hospitals_configuration.dart';
 import 'package:scalesoft_app/model/hospital.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/auth/auth_state.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
-import 'package:scalesoft_app/config.dart';
 import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/auth_token.dart';
@@ -66,22 +66,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     final settings = await _settingsDbProvider.getSettings();
 
-    final hospital = Config.value.hospitals.firstWhereOrNull((x) => x.id == settings.lastHospitalId);
+    final hospital = HospitalsConfiguration.hospitals.firstWhereOrNull((x) => x.id == settings.lastHospitalId);
     if (hospital == null) {
       return;
     }
 
     _grant = _authService.getAuthGrant(
-      Config.value.clientId,
-      Config.value.clientSecret,
+      HospitalsConfiguration.clientId,
+      hospital.clientSecret,
       hospital.authData.authUrl,
       hospital.authData.tokenUrl,
       settings.currentCodeVerifier,
     );
 
     _grant!.getAuthorizationUrl(
-      Uri.parse(Config.value.redirectUrl),
-      scopes: Config.value.scopes,
+      Uri.parse(HospitalsConfiguration.redirectUrl),
+      scopes: HospitalsConfiguration.scopes,
     );
 
     _authClient = await _grant!.handleAuthorizationResponse(
@@ -107,8 +107,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final codeVerifier = _authService.createCodeVerifier();
 
       _grant = _authService.getAuthGrant(
-        Config.value.clientId,
-        Config.value.clientSecret,
+        HospitalsConfiguration.clientId,
+        event.hospital.clientSecret,
         event.hospital.authData.authUrl,
         event.hospital.authData.tokenUrl,
         codeVerifier,
@@ -125,8 +125,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       _authClient = await _authService.authorize(
         _grant!,
-        Config.value.scopes,
-        Config.value.redirectUrl,
+        HospitalsConfiguration.scopes,
+        HospitalsConfiguration.redirectUrl,
       );
 
       if (_authClient != null) {

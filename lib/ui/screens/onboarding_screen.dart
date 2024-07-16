@@ -19,6 +19,7 @@ import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blurred_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/onboarding_item_desc.dart';
+import 'package:scalesoft_app/ui/widgets/staging_hospital_unlocker.dart';
 
 class OnboardingScreen extends StatefulWidget {
   final bool showLoginNeeded;
@@ -99,9 +100,11 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                               Dimensions.appBarHeight,
                         ),
                         Gaps.gap48,
-                        SvgPicture.asset(
-                          'assets/icons/icon_onboard_user.svg',
-                          color: Theme.of(context).colorScheme.tertiary,
+                        StagingHospitalUnlocker(
+                          child: SvgPicture.asset(
+                            'assets/icons/icon_onboard_user.svg',
+                            color: Theme.of(context).colorScheme.tertiary,
+                          ),
                         ),
                         Gaps.gap36,
                         Text(

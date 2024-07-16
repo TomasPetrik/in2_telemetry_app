@@ -17,4 +17,6 @@ class AppSettings extends Table {
   TextColumn get currentCodeVerifier => text()();
 
   BoolColumn get showAllUsers => boolean()();
+
+  BoolColumn get enableStagingHospitals => boolean().withDefault(const Constant(false))();
 }

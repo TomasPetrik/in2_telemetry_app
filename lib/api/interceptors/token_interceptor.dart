@@ -6,7 +6,7 @@ import 'package:scalesoft_app/api/client/account_api_client.dart';
 import 'package:scalesoft_app/api/client/auth_api_client.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
-import 'package:scalesoft_app/config.dart';
+import 'package:scalesoft_app/configuration/hospitals_configuration.dart';
 import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/auth_token.dart';
 import 'package:scalesoft_app/data/providers/user_db_provider.dart';
@@ -128,8 +128,8 @@ class TokenInterceptor extends Interceptor {
       tokenUrl,
       'refresh_token',
       refreshToken,
-      Config.value.clientId,
-      Config.value.clientSecret,
+      HospitalsConfiguration.clientId,
+      user.hospital.clientSecret,
     );
 
     final newToken = AuthToken(
