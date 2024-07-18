@@ -1,42 +1,41 @@
 import 'dart:async';
 
 import 'package:background_fetch/background_fetch.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:scalesoft_app/api/interceptors/token_interceptor.dart';
-import 'package:scalesoft_app/api/model/report/report.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_bloc.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_event.dart';
-import 'package:scalesoft_app/constants/configuration_constants.dart';
+import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
+import 'package:scalesoft_app/bloc/user_content/content_event.dart';
+import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
+import 'package:scalesoft_app/data/providers/user_db_provider.dart';
 import 'package:scalesoft_app/globals.dart';
 import 'package:scalesoft_app/globals_initialization.dart';
 import 'package:scalesoft_app/locales.dart';
 import 'package:scalesoft_app/managers/background_measurement_manager.dart';
-import 'package:scalesoft_app/model/app_settings.dart';
-import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/providers/settings_db_provider.dart';
+import 'package:scalesoft_app/data/providers/settings_db_provider.dart';
+import 'package:scalesoft_app/model/user_model.dart';
+import 'package:scalesoft_app/no_users_exception.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/ui/managers/content_manager.dart';
 import 'package:scalesoft_app/ui/routers/app_router.dart';
-import 'package:scalesoft_app/ui/routers/routes/appearance_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/blank_route.dart';
-import 'package:scalesoft_app/ui/routers/routes/configuration_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/no_user_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_added_route.dart';
 import 'package:scalesoft_app/ui/scale_app.dart';
+import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/screens/splash_screen.dart';
-import 'package:scalesoft_app/utils/extensions/locale_extensions.dart';
-import 'package:scalesoft_app/utils/extensions/theme_mode_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/appearance_helper.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:scalesoft_app/data/app_database.dart';
 
 // [Android-only] This "Headless Task" is run when the Android app is terminated with `enableHeadless: true`
 // Be sure to annotate your callback function to avoid issues in release mode on Flutter >= 3.3.0
@@ -47,34 +46,26 @@ void backgroundFetchHeadlessTask(HeadlessTask task) async {
 
   /* Initialize assets first */
   tz.initializeTimeZones();
-  await Hive.initFlutter();
   await configureDependencies();
-  getIt<BackgroundMeasurementManager>().configureBackgroundServiceMethodCallHandler();
-  final dio = getIt<Dio>(instanceName: ConfigurationConstants.privateDioName);
-  final tokenInterceptor = getIt<TokenInterceptor>();
-  if (!dio.interceptors.contains(tokenInterceptor)) {
-    getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - added interceptor');
-    dio.interceptors.add(tokenInterceptor);
-  }
 
-  getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - backgroundFetchHeadlessTask() called');
+  getIt<ReportService>().trackEvent(severity: LogSeverity.info, message: 'BS - backgroundFetchHeadlessTask() called');
 
   if (isTimeout) {
     // This task has exceeded its allowed running-time.
     // Must be stopped immediately
 
     getIt<ReportService>().trackEvent(
-      severity: Severity.warning,
+      severity: LogSeverity.warning,
       message: 'BS - headless task exceeded allowed running-time: $taskId',
     );
     return;
   }
 
-  getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - started sync');
+  getIt<ReportService>().trackEvent(severity: LogSeverity.info, message: 'BS - started sync');
 
   await getIt<SyncService>().syncAllData(syncAllUsers: true);
 
-  getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - finished sync');
+  getIt<ReportService>().trackEvent(severity: LogSeverity.info, message: 'BS - finished sync');
 
   BackgroundFetch.finish(taskId);
 }
@@ -84,8 +75,7 @@ Future<void> run() async {
 }
 
 Future<void> watchSyncBackgroundTaskImpl() async {
-  await Hive.initFlutter();
-
+  WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
 
   getIt<BackgroundMeasurementManager>().configureBackgroundServiceMethodCallHandler();
@@ -101,6 +91,9 @@ Future<void> _main({
 
       tz.initializeTimeZones();
       initializeGlobals(themeMode: themeMode, locale: locale);
+      await configureDependencies();
+
+      getIt<ContentBloc>().add(const CheckLastLoggedUserContentEvent());
 
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
@@ -114,13 +107,13 @@ Future<void> _main({
         debugPrintStack(stackTrace: stackTrace, label: error.toString());
         return;
       }
-      getIt<ReportService>().trackEvent(severity: Severity.error, message: stackTrace.toString());
+      getIt<ReportService>().trackEvent(severity: LogSeverity.error, message: stackTrace.toString());
     },
   );
 }
 
 class ScalesoftApp extends StatefulWidget {
-  const ScalesoftApp({Key? key}) : super(key: key);
+  const ScalesoftApp({super.key});
 
   @override
   State<ScalesoftApp> createState() => _ScalesoftAppState();
@@ -129,26 +122,48 @@ class ScalesoftApp extends StatefulWidget {
 class _ScalesoftAppState extends State<ScalesoftApp> {
   GoRouter? _goRouter;
   bool _isInitializing = true;
+  AppSetting? settings;
+  bool shouldShowLoginNeeded = false;
 
   @override
   Widget build(BuildContext context) {
-    if (_isInitializing) {
+    if (_isInitializing || settings == null) {
       return SplashScreen(
         loadingFunction: init,
-        onLoaded: () => setState(() {
+        onLoaded: (result) => setState(() {
           _isInitializing = false;
+          settings = result;
         }),
       );
     }
 
+    final originalErrorHandler = FlutterError.onError;
+
+    getIt<UserCubit>().stream.handleError(
+          (e) => {
+            if (e is NoUsersException && _goRouter != null)
+              {
+                _goRouter!.goNamed(NoUserRoute.name),
+              },
+          },
+        );
+
+    FlutterError.onError = (FlutterErrorDetails details) {
+      if (details.exception is NoUsersException && _goRouter != null) {
+        _goRouter!.goNamed(NoUserRoute.name);
+      } else if (originalErrorHandler != null) {
+        originalErrorHandler(details);
+      }
+    };
+
     _goRouter = AppRouter().router;
+
     return ContentManager(
       goRouter: _goRouter!,
       onInit: (context, state) {
         final path = state.whenOrNull(
-          unauthenticated: () => '/${NoUserRoute.name}',
-          onUserAdded: (UserAccount userAccount) => '/${UserAddedRoute.name}/${userAccount.user.muid}',
-          onAppearanceChanged: (_) => '/${ConfigurationRoute.name}/${AppearanceRoute.name}',
+          unauthenticated: () => '/${NoUserRoute.name}?${NoUserRoute.showLoginNeededKey}=$shouldShowLoginNeeded',
+          onUserAdded: (UserModel userAccount) => '/${UserAddedRoute.name}/${userAccount.id}',
           onDaylightAppearanceChanged: (originalLocation) => originalLocation,
           activeMode: (key) => '/${DashboardRoute.name}',
           tryCompleteAuth: (uri) => '/${BlankRoute.name}',
@@ -157,44 +172,52 @@ class _ScalesoftAppState extends State<ScalesoftApp> {
         if (path != null) {
           _goRouter!.go(path);
         }
-        return ScaleApp(goRouter: _goRouter!);
+        return ScaleApp(
+          goRouter: _goRouter!,
+          settings: settings!,
+        );
       },
       themeMode: buildConfig.themeMode,
     );
   }
 
-  Future<void> init() async {
-    await Hive.initFlutter();
+  Future<AppSetting> init() async {
+    final dbFolder = await getApplicationDocumentsDirectory();
+    final hiveFiles = await dbFolder.list().where((x)=>x.path.endsWith("hive")).toList();
 
-    await configureDependencies();
-
-    getIt<Dio>(instanceName: ConfigurationConstants.privateDioName).interceptors.add(getIt<TokenInterceptor>());
-
-    final settingsDbProvider = getIt<AppSettingsDbProvider>();
-
-    var appSettings = settingsDbProvider.read();
-    if (appSettings == null) {
-      appSettings = AppSettings(
-        themeModeLocal: buildConfig.themeMode.toLocal(),
-        localLocale: buildConfig.locale.toLocal(),
-        enabledNotifications: true,
-        notifyAtStartOfMeasurement: true,
-        autosetAppearance: false,
-      );
-      settingsDbProvider.write(appSettings);
+    final oldDatabaseExists = hiveFiles.isNotEmpty;
+    if(oldDatabaseExists){
+      for(final file in hiveFiles){
+        await file.delete();
+      }
     }
 
+    final userProvider = getIt<UserDbProvider>();
+    final userCount = await userProvider.countUsers();
+
+    final shouldShowLoginNeeded = oldDatabaseExists && userCount == 0;
+    setState(() {
+      this.shouldShowLoginNeeded = shouldShowLoginNeeded;
+    });
+
+
+    final settingsDbProvider = getIt<SettingsDbProvider>();
+
+    var appSettings = await settingsDbProvider.getSettings();
+
     AppearanceHelper.setSystemUIOverlayStyle(
-      appSettings.themeModeLocal.themeMode,
+      appSettings.themeMode,
     );
 
-    final notifcationsBloc = getIt<NotificationsBloc>();
-    notifcationsBloc.add(const NotificationsEvent.initPlugin());
-    notifcationsBloc.notificationsStreamController.stream.listen(
+    final notificationsBloc = getIt<NotificationsBloc>();
+    notificationsBloc.add(const NotificationsEvent.initPlugin());
+    notificationsBloc.notificationsStreamController.stream.listen(
       (_) {
         _goRouter?.goNamed(DashboardRoute.name);
         getIt<CarePlanBloc>().add(const RefreshStateEvent());
       },
     );
+
+    return appSettings;
   }
 }

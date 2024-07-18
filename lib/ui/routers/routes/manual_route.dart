@@ -5,7 +5,7 @@ import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
 
 class ManualRoute extends ApplicationRoute with PageBuilderMixin {
   static const name = 'how-it-works';
-  static const path = '/how-it-works';
+  static const path = 'how-it-works';
 
   ManualRoute({
     required super.navigator,

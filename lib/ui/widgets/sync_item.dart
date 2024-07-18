@@ -38,7 +38,7 @@ class SyncItem extends StatelessWidget {
       userSessionExpired: (userAccount) => WarningItem(
         title: localization.session_expired_title,
         description: localization.session_expired_description(
-          userAccount.user.fullName,
+          userAccount.fullName,
         ),
         buttonLabel: localization.common_log_in,
         icon: SvgPicture.asset(
@@ -48,7 +48,7 @@ class SyncItem extends StatelessWidget {
         onTap: () {
           getIt<AuthBloc>().add(
             Authenticate(
-              hospital: userAccount.hospital!,
+              hospital: userAccount.hospital,
             ),
           );
         },
@@ -129,14 +129,14 @@ class SyncItem extends StatelessWidget {
         ),
         buttonType: SmallButtonType.none,
         onTap: () {
-          getIt<SyncBloc>().add(SyncEvent.resolveUpdatedUserPlan(carePlan));
+          getIt<SyncBloc>().add(SyncEvent.resolveUpdatedUserPlan(carePlan.id));
         },
       ),
       someUsersCarePlanChanged: (userAccount, carePlan) => WarningItem(
         title: localization.notification_widget_plan_changed_title,
         description:
             localization.notification_widget_plan_changed_for_user_desc(
-          userAccount.user.fullName,
+          userAccount.fullName,
           localization.common_measurement_types_genitive(
             carePlan.activity.measurementType.name,
           ),
@@ -148,7 +148,7 @@ class SyncItem extends StatelessWidget {
         ),
         buttonType: SmallButtonType.none,
         onTap: () {
-          getIt<SyncBloc>().add(SyncEvent.resolveUpdatedUserPlan(carePlan));
+          getIt<SyncBloc>().add(SyncEvent.resolveUpdatedUserPlan(carePlan.id));
         },
       ),
       newWatchAssigned: () => WarningItem(

@@ -2,8 +2,9 @@ import 'dart:core';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/interval_generation/timing_model.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
+import 'package:scalesoft_app/data/entities/enums/time_unit.dart';
+import 'package:scalesoft_app/model/interval_generation/timing_model.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 // Do not modify without also changing TimingPeriodGenerator.cs in SCSHealthPlatform
@@ -54,7 +55,7 @@ class TimingPeriodGenerator {
   }
 
   /// Calculates the start of the second interval
-  /// First intervals (except when [periodUnit] is [TimeUnit.hour]) do not last a multiple of [periodUnit].
+  /// First intervals (except when [periodUnit] is [TimeUnitContract.hour]) do not last a multiple of [periodUnit].
   /// Instead, the first period's end is aligned to a multiple of [periodUnit]
   /// For example, the first interval for a daily period doesn't end after a day. Instead it ends at the start (midnight) of the closest day.
   static DateTime _getSecondIntervalStart(

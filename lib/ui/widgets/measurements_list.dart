@@ -1,17 +1,16 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
+import 'package:scalesoft_app/ui/viewModels/measurement_result_view_model.dart';
 import 'package:scalesoft_app/ui/widgets/info_placeholder.dart';
 import 'package:scalesoft_app/ui/widgets/measurement_item.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
-import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class MeasurementsList extends StatelessWidget {
@@ -19,193 +18,187 @@ class MeasurementsList extends StatelessWidget {
     super.key,
     required this.whenPeriod,
     required this.carePlans,
-    required this.measurements,
     required this.nextMeasurement,
     required this.planWhenPeriod,
-    required this.results,
+    required this.measurementsOfDay,
   });
 
   final PlanWhenPeriod whenPeriod;
   final List<CarePlan> carePlans;
-  final List<PlannedMeasurement> measurements;
   final PlannedMeasurement nextMeasurement;
   final PlanWhenPeriod planWhenPeriod;
-  final List<MeasurementResult> results;
+  final List<MeasurementResultViewModel> measurementsOfDay;
 
-  List<PlannedMeasurement> get _pMeasurements => measurements
-      .where(
-        (measurement) => measurement.isLongPeriod,
-      )
-      .toList();
+  List<MeasurementResultViewModel> get upcomingMeasurements {
+    final now = DateTime.now();
 
-  List<PlannedMeasurement> get _rMeasurements => measurements
-      .where(
-        (measurement) => !measurement.isLongPeriod,
-      )
-      .toList();
+    return measurementsOfDay
+        .where((x) => x.wasPlanned)
+        .where((x) => x.requiredCount > x.actualCount)
+        .where((x) => (x.measurementIntervalEnd ?? x.measurementTime).isAfter(now))
+        .toList();
+  }
+
+  List<MeasurementResultViewModel> get _multiDayMeasurements =>
+      upcomingMeasurements.where((measurement) => measurement.spansMultipleDays).toList();
+
+  List<MeasurementResultViewModel> get _singleDayMeasurements =>
+      upcomingMeasurements.where((measurement) => !measurement.spansMultipleDays).toList();
 
   bool _isTodaysPlanFinished() {
-    return measurements.isEmpty &&
+    return upcomingMeasurements.isEmpty &&
         whenPeriod == PlanWhenPeriod.today &&
-        CarePlanHelper.hasMeasurementsToday(nextMeasurement.carePlan);
+        measurementsOfDay.any((x) => x.wasPlanned);
   }
 
   int _getPlanEvaluation() {
-    return EvaluationPlanHelper.getProgressFromPlans(
-          carePlans: carePlans,
-          whenPeriod: whenPeriod == PlanWhenPeriod.today
-              ? ResultsWhenPeriod.today
-              : ResultsWhenPeriod.yesterday,
-          offlineResults: results,
-        ) ??
-        0;
+    var expectedCount = 0;
+    var actualCount = 0;
+
+    for (final measurement in measurementsOfDay.where((x) => x.wasPlanned)) {
+      expectedCount += measurement.requiredCount;
+      actualCount += [measurement.requiredCount, measurement.actualCount].min;
+    }
+
+    return expectedCount == 0 ? 0 : (actualCount / expectedCount * 100).round();
   }
 
   @override
   Widget build(BuildContext context) {
-    return _isTodaysPlanFinished()
-        ? SliverPadding(
-            padding: Paddings.horizontal64,
-            sliver: InfoPlaceholder(
-              icon: SvgPicture.asset(
-                'assets/icons/icon_circle_check_big.svg',
-                color: Theme.of(context).colorScheme.onTertiary,
-              ),
-              label: localization.dashboard_screen_todays_plan_finished(
-                _getPlanEvaluation(),
+    if (_isTodaysPlanFinished()) {
+      return SliverPadding(
+        padding: Paddings.horizontal64,
+        sliver: InfoPlaceholder(
+          icon: SvgPicture.asset(
+            'assets/icons/icon_circle_check_big.svg',
+            color: Theme.of(context).colorScheme.onTertiary,
+          ),
+          label: localization.dashboard_screen_todays_plan_finished(
+            _getPlanEvaluation(),
+          ),
+        ),
+      );
+    }
+
+    if (upcomingMeasurements.isEmpty) {
+      return SliverPadding(
+        padding: Paddings.horizontal64,
+        sliver: InfoPlaceholder(
+          icon: SvgPicture.asset(
+            'assets/icons/icon_snooze_big.svg',
+            color: Theme.of(context).colorScheme.tertiary,
+          ),
+          label: localization.dashboard_screen_upcoming_measurement_info(
+            nextMeasurement.whenStart.toDateOrDay().toLowerCase(),
+            nextMeasurement.whenStart.toTimeOfDay().toString(),
+          ),
+        ),
+      );
+    }
+
+    return MultiSliver(
+      children: [
+        if (_multiDayMeasurements.isNotEmpty) ...[
+          const SliverGap(Dimensions.padding24),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: Paddings.left16,
+              child: Text(
+                localization.multi_day_measurements,
+                style: ScaleTextStyles.label.apply(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
               ),
             ),
-          )
-        : measurements.isEmpty
-            ? SliverPadding(
-                padding: Paddings.horizontal64,
-                sliver: InfoPlaceholder(
-                  icon: SvgPicture.asset(
-                    'assets/icons/icon_snooze_big.svg',
-                    color: Theme.of(context).colorScheme.tertiary,
-                  ),
-                  label:
-                      localization.dashboard_screen_upcoming_measurement_info(
-                    nextMeasurement.whenStart.toDateOrDay().toLowerCase(),
-                    nextMeasurement.whenStart.toTimeOfDay().toString(),
-                  ),
-                ),
-              )
-            : MultiSliver(
-                children: [
-                  if (_pMeasurements.isNotEmpty) ...[
-                    const SliverGap(Dimensions.padding24),
-                    SliverToBoxAdapter(
-                      child: Padding(
+          ),
+          const SliverGap(Dimensions.padding8),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (_, int index) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    MeasurementItem(
+                      measurement: _multiDayMeasurements[index],
+                    ),
+                    if (index != (_multiDayMeasurements.length - 1) ||
+                        (index == (_multiDayMeasurements.length - 1) && _singleDayMeasurements.isNotEmpty))
+                      Container(
+                        margin: Paddings.horizontal16,
+                        height: 0.5,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                  ],
+                );
+              },
+              childCount: _multiDayMeasurements.length,
+            ),
+          ),
+        ],
+        if (_singleDayMeasurements.isNotEmpty)
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (_, int index) {
+                bool isSameDate = true;
+
+                final item = _singleDayMeasurements[index];
+
+                final date = item.measurementIntervalStart ?? item.measurementTime;
+
+                if (index == 0) {
+                  isSameDate = false;
+                } else {
+                  final previousItem = _singleDayMeasurements[index - 1];
+                  final previousDate = previousItem.measurementIntervalStart ?? previousItem.measurementTime;
+                  isSameDate = date.isSameDate(previousDate);
+                }
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (planWhenPeriod != PlanWhenPeriod.next10 && _multiDayMeasurements.isNotEmpty && index == 0) ...[
+                      Gaps.gap24,
+                      Padding(
                         padding: Paddings.left16,
                         child: Text(
-                          localization
-                              .dashboard_screen_periodical_measurements,
+                          localization.common_measurement_times(
+                            planWhenPeriod.name,
+                          ),
                           style: ScaleTextStyles.label.apply(
                             color: Theme.of(context).colorScheme.onPrimary,
                           ),
                         ),
                       ),
-                    ),
-                    const SliverGap(Dimensions.padding8),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (_, int index) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              MeasurementItem(
-                                plannedMeasurement: _pMeasurements[index],
-                              ),
-                              if (index != (_pMeasurements.length - 1) ||
-                                  (index == (_pMeasurements.length - 1) &&
-                                      _rMeasurements.isNotEmpty))
-                                Container(
-                                  margin: Paddings.horizontal16,
-                                  height: 0.5,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurfaceVariant,
-                                ),
-                            ],
-                          );
-                        },
-                        childCount: _pMeasurements.length,
+                      Gaps.gap8,
+                    ] else if ((planWhenPeriod == PlanWhenPeriod.next10 && !(isSameDate))) ...[
+                      Gaps.gap24,
+                      Padding(
+                        padding: Paddings.left16,
+                        child: Text(
+                          date.toDateOrDay(),
+                          style: ScaleTextStyles.label.apply(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                        ),
                       ),
+                      Gaps.gap8,
+                    ],
+                    MeasurementItem(
+                      measurement: _singleDayMeasurements[index],
                     ),
+                    if (index != (_singleDayMeasurements.length - 1))
+                      Container(
+                        margin: Paddings.horizontal16,
+                        height: 0.5,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                   ],
-                  if (_rMeasurements.isNotEmpty)
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (_, int index) {
-                          bool isSameDate = true;
-
-                          final date = _rMeasurements[index].whenStart;
-
-                          if (index == 0) {
-                            isSameDate = false;
-                          } else {
-                            final prevDate =
-                                _rMeasurements[index - 1].whenStart;
-                            isSameDate = date.isSameDate(prevDate);
-                          }
-
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (planWhenPeriod != PlanWhenPeriod.next10 &&
-                                  _pMeasurements.isNotEmpty &&
-                                  index == 0) ...[
-                                Gaps.gap24,
-                                Padding(
-                                  padding: Paddings.left16,
-                                  child: Text(
-                                    localization.common_measurement_times(
-                                      planWhenPeriod.name,
-                                    ),
-                                    style: ScaleTextStyles.label.apply(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onPrimary,
-                                    ),
-                                  ),
-                                ),
-                                Gaps.gap8,
-                              ] else if ((planWhenPeriod ==
-                                      PlanWhenPeriod.next10 &&
-                                  !(isSameDate))) ...[
-                                Gaps.gap24,
-                                Padding(
-                                  padding: Paddings.left16,
-                                  child: Text(
-                                    date.toDateOrDay(),
-                                    style: ScaleTextStyles.label.apply(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onPrimary,
-                                    ),
-                                  ),
-                                ),
-                                Gaps.gap8,
-                              ],
-                              MeasurementItem(
-                                plannedMeasurement: _rMeasurements[index],
-                              ),
-                              if (index != (_rMeasurements.length - 1))
-                                Container(
-                                  margin: Paddings.horizontal16,
-                                  height: 0.5,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurfaceVariant,
-                                ),
-                            ],
-                          );
-                        },
-                        childCount: _rMeasurements.length,
-                      ),
-                    ),
-                ],
-              );
+                );
+              },
+              childCount: _singleDayMeasurements.length,
+            ),
+          ),
+      ],
+    );
   }
 }

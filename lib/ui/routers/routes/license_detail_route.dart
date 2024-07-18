@@ -6,7 +6,7 @@ import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
 
 class LicenseDetailRoute extends ApplicationRoute with PageBuilderMixin {
   static const name = 'license-detail';
-  static const path = '/license-detail';
+  static const path = 'license-detail';
 
   LicenseDetailRoute({
     required super.navigator,

@@ -3,12 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
-import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_state.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
-import 'package:scalesoft_app/bloc/sync/sync_state.dart';
+import 'package:scalesoft_app/constants/permissions.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/storage/session.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/ui/routers/routes/calendar_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/screens/navigation_screen.dart';
@@ -25,203 +24,199 @@ import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 class DashboardPage extends StatelessWidget with BottomSheetMixin {
   const DashboardPage({super.key});
 
+  void initCarePlanBloc(CarePlanBloc bloc, UserCubitState userState){
+    final users = userState.aggregateAllUsers?userState.allUsers.toList():[userState.currentUser];
+
+    bloc.add(
+      CarePlanInitializeEvent(
+        whenPeriod: PlanWhenPeriod.today,
+        users: users,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final syncBloc = getIt<SyncBloc>();
+    syncBloc.add(const SyncEvent.init());
+
+    final userCubit = getIt<UserCubit>();
 
     final carePlanBloc = getIt<CarePlanBloc>();
-    final session = getIt<Session>();
-    final allPendingResults = session.getPendingResults();
+    initCarePlanBloc(carePlanBloc, userCubit.state);
+
+    userCubit.stream.listen((state){
+      initCarePlanBloc(carePlanBloc, state);
+    });
 
     return Stack(
       children: [
-        BlocBuilder<SyncBloc, SyncState>(
-          buildWhen: (previous, current) => previous != current,
-          bloc: syncBloc..add(const SyncEvent.init()),
-          builder: (context, syncState) {
-            return BlocBuilder<CarePlanBloc, CarePlanBlocState>(
-              bloc: carePlanBloc
-                ..add(
-                  CarePlanInitializeEvent(
-                    carePlans: session.getActiveCarePlans(),
-                    whenPeriod: PlanWhenPeriod.today,
-                    pendingResults: allPendingResults,
-                  ),
-                ),
-              builder: (context, state) {
-                final sessionAccounts = session.getSessionAccounts();
+        MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: syncBloc),
+            BlocProvider.value(value: carePlanBloc),
+            BlocProvider.value(value: getIt<UserCubit>()),
+          ],
+          child: Builder(
+            builder: (context) {
+              final syncState = context.watch<SyncBloc>().state;
+              final carePlanState = context.watch<CarePlanBloc>().state;
+              final userState = context.watch<UserCubit>().state;
 
-                if (state.selectedWhenPeriod == null ||
-                    state.currentCarePlans == null ||
-                    state.allTodayMeasurements == null ||
-                    state.results == null) {
-                  return const SizedBox.shrink();
-                } else {
-                  final allCarePlans = session.getActiveCarePlans();
-                  final supportedMeasurementTypes =
-                      CarePlanHelper.getMeasurementTypes(
-                    session.getActiveCarePlans(),
-                  );
+              if (carePlanState.selectedWhenPeriod == null ||
+                  carePlanState.carePlansOfType == null ||
+                  carePlanState.allCarePlans == null ||
+                  carePlanState.allTodayMeasurements == null ||
+                  carePlanState.results == null) {
+                return const SizedBox.shrink();
+              } else {
+                final supportedMeasurementTypes = CarePlanHelper.getMeasurementTypes(
+                  carePlanState.allCarePlans!,
+                );
 
-                  return NavigationScreen(
-                    key: ValueKey(state.timestamp),
-                    onTabSelected: (tabIndex) {
-                      if (tabIndex == 0) {
-                        carePlanBloc.add(
-                          const CurrentPlansChangeEvent(null),
-                        );
-                      } else {
-                        carePlanBloc.add(
-                          CurrentPlansChangeEvent(
-                            supportedMeasurementTypes.toList()[tabIndex - 1],
-                          ),
-                        );
-                      }
-                    },
-                    onRefresh: () async {
-                      syncBloc.add(const SyncEvent.syncAll());
-                    },
-                    syncWidget: SyncWidget(syncState: syncState),
-                    topSlivers: [
-                      if ((state.selectedWhenPeriod == PlanWhenPeriod.today ||
-                          state.selectedWhenPeriod ==
-                              PlanWhenPeriod.next10)) ...{
-                        SliverToBoxAdapter(
-                          child: ActionWidget(
-                            whenPeriod: state.selectedWhenPeriod!,
-                            upcomingMeasurements:
-                                state.upcomingMeasurements ?? [],
-                            allTodayMeasurements: state.allTodayMeasurements!,
-                          ),
+                final now = DateTime.now();
+
+                final upcomingMeasurements = carePlanState.allTodayMeasurements
+                    ?.where((x) => x.wasPlanned)
+                    .where((x) => x.requiredCount > x.actualCount)
+                    .where((x) => (x.measurementIntervalEnd ?? x.measurementTime).isAfter(now))
+                    .toList();
+
+                return NavigationScreen(
+                  key: ValueKey(carePlanState.timestamp),
+                  onTabSelected: (tabIndex) {
+                    if (tabIndex == 0) {
+                      carePlanBloc.add(
+                        const MeasurementTypeChangeEvent(null),
+                      );
+                    } else {
+                      carePlanBloc.add(
+                        MeasurementTypeChangeEvent(
+                          supportedMeasurementTypes.toList()[tabIndex - 1],
                         ),
-                      },
-                    ],
-                    noContentWidget: allCarePlans.isEmpty
-                        ? NoContentPlaceholder(
-                            userAccount: session.isMultiUser != true
-                                ? sessionAccounts[0]
-                                : null,
-                            enterMeasurementWithoutPlan: session.isMultiUser !=
-                                    true &&
-                                sessionAccounts[0].enterMeasurementWithoutPlan,
-                            supportedMeasurementTypes:
-                                supportedMeasurementTypes,
-                            noContentType: NoContentType.noPlans,
-                          )
-                        : null,
-                    navigationHeader:
-                        state.allMeasurementCountsPerPeriod?.isNotEmpty == true
-                            ? PlannedMeasurementHeader(
-                                whenPeriod: state.selectedWhenPeriod ??
-                                    PlanWhenPeriod.today,
-                                openTimeSelector: () async {
-                                  await showPlannedMeasurementsSelector(
-                                    context,
-                                    state.selectedWhenPeriod,
-                                    state.allMeasurementCountsPerPeriod!,
-                                  ).then((selected) {
-                                    if (selected?.selectedPeriod != null) {
-                                      carePlanBloc.add(
-                                        TimePeriodChangeEvent(
-                                          selected!.selectedPeriod!,
-                                        ),
-                                      );
-                                    } else if (selected?.showCalendar == true) {
-                                      GoRouter.of(context).pushNamed(
-                                        CalendarRoute.name,
-                                        extra: session
-                                            .getAllCarePlans()
-                                            .map((carePlan) => carePlan.id)
-                                            .toList(),
-                                      );
-                                    }
-                                  });
-                                },
-                              )
-                            : null,
-                    tabs: [
-                      if (supportedMeasurementTypes.length > 1) ...{
-                        NavigationTabBarItem(
-                          label: localization.dashboard_screen_all,
-                          slivers: [
-                            if (state.nextMeasurement != null)
-                              MeasurementsList(
-                                whenPeriod: state.selectedWhenPeriod!,
-                                carePlans: [...state.currentCarePlans!],
-                                measurements: state.upcomingMeasurements!,
-                                nextMeasurement: state.nextMeasurement!,
-                                planWhenPeriod: state.selectedWhenPeriod!,
-                                results: state.results!,
-                              ),
-                          ],
-                          bottomSlivers: [
-                            if (session.isMultiUser != true &&
-                                sessionAccounts[0]
-                                    .enterMeasurementWithoutPlan) ...{
-                              PersonalMeasurementFooter(
-                                showInfo:
-                                    state.upcomingMeasurements?.isNotEmpty ==
-                                        true,
-                                onPressed: () async {
-                                  MeasurementHelper.doMeasurement(
-                                    context: context,
-                                    userId: sessionAccounts[0].user.muid,
-                                    showAllMeasurementTypes: true,
-                                  );
-                                },
-                              ),
-                            },
-                          ],
+                      );
+                    }
+                  },
+                  onRefresh: () async {
+                    syncBloc.add(const SyncEvent.syncAll());
+                  },
+                  syncWidget: SyncWidget(syncState: syncState),
+                  topSlivers: [
+                    if ((carePlanState.selectedWhenPeriod == PlanWhenPeriod.today ||
+                        carePlanState.selectedWhenPeriod == PlanWhenPeriod.next10)) ...{
+                      SliverToBoxAdapter(
+                        child: ActionWidget(
+                          whenPeriod: carePlanState.selectedWhenPeriod!,
+                          upcomingMeasurements: upcomingMeasurements ?? [],
+                          allTodayMeasurements: carePlanState.allTodayMeasurements!,
                         ),
-                      },
-                      ...supportedMeasurementTypes
-                          .map(
-                            (measurementType) => NavigationTabBarItem(
-                              label: localization.common_measurement_types(
-                                measurementType.name,
-                              ),
-                              slivers: [
-                                if (state.nextMeasurement != null)
-                                  MeasurementsList(
-                                    whenPeriod: state.selectedWhenPeriod!,
-                                    carePlans: [...state.currentCarePlans!],
-                                    measurements: state.upcomingMeasurements!,
-                                    nextMeasurement: state.nextMeasurement!,
-                                    planWhenPeriod: state.selectedWhenPeriod!,
-                                    results: state.results!,
+                      ),
+                    },
+                  ],
+                  noContentWidget: carePlanState.allCarePlans?.isEmpty ?? true
+                      ? NoContentPlaceholder(
+                          userAccount: userState.aggregateAllUsers ? null : userState.currentUser,
+                          enterMeasurementWithoutPlan: !userState.aggregateAllUsers &&
+                              (userState.currentUser.permissions.contains(Permissions.enterMeasurementWithoutPlan)),
+                          supportedMeasurementTypes: supportedMeasurementTypes,
+                          noContentType: NoContentType.noPlans,
+                        )
+                      : null,
+                  navigationHeader: carePlanState.allMeasurementCountsPerPeriod?.isNotEmpty == true
+                      ? PlannedMeasurementHeader(
+                          whenPeriod: carePlanState.selectedWhenPeriod ?? PlanWhenPeriod.today,
+                          openTimeSelector: () async {
+                            await showPlannedMeasurementsSelector(
+                              context,
+                              carePlanState.selectedWhenPeriod,
+                              carePlanState.allMeasurementCountsPerPeriod!,
+                            ).then((selected) {
+                              if (selected?.selectedPeriod != null) {
+                                carePlanBloc.add(
+                                  TimePeriodChangeEvent(
+                                    selected!.selectedPeriod!,
                                   ),
-                              ],
-                              bottomSlivers: [
-                                if (session.isMultiUser != true &&
-                                    sessionAccounts[0]
-                                        .enterMeasurementWithoutPlan) ...{
-                                  PersonalMeasurementFooter(
-                                    showInfo: state
-                                            .upcomingMeasurements?.isNotEmpty ==
-                                        true,
-                                    onPressed: () async {
-                                      MeasurementHelper.doMeasurement(
-                                        context: context,
-                                        userId: sessionAccounts[0].user.muid,
-                                        selectedMeasurementType: state
-                                            .currentCarePlans![0]
-                                            .activity
-                                            .measurementType,
-                                        showAllMeasurementTypes: true,
-                                      );
-                                    },
-                                  ),
-                                },
-                              ],
+                                );
+                              } else if (selected?.showCalendar == true) {
+                                GoRouter.of(context).pushNamed(
+                                  CalendarRoute.name,
+                                );
+                              }
+                            });
+                          },
+                        )
+                      : null,
+                  tabs: [
+                    if (supportedMeasurementTypes.length > 1) ...{
+                      NavigationTabBarItem(
+                        label: localization.dashboard_screen_all,
+                        slivers: [
+                          if (carePlanState.nextMeasurement != null)
+                            MeasurementsList(
+                              whenPeriod: carePlanState.selectedWhenPeriod!,
+                              carePlans: [...carePlanState.carePlansOfType!],
+                              nextMeasurement: carePlanState.nextMeasurement!,
+                              planWhenPeriod: carePlanState.selectedWhenPeriod!,
+                              measurementsOfDay: carePlanState.allTodayMeasurements!,
                             ),
-                          )
-                          .toList(),
-                    ],
-                  );
-                }
-              },
-            );
-          },
+                        ],
+                        bottomSlivers: [
+                          if (!userState.aggregateAllUsers &&
+                              (userState.currentUser.permissions
+                                  .contains(Permissions.enterMeasurementWithoutPlan))) ...{
+                            PersonalMeasurementFooter(
+                              showInfo: upcomingMeasurements?.isNotEmpty == true,
+                              onPressed: () async {
+                                MeasurementHelper.doMeasurement(
+                                  context: context,
+                                  userId: userState.currentUserId,
+                                  showAllMeasurementTypes: true,
+                                );
+                              },
+                            ),
+                          },
+                        ],
+                      ),
+                    },
+                    ...supportedMeasurementTypes.map(
+                      (measurementType) => NavigationTabBarItem(
+                        label: localization.common_measurement_types(
+                          measurementType.name,
+                        ),
+                        slivers: [
+                          if (carePlanState.nextMeasurement != null)
+                            MeasurementsList(
+                              whenPeriod: carePlanState.selectedWhenPeriod!,
+                              carePlans: [...carePlanState.carePlansOfType!],
+                              nextMeasurement: carePlanState.nextMeasurement!,
+                              planWhenPeriod: carePlanState.selectedWhenPeriod!,
+                              measurementsOfDay: carePlanState.allTodayMeasurements!,
+                            ),
+                        ],
+                        bottomSlivers: [
+                          if (!userState.aggregateAllUsers &&
+                              (userState.currentUser.permissions
+                                  .contains(Permissions.enterMeasurementWithoutPlan))) ...{
+                            PersonalMeasurementFooter(
+                              showInfo: upcomingMeasurements?.isNotEmpty == true,
+                              onPressed: () async {
+                                MeasurementHelper.doMeasurement(
+                                  context: context,
+                                  userId: userState.currentUser.id,
+                                  selectedMeasurementType: measurementType,
+                                  showAllMeasurementTypes: true,
+                                );
+                              },
+                            ),
+                          },
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              }
+            },
+          ),
         ),
         const Positioned(
           top: 0,

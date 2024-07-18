@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
+import 'package:scalesoft_app/data/entities/enums/week_day.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 // Do not modify without also changing TimingDayOfWeekGenerator.cs in SCSHealthPlatform

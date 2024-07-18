@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/model/hospital.dart';
-import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/model/hospital.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -16,7 +16,7 @@ class UserSelectionDialog extends StatelessWidget {
   });
 
   final Hospital hospital;
-  final List<UserAccount> userAccounts;
+  final List<UserModel> userAccounts;
 
   @override
   Widget build(BuildContext context) {

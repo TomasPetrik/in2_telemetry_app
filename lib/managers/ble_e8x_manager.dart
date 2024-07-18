@@ -1,19 +1,24 @@
 import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
-import 'package:scalesoft_app/api/model/measurement/composed_int_value.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement.dart';
 import 'package:scalesoft_app/constants/ble_constants.dart';
 import 'package:scalesoft_app/constants/e8x_commands.dart';
 import 'package:scalesoft_app/constants/e8x_response_types.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
+import 'package:scalesoft_app/data/entities/json_entities/measurement/blood_pressure_value.dart';
+import 'package:scalesoft_app/model/measurement_create_model.dart';
 import 'package:scalesoft_app/utils/helpers/e8x_helper.dart';
 
 class BleE8xManager {
-  BleE8xManager();
+  final int _userId;
+  final int _deviceId;
 
-  Completer<List<Measurement>> _measurementCompleter = Completer();
+  BleE8xManager(
+    this._userId,
+    this._deviceId,
+  );
+
+  Completer<List<MeasurementCreateModel>> _measurementCompleter = Completer();
 
   Completer<bool> _commandCompleter = Completer();
   int _byteSize = 0;
@@ -38,8 +43,7 @@ class BleE8xManager {
     BluetoothDevice device,
   ) async {
     var service = await _getService(device);
-    BluetoothCharacteristic characteristic =
-        service.characteristics.singleWhere(
+    BluetoothCharacteristic characteristic = service.characteristics.singleWhere(
       (element) => element.uuid == BleConstants.gattCharMainCmd,
     );
     return characteristic;
@@ -49,8 +53,7 @@ class BleE8xManager {
   Future<void> registerNotifications(BluetoothDevice device) async {
     var service = await _getService(device);
     for (final characteristic in service.characteristics) {
-      if (characteristic.uuid == BleConstants.gattCharMainCmd ||
-          characteristic.uuid == BleConstants.gattCharMainRes) {
+      if (characteristic.uuid == BleConstants.gattCharMainCmd || characteristic.uuid == BleConstants.gattCharMainRes) {
         if (!characteristic.isNotifying) {
           characteristic.onValueReceived.listen(_onReceiveData);
 
@@ -78,7 +81,7 @@ class BleE8xManager {
     return _sendCommand(device, () => E8xCommands.setMetricUnits);
   }
 
-  Future<List<Measurement>> getHeartRateHistory(BluetoothDevice device) async {
+  Future<List<MeasurementCreateModel>> getHeartRateHistory(BluetoothDevice device) async {
     return _getMeasurement(
       device,
       () => E8xCommands.getHeartRateHistory,
@@ -86,7 +89,7 @@ class BleE8xManager {
     );
   }
 
-  Future<List<Measurement>> getBloodPressureHistory(
+  Future<List<MeasurementCreateModel>> getBloodPressureHistory(
     BluetoothDevice device,
   ) async {
     return _getMeasurement(
@@ -96,7 +99,7 @@ class BleE8xManager {
     );
   }
 
-  Future<List<Measurement>> getOxygenSaturationHistory(
+  Future<List<MeasurementCreateModel>> getOxygenSaturationHistory(
     BluetoothDevice device,
   ) async {
     return _getMeasurement(
@@ -106,7 +109,7 @@ class BleE8xManager {
     );
   }
 
-  Future<List<Measurement>> getBatteryLevel(BluetoothDevice device) async {
+  Future<List<MeasurementCreateModel>> getBatteryLevel(BluetoothDevice device) async {
     return _getMeasurement(device, () => E8xCommands.getBatteryLevel);
   }
 
@@ -131,8 +134,7 @@ class BleE8xManager {
 
   //Function processing all incoming messages from the wristband
   void _onReceiveData(List<int> value) {
-    if (listEquals(_currentResponseType, _previousResponseType) &&
-        listEquals(value, _previousValue)) return;
+    if (listEquals(_currentResponseType, _previousResponseType) && listEquals(value, _previousValue)) return;
     _previousValue = value;
     _previousResponseType = _currentResponseType;
     if (value.length > 8 && value[0] == BleConstants.dataOper) {
@@ -156,8 +158,7 @@ class BleE8xManager {
           _measurementCompleter.completeError("Data inconsistency");
         }
       } else if (value.length == 16) {
-        _byteSize =
-            E8xHelper.bytesToDec([value[13], value[12], value[11], value[10]]);
+        _byteSize = E8xHelper.bytesToDec([value[13], value[12], value[11], value[10]]);
       }
     } else {
       var subList = value.sublist(0, 2);
@@ -184,31 +185,33 @@ class BleE8xManager {
       }
       if (listEquals(subList, E8xResponseTypes.batteryLevel)) {
         final batteryState = value[9];
-        final measurement = Measurement(
-          measurementType: MeasurementType.battery,
+        final measurement = MeasurementCreateModel(
+          _userId,
+          DateTime.now().toUtc(),
+          MeasurementType.battery,
+          deviceId: _deviceId,
           batteryPercentage: batteryState,
-          measurementDateTime: DateTime.now().toUtc(),
         );
         _measurementCompleter.complete([measurement]);
       }
       if (listEquals(subList, E8xResponseTypes.emptyOxygenSaturationHistory)) {
-        _measurementCompleter.complete(<Measurement>[]);
+        _measurementCompleter.complete([]);
       }
       if (listEquals(subList, E8xResponseTypes.emptyHeartRateHistory)) {
-        _measurementCompleter.complete(<Measurement>[]);
+        _measurementCompleter.complete([]);
       }
       if (listEquals(subList, E8xResponseTypes.emptyBloodPressureHistory)) {
-        _measurementCompleter.complete(<Measurement>[]);
+        _measurementCompleter.complete([]);
       }
     }
   }
 
-  Future<List<Measurement>> _getMeasurement(
+  Future<List<MeasurementCreateModel>> _getMeasurement(
     BluetoothDevice device,
     List<int>? Function() func, {
     List<int>? currRespType,
   }) async {
-    _measurementCompleter = Completer<List<Measurement>>();
+    _measurementCompleter = Completer<List<MeasurementCreateModel>>();
 
     _sendRequest(device, func, currRespType);
 
@@ -254,8 +257,8 @@ class BleE8xManager {
     characteristic.write(func() ?? [], withoutResponse: false);
   }
 
-  List<Measurement> _processHRData(List<int> data) {
-    List<Measurement> result = [];
+  List<MeasurementCreateModel> _processHRData(List<int> data) {
+    List<MeasurementCreateModel> result = [];
     if (data.length >= 6) {
       int offset = 0;
       for (int i = 0; i < data.length ~/ 6; i++) {
@@ -266,10 +269,12 @@ class BleE8xManager {
         int heartTimes = E8xHelper.bytesToDec([0, 0, 0, subData[5]]);
 
         result.add(
-          Measurement(
-            measurementType: MeasurementType.heartRate,
+          MeasurementCreateModel(
+            _userId,
+            measurementTime,
+            deviceId: _deviceId,
+            MeasurementType.heartRate,
             heartRate: heartTimes,
-            measurementDateTime: measurementTime,
           ),
         );
       }
@@ -277,8 +282,8 @@ class BleE8xManager {
     return result;
   }
 
-  List<Measurement> _processBPData(List<int> data) {
-    List<Measurement> bpData = [];
+  List<MeasurementCreateModel> _processBPData(List<int> data) {
+    List<MeasurementCreateModel> bpData = [];
     if (data.length >= 8) {
       int offset = 0;
       for (int i = 0; i < data.length ~/ 8; i++) {
@@ -289,13 +294,15 @@ class BleE8xManager {
         int diastolic = E8xHelper.bytesToDec([0, 0, 0, subData[5]]);
 
         bpData.add(
-          Measurement(
-            measurementType: MeasurementType.bloodPressure,
+          MeasurementCreateModel(
+            _userId,
+            measurementTime,
+            MeasurementType.bloodPressure,
+            deviceId: _deviceId,
             bloodPressure: BloodPressureValue(
               systolic: systolic,
               diastolic: diastolic,
             ),
-            measurementDateTime: measurementTime,
           ),
         );
       }
@@ -303,8 +310,8 @@ class BleE8xManager {
     return bpData;
   }
 
-  List<Measurement> _processSPData(List<int> data) {
-    List<Measurement> results = [];
+  List<MeasurementCreateModel> _processSPData(List<int> data) {
+    List<MeasurementCreateModel> results = [];
     if (data.length >= 15) {
       for (final List<int> subData in E8xHelper.makeSendMsg(data, 20)) {
         if (subData.length >= 15) {
@@ -324,17 +331,29 @@ class BleE8xManager {
             temp = double.parse('$tempI.$tempD');
           }
 
-          // We only create one measurement instance with an arbitrarily chosen measurementType
-          // - db only supports one measurement at any given instant.
-          results.add(
-            Measurement(
-              measurementType: MeasurementType.oxygenSaturation,
-              respiratoryRate: respiratoryRate,
+          results.addAll([
+            MeasurementCreateModel(
+              _userId,
+              measurementTime,
+              deviceId: _deviceId,
+              MeasurementType.oxygenSaturation,
               oxygenSaturation: spo2,
-              temperature: temp,
-              measurementDateTime: measurementTime,
             ),
-          );
+            MeasurementCreateModel(
+              _userId,
+              measurementTime,
+              deviceId: _deviceId,
+              MeasurementType.respiratoryRate,
+              respiratoryRate: respiratoryRate,
+            ),
+            MeasurementCreateModel(
+              _userId,
+              measurementTime,
+              deviceId: _deviceId,
+              MeasurementType.temperature,
+              temperature: temp,
+            ),
+          ]);
         }
       }
     }

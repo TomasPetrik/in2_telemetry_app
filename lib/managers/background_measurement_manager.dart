@@ -1,19 +1,20 @@
 import 'package:collection/collection.dart';
+import 'package:drift/drift.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/model/measurement/device.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement.dart';
-import 'package:scalesoft_app/api/model/measurement/source_device_info.dart';
-import 'package:scalesoft_app/api/model/report/report.dart';
 import 'package:scalesoft_app/constants/native_code_constants.dart';
 import 'package:scalesoft_app/cubit/background_measurement/background_measurement_cubit.dart';
+import 'package:scalesoft_app/data/app_database.dart';
+import 'package:scalesoft_app/data/entities/enums/device_model_type.dart';
+import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
+import 'package:scalesoft_app/data/providers/device_db_provider.dart';
+import 'package:scalesoft_app/data/providers/measurements_db_provider.dart';
 import 'package:scalesoft_app/managers/ble_e8x_manager.dart';
-import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
-import 'package:scalesoft_app/providers/pending_results_dbs_provider.dart';
+import 'package:scalesoft_app/model/device_model.dart';
+import 'package:scalesoft_app/model/measurement_create_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
@@ -22,17 +23,19 @@ import 'package:scalesoft_app/utils/helpers/mac_address_helper.dart';
 @singleton
 class BackgroundMeasurementManager {
   final SyncService _syncService;
-  final AccountDbProvider _accountDbProvider;
   final BackgroundMeasurementCubit _backgroundMeasurementCubit;
   final ReportService _reportService;
   final FlutterLocalNotificationsPlugin _notificationsPlugin = FlutterLocalNotificationsPlugin();
+  final DeviceDbProvider _deviceDbProvider;
+  final MeasurementsDbProvider _measurementsDbProvider;
   static const nativeCode = MethodChannel(NativeCodeConstants.methodChannelName);
 
   BackgroundMeasurementManager(
     this._syncService,
-    this._accountDbProvider,
     this._backgroundMeasurementCubit,
     this._reportService,
+    this._deviceDbProvider,
+    this._measurementsDbProvider,
   );
 
   void configureBackgroundServiceMethodCallHandler() {
@@ -44,11 +47,12 @@ class BackgroundMeasurementManager {
 
       final devices = call.arguments[NativeCodeConstants.macAddressesKey] as List;
       await syncArmbandMeasurements(devices.map((x) => x.toString()));
+      return "success";
     });
   }
 
   Future<bool> isSetupRequired() async {
-    final assignedDevices = _getRelevantAssignedDevices();
+    final assignedDevices = await _getWatchesMacAddresses();
 
     if (assignedDevices.isEmpty) {
       return false;
@@ -60,7 +64,7 @@ class BackgroundMeasurementManager {
   }
 
   Future<void> updateBackgroundSynchronizationState() async {
-    final assignedDevices = _getRelevantAssignedDevices();
+    final assignedDevices = await _getWatchesMacAddresses();
     final associatedDevices = (await getAssociatedMacAddresses()).toSet();
 
     debugPrint("assigned devices count: ${assignedDevices.length}");
@@ -76,7 +80,7 @@ class BackgroundMeasurementManager {
   }
 
   Future<void> activateBackgroundSynchronization() async {
-    final assignedDevices = _getRelevantAssignedDevices();
+    final assignedDevices = await _getWatchesMacAddresses();
 
     final result = await associateDevices(assignedDevices);
     if (!result) {
@@ -90,34 +94,32 @@ class BackgroundMeasurementManager {
   }
 
   Future<void> removeUnassignedDevices() async {
-    final assignedDevices = _getRelevantAssignedDevices().toList();
+    final assignedDevices = (await _getWatchesMacAddresses()).toList();
     final associatedDevices = (await getAssociatedMacAddresses()).toSet();
 
     final unassignedDevices = associatedDevices.whereNot(assignedDevices.contains);
 
-    if(unassignedDevices.isNotEmpty) {
+    if (unassignedDevices.isNotEmpty) {
       await disassociateDevices(unassignedDevices);
     }
   }
 
-  Iterable<MapEntry<UserAccount, Device>> _getUsersWithWatches() {
-    final accounts = _accountDbProvider.getAll();
-    final accountDevicePairs = accounts
-        .expand<MapEntry<UserAccount, Device>>(
-          (account) => (account.assignedDevices ?? []).map((device) => MapEntry(account, device)),
-        )
-        .where((pair) => pair.value.deviceModelType == DeviceModelType.e8x)
-        .where((pair) => pair.value.bluetoothAddress != null);
+  Future<Iterable<DeviceModel>> _getWatches() async {
+    final devices = await _deviceDbProvider.getAll();
 
-    return accountDevicePairs;
+    final watches = devices
+        .where((x) => x.prototype.deviceModelType == DeviceModelType.e8x)
+        .where((x) => x.bluetoothAddress != null);
+
+    return watches;
   }
 
-  Iterable<String> _getRelevantAssignedDevices() {
-    return _getUsersWithWatches().map((x) => x.value.bluetoothAddress!).map(MacAddressHelper.normalizeFormat);
+  Future<Iterable<String>> _getWatchesMacAddresses() async {
+    return (await _getWatches()).map((x) => x.bluetoothAddress!).map(MacAddressHelper.normalizeFormat);
   }
 
-  bool anyUserWatchAssignmentExists() {
-    return _getUsersWithWatches().isNotEmpty;
+  Future<bool> anyUserWatchAssignmentExists() async {
+    return (await _getWatches()).isNotEmpty;
   }
 
   /// Uses CompanionDeviceManager to disassociate devices with the specified [macAddresses].
@@ -132,7 +134,7 @@ class BackgroundMeasurementManager {
     } on PlatformException catch (e) {
       debugPrint("Disassociate devices: native code invocation failed: $e");
       _reportService.trackEvent(
-        severity: Severity.error,
+        severity: LogSeverity.error,
         message: e.toString(),
       );
       return false;
@@ -151,7 +153,7 @@ class BackgroundMeasurementManager {
     } on PlatformException catch (e) {
       debugPrint("Associate devices: native code invocation failed: $e");
       _reportService.trackEvent(
-        severity: Severity.error,
+        severity: LogSeverity.error,
         message: e.toString(),
       );
       return false;
@@ -159,24 +161,22 @@ class BackgroundMeasurementManager {
   }
 
   Future<void> syncArmbandMeasurements(Iterable<String> associatedAddresses) async {
-    final accountDevicePairs = _getUsersWithWatches().where(
-      (pair) => associatedAddresses.any((address) => MacAddressHelper.compare(address, pair.value.bluetoothAddress)),
+    final watches = await _getWatches();
+    final matchedWatches = watches.where(
+      (x) => associatedAddresses.any((address) => MacAddressHelper.compare(address, x.bluetoothAddress)),
     );
 
     final results = await Future.wait([
-      for (final pair in accountDevicePairs) _getMeasurementsFromDevice(pair.key, pair.value),
+      for (final watch in matchedWatches) _getMeasurementsFromDevice(watch),
     ]);
 
     final flatResults = results.expand((x) => x);
 
-    await getIt<PendingResultsDbProvider>().saveAll(flatResults);
-
-    // Update devices' lastMeasurementTimes
-    for (final pair in accountDevicePairs) {
-      _accountDbProvider.save(pair.key);
+    for (final measurement in flatResults) {
+      await _measurementsDbProvider.saveModel(measurement);
     }
 
-    await _syncService.syncResults();
+    await _syncService.syncResults(fetchMeasurementResults: false);
   }
 
   Future<Iterable<String>> getAssociatedMacAddresses() async {
@@ -186,20 +186,19 @@ class BackgroundMeasurementManager {
     } on PlatformException catch (e) {
       debugPrint("Associate devices: native code invocation failed: $e");
       _reportService.trackEvent(
-        severity: Severity.error,
+        severity: LogSeverity.error,
         message: e.toString(),
       );
       return [];
     }
   }
 
-  Future<Iterable<Measurement>> _getMeasurementsFromDevice(
-    UserAccount account,
-    Device device,
+  Future<Iterable<MeasurementCreateModel>> _getMeasurementsFromDevice(
+    DeviceModel device,
   ) async {
-    final watchManager = BleE8xManager();
+    final watchManager = BleE8xManager(device.prototype.userId, device.id);
 
-    List<Measurement> results = [];
+    List<MeasurementCreateModel> results = [];
 
     final btDevice = BluetoothDevice(
       remoteId: DeviceIdentifier(MacAddressHelper.normalizeFormat(device.bluetoothAddress!)),
@@ -232,19 +231,13 @@ class BackgroundMeasurementManager {
     results.addAll(await watchManager.getOxygenSaturationHistory(btDevice));
 
     if (device.lastMeasurementTime != null) {
-      results = results.where((x) => x.measurementDateTime?.isAfter(device.lastMeasurementTime!) ?? true).toList();
+      results = results.where((x) => x.measuredAt.isAfter(device.lastMeasurementTime!)).toList();
     }
 
-    final lastMeasurementTime = results.map((x) => x.measurementDateTime!).max;
-    device.lastMeasurementTime = lastMeasurementTime;
+    final lastMeasurementTime = results.map((x) => x.measuredAt).max;
 
-    return results.map(
-      (x) => x.copyWith(
-        patientMuid: account.user.muid,
-        sourceDeviceWithMetadata: SourceDeviceInfo(
-          sourceDevice: device,
-        ),
-      ),
-    );
+    _deviceDbProvider.updateDevice(device.id, DevicesCompanion(lastMeasurementTime: Value(lastMeasurementTime)));
+
+    return results;
   }
 }

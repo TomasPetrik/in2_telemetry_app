@@ -24,7 +24,6 @@ class AuthManager extends StatelessWidget with BottomSheetMixin {
       bloc: authBloc,
       listener: (context, state) {
         state.whenOrNull(
-          handlingResponse: () {},
           authenticated: (credentials) {
             showDialog<void>(
               context: context,
@@ -38,7 +37,6 @@ class AuthManager extends StatelessWidget with BottomSheetMixin {
             userContentBloc
                 .add(OnUserAddedContentEvent(userAccount: userAccount)),
           },
-          inactiveUserRemoved: (userAccount) {},
           errorLoadData: () {
             Navigator.of(context).pop();
             showServerError(context);

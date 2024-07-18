@@ -102,7 +102,7 @@ class _NotificationsSettingsScreenState
                         SwitchRow.title(
                           title: localization
                               .notifications_screen_allow_notifications,
-                          defaultValue: appSettings.enabledNotifications,
+                          defaultValue: appSettings.enableNotifications,
                           onChanged: (turnedOn) {
                             notificationsBloc.add(
                               NotificationsEvent.enableNotifications(
@@ -112,7 +112,7 @@ class _NotificationsSettingsScreenState
                           },
                         ),
                         Gaps.gap24,
-                        if (appSettings.enabledNotifications == true) ...[
+                        if (appSettings.enableNotifications) ...[
                           SizedBox(
                             height: 40,
                             child: Text(

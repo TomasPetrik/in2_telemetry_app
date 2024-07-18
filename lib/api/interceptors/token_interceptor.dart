@@ -1,34 +1,36 @@
 import 'dart:io';
-
+import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/account_api_client.dart';
 import 'package:scalesoft_app/api/client/auth_api_client.dart';
-import 'package:scalesoft_app/api/model/auth_token.dart';
-import 'package:scalesoft_app/api/model/report/report.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
-import 'package:scalesoft_app/config.dart';
+import 'package:scalesoft_app/configuration/hospitals_configuration.dart';
+import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
+import 'package:scalesoft_app/data/entities/json_entities/user/auth_token.dart';
+import 'package:scalesoft_app/data/providers/user_db_provider.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 import 'package:scalesoft_app/parsers/jwt_parser.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/report_service.dart';
-import 'package:scalesoft_app/storage/session.dart';
-import 'package:scalesoft_app/constants/configuration_constants.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/utils/exceptions/invalid_request_exception.dart';
 
 @injectable
 class TokenInterceptor extends Interceptor {
-  final Session session;
+  final UserCubit userCubit;
   final AccountApiClient accountApiClient;
-  final AccountDbProvider accountDbProvider;
+  final UserDbProvider userDbProvider;
   final ReportService reportService;
 
+  static int? userId;
+
   TokenInterceptor(
-    this.session,
+    this.userCubit,
     this.accountApiClient,
-    this.accountDbProvider,
     this.reportService,
+    this.userDbProvider,
   );
 
   @override
@@ -36,16 +38,24 @@ class TokenInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    if (session.token?.isExpiring() ?? false) {
-      await refreshToken(session.token!.accessToken);
+    final user = userCubit.state.allUsers.firstWhereOrNull((x) => x.id == userId);
+
+    // TODO: Remove temporary hack for avoiding infinite recursion.
+    if (options.headers.containsKey(HttpHeaders.authorizationHeader) ||
+        options.path.endsWith('token') ||
+        user == null) {
+      return handler.next(options);
     }
 
-    final accessToken = session.token?.accessToken;
+    AuthToken? refreshedToken;
 
-    if (!options.headers.containsKey(HttpHeaders.authorizationHeader) &&
-        accessToken != null) {
-      options.headers[HttpHeaders.authorizationHeader] = 'Bearer $accessToken';
+    if (user.authToken.isExpiring()) {
+      refreshedToken = await refreshToken(user);
     }
+
+    final accessToken = (refreshedToken ?? user.authToken).accessToken;
+
+    options.headers[HttpHeaders.authorizationHeader] = 'Bearer $accessToken';
 
     return handler.next(options);
   }
@@ -55,17 +65,15 @@ class TokenInterceptor extends Interceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
-    if (err.requestOptions.headers
-        .containsKey(HttpHeaders.authorizationHeader)) {
-      final originalToken = err
-          .requestOptions.headers[HttpHeaders.authorizationHeader]
-          .toString()
-          .split(' ')[1];
-      final userAccount = accountDbProvider.getByToken(originalToken);
-      if (userAccount != null) {
+    UserModel? user;
+
+    if (err.requestOptions.headers.containsKey(HttpHeaders.authorizationHeader)) {
+      final originalToken = err.requestOptions.headers[HttpHeaders.authorizationHeader].toString().split(' ')[1];
+      user = await userDbProvider.getByAccessToken(originalToken);
+      if (user != null) {
         reportService.trackEvent(
-          userAccount: userAccount,
-          severity: Severity.error,
+          userId: user.id,
+          severity: LogSeverity.error,
           message: err.response?.toString() ?? err.error.toString(),
         );
       }
@@ -74,11 +82,27 @@ class TokenInterceptor extends Interceptor {
     switch (err.response?.statusCode) {
       case 400:
       case 401:
-        final refreshToken = err.requestOptions.data['refresh_token'];
-        if (refreshToken != null) {
+        // If the error is a result of trying to refresh an access token, fail.
+        final refreshTokenValue = err.requestOptions.data?['refresh_token'];
+        if (refreshTokenValue != null) {
           getIt<SyncBloc>().add(
-            SyncEvent.userSessionExpired(refreshToken),
+            SyncEvent.userSessionExpired(refreshTokenValue),
           );
+        } else if (user != null) {
+          // Otherwise, try to refresh the access token and retry the request.
+          final newToken = (await refreshToken(user))?.accessToken;
+          final authHeaderValue = 'Bearer $newToken';
+
+          final headers = err.requestOptions.headers;
+          headers.update(HttpHeaders.authorizationHeader, (_) => authHeaderValue, ifAbsent: () => authHeaderValue);
+
+          final response = await Dio().request(
+            err.requestOptions.path,
+            data: err.requestOptions.data,
+            queryParameters: err.requestOptions.queryParameters,
+            options: Options(method: err.requestOptions.method, headers: headers),
+          );
+          return handler.resolve(response);
         }
         handler.next(err);
         throw InvalidRequestException();
@@ -96,47 +120,30 @@ class TokenInterceptor extends Interceptor {
     }
   }
 
-  Future<AuthToken?> refreshToken(String originalToken) async {
-    final userAccount = accountDbProvider.getByToken(originalToken);
-
-    if (userAccount == null) return null;
-
-    final refreshToken = userAccount.authToken!.refreshToken;
-    final tokenUrl = userAccount.hospital!.authData.tokenUrl;
-
-    session.token = userAccount.authToken;
-    // Avoid calling this method recursively when refreshing the token...
-    session.token!.accessTokenExpires =
-        DateTime.now().add(const Duration(minutes: 10));
+  Future<AuthToken?> refreshToken(UserModel user) async {
+    final refreshToken = user.authToken.refreshToken;
+    final tokenUrl = user.hospital.authData.tokenUrl;
 
     final response = await getIt<AuthApiClient>().refreshToken(
       tokenUrl,
       'refresh_token',
       refreshToken,
-      Config.value.clientId,
-      Config.value.clientSecret,
+      HospitalsConfiguration.clientId,
+      user.hospital.clientSecret,
     );
 
     final newToken = AuthToken(
       response.accessToken,
       response.refreshToken,
-      DateTime.now().add(const Duration(seconds: 3600)),
+      DateTime.now().add(Duration(seconds: response.expiresIn)),
     );
 
-    final newUserPermissions =
-        JwtParser(jwtToken: newToken.accessToken).getUserPermissions();
+    final newUserPermissions = JwtParser(jwtToken: newToken.accessToken).getUserPermissions();
 
-    userAccount.authToken = newToken;
-    userAccount.userPermissions = newUserPermissions;
-    if (userAccount.representedPeople != null) {
-      for (final representedPerson in userAccount.representedPeople!) {
-        representedPerson.authToken = newToken;
-        representedPerson.userPermissions = newUserPermissions;
-      }
-    }
-    await accountDbProvider.save(userAccount);
+    await userDbProvider.updateAuthParameters(user.id, newToken, newUserPermissions);
 
-    session.token = newToken;
+    // Wait for the change to propagate.
+    await userCubit.waitForChange((x) => x.id == userId && x.authToken.accessToken == newToken.accessToken);
 
     return newToken;
   }

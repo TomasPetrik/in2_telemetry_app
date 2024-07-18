@@ -1,23 +1,25 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
+import 'package:scalesoft_app/data/providers/care_plan_db_provider.dart';
+import 'package:scalesoft_app/data/providers/user_db_provider.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
-import 'package:scalesoft_app/storage/session.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
+import 'package:scalesoft_app/ui/viewModels/measurement_result_view_model.dart';
 
 @singleton
 class SyncBloc extends Bloc<SyncEvent, SyncState> {
-  final AccountDbProvider _accountDbProvider;
+  final UserDbProvider _userDbProvider;
   final SyncService _syncService;
-  final Session _session;
+  final UserCubit _session;
+  final CarePlanDbProvider _carePlanDbProvider;
 
   SyncBloc(
-    this._accountDbProvider,
+    this._userDbProvider,
     this._syncService,
     this._session,
+    this._carePlanDbProvider,
   ) : super(const SyncState.none()) {
     on<SyncEvent>((event, emit) async {
       await event.when(
@@ -39,7 +41,7 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
 
           await _syncService.syncResults();
 
-          await _syncService.syncAllData();
+          await _syncService.syncAllData(syncAllUsers: true);
 
           final currentSyncState = await _session.detectSyncState();
           emit(currentSyncState);
@@ -63,19 +65,12 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
           }
         },
         userSessionExpired: (String refreshToken) async {
-          await _accountDbProvider.setExpiredUserByToken(refreshToken);
+          await _userDbProvider.setExpiredByRefreshToken(refreshToken);
 
           emit(await _session.detectSyncState());
         },
-        resolveUpdatedUserPlan: (CarePlan carePlanToUpdate) async {
-          final userAccount = _accountDbProvider.get(carePlanToUpdate.userId!);
-          if (userAccount == null) return;
-
-          final carePlan = userAccount.carePlans
-              ?.firstWhere((userPlan) => userPlan.id == carePlanToUpdate.id);
-          carePlan?.wasChanged = false;
-
-          _accountDbProvider.save(userAccount);
+        resolveUpdatedUserPlan: (int carePlanId) async {
+          await _carePlanDbProvider.resolveUpdatedCarePlan(carePlanId);
 
           final syncState = await _session.detectSyncState();
 
@@ -85,8 +80,8 @@ class SyncBloc extends Bloc<SyncEvent, SyncState> {
             emit(const SyncState.none());
           }
         },
-        removeOfflineResult: (MeasurementResult measurementResult) async {
-          await _syncService.removeOfflineResult(measurementResult);
+        removeOfflineResult: (MeasurementResultViewModel measurementResult) async {
+          await _syncService.removeOfflineResult(measurementResult.measurementTime, measurementResult.measurementType);
           final syncState = await _session.detectSyncState();
 
           if (syncState != const SyncState.synced()) {

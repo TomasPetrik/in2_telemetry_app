@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/chart_loader_bloc/chart_loader_bloc.dart';
 import 'package:scalesoft_app/bloc/chart_loader_bloc/chart_loader_bloc_event.dart';
 import 'package:scalesoft_app/bloc/chart_loader_bloc/chart_loader_bloc_state.dart';
-import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -25,7 +25,7 @@ class ChartWidget extends StatelessWidget {
   });
 
   final CalendarMonth calendarMonth;
-  final UserAccount userAccount;
+  final UserModel userAccount;
   final MeasurementType measurementType;
   final List<DrawableRoot> svgDrawables;
 

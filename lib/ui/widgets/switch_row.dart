@@ -88,16 +88,11 @@ class SwitchRow extends StatelessWidget {
 
 class _TitleSwitchRow extends SwitchRow {
   const _TitleSwitchRow({
-    required double height,
-    required String title,
-    required Function(bool turnedOn) onChanged,
-    bool? defaultValue,
-  }) : super(
-          height: height,
-          title: title,
-          onChanged: onChanged,
-          defaultValue: defaultValue,
-        );
+    required super.height,
+    required super.title,
+    required Function(bool turnedOn) super.onChanged,
+    super.defaultValue,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -126,16 +121,11 @@ class _TitleSwitchRow extends SwitchRow {
 
 class _TextSwitchRow extends SwitchRow {
   const _TextSwitchRow({
-    required double height,
-    required String title,
-    required Function(bool turnedOn) onChanged,
-    bool? defaultValue,
-  }) : super(
-          height: height,
-          title: title,
-          onChanged: onChanged,
-          defaultValue: defaultValue,
-        );
+    required super.height,
+    required super.title,
+    required Function(bool turnedOn) super.onChanged,
+    super.defaultValue,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -164,18 +154,12 @@ class _TextSwitchRow extends SwitchRow {
 
 class _MultiLineSwitchRow extends SwitchRow {
   const _MultiLineSwitchRow({
-    required double height,
-    required String title,
-    required String label,
-    required Function(bool turnedOn) onChanged,
-    required bool defaultValue,
-  }) : super(
-          height: height,
-          title: title,
-          label: label,
-          onChanged: onChanged,
-          defaultValue: defaultValue,
-        );
+    required super.height,
+    required super.title,
+    required String super.label,
+    required Function(bool turnedOn) super.onChanged,
+    required bool super.defaultValue,
+  });
 
   @override
   Widget build(BuildContext context) {

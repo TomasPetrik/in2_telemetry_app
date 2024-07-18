@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart' as tdw;
+import 'package:scalesoft_app/data/entities/enums/week_day.dart';
+import 'package:scalesoft_app/data/entities/json_entities/care_plan/time_only.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/utils/extensions/string_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
@@ -18,7 +18,7 @@ extension DateParse on DateTime {
 
   DateTime get date => DateTime(year, month, day);
 
-  // to prevent DST skew, add one day to UTC and then return local time of it
+  // to prevent DST skew, subtract one day from UTC and then return local time of it
   DateTime get yesterday {
     final utcDate = DateTime.utc(year, month, day);
     final yesterday = utcDate.subtract(const Duration(days: 1));
@@ -42,7 +42,7 @@ extension DateParse on DateTime {
 
   DateTime get endOfDay => tomorrow;
 
-  tdw.DailyTime toTimeOfDay() => tdw.DailyTime(hour, minute, second);
+  TimeOnly toTimeOfDay() => TimeOnly.fromDateTime(toLocal());
 
   bool isSameDate(DateTime other) => year == other.year && month == other.month && day == other.day;
 

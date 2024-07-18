@@ -65,7 +65,7 @@ class InteractiveChart extends StatefulWidget {
   final bool showGridLines;
 
   const InteractiveChart({
-    Key? key,
+    super.key,
     required this.candles,
     required this.svgDrawables,
     this.initialVisibleCandleCount = 1000,
@@ -84,8 +84,7 @@ class InteractiveChart extends StatefulWidget {
         assert(
           initialVisibleCandleCount >= 3,
           "initialVisibleCandleCount must be more 3 or more",
-        ),
-        super(key: key);
+        );
 
   @override
   InteractiveChartState createState() => InteractiveChartState();

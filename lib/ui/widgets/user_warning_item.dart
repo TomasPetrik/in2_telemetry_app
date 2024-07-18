@@ -4,7 +4,8 @@ import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_event.dart';
-import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/model/enum/user_problem_type.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/widgets/warning_item.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
@@ -17,7 +18,7 @@ class UserWarningItem extends StatelessWidget {
   });
 
   final UserProblemType userProblemType;
-  final UserAccount userAccount;
+  final UserModel userAccount;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class UserWarningItem extends StatelessWidget {
       return WarningItem(
         title: localization.session_expired_title,
         description: localization.session_expired_description(
-          userAccount.user.fullName,
+          userAccount.fullName,
         ),
         buttonLabel: localization.common_log_in,
         icon: SvgPicture.asset(
@@ -35,7 +36,7 @@ class UserWarningItem extends StatelessWidget {
         onTap: () {
           getIt<AuthBloc>().add(
             Authenticate(
-              hospital: userAccount.hospital!,
+              hospital: userAccount.hospital,
             ),
           );
         },
@@ -43,12 +44,12 @@ class UserWarningItem extends StatelessWidget {
     } else if (userProblemType == UserProblemType.lastSyncFailed) {
       return WarningItem(
         title: localization.sync_widget_sync_failed_title,
-        description: userAccount.lastSyncAt != null
-            ? localization.sync_widget_sync_failed_desc(
-                userAccount.lastSyncAt!.toDateOrDay().toLowerCase(),
-                userAccount.lastSyncAt!.toTimeOfDay().toString(),
+        description:
+             localization.sync_widget_sync_failed_desc(
+                userAccount.lastSyncAt.toDateOrDay().toLowerCase(),
+                userAccount.lastSyncAt.toTimeOfDay().toString(),
               )
-            : '',
+            ,
         buttonLabel: localization.common_do_sync,
         icon: SvgPicture.asset(
           'assets/icons/icon_triangle_exclamation_medium.svg',

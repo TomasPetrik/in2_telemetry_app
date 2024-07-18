@@ -12,16 +12,22 @@ import 'package:scalesoft_app/bloc/notifications/notifications_bloc.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_event.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/ui/routers/routes/manual_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/manual_without_bar_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/blurred_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
 import 'package:scalesoft_app/ui/widgets/onboarding_item_desc.dart';
+import 'package:scalesoft_app/ui/widgets/staging_hospital_unlocker.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+  final bool showLoginNeeded;
+
+  const OnboardingScreen(
+    this.showLoginNeeded, {
+    super.key,
+  });
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -58,6 +64,12 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
   @override
   Widget build(BuildContext context) {
+    if(widget.showLoginNeeded) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showLoginNeeded(context);
+      });
+    }
+
     return BlocConsumer<NotificationsBloc, NotificationsState>(
       bloc: notificationsBloc,
       listener: (context, state) {
@@ -88,9 +100,11 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                               Dimensions.appBarHeight,
                         ),
                         Gaps.gap48,
-                        SvgPicture.asset(
-                          'assets/icons/icon_onboard_user.svg',
-                          color: Theme.of(context).colorScheme.tertiary,
+                        StagingHospitalUnlocker(
+                          child: SvgPicture.asset(
+                            'assets/icons/icon_onboard_user.svg',
+                            color: Theme.of(context).colorScheme.tertiary,
+                          ),
                         ),
                         Gaps.gap36,
                         Text(
@@ -139,7 +153,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           label: localization.open_manual_button,
                           buttonType: ButtonType.secondary,
                           onPressed: () async {
-                            GoRouter.of(context).pushNamed(ManualRoute.name);
+                            GoRouter.of(context).pushNamed(ManualWithoutBarRoute.name);
                           },
                         ),
                       ],

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:scalesoft_app/api/model/hospital.dart';
-import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/model/hospital.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 
 abstract class AuthEvent extends Equatable {
   const AuthEvent();
@@ -28,13 +28,6 @@ class Authenticate extends AuthEvent {
   List<Object?> get props => [hospital];
 }
 
-class HandleAuthResponse extends AuthEvent {
-  const HandleAuthResponse();
-
-  @override
-  List<Object?> get props => [];
-}
-
 class CancelAuth extends AuthEvent {
   const CancelAuth();
 
@@ -42,15 +35,8 @@ class CancelAuth extends AuthEvent {
   List<Object?> get props => [];
 }
 
-class VerifyUser extends AuthEvent {
-  const VerifyUser();
-
-  @override
-  List<Object?> get props => [];
-}
-
 class LogoutUser extends AuthEvent {
-  final UserAccount userAccount;
+  final UserModel userAccount;
 
   const LogoutUser({
     required this.userAccount,

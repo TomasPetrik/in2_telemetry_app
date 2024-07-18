@@ -1,7 +1,10 @@
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:scalesoft_app/model/app_settings.dart';
-import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/data/app_database.dart';
+import 'package:scalesoft_app/data/providers/care_plan_db_provider.dart';
+import 'package:scalesoft_app/data/providers/user_db_provider.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
@@ -10,44 +13,39 @@ import 'package:timezone/timezone.dart' as tz;
 class NotificationsHelper {
   static Future<void> removeUserNotifications({
     required final FlutterLocalNotificationsPlugin notificationsPlugin,
-    required final UserAccount userAccount,
+    required final UserModel userAccount,
   }) async {
-    if (userAccount.notificationsIds == null ||
-        userAccount.notificationsIds?.isEmpty == true) {
-      return;
-    }
-    for (final notificationId in userAccount.notificationsIds!) {
+    for (final notificationId in userAccount.notificationIds) {
       await notificationsPlugin.cancel(notificationId);
       debugPrint('cancelled $notificationId');
     }
 
-    if (userAccount.representedPeople?.isNotEmpty == true) {
-      for (final representedPerson in userAccount.representedPeople!) {
-        for (final notificationId in representedPerson.notificationsIds!) {
-          await notificationsPlugin.cancel(notificationId);
-          debugPrint('cancelled $notificationId');
-        }
+    for (final representedPerson in userAccount.representedPeople) {
+      for (final notificationId in representedPerson.notificationIds) {
+        await notificationsPlugin.cancel(notificationId);
+        debugPrint('cancelled $notificationId');
       }
     }
   }
 
   static Future<void> setNotifications({
     required final FlutterLocalNotificationsPlugin notificationsPlugin,
-    required final List<UserAccount> userAccounts,
-    required final AppSettings? appSettings,
+    required final List<UserModel> userAccounts,
+    required final AppSetting appSettings,
   }) async {
+    final carePlanDbProvider = getIt<CarePlanDbProvider>();
+    final userDbProvider = getIt<UserDbProvider>();
+
     //clear all notifications set first
     await notificationsPlugin.cancelAll();
     debugPrint('cancelled all notifications');
 
-    if (appSettings?.enabledNotifications != true) {
+    if (!appSettings.enableNotifications) {
       return;
     }
 
-    final notifyAtStartOfMeasurement =
-        appSettings?.notifyAtStartOfMeasurement == true;
-    final notify10minBeforeMeasurement =
-        appSettings?.notify10minBeforeMeasurement == true;
+    final notifyAtStartOfMeasurement = appSettings.notifyAtStartOfMeasurement == true;
+    final notify10minBeforeMeasurement = appSettings.notify10minBeforeMeasurement == true;
 
     if (!notifyAtStartOfMeasurement && !notify10minBeforeMeasurement) {
       return;
@@ -59,44 +57,55 @@ class NotificationsHelper {
     for (final userAccount in userAccounts) {
       final List<int> notificationIds = [];
 
-      for (final carePlan in userAccount.carePlans!) {
+      final carePlans = await carePlanDbProvider.getByUser(userAccount.id);
+      final now = DateTime.now();
+
+      for (final carePlan in carePlans) {
         //only for current active plans
-        if (carePlan.wasExpired != true &&
-            carePlan.started &&
-            !carePlan.finished) {
+        if (carePlan.versions.any((x) => x.scheduledStart.isBefore(now)) &&
+            (carePlan.versions.last.scheduledEnd?.isAfter(now) ?? true)) {
           //schedule for next 30 measurements of this plan
           final nextMeasurements = Calendar.getNScheduledMeasurements(
             carePlans: [carePlan],
             reqCount: 30,
           );
 
+          final List<Future> tasks = [];
+
           for (final nextMeasurement in nextMeasurements) {
             if (notifyAtStartOfMeasurement) {
               notificationIds.add(notificationId += 1);
-              _zonedSchedule(
-                notificationIds.last,
-                notificationsPlugin,
-                nextMeasurement,
-                userAccount,
+              tasks.add(
+                _zonedSchedule(
+                  notificationIds.last,
+                  notificationsPlugin,
+                  nextMeasurement,
+                  userAccount,
+                ),
               );
             }
             if (notify10minBeforeMeasurement) {
               notificationIds.add(notificationId += 1);
-              _zonedSchedule(
-                notificationIds.last,
-                notificationsPlugin,
-                nextMeasurement,
-                userAccount,
-                10,
+              tasks.add(
+                _zonedSchedule(
+                  notificationIds.last,
+                  notificationsPlugin,
+                  nextMeasurement,
+                  userAccount,
+                  10,
+                ),
               );
             }
           }
+
+          await Future.wait(tasks);
         }
       }
 
-      userAccount.notificationsIds = notificationIds;
+      await userDbProvider.updateUser(userAccount.id, UsersCompanion(notificationIds: Value(notificationIds)));
+
       debugPrint(
-        'created ${userAccount.notificationsIds!.length} notifications for ${userAccount.user.fullName}',
+        'created ${userAccount.notificationIds.length} notifications for ${userAccount.fullName}',
       );
     }
   }
@@ -105,11 +114,10 @@ class NotificationsHelper {
     int id,
     FlutterLocalNotificationsPlugin notificationsPlugin,
     PlannedMeasurement plannedMeasurement,
-    UserAccount userAccount, [
+    UserModel userAccount, [
     int? hitBeforeNMinutes,
   ]) async {
-    final whenStart = plannedMeasurement.whenStart
-        .subtract(Duration(minutes: hitBeforeNMinutes ?? 0));
+    final whenStart = plannedMeasurement.whenStart.subtract(Duration(minutes: hitBeforeNMinutes ?? 0));
 
     //skip ongoing before N minutes scheduled notifications
     if (whenStart.isBefore(DateTime.now())) {
@@ -140,38 +148,34 @@ class NotificationsHelper {
           icon: "ic_notification_foreground",
         ),
       ),
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.wallClockTime,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.wallClockTime,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     );
   }
 
   static String _getBodyMessage(
-    UserAccount userAccount,
+    UserModel userAccount,
     PlannedMeasurement plannedMeasurement,
   ) {
     String message = '';
-    message +=
-        '${userAccount.user.fullName} - ${localization.common_measurement} ';
+    message += '${userAccount.fullName} - ${localization.common_measurement} ';
     message += '${localization.common_measurement_types_genitive(
-          plannedMeasurement.carePlan.activity.measurementType.name,
+          plannedMeasurement.measurementType.name,
         ).toLowerCase()} ';
 
-    if (plannedMeasurement.carePlan.isPeriodical) {
+    if (plannedMeasurement.reqCount > 1) {
       message += localization.notification_periodical_frequency_from_to(
-        plannedMeasurement.carePlan.frequency,
-        plannedMeasurement.isLongPeriod
+        plannedMeasurement.reqCount,
+        plannedMeasurement.isGoingOverDay
             ? plannedMeasurement.whenStart.dateFormatLong
             : plannedMeasurement.whenStart.toLocal().toTimeOfDay().toString(),
-        plannedMeasurement.isLongPeriod
+        plannedMeasurement.isGoingOverDay
             ? plannedMeasurement.whenEnd.dateFormatLong
             : plannedMeasurement.whenEnd.toLocal().toTimeOfDay().toString(),
       );
     } else {
       if (plannedMeasurement.whenCode != null) {
-        message += localization
-            .common_when_code(plannedMeasurement.whenCode!.name)
-            .toLowerCase();
+        message += localization.common_when_code(plannedMeasurement.whenCode!.name).toLowerCase();
       }
       message += ' ${localization.common_at_time(
         plannedMeasurement.whenStart.toTimeOfDay().toString(),

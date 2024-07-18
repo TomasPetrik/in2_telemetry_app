@@ -466,6 +466,26 @@ class I10n {
     );
   }
 
+  /// `Znovu se přihlaste`
+  String get login_needed_title {
+    return Intl.message(
+      'Znovu se přihlaste',
+      name: 'login_needed_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Došlo k zásadním změnám v aplikaci, proto je nyní jednorázově nutné znovu provést přihlášení.`
+  String get login_needed_desc {
+    return Intl.message(
+      'Došlo k zásadním změnám v aplikaci, proto je nyní jednorázově nutné znovu provést přihlášení.',
+      name: 'login_needed_desc',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} shortnessOfBreath{Dušnost} overallHealth{Celkový zdravotní stav} other{Jiný}}`
   String common_measurement_types(Object measurementType) {
     return Intl.select(
@@ -1331,11 +1351,11 @@ class I10n {
     );
   }
 
-  /// `Periodické měření`
-  String get dashboard_screen_periodical_measurements {
+  /// `Vícedenní měření`
+  String get multi_day_measurements {
     return Intl.message(
-      'Periodické měření',
-      name: 'dashboard_screen_periodical_measurements',
+      'Vícedenní měření',
+      name: 'multi_day_measurements',
       desc: '',
       args: [],
     );
@@ -2009,10 +2029,10 @@ class I10n {
     );
   }
 
-  /// `Po meření stiskněte opět akční tlačítko`
+  /// `Po měření stiskněte opět akční tlačítko`
   String get find_device_screen_step3 {
     return Intl.message(
-      'Po meření stiskněte opět akční tlačítko',
+      'Po měření stiskněte opět akční tlačítko',
       name: 'find_device_screen_step3',
       desc: '',
       args: [],

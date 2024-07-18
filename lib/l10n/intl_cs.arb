@@ -97,6 +97,8 @@
     },
     "server_error_title": "Chyba",
     "server_error_desc": "Zde je něco v nepořádku. Zkuste akci opakovat později.",
+    "login_needed_title": "Znovu se přihlaste",
+    "login_needed_desc": "Došlo k zásadním změnám v aplikaci, proto je nyní jednorázově nutné znovu provést přihlášení.",
     "common_measurement_types": "{measurementType, select, temperature{Teplota} bloodPressure{Krevní tlak} oxygenSaturation{Saturace kyslíku} steps{Kroky} globalPosition{Pozice} heartRate{Srdeční tep} ews{Ews} respiratoryRate{Dechová frekvence} shortnessOfBreath{Dušnost} overallHealth{Celkový zdravotní stav} other{Jiný}}",
     "@common_measurement_types": {
         "description": "Measurement types",
@@ -319,7 +321,7 @@
         }
     },
     "dashboard_screen_no_todays_measurements": "Dnes nemáte naplánované žádné měření.",
-    "dashboard_screen_periodical_measurements": "Periodické měření",
+    "multi_day_measurements": "Vícedenní měření",
     "measurement_dialog_device_desc": "{deviceModel, select, beurerBm77{Akční tlačítko je pod displejem} omronM7{Akční tlačítko je vedle displeje} other{Nedefinováno}}",
     "@measurement_dialog_device_desc": {
         "description": "Device model",
@@ -519,7 +521,7 @@
             }
         }
     },
-    "find_device_screen_step3": "Po meření stiskněte opět akční tlačítko",
+    "find_device_screen_step3": "Po měření stiskněte opět akční tlačítko",
     "find_device_screen_step4": "Počkejte na přenesení výsledků z tlakoměru",
     "find_device_screen_device_reference": "Stránky nemocnice o tlakoměru",
     "find_device_screen_disabled_bt_title": "Bluetooth je vypnutý",

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -230,6 +230,22 @@ class BottomDialog extends StatelessWidget {
       description: localization.watch_setup_failed,
       iconPath: 'assets/icons/icon_triangle_exclamation_big.svg',
       iconColor: Theme.of(context).colorScheme.error,
+      positiveButtonStyle: ButtonStyle(
+        buttonType: ButtonType.secondary,
+        label: localization.common_close,
+      ),
+    );
+  }
+
+  factory BottomDialog.loginNeeded({
+    Key? key,
+    required BuildContext context,
+  }) {
+    return _BottomDialog(
+      title: localization.login_needed_title,
+      description: localization.login_needed_desc,
+      iconPath: 'assets/icons/icon_triangle_exclamation_big.svg',
+      iconColor: Theme.of(context).colorScheme.tertiary,
       positiveButtonStyle: ButtonStyle(
         buttonType: ButtonType.secondary,
         label: localization.common_close,

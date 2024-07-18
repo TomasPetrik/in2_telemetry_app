@@ -1,0 +1,4 @@
+enum ActionButtonType {
+  regular,
+  startButton,
+}

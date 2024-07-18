@@ -59,7 +59,7 @@ class PlannedMeasurementTimeDialog extends StatelessWidget {
                 ),
               );
             },
-          ).toList(),
+          ),
           Gaps.gap24,
           Padding(
             padding: Paddings.horizontal16,

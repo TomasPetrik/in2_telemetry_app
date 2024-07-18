@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
-import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 
 part 'chart_loader_bloc_event.freezed.dart';
 
@@ -9,13 +9,7 @@ part 'chart_loader_bloc_event.freezed.dart';
 class ChartLoaderBlocEvent with _$ChartLoaderBlocEvent {
   const factory ChartLoaderBlocEvent.init(
     MeasurementType measurementType,
-    UserAccount userAccount,
+    UserModel userAccount,
     CalendarMonth month,
   ) = _Init;
-
-  const factory ChartLoaderBlocEvent.loadMonthMeaurements(
-    MeasurementType measurementType,
-    UserAccount userAccount,
-    CalendarMonth month,
-  ) = _LoadMonthMeaurements;
 }

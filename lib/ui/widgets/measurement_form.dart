@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
-import 'package:scalesoft_app/api/model/measurement/composed_int_value.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement.dart';
-import 'package:scalesoft_app/api/model/measurement/overall_health_value.dart';
-import 'package:scalesoft_app/api/model/measurement/shortness_of_breath_value.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
+import 'package:scalesoft_app/data/entities/enums/overall_health_state.dart';
+import 'package:scalesoft_app/data/entities/enums/shortness_of_breath_level.dart';
+import 'package:scalesoft_app/data/entities/json_entities/measurement/blood_pressure_value.dart';
 import 'package:scalesoft_app/model/measurement_config.dart';
+import 'package:scalesoft_app/model/measurement_create_model.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -23,70 +24,58 @@ class MeasurementForm extends StatelessWidget {
   MeasurementForm({
     super.key,
     required this.measurementType,
-    required this.userId,
+    required this.user,
   });
 
   final MeasurementType measurementType;
-  final String userId;
+  final UserModel user;
 
   double? _value1;
   double? _value2;
 
-  Measurement? getMeasurement() {
+  MeasurementCreateModel? getMeasurement() {
     if (formKey.currentState?.validate() == true) {
-      Measurement? measurement = Measurement(
-        patientMuid: userId,
-        measurementType: measurementType,
+      final measurement = MeasurementCreateModel(
+        user.id,
+        DateTime.now(),
+        measurementType,
       );
       switch (measurementType) {
         case MeasurementType.temperature:
-          return measurement.copyWith(
-            temperature: _value1,
-          );
+          measurement.temperature = _value1;
+          return measurement;
         case MeasurementType.bloodPressure:
-          return measurement.copyWith(
-            bloodPressure: BloodPressureValue(
-              systolic: _value1?.toInt(),
-              diastolic: _value2?.toInt(),
-            ),
-          );
-
+          measurement.bloodPressure = _value1 == null || _value2 == null
+              ? null
+              : BloodPressureValue(
+                  systolic: _value1!.toInt(),
+                  diastolic: _value2!.toInt(),
+                );
+          return measurement;
         case MeasurementType.oxygenSaturation:
-          return measurement.copyWith(
-            oxygenSaturation: _value1?.toInt(),
-          );
+          measurement.oxygenSaturation = _value1?.toInt();
+          return measurement;
         case MeasurementType.steps:
-          return measurement.copyWith();
+          return measurement;
         case MeasurementType.globalPosition:
-          return measurement.copyWith();
+          return measurement;
         case MeasurementType.heartRate:
-          return measurement.copyWith(
-            heartRate: _value1?.toInt(),
-          );
+          measurement.heartRate = _value1?.toInt();
+          return measurement;
         case MeasurementType.ews:
-          return measurement.copyWith(
-            heartRate: _value1?.toInt(),
-          );
+          return measurement;
         case MeasurementType.respiratoryRate:
-          return measurement.copyWith(
-            respiratoryRate: _value1?.toInt(),
-          );
+          measurement.respiratoryRate = _value1?.toInt();
+          return measurement;
         case MeasurementType.shortnessOfBreath:
-          return measurement.copyWith(
-            shortnessOfBreath: _value1 == null
-                ? null
-                : ShortnessOfBreathValue.values[_value1!.toInt()],
-          );
+          measurement.shortnessOfBreath = _value1 == null ? null : ShortnessOfBreathLevel.values[_value1!.toInt()];
+          return measurement;
         case MeasurementType.overallHealth:
-          return measurement.copyWith(
-            overallHealth: _value1 == null
-                ? null
-                : OverallHealthValue.values[_value1!.toInt()],
-          );
+          measurement.overallHealth = _value1 == null ? null : OverallHealthState.values[_value1!.toInt()];
+          return measurement;
         case MeasurementType.battery:
-          return measurement.copyWith(
-              batteryPercentage: _value1?.toInt(),
-          );
+          measurement.batteryPercentage = _value1?.toInt();
+          return measurement;
       }
     }
 
@@ -144,8 +133,7 @@ class MeasurementForm extends StatelessWidget {
                             ? Text(
                                 measurementConfig.units![0],
                                 style: ScaleTextStyles.text.apply(
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
+                                  color: Theme.of(context).colorScheme.onPrimary,
                                 ),
                               )
                             : null,
@@ -157,10 +145,8 @@ class MeasurementForm extends StatelessWidget {
 
                           final parsedValue = value.toDouble();
 
-                          if (measurementConfig.min != null &&
-                                  measurementConfig.min! > parsedValue ||
-                              measurementConfig.max != null &&
-                                  measurementConfig.max! < parsedValue) {
+                          if (measurementConfig.min != null && measurementConfig.min! > parsedValue ||
+                              measurementConfig.max != null && measurementConfig.max! < parsedValue) {
                             return localization.common_wrong_value;
                           } else {
                             _value1 = parsedValue;
@@ -195,8 +181,7 @@ class MeasurementForm extends StatelessWidget {
                             ? Text(
                                 measurementConfig.units![1],
                                 style: ScaleTextStyles.text.apply(
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
+                                  color: Theme.of(context).colorScheme.onPrimary,
                                 ),
                               )
                             : null,
@@ -208,14 +193,11 @@ class MeasurementForm extends StatelessWidget {
 
                           final parsedValue = value.toDouble();
 
-                          if (measurementConfig.min != null &&
-                                  measurementConfig.min! > parsedValue ||
-                              measurementConfig.max != null &&
-                                  measurementConfig.max! < parsedValue) {
+                          if (measurementConfig.min != null && measurementConfig.min! > parsedValue ||
+                              measurementConfig.max != null && measurementConfig.max! < parsedValue) {
                             return localization.common_wrong_value;
                           }
-                          if (measurementType ==
-                                  MeasurementType.bloodPressure &&
+                          if (measurementType == MeasurementType.bloodPressure &&
                               _value1 != null &&
                               _value1! < parsedValue) {
                             return localization.common_diastolic_gt_systolic;

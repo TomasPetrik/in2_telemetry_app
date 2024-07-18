@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/no_results_in_plans_header.dart';
 import 'package:scalesoft_app/ui/widgets/progress_header.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/evaluation_plan_helper.dart';
-import 'package:scalesoft_app/utils/helpers/measurements_helper.dart';
 
 class CarePlansEvaluationHeader extends StatelessWidget {
   const CarePlansEvaluationHeader({
@@ -17,25 +14,17 @@ class CarePlansEvaluationHeader extends StatelessWidget {
     required this.carePlans,
     required this.whenPeriod,
     required this.openWhenSelector,
+    required this.offlineResults,
   });
 
   final List<CarePlan> carePlans;
   final ResultsWhenPeriod whenPeriod;
   final Function openWhenSelector;
+  final List<Measurement> offlineResults;
 
   @override
   Widget build(BuildContext context) {
-    final supportedMeasurementTypes =
-        CarePlanHelper.getMeasurementTypes(carePlans);
-
-    final allPendingResults = getIt<Session>().getPendingResults();
-
-    final List<MeasurementResult> offlineResults =
-        MeasurementHelper.getOffilneResultsConverted(
-      allPendingResults,
-      [whenPeriod],
-      null,
-    );
+    final supportedMeasurementTypes = CarePlanHelper.getMeasurementTypes(carePlans);
 
     List<ProgressItem> progressItems = [];
 

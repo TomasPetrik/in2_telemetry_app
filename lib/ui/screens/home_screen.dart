@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/sync/sync_bloc.dart';
 import 'package:scalesoft_app/bloc/sync/sync_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/storage/session.dart';
 import 'package:scalesoft_app/ui/routers/routes/configuration_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_route.dart';
@@ -14,10 +13,10 @@ import 'package:scalesoft_app/ui/widgets/tab_icon_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({
-    Key? key,
+    super.key,
     required this.child,
     required this.path,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final String path;
@@ -49,9 +48,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final session = getIt<Session>();
-    session.detectSyncState();
-
     return Scaffold(
       body: Center(
         child: child,

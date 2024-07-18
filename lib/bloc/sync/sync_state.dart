@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
-import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/data/app_database.dart';
+import 'package:scalesoft_app/model/user_model.dart';
+import 'package:scalesoft_app/ui/viewModels/measurement_result_view_model.dart';
 
 part 'sync_state.freezed.dart';
 
@@ -10,26 +10,26 @@ class SyncState with _$SyncState {
   const factory SyncState.none() = _None;
   const factory SyncState.inProgress() = _InProgress;
   const factory SyncState.synced() = _Synced;
-  factory SyncState.userSessionExpired(UserAccount userAccount) =
+  factory SyncState.userSessionExpired(UserModel userAccount) =
       _SingleUserExpired;
   factory SyncState.syncUserDataFailed(
-    List<MeasurementResult>? offlinResults,
+    List<MeasurementResultViewModel>? offlineResults,
     DateTime? lastSyncAt,
   ) = _SyncUserDataFailed;
   const factory SyncState.syncSomeUsersDataFailed(
-    List<MeasurementResult>? offlinResults,
+    List<MeasurementResultViewModel>? offlineResults,
   ) = _SyncSomeUsersDataFailed;
   const factory SyncState.userResultsFailed(
-    List<MeasurementResult>? offlineResults,
+    List<MeasurementResultViewModel>? offlineResults,
     DateTime? lastSyncAt,
   ) = _UserResultsFailed;
   const factory SyncState.someUsersResultsFailed(
-    List<MeasurementResult>? offlinResults,
+    List<MeasurementResultViewModel>? offlineResults,
   ) = _SomeUsersResultsFailed;
   const factory SyncState.userCarePlanChanged(CarePlan carePlan) =
       _UserCarePlanChanged;
   const factory SyncState.someUsersCarePlanChanged(
-    UserAccount userAccount,
+    UserModel userAccount,
     CarePlan carePlan,
   ) = _SomeUsersCarePlanChanged;
   const factory SyncState.newWatchAssigned() = _NewWatchAssigned;

@@ -1,6 +1,9 @@
 import 'package:flutter/services.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
-import 'package:scalesoft_app/api/model/measurement/device.dart';
+import 'package:scalesoft_app/data/entities/enums/action_button_type.dart';
+import 'package:scalesoft_app/data/entities/enums/device_model_type.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_flow.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
+import 'package:scalesoft_app/data/entities/json_entities/device/device_prototype_template.dart';
 import 'package:scalesoft_app/model/measurement_config.dart';
 import 'package:scalesoft_app/utils/input_formatters/decimal_text_input_formatter.dart';
 
@@ -140,18 +143,10 @@ class ConfigurationConstants {
     ),
   };
 
-  /* Supported measurement types */
-
-  static const Set<MeasurementType> supportedMeasurementTypes = {
-    MeasurementType.bloodPressure,
-  };
-
-  /* EGoverment authorization */
-
   /* Supported Devices */
 
-  static final List<Device> supportedDevices = [
-    Device(
+  static final List<DevicePrototypeTemplate> supportedDevices = [
+    DevicePrototypeTemplate(
       localId: 0,
       modelName: 'BM77',
       deviceManufacturer: 'Beurer',
@@ -164,13 +159,13 @@ class ConfigurationConstants {
         MeasurementType.bloodPressure,
         MeasurementType.heartRate,
       ],
-      reqPairing: false,
+      requiresPairing: false,
       askToActivateBt: true,
       askToConfirmMeasurement: true,
       actionButtonType: ActionButtonType.regular,
       measurementFlow: MeasurementFlow.foreground,
     ),
-    Device(
+    DevicePrototypeTemplate(
       localId: 1,
       modelName: 'M7',
       deviceManufacturer: "Omron",
@@ -183,11 +178,11 @@ class ConfigurationConstants {
         MeasurementType.bloodPressure,
         MeasurementType.heartRate,
       ],
-      reqPairing: true,
+      requiresPairing: true,
       actionButtonType: ActionButtonType.startButton,
       measurementFlow: MeasurementFlow.foreground,
     ),
-    Device(
+    DevicePrototypeTemplate(
       localId: 2,
       modelName: 'E86',
       visibleName: "E86",
@@ -219,4 +214,7 @@ class ConfigurationConstants {
     11: 'nov',
     12: 'dec',
   };
+
+  /// SHA1 hash of "chcistagingnemocnice"
+  static String stagingUnlockHash = "160375C9601FE62306B7459786B6DA92C403C430";
 }

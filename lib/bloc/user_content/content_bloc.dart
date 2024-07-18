@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/model/report/report.dart';
 import 'package:scalesoft_app/app.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
@@ -14,32 +13,32 @@ import 'package:scalesoft_app/bloc/sync/sync_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_state.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
-import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
-import 'package:scalesoft_app/providers/session_db_provider.dart';
+import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
+import 'package:scalesoft_app/data/providers/settings_db_provider.dart';
+import 'package:scalesoft_app/data/providers/user_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
-import 'package:scalesoft_app/storage/session.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/utils/events_constants.dart';
 import 'package:uni_links/uni_links.dart';
 
 @singleton
 class ContentBloc extends Bloc<ContentEvent, ContentState> {
-  final AccountDbProvider _accountDbProvider;
-  final SessionDbProvider _sessionDbProvider;
-  final Session _session;
+  final UserDbProvider _userDbProvider;
+  final SettingsDbProvider _settingsDbProvider;
+  final UserCubit _session;
   final CarePlanBloc _carePlanBloc;
   final ReportService _reportsService;
   bool _initialUriIsHandled = false;
   Timer? _watchDogTimer;
 
   ContentBloc(
-    this._accountDbProvider,
-    this._sessionDbProvider,
+    this._userDbProvider,
     this._session,
     this._carePlanBloc,
     this._reportsService,
+    this._settingsDbProvider,
   ) : super(const ContentState.initial()) {
     on<CheckLastLoggedUserContentEvent>(_checkLastLoggedUserContentEvent);
     on<OnUserAddedContentEvent>(_onUserAddedContentEvent);
@@ -55,8 +54,8 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
 
   void _autoRefreshDashboard() {
     _reportsService.trackEvent(
-      userAccount: _session.isMultiUser == false ? _session.userAccount : null,
-      severity: Severity.info,
+      userId: _session.state.aggregateAllUsers || _session.state.rootUsers.isEmpty ? null : _session.state.currentUserId,
+      severity: LogSeverity.info,
       message: EventsConstants.eventAutoRefreshDashboard,
     );
     //1. Notify dashboard to refresh screen
@@ -71,7 +70,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
 
     _watchDogTimer?.cancel();
     _watchDogTimer = Timer.periodic(const Duration(seconds: 60), (Timer timer) {
-      getIt<ReportService>().trackEvent(severity: Severity.info, message: "Refresh dashboard");
+      getIt<ReportService>().trackEvent(severity: LogSeverity.info, message: "Refresh dashboard");
       _autoRefreshDashboard();
     });
   }
@@ -103,24 +102,20 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
       return;
     }
 
-    final userAccount = _accountDbProvider.getLast();
-    final isMultiUser = _sessionDbProvider.isMultiUser();
+    final userAccount = await _userDbProvider.getLastUsedUser();
     if (userAccount == null) {
       _reportsService.trackEvent(
-        userAccount: isMultiUser == false ? _session.userAccount : null,
-        severity: Severity.info,
+        userId: null,
+        severity: LogSeverity.info,
         message: EventsConstants.eventNoLastUserDetected,
       );
       emit(const ContentState.unauthenticated());
 
       _stopBackgroundFetch();
     } else {
-      _session.userAccount = userAccount;
-      _session.isMultiUser = isMultiUser;
-
       _reportsService.trackEvent(
-        userAccount: userAccount,
-        severity: Severity.info,
+        userId: userAccount.id,
+        severity: LogSeverity.info,
         message: EventsConstants.eventUserContentDefaultAutoSet,
       );
 
@@ -141,28 +136,13 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     SwitchUserContentEvent event,
     Emitter<ContentState> emit,
   ) async {
-    _session.isMultiUser = false;
-    _sessionDbProvider.setIsMultiUser(false);
-
-    final UserAccount parentAccount;
-
-    if (event.userAccount.parentId?.isNotEmpty == true) {
-      parentAccount = _accountDbProvider.get(event.userAccount.parentId!)!;
-      final childAccount = parentAccount.representedPeople?.firstWhere(
-        (userAccount) => userAccount.user.muid == event.userAccount.user.muid,
-      );
-      childAccount?.lastActiveIn = DateTime.now();
-      _session.userAccount = childAccount;
-    } else {
-      _session.userAccount = event.userAccount.copyWith(lastActiveIn: DateTime.now());
-      parentAccount = _session.userAccount!;
-    }
-
-    _accountDbProvider.save(parentAccount);
+    _session.toggleAllUserAggregation(false);
+    await _settingsDbProvider.setIsMultiUser(false);
+    await _session.setActiveUser(event.userId);
 
     _reportsService.trackEvent(
-      userAccount: parentAccount,
-      severity: Severity.info,
+      userId: event.userId,
+      severity: LogSeverity.info,
       message: EventsConstants.eventUserSwitchedToActive,
     );
 
@@ -177,12 +157,12 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     Emitter<ContentState> emit,
   ) async {
     _reportsService.trackEvent(
-      userAccount: _session.isMultiUser == false ? _session.userAccount : null,
-      severity: Severity.info,
+      userId: _session.state.aggregateAllUsers ? null: _session.state.currentUserId,
+      severity: LogSeverity.info,
       message: EventsConstants.eventSwitchToMultiuser,
     );
-    _session.isMultiUser = true;
-    _sessionDbProvider.setIsMultiUser(true);
+    _session.toggleAllUserAggregation(true);
+    await _settingsDbProvider.setIsMultiUser(true);
     emit(ContentState.activeMode(UniqueKey()));
   }
 
@@ -190,17 +170,17 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     OnUserAddedContentEvent event,
     Emitter<ContentState> emit,
   ) async {
-    _session.userAccount = event.userAccount.copyWith(lastActiveIn: DateTime.now());
-    _session.isMultiUser = false;
-    _sessionDbProvider.setIsMultiUser(false);
+    await _session.setActiveUser(event.userAccount.id);
+    _session.toggleAllUserAggregation(false);
+    await _settingsDbProvider.setIsMultiUser(false);
 
     //Same as during check last logged-in user
     //Make sure that if any user is active, we should start periodic background fetch
     _startBackgroundFetch();
 
     _reportsService.trackEvent(
-      userAccount: event.userAccount,
-      severity: Severity.info,
+      userId: event.userAccount.id,
+      severity: LogSeverity.info,
       message: EventsConstants.eventUserAdded,
     );
 
@@ -214,12 +194,12 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     _stopBackgroundFetch();
 
     _reportsService.trackEvent(
-      userAccount: _session.isMultiUser == false ? _session.userAccount : null,
-      severity: Severity.info,
+      userId: null,
+      severity: LogSeverity.info,
       message: EventsConstants.eventNoUserContent,
     );
-    _session.isMultiUser = false;
-    _sessionDbProvider.setIsMultiUser(false);
+    _session.toggleAllUserAggregation(false);
+    await _settingsDbProvider.setIsMultiUser(false);
     emit(const ContentState.unauthenticated());
   }
 
@@ -228,11 +208,10 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     Emitter<ContentState> emit,
   ) async {
     _reportsService.trackEvent(
-      userAccount: _session.isMultiUser == false ? _session.userAccount : null,
-      severity: Severity.info,
+      userId: _session.state.currentUserId,
+      severity: LogSeverity.info,
       message: EventsConstants.eventAppearanceChanged,
     );
-    emit(ContentState.onAppearanceChanged(event.themeMode));
   }
 
   Future<void> _onDaylightAppearanceChangedContentEvent(
@@ -240,8 +219,8 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     Emitter<ContentState> emit,
   ) async {
     _reportsService.trackEvent(
-      userAccount: _session.isMultiUser == false ? _session.userAccount : null,
-      severity: Severity.info,
+      userId: _session.state.currentUserId,
+      severity: LogSeverity.info,
       message: EventsConstants.eventDaylightAppearanceChanged,
     );
     emit(ContentState.onDaylightAppearanceChanged(event.originalLocation));
@@ -257,15 +236,15 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
 
 void _stopBackgroundFetch() {
   BackgroundFetch.stop().then((int status) {
-    getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - stop status: $status');
+    getIt<ReportService>().trackEvent(severity: LogSeverity.info, message: 'BS - stop status: $status');
   }).catchError((e) {
-    getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - stop failure: $e');
+    getIt<ReportService>().trackEvent(severity: LogSeverity.info, message: 'BS - stop failure: $e');
   });
 }
 
 //onFetch
 void _onBackgroundFetch(String taskId) async {
-  getIt<ReportService>().trackEvent(severity: Severity.info, message: "BS - _onBackgroundFetch(), id: $taskId");
+  getIt<ReportService>().trackEvent(severity: LogSeverity.info, message: "BS - _onBackgroundFetch(), id: $taskId");
 
   await getIt<SyncService>().syncAllData(syncAllUsers: true);
 
@@ -276,13 +255,14 @@ void _onBackgroundFetch(String taskId) async {
 /// This event fires shortly before your task is about to timeout.  You must finish any outstanding work and call BackgroundFetch.finish(taskId).
 Future<void> _onBackgroundFetchTimeout(String taskId) async {
   //If this task has exceeded its allowed running-time. It must be stopped immediately finish(taskId)
-  getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - _onBackgroundFetchTimeout(), id: $taskId');
+  getIt<ReportService>()
+      .trackEvent(severity: LogSeverity.info, message: 'BS - _onBackgroundFetchTimeout(), id: $taskId');
 
   BackgroundFetch.finish(taskId);
 }
 
 Future<void> _startBackgroundFetch() async {
-  getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - init background fetch');
+  getIt<ReportService>().trackEvent(severity: LogSeverity.info, message: 'BS - init background fetch');
 
   int status = await BackgroundFetch.configure(
     BackgroundFetchConfig(
@@ -301,16 +281,15 @@ Future<void> _startBackgroundFetch() async {
     _onBackgroundFetchTimeout,
   );
 
-  getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - configure status: $status');
+  getIt<ReportService>().trackEvent(severity: LogSeverity.info, message: 'BS - configure status: $status');
 
   // Register to receive BackgroundFetch events after app is terminated.
   // Requires {stopOnTerminate: false, enableHeadless: true}
 
-  getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - registering headless task');
+  getIt<ReportService>().trackEvent(severity: LogSeverity.info, message: 'BS - registering headless task');
 
   bool registered = await BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
 
-  getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - registered headless task: $registered');
-  getIt<ReportService>().trackEvent(severity: Severity.info, message: 'BS - schedulling first task in 5 seconds..');
-
+  getIt<ReportService>().trackEvent(severity: LogSeverity.info, message: 'BS - registered headless task: $registered');
+  getIt<ReportService>().trackEvent(severity: LogSeverity.info, message: 'BS - schedulling first task in 5 seconds..');
 }

@@ -1,17 +1,15 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
+import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
 import 'package:scalesoft_app/ui/screens/manual_measurement_screen.dart';
 import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
-import 'package:scalesoft_app/constants/configuration_constants.dart';
-import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 class ManualMeasurementRoute extends ApplicationRoute with PageBuilderMixin {
   static const name = 'manual-measurement';
-  static const path =
-      '/manual-measurement/:userId/:measurementType/:showAllMeasurementTypes';
+  static const path = '/manual-measurement/:userId/:measurementType';
 
   ManualMeasurementRoute({
     required super.navigator,
@@ -28,34 +26,23 @@ class ManualMeasurementRoute extends ApplicationRoute with PageBuilderMixin {
       pageBuilder: pageBuilder(
         withTransition: false,
         builder: (state) {
-          final userId = state.params['userId']!;
-          final measurementTypeName = state.params['measurementType'];
-          final showAllMeasurementTypes =
-              bool.parse(state.params['showAllMeasurementTypes'] ?? 'false');
+          final userId = int.parse(state.pathParameters['userId']!);
+          final measurementType =
+              MeasurementType.values.firstWhere((x) => x.name == state.pathParameters['measurementType']);
 
-          final measurementType = MeasurementType.values.firstWhere(
-            (measurementType) => measurementType.name == measurementTypeName,
-          );
-          final userAccount = getIt<AccountDbProvider>().get(userId)!;
+          return BlocBuilder<UserCubit, UserCubitState>(
+            bloc: getIt<UserCubit>(),
+            builder: (context, userState) {
+              final user = userState.allUsers.firstWhere((x) => x.id == userId);
 
-          late List<MeasurementType> displayedMeasurementTypes;
+              final measurementTypes = state.extra as Set<MeasurementType>? ?? user.hospital.enabledMeasurementTypes;
 
-          final supportedUserMeasurementTypes =
-              CarePlanHelper.getMeasurementTypes(userAccount.carePlans!);
-
-          if (showAllMeasurementTypes ||
-              supportedUserMeasurementTypes.isEmpty) {
-            displayedMeasurementTypes =
-                userAccount.hospital?.enabledMeasurementTypes ??
-                    ConfigurationConstants.supportedMeasurementTypes.toList();
-          } else {
-            displayedMeasurementTypes = supportedUserMeasurementTypes.toList();
-          }
-
-          return ManualMeasurementScreen(
-            userId: userId,
-            measurementType: measurementType,
-            enabledMeasurementTypes: displayedMeasurementTypes,
+              return ManualMeasurementScreen(
+                user: user,
+                measurementType: measurementType,
+                enabledMeasurementTypes: measurementTypes.toList(),
+              );
+            },
           );
         },
       ),

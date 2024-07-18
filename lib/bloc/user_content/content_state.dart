@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 
 part 'content_state.freezed.dart';
 
@@ -8,12 +8,10 @@ part 'content_state.freezed.dart';
 class ContentState with _$ContentState {
   const factory ContentState.initial() = _Initial;
   const factory ContentState.unauthenticated() = _NoUser;
-  const factory ContentState.onAppearanceChanged(ThemeMode newThemeMode) =
-      _AppearanceChanged;
   const factory ContentState.onDaylightAppearanceChanged(
     String originalLocation,
   ) = _OnDaylightAppearanceChanged;
-  const factory ContentState.onUserAdded(UserAccount userAccount) = _UserAdded;
+  const factory ContentState.onUserAdded(UserModel user) = _UserAdded;
   const factory ContentState.tryCompleteAuth(Uri uri) = _TryCompleteAuth;
   const factory ContentState.activeMode(Key key) = _ActiveMode;
 }

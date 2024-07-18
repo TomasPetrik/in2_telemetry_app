@@ -430,8 +430,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Dnes nemáte naplánované žádné měření."),
         "dashboard_screen_no_user_plan": MessageLookupByLibrary.simpleMessage(
             "Uživatel nemá nastaven plán a historie měření neobsahuje žádná data."),
-        "dashboard_screen_periodical_measurements":
-            MessageLookupByLibrary.simpleMessage("Periodické měření"),
         "dashboard_screen_todays_plan_finished": m20,
         "dashboard_screen_upcoming_measurement_info": m21,
         "device_search_screen_purpose_desc": m22,
@@ -493,7 +491,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "find_device_screen_step2_p": MessageLookupByLibrary.simpleMessage(
             "Počkejte, na výzvu k párování"),
         "find_device_screen_step3": MessageLookupByLibrary.simpleMessage(
-            "Po meření stiskněte opět akční tlačítko"),
+            "Po měření stiskněte opět akční tlačítko"),
         "find_device_screen_step3_p":
             MessageLookupByLibrary.simpleMessage("Párování s tlakoměrem"),
         "find_device_screen_step4": MessageLookupByLibrary.simpleMessage(
@@ -517,6 +515,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Použité licence"),
         "licenses_screen_title":
             MessageLookupByLibrary.simpleMessage("Použité licence"),
+        "login_needed_desc": MessageLookupByLibrary.simpleMessage(
+            "Došlo k zásadním změnám v aplikaci, proto je nyní jednorázově nutné znovu provést přihlášení."),
+        "login_needed_title":
+            MessageLookupByLibrary.simpleMessage("Znovu se přihlaste"),
         "manual_measurement_screen_measurement_time":
             MessageLookupByLibrary.simpleMessage("Čas odečtu"),
         "manual_measurement_screen_title":
@@ -570,6 +572,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Na měření bez zapůjčeného přístroje nemáte oprávnění"),
         "metering_screen_personal_devices":
             MessageLookupByLibrary.simpleMessage("Vlastní zařízení"),
+        "multi_day_measurements":
+            MessageLookupByLibrary.simpleMessage("Vícedenní měření"),
         "new_watch_assigned_description": MessageLookupByLibrary.simpleMessage(
             "Máte přiřazené hodinky. Aktivujte prosím automatický přenos naměřených dat z hodinek v nastavení aplikace."),
         "new_watch_assigned_title":

@@ -60,7 +60,7 @@ class ResultsTimeDialog extends StatelessWidget {
                 ),
               );
             },
-          ).toList(),
+          ),
           if (canShowCalendar) ...[
             Gaps.gap24,
             Padding(

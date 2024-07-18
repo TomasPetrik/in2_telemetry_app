@@ -3,13 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
 import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc.dart';
 import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc_event.dart';
 import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc_state.dart';
-import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
+import 'package:scalesoft_app/data/providers/care_plan_db_provider.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/chart_widget.dart';
@@ -25,7 +26,7 @@ class ChartScreen extends StatefulWidget {
   });
 
   final DateTime initDt;
-  final UserAccount userAccount;
+  final UserModel userAccount;
   final MeasurementType measurementType;
 
   @override
@@ -35,21 +36,17 @@ class ChartScreen extends StatefulWidget {
 class _ChartScreenState extends State<ChartScreen> {
   late CalendarMonth calendarMonth;
   final ChartBloc chartBloc = getIt<ChartBloc>();
-  late UserAccount userAccount;
+  late UserModel userAccount;
   late MeasurementType measurementType;
   late DateTime initDt;
-  late List<CarePlan> carePlans;
+  late List<CarePlanContract> carePlans;
+  final CarePlanDbProvider carePlanDbProvider = getIt<CarePlanDbProvider>();
 
   @override
   void initState() {
     initDt = widget.initDt;
     userAccount = widget.userAccount;
     measurementType = widget.measurementType;
-    carePlans = userAccount.carePlans!
-        .where(
-          (carePlan) => carePlan.activity.measurementType == measurementType,
-        )
-        .toList();
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
@@ -76,8 +73,8 @@ class _ChartScreenState extends State<ChartScreen> {
             ChartBlocEvent.init(
               context,
               initDt,
-              userAccount,
-              carePlans,
+              userAccount.id,
+              measurementType,
               Theme.of(context).colorScheme.tertiary,
             ),
           ),
@@ -141,7 +138,7 @@ class _ChartScreenState extends State<ChartScreen> {
                       "[${localization.common_measurement_units_types(measurementType.name)}]",
                     ),
                     subTitle:
-                        '${userAccount.user.fullName} - ${localization.common_months(ConfigurationConstants.monthsInYear[state.currentMonth!]!)}',
+                        '${userAccount.fullName} - ${localization.common_months(ConfigurationConstants.monthsInYear[state.currentMonth!]!)}',
                     customLeftWidget: SizedBox(
                       height: 24,
                       child: Row(

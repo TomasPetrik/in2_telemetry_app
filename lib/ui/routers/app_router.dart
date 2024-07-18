@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/ui/managers/auth_manager.dart';
-import 'package:scalesoft_app/ui/routers/routes/add_device_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/appearance_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/blank_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/calendar_route.dart';
@@ -16,6 +15,7 @@ import 'package:scalesoft_app/ui/routers/routes/license_detail_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/licenses_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/manual_measurement_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/manual_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/manual_without_bar_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/metering_first_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/no_user_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/notification_route.dart';
@@ -56,7 +56,7 @@ class AppRouter {
               navigatorKey: navTabBar,
               builder: (context, state, child) {
                 return HomeScreen(
-                  path: state.location,
+                  path: state.uri.toString(),
                   child: child,
                 );
               },
@@ -73,6 +73,10 @@ class AppRouter {
                     UserDetailRoute(navigator: navTabBar).route,
                     HospitalDetailRoute(navigator: navTabBar).route,
                     CarePlanDetailRoute(navigator: navTabBar).route,
+                    ManualRoute(navigator: navTabBar).route,
+                    LicensesRoute(navigator: navTabBar).route,
+                    LicenseDetailRoute(navigator: navTabBar).route,
+                    SetupWatchRoute(navigator: navTabBar).route,
                   ],
                 ).route,
               ],
@@ -87,14 +91,10 @@ class AppRouter {
             FutureMeasurementsRoute(navigator: navAuthManager).route,
             ChartRoute(navigator: navAuthManager).route,
             MeteringFirstRoute(navigator: navAuthManager).route,
-            AddDeviceRoute(navigator: navAuthManager).route,
             DeviceSearchRoute(navigator: navAuthManager).route,
             RegisterDeviceDetailRoute(navigator: navAuthManager).route,
             RegisterDeviceSuccessRoute(navigator: navAuthManager).route,
-            ManualRoute(navigator: navAuthManager).route,
-            LicensesRoute(navigator: navAuthManager).route,
-            LicenseDetailRoute(navigator: navAuthManager).route,
-            SetupWatchRoute(navigator: navAuthManager).route,
+            ManualWithoutBarRoute(navigator: navAuthManager).route,
           ],
         ),
       ],

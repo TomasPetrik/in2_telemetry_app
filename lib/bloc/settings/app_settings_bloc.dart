@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,82 +6,59 @@ import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/bloc/settings/app_settings_bloc_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
+import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/globals.dart';
-import 'package:scalesoft_app/model/app_settings.dart';
-import 'package:scalesoft_app/providers/settings_db_provider.dart';
+import 'package:scalesoft_app/data/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
-import 'package:scalesoft_app/utils/extensions/locale_extensions.dart';
-import 'package:scalesoft_app/utils/extensions/theme_mode_extensions.dart';
 import 'package:scalesoft_app/utils/helpers/appearance_helper.dart';
 
 @singleton
-class AppSettingsBloc extends Bloc<AppSettingsBlocEvent, AppSettings> {
-  final AppSettingsDbProvider _settingsDbProvider;
+class AppSettingsBloc extends Bloc<AppSettingsBlocEvent, AppSetting?> {
+  final SettingsDbProvider _settingsDbProvider;
 
   AppSettingsBloc(
     this._settingsDbProvider,
   ) : super(
-          _settingsDbProvider.read() ??
-              AppSettings(
-                themeModeLocal: buildConfig.themeMode.toLocal(),
-                localLocale: buildConfig.locale.toLocal(),
-                enabledNotifications: true,
-                notifyAtStartOfMeasurement: true,
-                autosetAppearance: false,
-              ),
+          null,
         ) {
     on<AppSettingsBlocEvent>(
       (event, emit) async {
         await event.when(
           initSettings: () async {
-            final appSettings = _getAppSettings();
-
-            _settingsDbProvider.write(appSettings);
+            final appSettings = await _settingsDbProvider.getSettings();
             emit(appSettings);
           },
-          localeChanged: (Locale newLocale) {
-            final appSettings = _getAppSettings();
+          localeChanged: (Locale newLocale) async {
+            final settings = await _settingsDbProvider
+                .updateAppSettings(AppSettingsCompanion(languageCode: Value(newLocale.languageCode)));
 
-            _settingsDbProvider.write(
-              appSettings.copyWith(localLocale: newLocale.toLocal()),
-            );
-
-            emit(_getAppSettings());
+            emit(settings);
           },
           themeChanged: (ThemeMode newThemeMode) async {
-            final appSettings = _getAppSettings();
+            final settings =
+                await _settingsDbProvider.updateAppSettings(AppSettingsCompanion(themeMode: Value(newThemeMode)));
 
             AppearanceHelper.setSystemUIOverlayStyle(newThemeMode);
-            await _settingsDbProvider.write(
-              appSettings.copyWith(themeModeLocal: newThemeMode.toLocal()),
-            );
 
-            emit(_getAppSettings());
-            getIt<ContentBloc>()
-                .add(OnAppearanceChangedContentEvent(newThemeMode));
+            emit(settings);
+            getIt<ContentBloc>().add(OnAppearanceChangedContentEvent(newThemeMode));
           },
           setAutoAppearance: (bool enabled) async {
-            final appSettings = _getAppSettings();
-            final newThemeMode =
-                enabled ? ThemeMode.system : buildConfig.themeMode;
-            final newAppSettings = appSettings.copyWith(
-              autosetAppearance: enabled,
-              themeModeLocal: newThemeMode.toLocal(),
-            );
+            final newThemeMode = enabled ? ThemeMode.system : buildConfig.themeMode;
+
+            final settings =
+                await _settingsDbProvider.updateAppSettings(AppSettingsCompanion(themeMode: Value(newThemeMode)));
 
             if (newThemeMode == ThemeMode.system) {
-              final brightness = SchedulerBinding
-                  .instance.platformDispatcher.platformBrightness;
+              final brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
               AppearanceHelper.setSystemUIOverlayStyleByBrightness(brightness);
             } else {
               AppearanceHelper.setSystemUIOverlayStyle(newThemeMode);
             }
 
-            await _settingsDbProvider.write(newAppSettings);
-            emit(newAppSettings);
+            emit(settings);
 
-            getIt<ContentBloc>()
-                .add(OnAppearanceChangedContentEvent(newThemeMode));
+            getIt<ContentBloc>().add(OnAppearanceChangedContentEvent(newThemeMode));
           },
         );
       },
@@ -93,18 +71,5 @@ class AppSettingsBloc extends Bloc<AppSettingsBlocEvent, AppSettings> {
 
   void onThemeChanged(ThemeMode newTheme) {
     add(AppSettingsBlocEvent.themeChanged(newTheme));
-  }
-
-  AppSettings _getAppSettings() {
-    final appSettings = _settingsDbProvider.read() ??
-        AppSettings(
-          themeModeLocal: buildConfig.themeMode.toLocal(),
-          localLocale: buildConfig.locale.toLocal(),
-          enabledNotifications: true,
-          notifyAtStartOfMeasurement: true,
-          autosetAppearance: false,
-        );
-
-    return appSettings;
   }
 }

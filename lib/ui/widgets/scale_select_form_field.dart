@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
-import 'package:scalesoft_app/api/model/measurement/overall_health_value.dart';
-import 'package:scalesoft_app/api/model/measurement/shortness_of_breath_value.dart';
+import 'package:scalesoft_app/api/contracts/measurement/overall_health_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement/shortness_of_breath_contract.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 
@@ -25,44 +25,44 @@ class ScaleSelectFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return switch (measurementType) {
       MeasurementType.shortnessOfBreath =>
-        DropdownButtonFormField<ShortnessOfBreathValue>(
+        DropdownButtonFormField<ShortnessOfBreathContract>(
           icon: SvgPicture.asset('assets/icons/icon_right.svg'),
           elevation: 0,
           style: ScaleTextStyles.text.apply(
             color: Theme.of(context).colorScheme.onPrimary,
           ),
-          items: ShortnessOfBreathValue.values
-              .map<DropdownMenuItem<ShortnessOfBreathValue>>(
-                (ShortnessOfBreathValue value) => DropdownMenuItem(
+          items: ShortnessOfBreathContract.values
+              .map<DropdownMenuItem<ShortnessOfBreathContract>>(
+                (ShortnessOfBreathContract value) => DropdownMenuItem(
                   value: value,
                   child: Text(localization.shortness_of_breath_values(value)),
                 ),
               )
               .toList(),
-          onChanged: (ShortnessOfBreathValue? value) {
+          onChanged: (ShortnessOfBreathContract? value) {
             onChanged(value?.index.toDouble());
           },
-          value: ShortnessOfBreathValue.none,
+          value: ShortnessOfBreathContract.none,
         ),
       MeasurementType.overallHealth =>
-        DropdownButtonFormField<OverallHealthValue>(
+        DropdownButtonFormField<OverallHealthContract>(
           icon: SvgPicture.asset('assets/icons/icon_right.svg'),
           elevation: 0,
           style: ScaleTextStyles.text.apply(
             color: Theme.of(context).colorScheme.onPrimary,
           ),
-          items: OverallHealthValue.values
-              .map<DropdownMenuItem<OverallHealthValue>>(
-                (OverallHealthValue value) => DropdownMenuItem(
+          items: OverallHealthContract.values
+              .map<DropdownMenuItem<OverallHealthContract>>(
+                (OverallHealthContract value) => DropdownMenuItem(
                   value: value,
                   child: Text(localization.overall_health_values(value)),
                 ),
               )
               .toList(),
-          onChanged: (OverallHealthValue? value) {
+          onChanged: (OverallHealthContract? value) {
             onChanged(value?.index.toDouble());
           },
-          value: OverallHealthValue.good,
+          value: OverallHealthContract.good,
         ),
       _ => throw UnsupportedError("Selected measurement type is not supported"),
     };

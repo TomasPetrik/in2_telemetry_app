@@ -13,8 +13,8 @@ class EventsConstants {
   static const eventDeviceSyncing = 'EVENT_DEVICE_SYNCING';
   static const eventDevicePaired = 'EVENT_DEVICE_PAIRED';
   static const eventDeviceSynced = 'EVENT_DEVICE_SYNCED';
-  static const eventDisabledLocalizationService =
-      'EVENT_DISABLED_LOCALIZATION_SERVICE';
+  static const eventDisabledLocationService =
+      'EVENT_DISABLED_LOCATION_SERVICE';
 
   /* OAUTH WEB SCREEN */
   static const eventOAuthWebPageStarted = 'EVENT_OAUTH_WEB_PAGE_STARTED';

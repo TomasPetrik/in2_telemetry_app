@@ -7,5 +7,6 @@ part 'calendar_day.freezed.dart';
 class CalendarFooterState with _$CalendarFooterState {
   factory CalendarFooterState({
     CalendarDay? selectedDay,
+    required int timestamp,
   }) = _CalendarFooterState;
 }

@@ -1,17 +1,16 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
-import 'package:scalesoft_app/api/model/measurement/device.dart';
-import 'package:scalesoft_app/model/device_info.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
+import 'package:scalesoft_app/model/device_create_model.dart';
 
 part 'omron_connection_bloc_event.freezed.dart';
 
 @freezed
 class OmronConnectionBlocEvent with _$OmronConnectionBlocEvent {
   const factory OmronConnectionBlocEvent.init(
-    String userId,
+    int userId,
     MeasurementType measurementType,
-    Device device,
+    DeviceCreateModel device,
   ) = _Init;
   const factory OmronConnectionBlocEvent.checkHwState() = _CheckHwState;
   const factory OmronConnectionBlocEvent.newBtState(
@@ -23,24 +22,4 @@ class OmronConnectionBlocEvent with _$OmronConnectionBlocEvent {
 
   const factory OmronConnectionBlocEvent.searchDevice() = _SearchDevice;
 
-  const factory OmronConnectionBlocEvent.connectToDevice(
-    BluetoothDevice device,
-    String localName,
-  ) = _ConnectToDevice;
-
-  const factory OmronConnectionBlocEvent.verifyDevice(
-    BluetoothDevice device,
-    String localName,
-  ) = _VerifyDevice;
-
-  const factory OmronConnectionBlocEvent.measureAndSync(
-    BluetoothDevice device,
-    DeviceInfo deviceInfo,
-    String localName,
-  ) = _MeasureAndSync;
-
-  factory OmronConnectionBlocEvent.foundDevice(
-    BluetoothDevice device,
-    String localName,
-  ) = _FoundDevice;
 }

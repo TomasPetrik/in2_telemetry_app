@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/api/model/device_to_register.dart';
-import 'package:scalesoft_app/api/model/measurement/device.dart';
-import 'package:scalesoft_app/api/model/report/report.dart';
+import 'package:scalesoft_app/api/contracts/device/device_create_contract.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_event.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_state.dart';
-import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
+import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
+import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/repositories/device_repository.dart';
 import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/utils/events_constants.dart';
@@ -17,29 +15,26 @@ import 'package:scalesoft_app/utils/helpers/bt_connection_helper.dart';
 import 'package:wakelock/wakelock.dart';
 
 @injectable
-class RegisterDeviceBloc
-    extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlocState> {
+class RegisterDeviceBloc extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlocState> {
   final BtConnectionHelper _btConnectionHelper;
-  final AccountDbProvider _accountDbProvider;
   final DeviceRepository _deviceRepository;
   final ReportService _reportsService;
 
-  late final UserAccount _userAccount;
+  late final int _userId;
   late final bool _onlyPairingMode;
   bool shouldRequestPermission = true;
   bool? _searchStarted;
 
   RegisterDeviceBloc(
     this._btConnectionHelper,
-    this._accountDbProvider,
     this._deviceRepository,
     this._reportsService,
   ) : super(const RegisterDeviceBlocState.init()) {
     on<RegisterDeviceBlocEvent>((event, emit) async {
       await event.when(
-        init: (String userId, bool? onlyPairingMode) async {
+        init: (int userId, bool? onlyPairingMode) async {
           await Wakelock.enable();
-          _userAccount = _accountDbProvider.get(userId)!;
+          _userId = userId;
           _onlyPairingMode = onlyPairingMode ?? false;
 
           add(const RegisterDeviceBlocEvent.checkHwState());
@@ -55,8 +50,8 @@ class RegisterDeviceBloc
               btState == BluetoothAdapterState.unauthorized ||
               btState == BluetoothAdapterState.turningOff) {
             _reportsService.trackEvent(
-              userAccount: _userAccount,
-              severity: Severity.warning,
+              userId: _userId,
+              severity: LogSeverity.warning,
               message: EventsConstants.eventBluetoothDisabled,
             );
             emit(
@@ -67,10 +62,9 @@ class RegisterDeviceBloc
             return;
           }
 
-          final isBTPermissionsPermanentylDenied =
-              await _btConnectionHelper.isBTPermissionsPermanentylDenied();
+          final isBTPermissionsPermanentlyDenied = await _btConnectionHelper.isBTPermissionsPermanentylDenied();
 
-          if (isBTPermissionsPermanentylDenied) {
+          if (isBTPermissionsPermanentlyDenied) {
             shouldRequestPermission = true;
             emit(
               RegisterDeviceBlocState.noBtPermissions(
@@ -82,12 +76,11 @@ class RegisterDeviceBloc
             shouldRequestPermission = false;
           } else {
             shouldRequestPermission = true;
-            final hasPermissionsGranted =
-                await _btConnectionHelper.requestForBTPermissions();
+            final hasPermissionsGranted = await _btConnectionHelper.requestForBTPermissions();
             if (!hasPermissionsGranted) {
               _reportsService.trackEvent(
-                userAccount: _userAccount,
-                severity: Severity.warning,
+                userId: _userId,
+                severity: LogSeverity.warning,
                 message: EventsConstants.eventNoBTPermissionsGranted,
               );
               emit(
@@ -99,17 +92,16 @@ class RegisterDeviceBloc
             }
           }
 
-          final hasLocationServiceEnabled =
-              await _btConnectionHelper.hasLocationServiceEnabled();
+          final hasLocationServiceEnabled = await _btConnectionHelper.hasLocationServiceEnabled();
           if (!hasLocationServiceEnabled) {
             debugPrint('disabled location service !');
             _reportsService.trackEvent(
-              userAccount: _userAccount,
-              severity: Severity.warning,
-              message: EventsConstants.eventDisabledLocalizationService,
+              userId: _userId,
+              severity: LogSeverity.warning,
+              message: EventsConstants.eventDisabledLocationService,
             );
             emit(
-              RegisterDeviceBlocState.disabledLocalizationService(
+              RegisterDeviceBlocState.disabledLocationService(
                 timestamp: DateTime.now().microsecondsSinceEpoch,
               ),
             );
@@ -123,8 +115,8 @@ class RegisterDeviceBloc
         newBtState: (BluetoothAdapterState newBtState) async {
           if (newBtState == BluetoothAdapterState.on) {
             _reportsService.trackEvent(
-              userAccount: _userAccount,
-              severity: Severity.warning,
+              userId: _userId,
+              severity: LogSeverity.warning,
               message: EventsConstants.eventBluetoothDisabled,
             );
             add(const RegisterDeviceBlocEvent.searchDevices());
@@ -136,8 +128,8 @@ class RegisterDeviceBloc
             );
           } else {
             _reportsService.trackEvent(
-              userAccount: _userAccount,
-              severity: Severity.warning,
+              userId: _userId,
+              severity: LogSeverity.warning,
               message: EventsConstants.eventNoBTPermissionsGranted,
             );
             emit(
@@ -149,8 +141,8 @@ class RegisterDeviceBloc
         },
         searchDevices: () async {
           _reportsService.trackEvent(
-            userAccount: _userAccount,
-            severity: Severity.warning,
+            userId: _userId,
+            severity: LogSeverity.warning,
             message: EventsConstants.eventDeviceSearchingStart,
           );
           emit(
@@ -161,6 +153,7 @@ class RegisterDeviceBloc
           _btConnectionHelper.searchDevicesByService(
             serviceUuids: [bloodPressureServiceUuid, heartRateServiceUuid],
             onlyPairingMode: _onlyPairingMode,
+            userId: _userId,
             onResult: (btDevices) {
               add(
                 RegisterDeviceBlocEvent.notifyAboutNewDevices(
@@ -181,14 +174,14 @@ class RegisterDeviceBloc
         },
         stopSearch: () async {
           _reportsService.trackEvent(
-            userAccount: _userAccount,
-            severity: Severity.warning,
+            userId: _userId,
+            severity: LogSeverity.warning,
             message: EventsConstants.eventDeviceSearchingStop,
           );
           await Wakelock.disable();
           await FlutterBluePlus.stopScan();
         },
-        selectDevice: (Device device) async {
+        selectDevice: (DeviceCreateModel device) async {
           await Wakelock.disable();
           await FlutterBluePlus.stopScan();
           emit(RegisterDeviceBlocState.popDevice(device));
@@ -197,47 +190,35 @@ class RegisterDeviceBloc
           try {
             //1. Load device models for lookup what's the device id
             _reportsService.trackEvent(
-              userAccount: _userAccount,
-              severity: Severity.info,
+              userId: userAccount.id,
+              severity: LogSeverity.info,
               message: EventsConstants.eventDeviceRegistering,
             );
             emit(const RegisterDeviceBlocState.registering());
 
-            final deviceModels = await _deviceRepository.getDeviceModels(
-              userAccount: userAccount,
-            );
-
-            final int deviceModelId = deviceModels
-                .firstWhere(
-                  (deviceModel) =>
-                      deviceModel.manufacturer == device.deviceManufacturer &&
-                      deviceModel.modelName == device.modelName,
-                )
-                .id;
-
-            final deviceToRegister = DeviceToRegister(
-              deviceModelId: deviceModelId,
+            final deviceToRegister = DeviceCreateContract(
+              deviceModelId: device.prototype.remoteId,
               assignedIdentifier: assignedIdentifier,
-              deviceIdentifier: device.deviceIdentifier!,
+              deviceIdentifier: device.deviceIdentifier,
               bluetoothAddress: device.bluetoothAddress,
             );
 
             await _deviceRepository.registerDevice(
-              userAccount: userAccount,
+              userId: userAccount.id,
               deviceToRegister: deviceToRegister,
             );
 
             _reportsService.trackEvent(
-              userAccount: _userAccount,
-              severity: Severity.info,
+              userId: userAccount.id,
+              severity: LogSeverity.info,
               message: EventsConstants.eventDeviceRegistered,
             );
             emit(const RegisterDeviceBlocState.deviceRegistered());
           } on DioException catch (exception) {
             if (exception.response?.statusCode == 500) {
               _reportsService.trackEvent(
-                userAccount: _userAccount,
-                severity: Severity.warning,
+                userId: userAccount.id,
+                severity: LogSeverity.warning,
                 message: EventsConstants.eventDeviceAlreadyRegistered,
               );
               emit(
@@ -245,8 +226,8 @@ class RegisterDeviceBloc
               );
             } else {
               _reportsService.trackEvent(
-                userAccount: _userAccount,
-                severity: Severity.warning,
+                userId: userAccount.id,
+                severity: LogSeverity.warning,
                 message: EventsConstants.eventDeviceRegistrationFailed,
               );
               emit(RegisterDeviceBlocState.failedRegistration(UniqueKey()));

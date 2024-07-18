@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/model/care_plan/interval_generation/daily_timing_model.dart';
+import 'package:scalesoft_app/model/interval_generation/time_of_day_timing_model.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 // Do not modify without also changing TimingTimeOfDayGenerator.cs in SCSHealthPlatform

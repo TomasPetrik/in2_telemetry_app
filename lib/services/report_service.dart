@@ -1,14 +1,13 @@
 import 'dart:io';
-
+import 'package:collection/collection.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:scalesoft_app/api/model/report/report.dart';
-import 'package:scalesoft_app/api/model/report/report_request.dart';
-import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
-import 'package:scalesoft_app/providers/reports_db_provider.dart';
+import 'package:scalesoft_app/api/contracts/logs/logs_contract.dart';
+import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
+import 'package:scalesoft_app/data/providers/log_db_provider.dart';
+import 'package:scalesoft_app/mapper/log_event_mapper.dart';
 import 'package:scalesoft_app/repositories/account_repository.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:unique_identifier/unique_identifier.dart';
@@ -16,9 +15,9 @@ import 'package:unique_identifier/unique_identifier.dart';
 @preResolve
 @lazySingleton
 class ReportService {
-  final AccountDbProvider _accountDbProvider;
-  final ReportsDbProvider _reportsDbProvider;
+  final LogDbProvider _logsDbProvider;
   final AccountRepository _accountRepository;
+  final LogEventMapper _logEventMapper;
 
   final String _appVersion;
   final String _phoneModel;
@@ -26,20 +25,20 @@ class ReportService {
   final String _appIdentifier;
 
   ReportService._(
-    this._accountDbProvider,
-    this._reportsDbProvider,
+    this._logsDbProvider,
     this._accountRepository,
     this._appVersion,
     this._phoneModel,
     this._osVersion,
     this._appIdentifier,
+    this._logEventMapper,
   );
 
   @factoryMethod
   static Future<ReportService> create(
-    final AccountDbProvider accountDbProvider,
-    final ReportsDbProvider reportsDbProvider,
+    final LogDbProvider logDbProvider,
     final AccountRepository accountRepository,
+    final LogEventMapper logEventMapper,
   ) async {
     final PackageInfo packageInfo = await PackageInfo.fromPlatform();
     final String appVersion = packageInfo.version;
@@ -64,71 +63,64 @@ class ReportService {
     debugPrint('pre resolving report service, appVersion: $appVersion');
 
     final instance = ReportService._(
-      accountDbProvider,
-      reportsDbProvider,
+      logDbProvider,
       accountRepository,
       appVersion,
       phoneModel,
       osVersion,
       appIdentifier,
+      logEventMapper,
     );
 
     return instance;
   }
 
-  /* 
-    1. Some events can be related to specific userAccount (or userId) directy,
+  /*
+    1. Some events can be related to a specific user directly,
     2. Other not user-related events will be automatically added to most recent active user in future
   */
   Future<void> trackEvent({
-    UserAccount? userAccount,
-    String? userId,
-    required Severity severity,
+    int? userId,
+    required LogSeverity severity,
     required String message,
   }) async {
-    String? patientMuid = userAccount?.user.muid ?? userId;
-    final report = Report(
-      eventTime: DateTime.now(),
-      appVersion: _appVersion,
-      osVersion: _osVersion,
-      severity: severity,
-      patientMuid: patientMuid,
-      message: message,
-    );
-    _reportsDbProvider.save(report);
+    await _logsDbProvider.save(userId, severity, message, DateTime.now(), _appVersion, _osVersion);
   }
 
   Future<void> removeOldLogs() async {
     final dtNow = DateTime.now();
-    final dtOfRemoval =
-        dtNow.subtract(const Duration(days: ConfigurationConstants.keepLogsDays));
+    final dtOfRemoval = dtNow.subtract(const Duration(days: ConfigurationConstants.keepLogsDays));
 
-    await _reportsDbProvider.removeBeforeDateTime(dtOfRemoval);
+    await _logsDbProvider.removeBeforeDateTime(dtOfRemoval);
   }
 
   Future<void> syncReports() async {
-    final List<UserAccount> userAccounts = _accountDbProvider.getAll();
+    final reports = await _logsDbProvider.getLogEventsPerUser();
+
+    // Some reports don't have a user ID attached (logout, etc.). Attach those events to another user.
+    final fallbackUserId = reports.keys.lastWhereOrNull((x) => x != null);
 
     try {
-      for (final userAccount in userAccounts) {
-        final userReports =
-            _reportsDbProvider.getPerUser(userAccount.user.muid);
-        if (userReports.isEmpty) {
+      for (final userReports in reports.entries) {
+        final userId = userReports.key ?? fallbackUserId;
+        if (userId == null) {
           continue;
         }
 
-        final reportRequest = ReportRequest(
+        final contract = LogsContract(
           appIdentifier: _appIdentifier,
           phoneModel: _phoneModel,
-          logs: userReports,
+          logs: _logEventMapper.convertList(userReports.value),
         );
 
         await _accountRepository.sendUserAppReports(
-          userAccount: userAccount,
-          reportRequest: reportRequest,
+          userId: userId,
+          reportRequest: contract,
         );
 
-        await _reportsDbProvider.removeUserReports(userAccount.user.muid);
+        // Delete by userReports key instead of userId to avoid deleting another user's logs
+        // (in case userReports.key is null)
+        await _logsDbProvider.deleteUserReports(userReports.key);
       }
     } catch (_) {
       rethrow;

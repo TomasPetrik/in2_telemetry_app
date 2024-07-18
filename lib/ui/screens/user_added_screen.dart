@@ -4,7 +4,7 @@ import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
-import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -19,7 +19,7 @@ class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
     required this.userAccount,
   });
 
-  final UserAccount userAccount;
+  final UserModel userAccount;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
                   child: ImageWidget(
-                    userAccount.hospital!.iconPath,
+                    userAccount.hospital.iconPath,
                   ),
                 ),
                 Gaps.gap24,
@@ -56,7 +56,7 @@ class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
                   ),
                   child: Text(
                     localization.onboarding_account_added_screen_user_added(
-                      userAccount.user.fullName,
+                      userAccount.fullName,
                     ),
                     style: ScaleTextStyles.text.apply(
                       color: Theme.of(context).colorScheme.onSecondary,
@@ -70,7 +70,7 @@ class UserAddedScreen extends StatelessWidget with BottomSheetMixin {
                       .onboarding_account_added_screen_continue_to_app,
                   onPressed: () async {
                     getIt<ContentBloc>().add(
-                      SwitchUserContentEvent(userAccount: userAccount),
+                      SwitchUserContentEvent(userId: userAccount.id),
                     );
                   },
                 ),

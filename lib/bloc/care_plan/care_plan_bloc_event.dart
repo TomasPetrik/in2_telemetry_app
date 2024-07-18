@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 @immutable
@@ -12,13 +11,11 @@ abstract class CarePlanBlocEvent {
 class CarePlanInitializeEvent extends CarePlanBlocEvent {
   const CarePlanInitializeEvent({
     required this.whenPeriod,
-    required this.carePlans,
-    required this.pendingResults,
+    required this.users,
   });
 
   final PlanWhenPeriod whenPeriod;
-  final List<CarePlan> carePlans;
-  final List<Measurement> pendingResults;
+  final List<UserModel> users;
 }
 
 class TimePeriodChangeEvent extends CarePlanBlocEvent {
@@ -26,8 +23,8 @@ class TimePeriodChangeEvent extends CarePlanBlocEvent {
   final PlanWhenPeriod whenPeriod;
 }
 
-class CurrentPlansChangeEvent extends CarePlanBlocEvent {
-  const CurrentPlansChangeEvent(
+class MeasurementTypeChangeEvent extends CarePlanBlocEvent {
+  const MeasurementTypeChangeEvent(
     this.measurementType,
   );
   final MeasurementType? measurementType;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:scalesoft_app/model/user_account.dart';
+import 'package:scalesoft_app/model/user_model.dart';
 import 'package:scalesoft_app/ui/painters/user_item_painter.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/user_item.dart';
@@ -16,27 +16,25 @@ class UserItemCompound extends StatelessWidget {
     required this.userAccount,
     required this.onUserSelected,
     required this.userItemCompoundType,
-    this.showWarning,
   });
 
-  final UserAccount userAccount;
-  final Function(UserAccount) onUserSelected;
+  final UserModel userAccount;
+  final Function(UserModel) onUserSelected;
   final UserItemCompoundType userItemCompoundType;
-  final bool? showWarning;
 
   int get _itemCount {
-    return userAccount.representedPeople?.isNotEmpty == true
-        ? userAccount.representedPeople!.length + 1
+    return userAccount.representedPeople.isNotEmpty == true
+        ? userAccount.representedPeople.length + 1
         : 1;
   }
 
-  List<UserAccount> _getUserAccounts() {
-    final List<UserAccount> userAccounts = [];
+  List<UserModel> _getUserAccounts() {
+    final List<UserModel> userAccounts = [];
 
     userAccounts.add(userAccount);
 
-    if (userAccount.representedPeople?.isNotEmpty == true) {
-      userAccounts.addAll(userAccount.representedPeople!);
+    if (userAccount.representedPeople.isNotEmpty == true) {
+      userAccounts.addAll(userAccount.representedPeople);
     }
     return userAccounts;
   }
@@ -82,8 +80,8 @@ class UserItemCompound extends StatelessWidget {
             children: [
               UserItem(
                 key: ValueKey(index),
-                showWarning: showWarning,
-                userAccount: userAccount,
+                showWarning: userAccount.problem != null,
+                user: userAccount,
                 hasNavigationIcon:
                     userItemCompoundType == UserItemCompoundType.settings,
                 userItemType: _getUserItemTypeByIndex(index),

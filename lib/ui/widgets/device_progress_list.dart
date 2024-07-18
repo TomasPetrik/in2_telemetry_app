@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:scalesoft_app/api/model/measurement/device.dart';
+import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/icon_label_row.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -13,7 +13,7 @@ class DeviceProgressList extends StatelessWidget {
     required this.activeIndex,
   });
 
-  final Device device;
+  final DeviceCreateModel device;
   final bool reqPairing;
   final int activeIndex;
 
@@ -22,7 +22,7 @@ class DeviceProgressList extends StatelessWidget {
       return [
         ConnectionState(
           'assets/icons/icon_power_off.svg',
-          localization.find_device_screen_step1_p(device.visibleName!),
+          localization.find_device_screen_step1_p(device.prototype.visibleName),
           1,
         ),
         ConnectionState(
@@ -38,8 +38,7 @@ class DeviceProgressList extends StatelessWidget {
         ConnectionState(
           'assets/icons/icon_wave_pulse.svg',
           localization.find_device_screen_step4_p(
-            localization
-                .common_action_button_label(device.actionButtonType!.name),
+            localization.common_action_button_label(device.prototype.actionButtonType!.name),
           ),
           3,
         ),
@@ -51,22 +50,21 @@ class DeviceProgressList extends StatelessWidget {
       ];
     } else {
       return [
-        if (device.askToActivateBt == true) ...{
+        if (device.prototype.askToActivateBt) ...{
           ConnectionState(
             'assets/icons/icon_circle_information.svg',
-            localization.find_device_screen_step1(device.visibleName!),
+            localization.find_device_screen_step1(device.prototype.visibleName),
             1,
           ),
         },
         ConnectionState(
           'assets/icons/icon_power_off.svg',
           localization.find_device_screen_step2(
-            localization
-                .common_action_button_label(device.actionButtonType!.name),
+            localization.common_action_button_label(device.prototype.actionButtonType!.name),
           ),
           1,
         ),
-        if (device.askToConfirmMeasurement == true) ...{
+        if (device.prototype.askToConfirmMeasurement) ...{
           ConnectionState(
             'assets/icons/icon_wave_pulse.svg',
             localization.find_device_screen_step3,

@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
 import 'package:scalesoft_app/ui/screens/metering_first_screen.dart';
 import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
@@ -24,10 +24,10 @@ class MeteringFirstRoute extends ApplicationRoute with PageBuilderMixin {
       pageBuilder: pageBuilder(
         withTransition: false,
         builder: (state) {
-          final userId = state.params['userId']!;
-          final measurementTypeName = state.params['measurementType'];
+          final userId = int.parse(state.pathParameters['userId']!);
+          final measurementTypeName = state.pathParameters['measurementType'];
           final showAllMeasurementTypes =
-              bool.parse(state.params['showAllMeasurementTypes'] ?? 'false');
+              bool.parse(state.pathParameters['showAllMeasurementTypes'] ?? 'false');
           MeasurementType? measurementType;
           if (measurementTypeName?.isNotEmpty == true) {
             measurementType = MeasurementType.values.firstWhereOrNull(

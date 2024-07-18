@@ -4,11 +4,11 @@ import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 
 class NavigationTabChip extends StatelessWidget {
   const NavigationTabChip({
-    Key? key,
+    super.key,
     required this.label,
     required this.onTap,
     this.isSelected = false,
-  }) : super(key: key);
+  });
 
   final String label;
   final bool isSelected;

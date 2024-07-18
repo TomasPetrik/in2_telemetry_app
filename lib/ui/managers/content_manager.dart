@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
 import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
-import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_state.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/dark_mode.dart';
@@ -31,7 +30,7 @@ class ContentManager extends StatelessWidget {
     final ContentBloc userContentBloc = getIt<ContentBloc>();
 
     return BlocConsumer<ContentBloc, ContentState>(
-      bloc: userContentBloc..add(const CheckLastLoggedUserContentEvent()),
+      bloc: userContentBloc,
       listener: (context, state) {
         final authUri = state.whenOrNull(tryCompleteAuth: (uri) => uri);
         if (authUri != null) {
@@ -43,7 +42,7 @@ class ContentManager extends StatelessWidget {
         final initialWidget = state.when(
           initial: () => MaterialApp(
             key: UniqueKey(),
-            title: 'Telemetry App',
+            title: 'FONS Care',
             theme: LightMode.theme,
             darkTheme: DarkMode.theme,
             themeMode: themeMode,
@@ -52,7 +51,6 @@ class ContentManager extends StatelessWidget {
             ),
           ),
           unauthenticated: () => onInit(context, state),
-          onAppearanceChanged: (_) => onInit(context, state),
           onUserAdded: (_) => onInit(context, state),
           activeMode: (key) => onInit(context, state),
           onDaylightAppearanceChanged: (_) => onInit(context, state),

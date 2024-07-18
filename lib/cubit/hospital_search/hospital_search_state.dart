@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/model/hospital.dart';
+import 'package:scalesoft_app/model/hospital.dart';
 
 part 'hospital_search_state.freezed.dart';
 

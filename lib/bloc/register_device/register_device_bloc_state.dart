@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/model/measurement/device.dart';
+import 'package:scalesoft_app/model/device_create_model.dart';
 
 part 'register_device_bloc_state.freezed.dart';
 
@@ -13,12 +13,12 @@ class RegisterDeviceBlocState with _$RegisterDeviceBlocState {
   const factory RegisterDeviceBlocState.noBtPermissions({
     required int timestamp,
   }) = _NoBtPermissions;
-  const factory RegisterDeviceBlocState.disabledLocalizationService({
+  const factory RegisterDeviceBlocState.disabledLocationService({
     required int timestamp,
   }) = _DisabledLocalizationService;
   const factory RegisterDeviceBlocState.searching({
     required int timestamp,
-    List<Device>? devices,
+    List<DeviceCreateModel>? devices,
   }) = _Searching;
   const factory RegisterDeviceBlocState.registering() = _Registering;
 
@@ -28,5 +28,5 @@ class RegisterDeviceBlocState with _$RegisterDeviceBlocState {
   const factory RegisterDeviceBlocState.failedRegistration(Key key) =
       _FailedRegistration;
 
-  const factory RegisterDeviceBlocState.popDevice(Device device) = _PopDevice;
+  const factory RegisterDeviceBlocState.popDevice(DeviceCreateModel device) = _PopDevice;
 }

@@ -21,8 +21,7 @@ class PlannedMeasurementHeader extends StatelessWidget {
         children: [
           Text(
             localization.common_measurement,
-            style: ScaleTextStyles.textAccent
-                .apply(color: Theme.of(context).colorScheme.onSecondary),
+            style: ScaleTextStyles.textAccent.apply(color: Theme.of(context).colorScheme.onSecondary),
           ),
           const Spacer(),
           InkWell(

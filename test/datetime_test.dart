@@ -1,4 +1,4 @@
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
+import 'package:scalesoft_app/api/contracts/care_pan/care_plan_contract.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 import 'package:test/test.dart';
 
@@ -86,17 +86,17 @@ void main() {
 
     test('WeekDay', () {
       final time = DateTime(2023, 10, 31, 10, 20, 30);
-      expect(time.weekDay, WeekDay.tuesday);
+      expect(time.weekDay, WeekDayContract.tuesday);
     });
 
     test('Tomorrow WeekDay', () {
       final time = DateTime(2023, 10, 31, 10, 20, 30);
-      expect(time.tomorrow.weekDay, WeekDay.wednesday);
+      expect(time.tomorrow.weekDay, WeekDayContract.wednesday);
     });
 
     test('Yesterday WeekDay', () {
       final time = DateTime(2023, 10, 31, 10, 20, 30);
-      expect(time.yesterday.weekDay, WeekDay.monday);
+      expect(time.yesterday.weekDay, WeekDayContract.monday);
     });
 
     test('is Today', () {

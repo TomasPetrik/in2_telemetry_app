@@ -1,45 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/model/user_account.dart';
-import 'package:scalesoft_app/providers/account_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
+import 'package:scalesoft_app/ui/viewModels/measurement_result_view_model.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
-import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 class FutureMeasurementItem extends StatelessWidget with BottomSheetMixin {
   const FutureMeasurementItem({
     super.key,
-    required this.isMultiUser,
-    required this.futureMeasurement,
+    required this.showUserName,
+    required this.measurement,
   });
 
-  final bool isMultiUser;
-  final PlannedMeasurement futureMeasurement;
+  final bool showUserName;
+  final MeasurementResultViewModel measurement;
 
-  CarePlan get carePlan => futureMeasurement.carePlan;
+  DateTime get from => measurement.measurementIntervalStart ?? measurement.measurementTime;
 
-  int get requiredCount => futureMeasurement.reqCount;
-
-  int? get currentCount => futureMeasurement.currentCount;
-
-  DateTime get whenStart => futureMeasurement.whenStart;
-
-  DateTime get whenEnd => futureMeasurement.whenEnd;
-
-  bool get showAsLongPeriodical =>
-      carePlan.isPeriodical && carePlan.periodUnit != TimeUnit.hour;
+  DateTime get to => measurement.measurementIntervalEnd ?? measurement.measurementTime;
 
   @override
   Widget build(BuildContext context) {
-    UserAccount? userAccount;
-    if (isMultiUser) {
-      userAccount = getIt<AccountDbProvider>().get(futureMeasurement.userId);
-    }
-
     return Padding(
       padding: Paddings.all16,
       child: Row(
@@ -49,16 +32,11 @@ class FutureMeasurementItem extends StatelessWidget with BottomSheetMixin {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                showAsLongPeriodical
-                    ? '00:00'
-                    : futureMeasurement.whenStart.toTimeOfDay().toString(),
+                measurement.spansMultipleDays ? '00:00' : measurement.measurementTime.toTimeOfDay().toString(),
                 style: ScaleTextStyles.label.apply(
-                  color: showAsLongPeriodical
+                  color: measurement.spansMultipleDays
                       ? Colors.transparent
-                      : Theme.of(context)
-                          .colorScheme
-                          .onPrimary
-                          .withOpacity(0.48),
+                      : Theme.of(context).colorScheme.onPrimary.withOpacity(0.48),
                 ),
               ),
               Gaps.gap16,
@@ -73,33 +51,25 @@ class FutureMeasurementItem extends StatelessWidget with BottomSheetMixin {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (userAccount != null) ...[
-                  Text(
-                    userAccount.user.fullName,
-                    style: ScaleTextStyles.textAccent.apply(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onPrimary
-                          .withOpacity(0.48),
-                    ),
+                Text(
+                  measurement.user.fullName,
+                  style: ScaleTextStyles.textAccent.apply(
+                    color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.48),
                   ),
-                  Gaps.gap6,
-                  Text(
-                    userAccount.hospital!.title,
-                    style: ScaleTextStyles.label.apply(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onPrimary
-                          .withOpacity(0.48),
-                    ),
+                ),
+                Gaps.gap6,
+                Text(
+                  measurement.user.hospital.title,
+                  style: ScaleTextStyles.label.apply(
+                    color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.48),
                   ),
-                  Gaps.gap16,
-                  Container(
-                    height: 0.5,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                  Gaps.gap16,
-                ],
+                ),
+                Gaps.gap16,
+                Container(
+                  height: 0.5,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                Gaps.gap16,
                 Row(
                   children: [
                     Column(
@@ -107,63 +77,44 @@ class FutureMeasurementItem extends StatelessWidget with BottomSheetMixin {
                       children: [
                         Text(
                           localization.common_measurement_types(
-                            futureMeasurement
-                                .carePlan.activity.measurementType.name,
+                            measurement.measurementType.name,
                           ),
                           style: ScaleTextStyles.text.apply(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onPrimary
-                                .withOpacity(0.48),
+                            color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.48),
                           ),
                         ),
                         Gaps.gap6,
                         Text(
-                          showAsLongPeriodical
-                              ? localization
-                                  .dashboard_screen_measurement_periodical_interval(
-                                  whenStart.dateFormatLong,
-                                  whenEnd.dateFormatLong,
+                          measurement.spansMultipleDays
+                              ? localization.dashboard_screen_measurement_periodical_interval(
+                                  from.dateFormatLong,
+                                  to.dateFormatLong,
                                 )
-                              : localization
-                                  .dashboard_screen_measurement_interval(
-                                  futureMeasurement.whenStart
-                                      .toTimeOfDay()
-                                      .toString(),
-                                  futureMeasurement.whenEnd
-                                      .toTimeOfDay()
-                                      .toString(),
+                              : localization.dashboard_screen_measurement_interval(
+                                  from.toTimeOfDay().toString(),
+                                  to.toTimeOfDay().toString(),
                                 ),
                           style: ScaleTextStyles.label.apply(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSecondary
-                                .withOpacity(0.48),
+                            color: Theme.of(context).colorScheme.onSecondary.withOpacity(0.48),
                           ),
                         ),
-                        if (futureMeasurement.whenCode != null)
+                        if (measurement.whenCode != null)
                           Text(
                             localization.common_when_code(
-                              futureMeasurement.whenCode!.name,
+                              measurement.whenCode!.name,
                             ),
                             style: ScaleTextStyles.label.apply(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSecondary
-                                  .withOpacity(0.48),
+                              color: Theme.of(context).colorScheme.onSecondary.withOpacity(0.48),
                             ),
                           ),
-                        if (requiredCount > 1 && currentCount != null)
+                        if (measurement.requiredCount > 1 && measurement.actualCount > 0)
                           Text(
                             localization.dashboard_screen_measurements_left(
-                              requiredCount - currentCount!,
-                              requiredCount,
+                              measurement.requiredCount - measurement.actualCount,
+                              measurement.requiredCount,
                             ),
                             style: ScaleTextStyles.label.apply(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSecondary
-                                  .withOpacity(0.48),
+                              color: Theme.of(context).colorScheme.onSecondary.withOpacity(0.48),
                             ),
                           ),
                       ],

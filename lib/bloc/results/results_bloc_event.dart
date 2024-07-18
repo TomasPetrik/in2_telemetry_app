@@ -1,8 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan_activity.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement.dart';
-import 'package:scalesoft_app/api/model/measurement/measurement_result.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 
 part 'results_bloc_event.freezed.dart';
@@ -11,14 +8,11 @@ part 'results_bloc_event.freezed.dart';
 class ResultsBlocEvent with _$ResultsBlocEvent {
   const factory ResultsBlocEvent.init({
     required final ResultsWhenPeriod whenPeriod,
-    required final List<CarePlan> carePlans,
-    required final List<MeasurementResult> allServerResults,
-    required final List<Measurement> pendingResults,
   }) = _Init;
   const factory ResultsBlocEvent.whenPeriodChange(
     ResultsWhenPeriod whenPeriod,
   ) = _ChangeWhenPeriod;
-  const factory ResultsBlocEvent.curentPlansChange(
+  const factory ResultsBlocEvent.currentPlansChange(
     MeasurementType? measurementType,
   ) = _ChangeCurrentPlans;
 }

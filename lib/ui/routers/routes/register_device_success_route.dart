@@ -23,7 +23,7 @@ class RegisterDeviceSuccessRoute extends ApplicationRoute
       pageBuilder: pageBuilder(
         withTransition: false,
         builder: (state) {
-          final deviceName = state.params['deviceName']!;
+          final deviceName = state.pathParameters['deviceName']!;
           return RegisterDeviceSuccessScreen(deviceName: deviceName);
         },
       ),

@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
-import 'package:scalesoft_app/api/model/care_plan/care_plan.dart';
-import 'package:scalesoft_app/api/model/care_plan/timing_day_when.dart';
-import 'package:scalesoft_app/api/model/care_plan/when_time_value.dart';
 import 'package:scalesoft_app/bloc/daily_times_settings/times_settings_bloc.dart';
 import 'package:scalesoft_app/bloc/daily_times_settings/times_settings_event.dart';
 import 'package:scalesoft_app/bloc/daily_times_settings/times_settings_state.dart';
+import 'package:scalesoft_app/data/app_database.dart';
+import 'package:scalesoft_app/data/entities/json_entities/care_plan/timing_day_when.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -83,7 +82,7 @@ class _TimeSettingsForm extends StatelessWidget with BottomSheetMixin {
   });
 
   final VoidCallback resetTimes;
-  final List<WhenTimeValue> templateWhenValues;
+  final List<WhenTemplate> templateWhenValues;
   final List<TimingDayWhen> timingsDayWhen;
   final TimesSettingsBloc timeSettingsBloc;
   final CarePlan carePlan;
@@ -131,7 +130,7 @@ class _TimeSettingsForm extends StatelessWidget with BottomSheetMixin {
               final timingDayWhen = timingsDayWhen[index];
 
               final templateWhenTime = templateWhenValues.firstWhereOrNull(
-                (whenTime) => whenTime.codeValue == timingDayWhen.whenCode,
+                (whenTime) => whenTime.whenCode == timingDayWhen.whenCode,
               );
 
               return Padding(

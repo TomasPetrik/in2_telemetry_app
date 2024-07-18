@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
-import 'package:scalesoft_app/api/model/care_plan/interval_generation/timing_model.dart';
+import 'package:scalesoft_app/model/interval_generation/evaluation_interval_model.dart';
+import 'package:scalesoft_app/model/interval_generation/timing_model.dart';
 import 'package:scalesoft_app/providers/interval_generation/generators/timing_day_of_week_generator.dart';
 import 'package:scalesoft_app/providers/interval_generation/generators/timing_period_generator.dart';
-import 'package:scalesoft_app/api/model/care_plan/interval_generation/evaluation_interval_model.dart';
 import 'package:scalesoft_app/providers/interval_generation/generators/timing_time_of_day_generator.dart';
 import 'package:scalesoft_app/providers/interval_generation/generators/timing_when_generator.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';

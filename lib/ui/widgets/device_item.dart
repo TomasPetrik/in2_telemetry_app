@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:scalesoft_app/api/model/measurement/device.dart';
+import 'package:scalesoft_app/model/device_create_model.dart';
+import 'package:scalesoft_app/model/device_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
@@ -13,7 +14,7 @@ class DeviceItem extends StatelessWidget {
     this.onRemove,
   });
 
-  final Device device;
+  final DeviceCreateModel device;
   final VoidCallback? onRemove;
 
   String getSubTitle(BuildContext context) {
@@ -24,17 +25,13 @@ class DeviceItem extends StatelessWidget {
     );
     */
 
-    if (device.deviceIdentifier != null) {
-      subTitle += device.deviceIdentifier!;
-    }
+    subTitle += device.deviceIdentifier;
 
     if (device.assignedIdentifier != null) {
-      subTitle +=
-          '\n(${device.assignedIdentifier!})'; //for assigned devices show assigned identifier
-    } else if (device.addedAt != null) {
+      subTitle += '\n(${device.assignedIdentifier!})'; //for assigned devices show assigned identifier
+    } else if (device is DeviceModel) {
       //for own devices show when device was added
-      subTitle +=
-          '\n${localization.common_addded_at_time(device.addedAt!.dateFormatLong)}';
+      subTitle += '\n${localization.common_addded_at_time((device as DeviceModel).addedAt.dateFormatLong)}';
     }
 
     return subTitle;
@@ -49,7 +46,7 @@ class DeviceItem extends StatelessWidget {
           child: SizedBox(
             height: 64,
             width: 64,
-            child: Image.asset(device.imagePath!),
+            child: Image.asset(device.prototype.imagePath),
           ),
         ),
         Gaps.gap16,
@@ -58,7 +55,7 @@ class DeviceItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                device.visibleName ?? '',
+                device.prototype.visibleName,
                 style: ScaleTextStyles.text.apply(
                   color: Theme.of(context).colorScheme.onPrimary,
                 ),
