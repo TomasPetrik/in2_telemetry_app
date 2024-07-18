@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" android:maxSdkVersion="34"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 
@@ -53,7 +54,7 @@
             android:name="${applicationName}"
             android:icon="@mipmap/ic_launcher"
             android:enableOnBackInvokedCallback="true"
-            tools:replace="android:label" tools:targetApi="tiramisu">
+            tools:replace="android:label" tools:targetApi="upside_down_cake">
         <meta-data
                 android:name="com.google.firebase.messaging.default_notification_icon"
                 android:resource="@mipmap/ic_notification"/>
