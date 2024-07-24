@@ -2499,13 +2499,13 @@ class I10n {
     );
   }
 
-  /// `{overallHealthValue, select, good{Velmi dobrý} variable{Mírné/občasné zhoršení při fyzické námaze} bad{Setrvalé zhoršení bez příčiny} veryBad{Cítím se velmi špatně} other{ }}`
+  /// `{overallHealthValue, select, good{Velmi dobrý} variable{Mírné/občasné zhoršení při námaze} bad{Setrvalé zhoršení bez příčiny} veryBad{Cítím se velmi špatně} other{ }}`
   String overall_health_values(Object overallHealthValue) {
     return Intl.select(
       overallHealthValue,
       {
         'good': 'Velmi dobrý',
-        'variable': 'Mírné/občasné zhoršení při fyzické námaze',
+        'variable': 'Mírné/občasné zhoršení při námaze',
         'bad': 'Setrvalé zhoršení bez příčiny',
         'veryBad': 'Cítím se velmi špatně',
         'other': ' ',

@@ -209,22 +209,28 @@ class SyncService {
     await _measurementsDbProvider.removeOfflineMeasurement(measurementTime, measurementType);
   }
 
-  Future<void> updateUserData(UserModel userAccount) async {
+  Future<void> updateUserData(UserModel user) async {
     //check changes for root user and his represented people
 
     //update only root users but not representing people specifically
-    if (userAccount.isRepresentedPerson) return;
+    if (user.isRepresentedPerson) return;
 
     final userInfo = await _accountRepository.loadUserInfo(
-      authToken: userAccount.authToken,
-      apiUrl: userAccount.hospital.authData.baseUrl,
+      authToken: user.authToken,
+      apiUrl: user.hospital.authData.baseUrl,
     );
 
-    //1. Update assigned devices
-    _deviceDbProvider.updateUserDevices(userAccount.id, userInfo.assignedDevices ?? []);
-    getIt<BackgroundMeasurementManager>().removeUnassignedDevices();
+    final muids = [userInfo.currentUser.muid, ...(userInfo.representedPeople?.map((x) => x.muid) ?? <String>[])];
+    final timeSettings =
+        await _timeSettingsRepository.loadTimeSettings(user.authToken, user.hospital.authData.baseUrl, muids);
 
-    _userDbProvider.updateUserFromContract(userAccount.id, userInfo.currentUser);
+    final deviceModels = await _deviceRepository.getDeviceModels(
+      userId: user.id,
+    );
+
+    await _userDbProvider.updateUserFromContract(user.id, userInfo, timeSettings, deviceModels);
+
+    await getIt<BackgroundMeasurementManager>().removeUnassignedDevices();
   }
 
   /* load today's and yesterday's measurement results */

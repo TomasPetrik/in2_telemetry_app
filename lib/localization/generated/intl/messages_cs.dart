@@ -228,7 +228,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m37(overallHealthValue) => "${Intl.select(overallHealthValue, {
             'good': 'Velmi dobrý',
-            'variable': 'Mírné/občasné zhoršení při fyzické námaze',
+            'variable': 'Mírné/občasné zhoršení při námaze',
             'bad': 'Setrvalé zhoršení bez příčiny',
             'veryBad': 'Cítím se velmi špatně',
             'other': ' ',

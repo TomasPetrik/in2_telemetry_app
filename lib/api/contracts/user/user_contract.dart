@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:scalesoft_app/api/contracts/device/assigned_device_contract.dart';
 import 'package:scalesoft_app/api/contracts/thresholds/measurement_thresholds_contract.dart';
 
 part 'user_contract.g.dart';
@@ -13,6 +14,7 @@ class UserContract {
   @JsonKey(defaultValue: [])
   final List<String>? emailAddresses;
   final MeasurementThresholdsContract? measurementThresholds;
+  final List<AssignedDeviceContract>? assignedDevices;
 
   UserContract({
     required this.muid,
@@ -21,6 +23,7 @@ class UserContract {
     this.phoneNumbers,
     this.emailAddresses,
     this.measurementThresholds,
+    this.assignedDevices,
   });
 
   factory UserContract.fromJson(Map<String, dynamic> json) => _$UserContractFromJson(json);

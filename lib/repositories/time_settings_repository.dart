@@ -28,8 +28,9 @@ class TimeSettingsRepository {
   Future<List<TimeSettingContract>> loadTimeSettings(
     AuthToken authToken,
     String apiUrl,
+      List<String> userMuids,
   ) {
-    return timeSettingsApiClient.loadTimeSettings(apiUrl, 'Bearer ${authToken.accessToken}');
+    return timeSettingsApiClient.loadTimeSettings(apiUrl, 'Bearer ${authToken.accessToken}', userMuids);
   }
 
   Future<void> updateTimeSettings({

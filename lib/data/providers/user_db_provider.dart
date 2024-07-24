@@ -1,6 +1,9 @@
+import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
+import 'package:scalesoft_app/api/contracts/device/device_prototype_contract.dart';
 import 'package:scalesoft_app/api/contracts/time_settings/time_setting_contract.dart';
+import 'package:scalesoft_app/api/contracts/user/current_user_info_contract.dart';
 import 'package:scalesoft_app/api/contracts/user/user_contract.dart';
 import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/data/entities/combined_entities/user_with_represented_people.dart';
@@ -8,6 +11,8 @@ import 'package:scalesoft_app/data/entities/json_entities/care_plan/time_only.da
 import 'package:scalesoft_app/data/entities/json_entities/user/auth_token.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/measurement_thresholds.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/time_setting.dart';
+import 'package:scalesoft_app/data/providers/device_db_provider.dart';
+import 'package:scalesoft_app/data/providers/device_prototype_db_provider.dart';
 import 'package:scalesoft_app/mapper/thresholds_mapper.dart';
 import 'package:scalesoft_app/mapper/user_mapper.dart';
 import 'package:scalesoft_app/mapper/when_code_mapper.dart';
@@ -20,8 +25,17 @@ class UserDbProvider {
   final UserMapper _userMapper;
   final WhenCodeMapper _whenCodeMapper;
   final ThresholdsMapper _thresholdsMapper;
+  final DeviceDbProvider _deviceDbProvider;
+  final DevicePrototypeDbProvider _devicePrototypeDbProvider;
 
-  UserDbProvider(this._database, this._userMapper, this._whenCodeMapper, this._thresholdsMapper);
+  UserDbProvider(
+    this._database,
+    this._userMapper,
+    this._whenCodeMapper,
+    this._thresholdsMapper,
+    this._deviceDbProvider,
+    this._devicePrototypeDbProvider,
+  );
 
   Stream<UserModel?> get(int userId) {
     final entity = _database.usersDao.getUser(userId);
@@ -213,18 +227,111 @@ class UserDbProvider {
     await _database.usersDao.updateUser(userId, changes);
   }
 
-  Future<void> updateUserFromContract(int userId, UserContract contract) async {
-    // TODO: Represented people #IN2-9956
-    MeasurementThresholds? thresholds = _thresholdsMapper.tryConvert(contract.measurementThresholds);
+  /// Updates the user with the given [userId] and their represented people using the changes from [contract] and [timeSettingContracts].
+  /// Saves [deviceModels] for the root user and all represented people.
+  ///
+  /// All changes from [contract] will be applied - including assigned devices.
+  Future<void> updateUserFromContract(
+    int userId,
+    CurrentUserInfoContract contract,
+    List<TimeSettingContract> timeSettingContracts,
+    List<DevicePrototypeContract> deviceModels,
+  ) async {
+    final rootUser = contract.currentUser;
+    MeasurementThresholds? thresholds = _thresholdsMapper.tryConvert(rootUser.measurementThresholds);
+    final timeSettings = timeSettingContracts
+        .where((x) => x.userMuid == contract.currentUser.muid)
+        .map(
+          (x) => TimeSetting(
+            code: _whenCodeMapper.convert(x.code),
+            start: TimeOnly.fromString(x.start),
+            end: TimeOnly.fromString(x.end),
+          ),
+        )
+        .toList();
 
     final changes = UsersCompanion(
-      firstNames: Value(contract.firstNames.join(' ')),
-      lastNames: Value(contract.lastNames.join(' ')),
-      phoneNumbers: Value(contract.phoneNumbers ?? []),
-      emailAddresses: Value(contract.emailAddresses ?? []),
+      firstNames: Value(rootUser.firstNames.join(' ')),
+      lastNames: Value(rootUser.lastNames.join(' ')),
+      phoneNumbers: Value(rootUser.phoneNumbers ?? []),
+      emailAddresses: Value(rootUser.emailAddresses ?? []),
       thresholds: Value(thresholds),
+      timeSettings: Value(timeSettings),
     );
 
-    await updateUser(userId, changes);
+    await _devicePrototypeDbProvider.replaceUserPrototypes(userId, deviceModels);
+    final updatedUser = await _database.usersDao.updateUser(userId, changes);
+    await _deviceDbProvider.updateUserDevices(userId, contract.assignedDevices ?? []);
+
+    await updateRepresentedPeople(updatedUser, contract.representedPeople ?? [], timeSettingContracts, deviceModels);
+  }
+
+  Future<void> updateRepresentedPeople(
+    User parent,
+    List<UserContract> updatedRepresentedPeople,
+    List<TimeSettingContract> timeSettingContracts,
+    List<DevicePrototypeContract> deviceModels,
+  ) async {
+    final existingRepresentedPeople = (await _database.usersDao.getUser(parent.id).first)?.representedPeople ?? [];
+    final usersToRemove = existingRepresentedPeople
+        .where((existing) => updatedRepresentedPeople.none((x) => x.muid == existing.muid))
+        .map((x) => x.id);
+
+    await _database.usersDao.removeUsers(usersToRemove);
+
+    final now = DateTime.now();
+
+    for (final person in updatedRepresentedPeople) {
+      int personId;
+
+      MeasurementThresholds? thresholds = _thresholdsMapper.tryConvert(person.measurementThresholds);
+
+      final timeSettings = timeSettingContracts
+          .where((x) => x.userMuid == person.muid)
+          .map(
+            (x) => TimeSetting(
+              code: _whenCodeMapper.convert(x.code),
+              start: TimeOnly.fromString(x.start),
+              end: TimeOnly.fromString(x.end),
+            ),
+          )
+          .toList();
+
+      final existingPerson = existingRepresentedPeople.firstWhereOrNull((x) => x.muid == person.muid);
+      if (existingPerson == null) {
+        final companion = UsersCompanion.insert(
+          parentId: Value(parent.id),
+          hospitalId: parent.hospitalId,
+          muid: person.muid,
+          firstNames: person.firstNames.join(' '),
+          lastNames: person.lastNames.join(' '),
+          authToken: parent.authToken,
+          lastSyncAt: now,
+          timeSettings: timeSettings,
+          permissions: parent.permissions,
+          phoneNumbers: person.phoneNumbers ?? [],
+          emailAddresses: person.emailAddresses ?? [],
+          thresholds: Value(thresholds),
+        );
+
+        personId = await _database.usersDao.createUser(companion);
+      } else {
+        final companion = UsersCompanion(
+          firstNames: Value(person.firstNames.join(' ')),
+          lastNames: Value(person.lastNames.join(' ')),
+          lastSyncAt: Value(now),
+          phoneNumbers: Value(person.phoneNumbers ?? []),
+          emailAddresses: Value(person.emailAddresses ?? []),
+          thresholds: Value(thresholds),
+          timeSettings: Value(timeSettings),
+        );
+        await _database.usersDao.updateUser(existingPerson.id, companion);
+
+        personId = existingPerson.id;
+      }
+
+      await _devicePrototypeDbProvider.replaceUserPrototypes(personId, deviceModels);
+      await _deviceDbProvider.updateUserDevices(personId, person.assignedDevices ?? []);
+    }
   }
 }

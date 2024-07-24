@@ -25,6 +25,7 @@ abstract class TimeSettingsApiClient {
   Future<List<TimeSettingContract>> loadTimeSettings(
     @Path('apiUrl') String apiUrl,
     @Header(HttpHeaders.authorizationHeader) String authHeader,
+    @Query('userMuids') List<String> userMuids,
   );
 
   @POST('{apiUrl}/patient/time-settings')

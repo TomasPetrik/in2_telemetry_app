@@ -24,6 +24,10 @@ class UsersDao extends DatabaseAccessor<AppDatabase> with _$UsersDaoMixin {
     await (delete(users)..where((user) => user.id.equals(userId))).go();
   }
 
+  Future<void> removeUsers(Iterable<int> userIds) async {
+    await (delete(users)..where((user) => user.id.isIn(userIds))).go();
+  }
+
   Future<int> createUser(UsersCompanion user) async {
     final entity = await into(users).insertReturning(user, onConflict: DoUpdate((old) => user, target: []));
 
@@ -73,8 +77,8 @@ class UsersDao extends DatabaseAccessor<AppDatabase> with _$UsersDaoMixin {
     return UserWithRepresentedPeople(rootUser: rootUser, representedPeople: representedPeople);
   }
 
-  Future<void> updateUser(int userId, UsersCompanion changes) async {
-    await (update(users)..where((user) => user.id.equals(userId))).write(changes);
+  Future<User> updateUser(int userId, UsersCompanion changes) async {
+    return (await (update(users)..where((user) => user.id.equals(userId))).writeReturning(changes)).first;
   }
 
   /// Returns all users matched using the provided [filter]. If [filter] is null, all users are returned.

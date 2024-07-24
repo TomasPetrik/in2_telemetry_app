@@ -614,7 +614,7 @@
             "shortnessOfBreathValue": {}
         }
     },
-    "overall_health_values": "{overallHealthValue, select, good{Velmi dobrý} variable{Mírné/občasné zhoršení při fyzické námaze} bad{Setrvalé zhoršení bez příčiny} veryBad{Cítím se velmi špatně} other{ }}",
+    "overall_health_values": "{overallHealthValue, select, good{Velmi dobrý} variable{Mírné/občasné zhoršení při námaze} bad{Setrvalé zhoršení bez příčiny} veryBad{Cítím se velmi špatně} other{ }}",
     "@overall_health_values": {
         "description": "Overall health values",
         "placeholders": {

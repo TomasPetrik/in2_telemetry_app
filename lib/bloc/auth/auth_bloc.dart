@@ -188,7 +188,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         apiUrl: hospital.authData.baseUrl,
       );
 
-      final timeSettings = await _timeSettingsRepository.loadTimeSettings(token, hospital.authData.baseUrl);
+      final muids = [userInfo.currentUser.muid, ...userInfo.representedPeople?.map((x) => x.muid) ?? <String>[]];
+      final timeSettings = await _timeSettingsRepository.loadTimeSettings(token, hospital.authData.baseUrl, muids);
 
       final userId = await _session.createOrUpdateUser(
         userInfo.currentUser,
