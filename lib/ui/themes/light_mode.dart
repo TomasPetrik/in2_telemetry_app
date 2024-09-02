@@ -57,6 +57,7 @@ class LightMode {
         tertiary: colorContent60,
         onTertiary: positive,
       );
+
   static ThemeData get theme => ThemeData(
         primaryColor: primary,
         splashColor: Colors.transparent,
@@ -126,9 +127,7 @@ class LightMode {
           style: ButtonStyle(
             backgroundColor: MaterialStateColor.resolveWith(
               (states) =>
-                  states.isNotEmpty && states.first == MaterialState.pressed
-                      ? primary.withOpacity(0.5)
-                      : primary,
+                  states.isNotEmpty && states.first == MaterialState.pressed ? primary.withOpacity(0.5) : primary,
             ),
             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
@@ -136,6 +135,11 @@ class LightMode {
               ),
             ),
           ),
+        ),
+        dialogTheme: DialogTheme(
+          backgroundColor: light,
+          titleTextStyle: ScaleTextStyles.title.apply(color: fontColor),
+          contentTextStyle: ScaleTextStyles.label.apply(color: colorContent80),
         ),
       );
 }

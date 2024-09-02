@@ -35,6 +35,9 @@ class HospitalUnlockDialogState extends State<HospitalUnlockDialog> {
                 });
               }
             },
+            style: ScaleTextStyles.text.apply(
+              color: Theme.of(context).colorScheme.onPrimary,
+            ),
           ),
           if (isInvalid)
             Text(
