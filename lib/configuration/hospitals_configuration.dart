@@ -150,6 +150,27 @@ class HospitalsConfiguration {
       isStaging: true,
       clientSecret: 'cqWFWo9zYQHFh38kS8VC',
     ),
+    const Hospital(
+      id: 11,
+      title: '[Test] STAPRO Showroom',
+      iconPath: 'assets/icons/icon_hospital_user.svg',
+      authData: AuthData(
+        baseUrl: 'https://fonscare.stapro.cz/api-mobile/v1',
+        authUrl: 'https://fonscare-auth.stapro.cz/connect/authorize',
+        tokenUrl: 'https://fonscare-auth.stapro.cz/connect/token',
+      ),
+      enabledMeasurementTypes: [
+        MeasurementType.temperature,
+        MeasurementType.bloodPressure,
+        MeasurementType.oxygenSaturation,
+        MeasurementType.heartRate,
+        MeasurementType.shortnessOfBreath,
+        MeasurementType.overallHealth,
+        MeasurementType.battery,
+      ],
+      isStaging: true,
+      clientSecret: 'cqWFWo9zYQHFh38kS8VC',
+    ),
   ];
 
   static String logEndpointSecret = 'zvqoz0vA#agIA0rsIzYSuk7kU1sCfKK6hsVYP3dW6!AOj**^31';

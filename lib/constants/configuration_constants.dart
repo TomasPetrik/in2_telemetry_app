@@ -215,6 +215,6 @@ class ConfigurationConstants {
     12: 'dec',
   };
 
-  /// SHA1 hash of "chcistagingnemocnice"
-  static String stagingUnlockHash = "160375C9601FE62306B7459786B6DA92C403C430";
+  /// SHA1 hash of "Scalesoft2924"
+  static String stagingUnlockHash = "FF9DFD0FDBC5E8DF82FDCB30E863699FF0DB4FD3";
 }
