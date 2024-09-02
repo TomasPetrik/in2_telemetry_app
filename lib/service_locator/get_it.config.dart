@@ -83,24 +83,24 @@ Future<_i174.GetIt> init(
   );
   final dioModule = _$DioModule();
   gh.factory<_i1064.LoaderCubit>(() => _i1064.LoaderCubit());
-  gh.factory<_i1000.ThresholdsMapper>(() => _i1000.ThresholdsMapper());
-  gh.factory<_i517.LogEventMapper>(() => _i517.LogEventMapper());
-  gh.factory<_i108.WhenCodeMapper>(() => const _i108.WhenCodeMapper());
-  gh.factory<_i692.TimingDayWhenMapper>(
-      () => const _i692.TimingDayWhenMapper());
-  gh.factory<_i89.MeasurementTypeMapper>(
-      () => const _i89.MeasurementTypeMapper());
-  gh.factory<_i222.UserMapper>(() => _i222.UserMapper());
-  gh.factory<_i728.CarePlanVersionMapper>(() => _i728.CarePlanVersionMapper());
   gh.factory<_i763.CarePlanActivityMapper>(
       () => _i763.CarePlanActivityMapper());
+  gh.factory<_i728.CarePlanVersionMapper>(() => _i728.CarePlanVersionMapper());
+  gh.factory<_i517.LogEventMapper>(() => _i517.LogEventMapper());
+  gh.factory<_i89.MeasurementTypeMapper>(
+      () => const _i89.MeasurementTypeMapper());
+  gh.factory<_i1000.ThresholdsMapper>(() => _i1000.ThresholdsMapper());
+  gh.factory<_i692.TimingDayWhenMapper>(
+      () => const _i692.TimingDayWhenMapper());
+  gh.factory<_i222.UserMapper>(() => _i222.UserMapper());
+  gh.factory<_i108.WhenCodeMapper>(() => const _i108.WhenCodeMapper());
+  gh.singleton<_i795.CalendarFooterBloc>(() => _i795.CalendarFooterBloc());
   gh.singleton<_i207.BackgroundMeasurementCubit>(
       () => _i207.BackgroundMeasurementCubit());
   gh.singleton<_i745.HospitalSearchCubit>(() => _i745.HospitalSearchCubit());
   gh.singleton<_i133.AppDatabase>(() => _i133.AppDatabase());
   gh.singleton<_i745.AuthService>(() => _i745.AuthService());
   gh.singleton<_i403.InternetService>(() => _i403.InternetService());
-  gh.singleton<_i795.CalendarFooterBloc>(() => _i795.CalendarFooterBloc());
   gh.singleton<_i361.Dio>(
     () => dioModule.privateDio,
     instanceName: 'privateDio',
@@ -111,28 +111,28 @@ Future<_i174.GetIt> init(
       ));
   gh.factory<_i331.DeviceDbProvider>(
       () => _i331.DeviceDbProvider(gh<_i133.AppDatabase>()));
-  gh.factory<_i654.SettingsDbProvider>(
-      () => _i654.SettingsDbProvider(gh<_i133.AppDatabase>()));
   gh.factory<_i847.DevicePrototypeDbProvider>(
       () => _i847.DevicePrototypeDbProvider(gh<_i133.AppDatabase>()));
   gh.factory<_i640.LogDbProvider>(
       () => _i640.LogDbProvider(gh<_i133.AppDatabase>()));
+  gh.factory<_i654.SettingsDbProvider>(
+      () => _i654.SettingsDbProvider(gh<_i133.AppDatabase>()));
   gh.factory<_i761.WhenTemplateDbProvider>(() => _i761.WhenTemplateDbProvider(
         gh<_i133.AppDatabase>(),
         gh<_i108.WhenCodeMapper>(),
       ));
   gh.singleton<_i486.AppSettingsBloc>(
       () => _i486.AppSettingsBloc(gh<_i654.SettingsDbProvider>()));
+  gh.factory<_i708.AccountApiClient>(
+      () => _i708.AccountApiClient(gh<_i361.Dio>(instanceName: 'privateDio')));
+  gh.factory<_i541.AuthApiClient>(
+      () => _i541.AuthApiClient(gh<_i361.Dio>(instanceName: 'privateDio')));
   gh.factory<_i409.CarePlanApiClient>(
       () => _i409.CarePlanApiClient(gh<_i361.Dio>(instanceName: 'privateDio')));
   gh.factory<_i122.DeviceApiClient>(
       () => _i122.DeviceApiClient(gh<_i361.Dio>(instanceName: 'privateDio')));
-  gh.factory<_i708.AccountApiClient>(
-      () => _i708.AccountApiClient(gh<_i361.Dio>(instanceName: 'privateDio')));
   gh.factory<_i387.TimeSettingsApiClient>(() =>
       _i387.TimeSettingsApiClient(gh<_i361.Dio>(instanceName: 'privateDio')));
-  gh.factory<_i541.AuthApiClient>(
-      () => _i541.AuthApiClient(gh<_i361.Dio>(instanceName: 'privateDio')));
   gh.factory<_i198.PlanProgressCubit>(
       () => _i198.PlanProgressCubit(gh<_i477.MeasurementsDbProvider>()));
   gh.factory<_i1047.CarePlanDbProvider>(() => _i1047.CarePlanDbProvider(
