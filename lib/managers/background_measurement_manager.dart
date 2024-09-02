@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,10 +27,12 @@ class BackgroundMeasurementManager {
   final SyncService _syncService;
   final BackgroundMeasurementCubit _backgroundMeasurementCubit;
   final ReportService _reportService;
-  final FlutterLocalNotificationsPlugin _notificationsPlugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _notificationsPlugin =
+      FlutterLocalNotificationsPlugin();
   final DeviceDbProvider _deviceDbProvider;
   final MeasurementsDbProvider _measurementsDbProvider;
-  static const nativeCode = MethodChannel(NativeCodeConstants.methodChannelName);
+  static const nativeCode =
+      MethodChannel(NativeCodeConstants.methodChannelName);
 
   BackgroundMeasurementManager(
     this._syncService,
@@ -45,13 +49,18 @@ class BackgroundMeasurementManager {
         return Future.error("Unsupported method");
       }
 
-      final devices = call.arguments[NativeCodeConstants.macAddressesKey] as List;
+      final devices =
+          call.arguments[NativeCodeConstants.macAddressesKey] as List;
       await syncArmbandMeasurements(devices.map((x) => x.toString()));
       return "success";
     });
   }
 
   Future<bool> isSetupRequired() async {
+    if (!Platform.isAndroid) {
+      return false;
+    }
+
     final assignedDevices = await _getWatchesMacAddresses();
 
     if (assignedDevices.isEmpty) {
@@ -64,6 +73,10 @@ class BackgroundMeasurementManager {
   }
 
   Future<void> updateBackgroundSynchronizationState() async {
+    if (!Platform.isAndroid) {
+      return;
+    }
+
     final assignedDevices = await _getWatchesMacAddresses();
     final associatedDevices = (await getAssociatedMacAddresses()).toSet();
 
@@ -89,15 +102,24 @@ class BackgroundMeasurementManager {
   }
 
   Future<void> deactivateBackgroundSynchronization() async {
+    if (!Platform.isAndroid) {
+      return;
+    }
+
     final associatedDevices = await getAssociatedMacAddresses();
     await disassociateDevices(associatedDevices);
   }
 
   Future<void> removeUnassignedDevices() async {
+    if (!Platform.isAndroid) {
+      return;
+    }
+
     final assignedDevices = (await _getWatchesMacAddresses()).toList();
     final associatedDevices = (await getAssociatedMacAddresses()).toSet();
 
-    final unassignedDevices = associatedDevices.whereNot(assignedDevices.contains);
+    final unassignedDevices =
+        associatedDevices.whereNot(assignedDevices.contains);
 
     if (unassignedDevices.isNotEmpty) {
       await disassociateDevices(unassignedDevices);
@@ -115,7 +137,9 @@ class BackgroundMeasurementManager {
   }
 
   Future<Iterable<String>> _getWatchesMacAddresses() async {
-    return (await _getWatches()).map((x) => x.bluetoothAddress!).map(MacAddressHelper.normalizeFormat);
+    return (await _getWatches())
+        .map((x) => x.bluetoothAddress!)
+        .map(MacAddressHelper.normalizeFormat);
   }
 
   Future<bool> anyUserWatchAssignmentExists() async {
@@ -160,10 +184,12 @@ class BackgroundMeasurementManager {
     }
   }
 
-  Future<void> syncArmbandMeasurements(Iterable<String> associatedAddresses) async {
+  Future<void> syncArmbandMeasurements(
+      Iterable<String> associatedAddresses) async {
     final watches = await _getWatches();
     final matchedWatches = watches.where(
-      (x) => associatedAddresses.any((address) => MacAddressHelper.compare(address, x.bluetoothAddress)),
+      (x) => associatedAddresses.any(
+          (address) => MacAddressHelper.compare(address, x.bluetoothAddress)),
     );
 
     final results = await Future.wait([
@@ -180,8 +206,13 @@ class BackgroundMeasurementManager {
   }
 
   Future<Iterable<String>> getAssociatedMacAddresses() async {
+    if (!Platform.isAndroid) {
+      return [];
+    }
+
     try {
-      final addresses = await nativeCode.invokeListMethod<String>(NativeCodeConstants.getAssociatedDevices);
+      final addresses = await nativeCode
+          .invokeListMethod<String>(NativeCodeConstants.getAssociatedDevices);
       return addresses?.map(MacAddressHelper.normalizeFormat) ?? [];
     } on PlatformException catch (e) {
       debugPrint("Associate devices: native code invocation failed: $e");
@@ -201,7 +232,8 @@ class BackgroundMeasurementManager {
     List<MeasurementCreateModel> results = [];
 
     final btDevice = BluetoothDevice(
-      remoteId: DeviceIdentifier(MacAddressHelper.normalizeFormat(device.bluetoothAddress!)),
+      remoteId: DeviceIdentifier(
+          MacAddressHelper.normalizeFormat(device.bluetoothAddress!)),
     );
 
     try {
@@ -231,12 +263,15 @@ class BackgroundMeasurementManager {
     results.addAll(await watchManager.getOxygenSaturationHistory(btDevice));
 
     if (device.lastMeasurementTime != null) {
-      results = results.where((x) => x.measuredAt.isAfter(device.lastMeasurementTime!)).toList();
+      results = results
+          .where((x) => x.measuredAt.isAfter(device.lastMeasurementTime!))
+          .toList();
     }
 
     final lastMeasurementTime = results.map((x) => x.measuredAt).max;
 
-    _deviceDbProvider.updateDevice(device.id, DevicesCompanion(lastMeasurementTime: Value(lastMeasurementTime)));
+    _deviceDbProvider.updateDevice(device.id,
+        DevicesCompanion(lastMeasurementTime: Value(lastMeasurementTime)));
 
     return results;
   }
