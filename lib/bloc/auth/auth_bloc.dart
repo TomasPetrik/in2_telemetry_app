@@ -39,6 +39,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SyncService _syncService;
   final UserCubit _session;
   AuthorizationCodeGrant? _grant;
+  Hospital? _hospital;
   Client? _authClient;
   final Dio _dio;
 
@@ -58,6 +59,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LogoutUser>(_removeUser);
     on<CancelAuth>(_cancelAuth);
     on<ErrorLoadDataEvent>(_onErrorLoadDataEvent);
+    on<AuthCallback>(handleCallback);
+  }
+
+  Future<void> handleCallback(AuthCallback event, Emitter<AuthState> emit) async {
+    // Workaround: For some reason, it seems like this class gets reinstantiated when firefox is used to log in
+    // in that case, _grant and _hospital are both null when this method is reached. Treat it the same as a cold start.
+    if (_grant == null || _hospital == null) {
+      await _onAuthFromColdStart(AuthFromColdStart(authUri: event.authUri), emit);
+      return;
+    }
+
+    _authClient = await _grant!.handleAuthorizationResponse(event.authUri.queryParameters);
+    await _handleAuthResponse(emit, _hospital!);
   }
 
   Future<void> _onAuthFromColdStart(
@@ -104,6 +118,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(const AuthState.authenticating());
 
+      _hospital = event.hospital;
+
       final codeVerifier = _authService.createCodeVerifier();
 
       _grant = _authService.getAuthGrant(
@@ -123,16 +139,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         message: EventsConstants.eventUserOpenAuthReqInBrowser,
       );
 
-      _authClient = await _authService.authorize(
+      await _authService.openLoginPage(
         _grant!,
         HospitalsConfiguration.scopes,
         HospitalsConfiguration.redirectUrl,
       );
-
-      if (_authClient != null) {
-        await _handleAuthResponse(emit, event.hospital);
-      }
-    } on Exception {
+    } catch (e) {
       _reportsService.trackEvent(
         severity: LogSeverity.error,
         message: EventsConstants.eventUserUnauthenticated,

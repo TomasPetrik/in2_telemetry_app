@@ -1,13 +1,13 @@
 import 'package:json_annotation/json_annotation.dart';
 
 enum ShortnessOfBreathContract {
-  @JsonValue('none')
+  @JsonValue('None')
   none(0),
-  @JsonValue('low')
+  @JsonValue('Low')
   low(10),
-  @JsonValue('medium')
+  @JsonValue('Medium')
   medium(20),
-  @JsonValue('high')
+  @JsonValue('High')
   high(30);
 
   final num value;

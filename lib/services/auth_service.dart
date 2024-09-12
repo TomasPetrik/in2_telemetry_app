@@ -1,8 +1,7 @@
+import 'dart:async';
 import 'dart:math';
-
 import 'package:injectable/injectable.dart';
 import 'package:oauth2/oauth2.dart';
-import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 @singleton
@@ -25,7 +24,7 @@ class AuthService {
     return grant;
   }
 
-  Future<Client?> authorize(
+  Future<void> openLoginPage(
     AuthorizationCodeGrant grant,
     List<String> scopes,
     String redirectUrl,
@@ -51,23 +50,6 @@ class AuthService {
         mode: LaunchMode.inAppBrowserView,
         webOnlyWindowName: '_blank',
       );
-    }
-
-    linkStream.listen(
-      (String? link) {},
-      onError: (err) {},
-    );
-
-    final responseUrl = await linkStream.first;
-
-    if (responseUrl != null) {
-      await closeInAppWebView();
-      final tokenResponse = await grant.handleAuthorizationResponse(
-        Uri.parse(responseUrl).queryParameters,
-      );
-      return tokenResponse;
-    } else {
-      return null;
     }
   }
 

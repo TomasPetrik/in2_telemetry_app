@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_links/app_links.dart';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,7 +22,6 @@ import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/services/sync_service.dart';
 import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/utils/events_constants.dart';
-import 'package:uni_links/uni_links.dart';
 
 @singleton
 class ContentBloc extends Bloc<ContentEvent, ContentState> {
@@ -50,11 +50,18 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
       _onDaylightAppearanceChangedContentEvent,
     );
     on<StopWatchDog>(_onStopWatchDog);
+
+    // appLinksInstance.uriLinkStream.listen(
+    //     (data) => debugPrint(
+    //           data.toString(),
+    //         ),
+    //     onError: (e) => debugPrint(e.toString()));
   }
 
   void _autoRefreshDashboard() {
     _reportsService.trackEvent(
-      userId: _session.state.aggregateAllUsers || _session.state.rootUsers.isEmpty ? null : _session.state.currentUserId,
+      userId:
+          _session.state.aggregateAllUsers || _session.state.rootUsers.isEmpty ? null : _session.state.currentUserId,
       severity: LogSeverity.info,
       message: EventsConstants.eventAutoRefreshDashboard,
     );
@@ -79,7 +86,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     if (!_initialUriIsHandled) {
       _initialUriIsHandled = true;
       try {
-        final uri = await getInitialUri();
+        final uri = await appLinksInstance.getInitialLink();
         return uri;
       } on PlatformException {
         return null;
@@ -157,7 +164,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     Emitter<ContentState> emit,
   ) async {
     _reportsService.trackEvent(
-      userId: _session.state.aggregateAllUsers ? null: _session.state.currentUserId,
+      userId: _session.state.aggregateAllUsers ? null : _session.state.currentUserId,
       severity: LogSeverity.info,
       message: EventsConstants.eventSwitchToMultiuser,
     );

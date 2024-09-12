@@ -52,3 +52,9 @@ class ErrorLoadDataEvent extends AuthEvent {
   @override
   List<Object?> get props => [];
 }
+
+class AuthCallback extends AuthEvent {
+  final Uri authUri;
+
+  const AuthCallback(this.authUri);
+}

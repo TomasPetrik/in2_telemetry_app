@@ -1,13 +1,13 @@
 import 'package:json_annotation/json_annotation.dart';
 
 enum OverallHealthContract {
-  @JsonValue('good')
+  @JsonValue('Good')
   good(0),
-  @JsonValue('variable')
+  @JsonValue('Variable')
   variable(10),
-  @JsonValue('bad')
+  @JsonValue('Bad')
   bad(20),
-  @JsonValue('veryBad')
+  @JsonValue('VeryBad')
   veryBad(30);
 
   final num value;

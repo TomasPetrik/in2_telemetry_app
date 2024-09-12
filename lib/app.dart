@@ -1,10 +1,13 @@
 import 'dart:async';
 
+import 'package:app_links/app_links.dart';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:scalesoft_app/bloc/auth/auth_bloc.dart';
+import 'package:scalesoft_app/bloc/auth/auth_event.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc.dart';
 import 'package:scalesoft_app/bloc/care_plan/care_plan_bloc_event.dart';
 import 'package:scalesoft_app/bloc/notifications/notifications_bloc.dart';
@@ -31,11 +34,13 @@ import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/no_user_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/user_added_route.dart';
 import 'package:scalesoft_app/ui/scale_app.dart';
-import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/screens/splash_screen.dart';
 import 'package:scalesoft_app/utils/helpers/appearance_helper.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:scalesoft_app/data/app_database.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+final appLinksInstance = AppLinks();
 
 // [Android-only] This "Headless Task" is run when the Android app is terminated with `enableHeadless: true`
 // Be sure to annotate your callback function to avoid issues in release mode on Flutter >= 3.3.0
@@ -94,6 +99,11 @@ Future<void> _main({
       await configureDependencies();
 
       getIt<ContentBloc>().add(const CheckLastLoggedUserContentEvent());
+
+      appLinksInstance.uriLinkStream.listen((uri){
+        closeInAppWebView();
+        getIt<AuthBloc>().add(AuthCallback(uri));
+      });
 
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
