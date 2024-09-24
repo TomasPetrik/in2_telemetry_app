@@ -5,16 +5,16 @@ part 'shortness_of_breath_value.g.dart';
 
 @HiveType(typeId: 28)
 enum ShortnessOfBreathValue {
-  @JsonValue('none')
+  @JsonValue('None')
   @HiveField(0)
   none(0),
-  @JsonValue('low')
+  @JsonValue('Low')
   @HiveField(10)
   low(10),
-  @JsonValue('medium')
+  @JsonValue('Medium')
   @HiveField(20)
   medium(20),
-  @JsonValue('high')
+  @JsonValue('High')
   @HiveField(30)
   high(30);
 
