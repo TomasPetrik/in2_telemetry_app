@@ -12,7 +12,7 @@ import 'package:scalesoft_app/repositories/device_repository.dart';
 import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/utils/events_constants.dart';
 import 'package:scalesoft_app/utils/helpers/bt_connection_helper.dart';
-import 'package:wakelock/wakelock.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 @injectable
 class RegisterDeviceBloc extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlocState> {
@@ -33,7 +33,7 @@ class RegisterDeviceBloc extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlo
     on<RegisterDeviceBlocEvent>((event, emit) async {
       await event.when(
         init: (int userId, bool? onlyPairingMode) async {
-          await Wakelock.enable();
+          await WakelockPlus.enable();
           _userId = userId;
           _onlyPairingMode = onlyPairingMode ?? false;
 
@@ -178,11 +178,11 @@ class RegisterDeviceBloc extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlo
             severity: LogSeverity.warning,
             message: EventsConstants.eventDeviceSearchingStop,
           );
-          await Wakelock.disable();
+          await WakelockPlus.disable();
           await FlutterBluePlus.stopScan();
         },
         selectDevice: (DeviceCreateModel device) async {
-          await Wakelock.disable();
+          await WakelockPlus.disable();
           await FlutterBluePlus.stopScan();
           emit(RegisterDeviceBlocState.popDevice(device));
         },
