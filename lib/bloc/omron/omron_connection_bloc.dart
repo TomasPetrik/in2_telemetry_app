@@ -19,7 +19,7 @@ import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/events_constants.dart';
 import 'package:scalesoft_app/utils/helpers/bt_connection_helper.dart';
-import 'package:wakelock/wakelock.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 @injectable
 class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnectionState> {
@@ -43,7 +43,7 @@ class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnection
     on<OmronConnectionBlocEvent>((event, emit) async {
       await event.when(
         init: (userId, measurementType, device) async {
-          await Wakelock.enable();
+          await WakelockPlus.enable();
 
           _device = device;
 
@@ -215,7 +215,7 @@ class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnection
       severity: LogSeverity.info,
       message: EventsConstants.eventDeviceSearchingStop,
     );
-    await Wakelock.disable();
+    await WakelockPlus.disable();
     await FlutterBluePlus.stopScan();
   }
 
@@ -262,7 +262,7 @@ class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnection
     );
 
     if (!reqModelPairing) {
-      await Wakelock.disable();
+      await WakelockPlus.disable();
     }
 
     if (measurementResult.resultState == ResultState.connectionError) {

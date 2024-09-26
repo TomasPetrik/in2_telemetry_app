@@ -52,7 +52,7 @@ class InteractiveChart extends StatefulWidget {
   /// ```
   final OverlayInfoGetter overlayInfo;
 
-  final List<DrawableRoot> svgDrawables;
+  final List<PictureInfo> svgDrawables;
 
   /// An optional event, fired when the user clicks on a candlestick.
   final ValueChanged<CandleData>? onTap;

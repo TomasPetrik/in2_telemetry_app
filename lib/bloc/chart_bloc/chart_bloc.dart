@@ -18,7 +18,6 @@ class ChartBloc extends Bloc<ChartBlocEvent, ChartBlocState> {
   late final PageController controller;
   late final MaterialLocalizations localizations;
 
-
   ChartBloc(
     this._carePlanDbProvider,
     this._measurementsDbProvider,
@@ -35,17 +34,17 @@ class ChartBloc extends Bloc<ChartBlocEvent, ChartBlocState> {
       }
     }
 
-    Future<List<DrawableRoot>> loadSvgDrawables(Color color) async {
-      List<DrawableRoot> drawableRoots = [];
-      int i = 0;
+    Future<List<PictureInfo>> loadSvgDrawables(Color color) async {
+      final rgb = color.value & 0x00ffffff;
+
+
+      List<PictureInfo> drawableRoots = [];
       for (final iconRaw in iconsRaw) {
         final coloredRawIcon = iconRaw.replaceAll(
           "#000000",
-          '#${color.value.toRadixString(16).padLeft(6, '0').toUpperCase()}',
+          '#${rgb.toRadixString(16).padLeft(6, '0').toUpperCase()}',
         );
-        drawableRoots
-            .add(await svg.fromSvgString(coloredRawIcon, 'icon${i}Raw'));
-        i += 1;
+        drawableRoots.add(await vg.loadPicture(SvgStringLoader(coloredRawIcon), null));
       }
 
       return drawableRoots;
@@ -56,12 +55,11 @@ class ChartBloc extends Bloc<ChartBlocEvent, ChartBlocState> {
         init: (context, initDate, userId, measurementType, color) async {
           localizations = MaterialLocalizations.of(context);
 
-          final carePlans = (await _carePlanDbProvider.getByUser(userId)).where((x)=>x.activity.measurementType == measurementType);
+          final carePlans =
+              (await _carePlanDbProvider.getByUser(userId)).where((x) => x.activity.measurementType == measurementType);
 
-          final fromMonthDate =
-              await getVeryFirstDateOfCarePlans(carePlans, userId);
-          final toMonthDate =
-              CalendarHelper.getDateByMonthsOffset(DateTime.now(), 0);
+          final fromMonthDate = await getVeryFirstDateOfCarePlans(carePlans, userId);
+          final toMonthDate = CalendarHelper.getDateByMonthsOffset(DateTime.now(), 0);
 
           final months = CalendarHelper.getCalendarMonths(
             localizations,
@@ -101,8 +99,7 @@ class ChartBloc extends Bloc<ChartBlocEvent, ChartBlocState> {
           final currentYear = dt.year;
           final currentMonth = dt.month;
 
-          final bool isCurrentMonth = selectedMonth.year == currentYear &&
-              selectedMonth.month == currentMonth;
+          final bool isCurrentMonth = selectedMonth.year == currentYear && selectedMonth.month == currentMonth;
 
           emit(
             state.copyWith(

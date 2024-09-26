@@ -9,7 +9,7 @@ import 'package:scalesoft_app/ui/widgets/interactive_chart/painter_params.dart';
 
 typedef TimeLabelGetter = String Function(int timestamp, int visibleDataCount);
 typedef ValueLabelGetter = String Function(double value);
-typedef OverlayInfoGetter = Map<DrawableRoot, String> Function(
+typedef OverlayInfoGetter = Map<PictureInfo, String> Function(
   CandleData candle,
 );
 
@@ -18,7 +18,7 @@ class ChartPainter extends CustomPainter {
   final TimeLabelGetter getTimeLabel;
   final ValueLabelGetter getValueLabel;
   final OverlayInfoGetter getOverlayInfo;
-  final List<DrawableRoot> svgDrawables;
+  final List<PictureInfo> svgDrawables;
 
   ChartPainter({
     required this.params,
@@ -267,15 +267,18 @@ class ChartPainter extends CustomPainter {
 
       canvas.translate(dx + xGap, dy + labelY);
 
-      svgDrawables[i].scaleCanvasToViewBox(
-        canvas,
-        Size(rowHeight, rowHeight),
-      );
-      svgDrawables[i].clipCanvasToViewBox(canvas);
-      svgDrawables[i].draw(
-        canvas,
-        Offset(xGap, labelY) & Size(rowHeight, rowHeight),
-      );
+      final pictureInfo = svgDrawables[i];
+
+      paintImage(canvas: canvas, rect: Rect.fromLTWH(0,0,rowHeight,rowHeight), image: pictureInfo.picture.toImageSync(pictureInfo.size.width.toInt(),pictureInfo.size.height.toInt()));
+      // svgDrawables[i].scaleCanvasToViewBox(
+      //   canvas,
+      //   Size(rowHeight, rowHeight),
+      // );
+      // svgDrawables[i].clipCanvasToViewBox(canvas);
+      // svgDrawables[i].draw(
+      //   canvas,
+      //   Offset(xGap, labelY) & Size(rowHeight, rowHeight),
+      // );
 
       canvas.restore();
       y += yGap + rowHeight;

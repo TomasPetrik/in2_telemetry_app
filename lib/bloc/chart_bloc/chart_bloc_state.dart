@@ -14,6 +14,6 @@ class ChartBlocState with _$ChartBlocState {
     PageController? controller,
     bool? isCurrentMonth,
     int? currentMonthIndex,
-    List<DrawableRoot>? svgDrawables,
+    List<PictureInfo>? svgDrawables,
   }) = _CalendarBlocState;
 }

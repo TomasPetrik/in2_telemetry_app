@@ -10,7 +10,6 @@ import 'package:scalesoft_app/data/providers/log_db_provider.dart';
 import 'package:scalesoft_app/mapper/log_event_mapper.dart';
 import 'package:scalesoft_app/repositories/account_repository.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
-import 'package:unique_identifier/unique_identifier.dart';
 
 @preResolve
 @lazySingleton
@@ -45,19 +44,18 @@ class ReportService {
     final String phoneModel;
     final String osVersion;
     final String appIdentifier;
-    final String? identifier = await UniqueIdentifier.serial;
 
     final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if (Platform.isIOS) {
       final IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
       phoneModel = iosInfo.utsname.machine;
       osVersion = iosInfo.systemVersion;
-      appIdentifier = identifier ?? iosInfo.identifierForVendor ?? 'unknowId';
+      appIdentifier = iosInfo.identifierForVendor ?? 'unknowId';
     } else {
       final AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
       phoneModel = androidInfo.model;
       osVersion = androidInfo.version.release;
-      appIdentifier = identifier ?? androidInfo.serialNumber;
+      appIdentifier = androidInfo.serialNumber;
     }
 
     debugPrint('pre resolving report service, appVersion: $appVersion');

@@ -27,7 +27,7 @@ class ChartWidget extends StatelessWidget {
   final CalendarMonth calendarMonth;
   final UserModel userAccount;
   final MeasurementType measurementType;
-  final List<DrawableRoot> svgDrawables;
+  final List<PictureInfo> svgDrawables;
 
   @override
   Widget build(BuildContext context) {
