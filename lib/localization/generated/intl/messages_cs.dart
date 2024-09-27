@@ -379,7 +379,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Automaticky"),
         "configuration_screen_auto_mode_desc":
             MessageLookupByLibrary.simpleMessage(
-                "Světlý a tmavý režim se střídají dle západu a východu slunce."),
+                "Světlý a tmavý režim se střídají dle systému."),
         "configuration_screen_auto_mode_title":
             MessageLookupByLibrary.simpleMessage("Automaticky"),
         "configuration_screen_dark":

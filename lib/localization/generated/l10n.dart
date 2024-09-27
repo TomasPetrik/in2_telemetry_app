@@ -708,10 +708,10 @@ class I10n {
     );
   }
 
-  /// `Světlý a tmavý režim se střídají dle západu a východu slunce.`
+  /// `Světlý a tmavý režim se střídají dle systému.`
   String get configuration_screen_auto_mode_desc {
     return Intl.message(
-      'Světlý a tmavý režim se střídají dle západu a východu slunce.',
+      'Světlý a tmavý režim se střídají dle systému.',
       name: 'configuration_screen_auto_mode_desc',
       desc: '',
       args: [],

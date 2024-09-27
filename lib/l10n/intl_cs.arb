@@ -141,7 +141,7 @@
     "configuration_screen_system_appearance_sublabel": "Vzhled dle systému",
     "configuration_screen_auto_appearance_sublabel": "Automaticky",
     "configuration_screen_auto_mode_title": "Automaticky",
-    "configuration_screen_auto_mode_desc": "Světlý a tmavý režim se střídají dle západu a východu slunce.",
+    "configuration_screen_auto_mode_desc": "Světlý a tmavý režim se střídají dle systému.",
     "configuration_screen_light": "Světlý",
     "configuration_screen_good_in_day": "Skvělý přes den",
     "configuration_screen_dark": "Tmavý",
