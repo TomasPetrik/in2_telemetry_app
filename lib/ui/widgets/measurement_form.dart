@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/data/entities/enums/overall_health_state.dart';
 import 'package:scalesoft_app/data/entities/enums/shortness_of_breath_level.dart';
+import 'package:scalesoft_app/data/entities/json_entities/care_plan/time_only.dart';
 import 'package:scalesoft_app/data/entities/json_entities/measurement/blood_pressure_value.dart';
 import 'package:scalesoft_app/model/measurement_config.dart';
 import 'package:scalesoft_app/model/measurement_create_model.dart';
@@ -33,11 +34,11 @@ class MeasurementForm extends StatelessWidget {
   double? _value1;
   double? _value2;
 
-  MeasurementCreateModel? getMeasurement() {
+  MeasurementCreateModel? getMeasurement(TimeOnly measurementTime) {
     if (formKey.currentState?.validate() == true) {
       final measurement = MeasurementCreateModel(
         user.id,
-        DateTime.now(),
+        measurementTime.todayDateTime(),
         measurementType,
       );
       switch (measurementType) {

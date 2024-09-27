@@ -33,10 +33,12 @@ class ManualMeasurementScreen extends StatefulWidget {
   final List<MeasurementType> enabledMeasurementTypes;
 
   @override
-  State<ManualMeasurementScreen> createState() => _ManualMeasurementScreenState();
+  State<ManualMeasurementScreen> createState() =>
+      _ManualMeasurementScreenState();
 }
 
-class _ManualMeasurementScreenState extends State<ManualMeasurementScreen> with BottomSheetMixin {
+class _ManualMeasurementScreenState extends State<ManualMeasurementScreen>
+    with BottomSheetMixin {
   late MeasurementType dropdownValue;
 
   late TextEditingController timeEditingController;
@@ -72,7 +74,8 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen> with 
     return Material(
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        onVerticalDragDown: (_) => FocusManager.instance.primaryFocus?.unfocus(),
+        onVerticalDragDown: (_) =>
+            FocusManager.instance.primaryFocus?.unfocus(),
         child: Stack(
           children: [
             Positioned.fill(
@@ -83,7 +86,8 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen> with 
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Gap(
-                      MediaQuery.of(context).viewPadding.top + Dimensions.appBarHeight,
+                      MediaQuery.of(context).viewPadding.top +
+                          Dimensions.appBarHeight,
                     ),
                     Gaps.gap16,
                     Text(
@@ -107,11 +111,13 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen> with 
                         });
                       },
                       items: enabledMeasurementTypes
-                          .map<DropdownMenuItem<MeasurementType>>((MeasurementType measurementType) {
+                          .map<DropdownMenuItem<MeasurementType>>(
+                              (MeasurementType measurementType) {
                         return DropdownMenuItem<MeasurementType>(
                           value: measurementType,
                           child: Text(
-                            localization.common_measurement_types(measurementType.name),
+                            localization
+                                .common_measurement_types(measurementType.name),
                           ),
                         );
                       }).toList(),
@@ -163,9 +169,11 @@ class _ManualMeasurementScreenState extends State<ManualMeasurementScreen> with 
                       label: localization.common_save,
                       buttonType: ButtonType.primary,
                       onPressed: () async {
-                        final measurement = measurementForm.getMeasurement();
+                        final measurement =
+                            measurementForm.getMeasurement(measurementTime);
                         if (measurement != null) {
-                          await getIt<MeasurementsDbProvider>().saveModel(measurement);
+                          await getIt<MeasurementsDbProvider>()
+                              .saveModel(measurement);
                           _goToMainAndSync();
                         }
                       },
