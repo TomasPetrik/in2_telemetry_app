@@ -10,7 +10,7 @@ part 'auth_api_client.g.dart';
 @injectable
 abstract class AuthApiClient {
   @factoryMethod
-  factory AuthApiClient(@Named(ConfigurationConstants.privateDioName) Dio dio) =
+  factory AuthApiClient(@Named(ConfigurationConstants.authDioName) Dio dio) =
       _AuthApiClient;
 
   @POST('{tokenUrl}')

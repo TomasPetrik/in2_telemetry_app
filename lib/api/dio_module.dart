@@ -25,4 +25,23 @@ abstract class DioModule {
           ),
           // HttpErrorInterceptor(),
         ]);
+  @Named(ConfigurationConstants.authDioName)
+  @singleton
+  Dio get authDio => Dio(
+    BaseOptions(
+      contentType: 'application/json',
+      connectTimeout: const Duration(seconds: 30),
+      receiveTimeout: const Duration(seconds: 30),
+    ),
+  )..interceptors.addAll([
+    PrettyDioLogger(
+      requestHeader: true,
+      requestBody: true,
+      responseBody: true,
+      responseHeader: false,
+      error: true,
+      compact: false,
+      maxWidth: 120,
+    ),
+  ]);
 }

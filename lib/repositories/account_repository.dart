@@ -15,10 +15,15 @@ class AccountRepository {
   AccountRepository(this.accountApiClient, this.session);
 
   Future<CurrentUserInfoContract> loadUserInfo({
-    required AuthToken authToken,
+    AuthToken? authToken,
+    int? userId,
     required String apiUrl,
   }) {
-    return accountApiClient.loadUserInfo('Bearer ${authToken.accessToken}', apiUrl);
+    TokenInterceptor.userId = userId;
+
+    final authHeader =
+        authToken == null ? null : 'Bearer ${authToken.accessToken}';
+    return accountApiClient.loadUserInfo(authHeader, apiUrl);
   }
 
   Future<void> sendUserAppReports({

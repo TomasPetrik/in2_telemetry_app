@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/account_api_client.dart';
 import 'package:scalesoft_app/api/client/auth_api_client.dart';
@@ -18,7 +19,7 @@ import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/utils/exceptions/invalid_request_exception.dart';
 
 @injectable
-class TokenInterceptor extends Interceptor {
+class TokenInterceptor extends QueuedInterceptor {
   final UserCubit userCubit;
   final AccountApiClient accountApiClient;
   final UserDbProvider userDbProvider;
@@ -38,7 +39,8 @@ class TokenInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    final user = userCubit.state.allUsers.firstWhereOrNull((x) => x.id == userId);
+    final user =
+        userCubit.state.allUsers.firstWhereOrNull((x) => x.id == userId);
 
     // TODO: Remove temporary hack for avoiding infinite recursion.
     if (options.headers.containsKey(HttpHeaders.authorizationHeader) ||
@@ -50,7 +52,7 @@ class TokenInterceptor extends Interceptor {
     AuthToken? refreshedToken;
 
     if (user.authToken.isExpiring()) {
-      refreshedToken = await refreshToken(user);
+      refreshedToken = await performTokenRefresh(user);
     }
 
     final accessToken = (refreshedToken ?? user.authToken).accessToken;
@@ -67,8 +69,12 @@ class TokenInterceptor extends Interceptor {
   ) async {
     UserModel? user;
 
-    if (err.requestOptions.headers.containsKey(HttpHeaders.authorizationHeader)) {
-      final originalToken = err.requestOptions.headers[HttpHeaders.authorizationHeader].toString().split(' ')[1];
+    if (err.requestOptions.headers
+        .containsKey(HttpHeaders.authorizationHeader)) {
+      final originalToken = err
+          .requestOptions.headers[HttpHeaders.authorizationHeader]
+          .toString()
+          .split(' ')[1];
       user = await userDbProvider.getByAccessToken(originalToken);
       if (user != null) {
         reportService.trackEvent(
@@ -90,17 +96,23 @@ class TokenInterceptor extends Interceptor {
           );
         } else if (user != null) {
           // Otherwise, try to refresh the access token and retry the request.
-          final newToken = (await refreshToken(user))?.accessToken;
+          final newToken = (await performTokenRefresh(user))?.accessToken;
+          if (newToken == null) {
+            return handler.next(err);
+          }
           final authHeaderValue = 'Bearer $newToken';
 
           final headers = err.requestOptions.headers;
-          headers.update(HttpHeaders.authorizationHeader, (_) => authHeaderValue, ifAbsent: () => authHeaderValue);
+          headers.update(
+              HttpHeaders.authorizationHeader, (_) => authHeaderValue,
+              ifAbsent: () => authHeaderValue);
 
           final response = await Dio().request(
             err.requestOptions.path,
             data: err.requestOptions.data,
             queryParameters: err.requestOptions.queryParameters,
-            options: Options(method: err.requestOptions.method, headers: headers),
+            options:
+                Options(method: err.requestOptions.method, headers: headers),
           );
           return handler.resolve(response);
         }
@@ -120,31 +132,45 @@ class TokenInterceptor extends Interceptor {
     }
   }
 
-  Future<AuthToken?> refreshToken(UserModel user) async {
+  Future<AuthToken?> performTokenRefresh(UserModel user) async {
     final refreshToken = user.authToken.refreshToken;
     final tokenUrl = user.hospital.authData.tokenUrl;
+    try {
+      final response = await getIt<AuthApiClient>().refreshToken(
+        tokenUrl,
+        'refresh_token',
+        refreshToken,
+        HospitalsConfiguration.clientId,
+        user.hospital.clientSecret,
+      );
 
-    final response = await getIt<AuthApiClient>().refreshToken(
-      tokenUrl,
-      'refresh_token',
-      refreshToken,
-      HospitalsConfiguration.clientId,
-      user.hospital.clientSecret,
-    );
+      final newToken = AuthToken(
+        response.accessToken,
+        response.refreshToken,
+        DateTime.now().add(Duration(seconds: response.expiresIn)),
+      );
 
-    final newToken = AuthToken(
-      response.accessToken,
-      response.refreshToken,
-      DateTime.now().add(Duration(seconds: response.expiresIn)),
-    );
+      final newUserPermissions =
+          JwtParser(jwtToken: newToken.accessToken).getUserPermissions();
 
-    final newUserPermissions = JwtParser(jwtToken: newToken.accessToken).getUserPermissions();
+      final changeFuture = userCubit.waitForChange(
+        (x) =>
+            x.id == userId && x.authToken.accessToken == newToken.accessToken,
+      );
+      await userDbProvider.updateAuthParameters(
+          user.id, newToken, newUserPermissions);
 
-    await userDbProvider.updateAuthParameters(user.id, newToken, newUserPermissions);
+      // Wait for the change to propagate.
+      await changeFuture;
 
-    // Wait for the change to propagate.
-    await userCubit.waitForChange((x) => x.id == userId && x.authToken.accessToken == newToken.accessToken);
-
-    return newToken;
+      return newToken;
+    } catch (e, trace) {
+      debugPrintStack(
+        label: "Failed to refresh token: $e",
+        stackTrace: trace,
+      );
+      userDbProvider.setExpiredByRefreshToken(refreshToken);
+      return null;
+    }
   }
 }

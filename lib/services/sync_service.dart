@@ -216,8 +216,8 @@ class SyncService {
     if (user.isRepresentedPerson) return;
 
     final userInfo = await _accountRepository.loadUserInfo(
-      authToken: user.authToken,
       apiUrl: user.hospital.authData.baseUrl,
+      userId: user.id,
     );
 
     final muids = [userInfo.currentUser.muid, ...(userInfo.representedPeople?.map((x) => x.muid) ?? <String>[])];

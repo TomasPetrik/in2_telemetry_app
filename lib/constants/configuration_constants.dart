@@ -19,6 +19,7 @@ class ConfigurationConstants {
 
   /* API */
   static const String privateDioName = 'privateDio';
+  static const String authDioName = 'authDio';
 
   /* Supported Measurements */
 

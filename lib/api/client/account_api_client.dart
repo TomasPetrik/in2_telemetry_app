@@ -17,7 +17,7 @@ abstract class AccountApiClient {
 
   @GET('{apiUrl}/user/me')
   Future<CurrentUserInfoContract> loadUserInfo(
-    @Header(HttpHeaders.authorizationHeader) String authHeader,
+    @Header(HttpHeaders.authorizationHeader) String? authHeader,
     @Path('apiUrl') String apiUrl,
   );
 

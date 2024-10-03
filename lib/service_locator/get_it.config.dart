@@ -105,6 +105,10 @@ Future<_i174.GetIt> init(
     () => dioModule.privateDio,
     instanceName: 'privateDio',
   );
+  gh.singleton<_i361.Dio>(
+    () => dioModule.authDio,
+    instanceName: 'authDio',
+  );
   gh.factory<_i477.MeasurementsDbProvider>(() => _i477.MeasurementsDbProvider(
         gh<_i133.AppDatabase>(),
         gh<_i89.MeasurementTypeMapper>(),
@@ -125,8 +129,6 @@ Future<_i174.GetIt> init(
       () => _i486.AppSettingsBloc(gh<_i654.SettingsDbProvider>()));
   gh.factory<_i708.AccountApiClient>(
       () => _i708.AccountApiClient(gh<_i361.Dio>(instanceName: 'privateDio')));
-  gh.factory<_i541.AuthApiClient>(
-      () => _i541.AuthApiClient(gh<_i361.Dio>(instanceName: 'privateDio')));
   gh.factory<_i409.CarePlanApiClient>(
       () => _i409.CarePlanApiClient(gh<_i361.Dio>(instanceName: 'privateDio')));
   gh.factory<_i122.DeviceApiClient>(
@@ -148,6 +150,8 @@ Future<_i174.GetIt> init(
         gh<_i331.DeviceDbProvider>(),
         gh<_i847.DevicePrototypeDbProvider>(),
       ));
+  gh.factory<_i541.AuthApiClient>(
+      () => _i541.AuthApiClient(gh<_i361.Dio>(instanceName: 'authDio')));
   gh.factory<_i1045.ChartBloc>(() => _i1045.ChartBloc(
         gh<_i1047.CarePlanDbProvider>(),
         gh<_i477.MeasurementsDbProvider>(),
