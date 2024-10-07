@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:scalesoft_app/api/contracts/device/device_instruction_contract.dart';
 import 'package:scalesoft_app/api/contracts/device/device_prototype_contract.dart';
 import 'package:scalesoft_app/api/contracts/device/device_create_contract.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
@@ -22,4 +23,7 @@ abstract class DeviceApiClient {
 
   @GET('{apiUrl}/device/models')
   Future<List<DevicePrototypeContract>> getDeviceModels(@Path('apiUrl') String apiUrl);
+
+  @GET('{apiUrl}/device/models/{prototypeId}/instructions')
+  Future<List<DeviceInstructionContract>> getDeviceInstructions(@Path('apiUrl') String apiUrl, @Path('prototypeId') int prototypeId);
 }
