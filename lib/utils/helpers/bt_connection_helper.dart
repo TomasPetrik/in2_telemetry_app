@@ -162,6 +162,7 @@ class BtConnectionHelper {
     required onlyPairingMode,
     required Function(List<DeviceCreateModel> devices) onResult,
     required int userId,
+    required bool isPersonalDevice,
   }) async {
     syncMode = false;
     final isScanning = FlutterBluePlus.isScanningNow;
@@ -199,7 +200,14 @@ class BtConnectionHelper {
 
       final availableDevices = matchedResults
           .where((x) => x.rssi < 0 && x.advertisementData.connectable)
-          .map((x) => convertToModel(x.advertisementData.advName, x.device, supportedDevicePrototypes))
+          .map(
+            (x) => convertToModel(
+              x.advertisementData.advName,
+              x.device,
+              supportedDevicePrototypes,
+              isPersonalDevice,
+            ),
+          )
           .toList();
 
       debugPrint('available devices ${matchedResults.length}');
@@ -216,6 +224,7 @@ class BtConnectionHelper {
     String advertisementName,
     BluetoothDevice btDevice,
     List<DevicePrototypeModel> supportedPrototypes,
+    bool isPersonalDevice,
   ) {
     final prototype = supportedPrototypes.firstWhere(
       (dev) {

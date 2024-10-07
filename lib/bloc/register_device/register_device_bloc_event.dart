@@ -10,6 +10,8 @@ class RegisterDeviceBlocEvent with _$RegisterDeviceBlocEvent {
   const factory RegisterDeviceBlocEvent.init({
     required int userId,
     bool? onlyPairingMode,
+    @Default(false)
+    bool isPersonalDevice,
   }) = _Init;
   const factory RegisterDeviceBlocEvent.checkHwState() = _CheckHwState;
   const factory RegisterDeviceBlocEvent.newBtState(
