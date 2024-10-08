@@ -1,15 +1,20 @@
 import 'package:drift/drift.dart';
-import 'package:scalesoft_app/data/entities/json_entities/device/device_prototype_template.dart';
-import 'package:scalesoft_app/data/tables/users.dart';
+import 'package:scalesoft_app/data/tables/device_prototypes.dart';
 
 class DeviceInstructions extends Table {
   IntColumn get id => integer().autoIncrement()();
 
-  IntColumn get remoteId => integer()();
+  IntColumn get prototypeId => integer().references(DevicePrototypes, #id, onDelete: KeyAction.cascade)();
 
-  IntColumn get userId => integer().references(Users, #id, onDelete: KeyAction.cascade)();
+  IntColumn get index => integer()();
 
-  TextColumn get aboutUrl => text().nullable()();
+  TextColumn get languageCode => text()();
 
-  TextColumn get templateData => text().map(DevicePrototypeTemplate.converter)();
+  TextColumn get instructionType => text()();
+
+  TextColumn get instructionText => text().nullable()();
+
+  BlobColumn get image => blob().nullable()();
+
+  DateTimeColumn get lastModifiedTime => dateTime().nullable()();
 }

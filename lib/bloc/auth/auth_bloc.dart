@@ -221,6 +221,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
 
       await _syncService.loadDeviceModels(userId);
+      await _syncService.loadDeviceInstructions(userId);
       await _syncService.loadWhenValues(userId);
 
       emit(AuthState.userVerified(userAccount: _session.state.currentUser));

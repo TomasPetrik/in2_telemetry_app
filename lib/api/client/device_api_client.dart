@@ -24,6 +24,6 @@ abstract class DeviceApiClient {
   @GET('{apiUrl}/device/models')
   Future<List<DevicePrototypeContract>> getDeviceModels(@Path('apiUrl') String apiUrl);
 
-  @GET('{apiUrl}/device/models/{prototypeId}/instructions')
-  Future<List<DeviceInstructionContract>> getDeviceInstructions(@Path('apiUrl') String apiUrl, @Path('prototypeId') int prototypeId);
+  @GET('{apiUrl}/device/model/instructions')
+  Future<List<DeviceInstructionContract>> getDeviceInstructions(@Path('apiUrl') String apiUrl);
 }

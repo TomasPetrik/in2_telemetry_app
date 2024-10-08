@@ -44,6 +44,7 @@ import '../cubit/plan_progress/plan_progress_cubit.dart' as _i198;
 import '../data/app_database.dart' as _i133;
 import '../data/providers/care_plan_db_provider.dart' as _i1047;
 import '../data/providers/device_db_provider.dart' as _i331;
+import '../data/providers/device_instruction_db_provider.dart' as _i609;
 import '../data/providers/device_prototype_db_provider.dart' as _i847;
 import '../data/providers/log_db_provider.dart' as _i640;
 import '../data/providers/measurements_db_provider.dart' as _i477;
@@ -121,6 +122,8 @@ Future<_i174.GetIt> init(
       () => _i640.LogDbProvider(gh<_i133.AppDatabase>()));
   gh.factory<_i654.SettingsDbProvider>(
       () => _i654.SettingsDbProvider(gh<_i133.AppDatabase>()));
+  gh.factory<_i609.DeviceInstructionDbProvider>(
+      () => _i609.DeviceInstructionDbProvider(gh<_i133.AppDatabase>()));
   gh.factory<_i761.WhenTemplateDbProvider>(() => _i761.WhenTemplateDbProvider(
         gh<_i133.AppDatabase>(),
         gh<_i108.WhenCodeMapper>(),
@@ -230,6 +233,11 @@ Future<_i174.GetIt> init(
     ),
     preResolve: true,
   );
+  gh.factory<_i768.RegisterDeviceBloc>(() => _i768.RegisterDeviceBloc(
+        gh<_i994.BtConnectionHelper>(),
+        gh<_i347.DeviceRepository>(),
+        gh<_i420.ReportService>(),
+      ));
   gh.singleton<_i979.SyncService>(() => _i979.SyncService(
         gh<_i584.UserCubit>(),
         gh<_i319.AccountRepository>(),
@@ -241,14 +249,10 @@ Future<_i174.GetIt> init(
         gh<_i477.MeasurementsDbProvider>(),
         gh<_i478.UserDbProvider>(),
         gh<_i847.DevicePrototypeDbProvider>(),
+        gh<_i609.DeviceInstructionDbProvider>(),
         gh<_i761.WhenTemplateDbProvider>(),
         gh<_i331.DeviceDbProvider>(),
         gh<_i654.SettingsDbProvider>(),
-      ));
-  gh.factory<_i768.RegisterDeviceBloc>(() => _i768.RegisterDeviceBloc(
-        gh<_i994.BtConnectionHelper>(),
-        gh<_i347.DeviceRepository>(),
-        gh<_i420.ReportService>(),
       ));
   gh.singleton<_i396.BackgroundMeasurementManager>(
       () => _i396.BackgroundMeasurementManager(

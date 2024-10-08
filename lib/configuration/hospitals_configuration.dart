@@ -121,9 +121,9 @@ class HospitalsConfiguration {
       title: '[Test] in2-win',
       iconPath: 'assets/icons/icon_hospital_user.svg',
       authData: const AuthData(
-        baseUrl: 'https://in2-win.devscale.cz/api-mobile/v1',
-        authUrl: 'https://in2-win-auth.devscale.cz/connect/authorize',
-        tokenUrl: 'https://in2-win-auth.devscale.cz/connect/token',
+        baseUrl: 'https://in2-test.devscale.cz/api-mobile/v1',
+        authUrl: 'https://in2-test-auth.devscale.cz/connect/authorize',
+        tokenUrl: 'https://in2-test-auth.devscale.cz/connect/token',
       ),
       enabledMeasurementTypes: MeasurementType.values
           .where(

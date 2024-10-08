@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:json_annotation/json_annotation.dart';
 
 part 'device_instruction_contract.g.dart';
@@ -11,9 +9,9 @@ class DeviceInstructionContract {
   final int index;
   final String languageCode;
   final String instructionType;
-  final DateTime lastModifieddTime;
+  final DateTime lastModifiedTime;
   final String text;
-  final String? image;
+  final String? base64Image;
 
   DeviceInstructionContract({
     required this.id,
@@ -21,9 +19,9 @@ class DeviceInstructionContract {
     required this.index,
     required this.languageCode,
     required this.instructionType,
-    required this.lastModifieddTime,
+    required this.lastModifiedTime,
     required this.text,
-    this.image
+    this.base64Image
   });
 
   factory DeviceInstructionContract.fromJson(Map<String, dynamic> json) =>
