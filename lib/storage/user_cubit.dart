@@ -247,7 +247,7 @@ class UserCubit extends Cubit<UserCubitState> {
 
   /// Waits until a change is propagated, using the given [test] on [state.allUsers].
   /// If the change isn't detected in [timeout] seconds, a [TimeoutException] is thrown.
-  Future<void> waitForChange(bool Function(UserModel user) test, {int timeout = 5}) async {
+  Future<void> waitForChange(bool Function(UserModel user) test, {int timeout = 10}) async {
     if (!state.allUsers.any(test)) {
       await _allUsersStream.firstWhere((users) => users.any(test)).timeout(
             Duration(seconds: timeout),
