@@ -90,7 +90,7 @@ class DeviceProgressList extends StatelessWidget {
             children: [
               const Gap(Dimensions.padding34),
               ConnectionLevel(
-                label: "TEST",
+                label: connectionState.label,
                 iconPath: connectionState.iconPath,
                 isActive: activeIndex >= connectionState.index,
               ),

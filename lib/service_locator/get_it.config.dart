@@ -145,6 +145,12 @@ Future<_i174.GetIt> init(
         gh<_i728.CarePlanVersionMapper>(),
         gh<_i763.CarePlanActivityMapper>(),
       ));
+  gh.factory<_i541.AuthApiClient>(
+      () => _i541.AuthApiClient(gh<_i361.Dio>(instanceName: 'authDio')));
+  gh.factory<_i1045.ChartBloc>(() => _i1045.ChartBloc(
+        gh<_i1047.CarePlanDbProvider>(),
+        gh<_i477.MeasurementsDbProvider>(),
+      ));
   gh.factory<_i478.UserDbProvider>(() => _i478.UserDbProvider(
         gh<_i133.AppDatabase>(),
         gh<_i222.UserMapper>(),
@@ -152,12 +158,7 @@ Future<_i174.GetIt> init(
         gh<_i1000.ThresholdsMapper>(),
         gh<_i331.DeviceDbProvider>(),
         gh<_i847.DevicePrototypeDbProvider>(),
-      ));
-  gh.factory<_i541.AuthApiClient>(
-      () => _i541.AuthApiClient(gh<_i361.Dio>(instanceName: 'authDio')));
-  gh.factory<_i1045.ChartBloc>(() => _i1045.ChartBloc(
-        gh<_i1047.CarePlanDbProvider>(),
-        gh<_i477.MeasurementsDbProvider>(),
+        gh<_i609.DeviceInstructionDbProvider>(),
       ));
   gh.singleton<_i994.BtConnectionHelper>(
       () => _i994.BtConnectionHelper(gh<_i847.DevicePrototypeDbProvider>()));

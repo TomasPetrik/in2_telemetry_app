@@ -19,7 +19,7 @@ class DeviceInstructionsDao extends DatabaseAccessor<AppDatabase> with _$DeviceI
     );
   }
 
-  // Future<List<DevicePrototype>> getByUser(int userId) async {
-  //   return await (select(deviceInstructions)..where((x) => x.userId.equals(userId))).get();
-  // }
+  Future<List<DeviceInstruction>> getInstructions() async {
+    return await (select(deviceInstructions).get());
+  }
 }

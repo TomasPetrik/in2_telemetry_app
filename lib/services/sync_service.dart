@@ -179,7 +179,6 @@ class SyncService {
       final deviceInstructions = await _deviceRepository.getDeviceInstructions(
         userId: userId
       );
-
       await _deviceInstructionDbProvider.replaceDeviceInstructions(deviceInstructions);
 
     } on Exception catch (e, s) {
@@ -247,8 +246,11 @@ class SyncService {
     final deviceModels = await _deviceRepository.getDeviceModels(
       userId: user.id,
     );
+    final deviceInstructions = await _deviceRepository.getDeviceInstructions(
+      userId: user.id,
+    );
 
-    await _userDbProvider.updateUserFromContract(user.id, userInfo, timeSettings, deviceModels);
+    await _userDbProvider.updateUserFromContract(user.id, userInfo, timeSettings, deviceModels, deviceInstructions);
 
     await getIt<BackgroundMeasurementManager>().removeUnassignedDevices();
   }

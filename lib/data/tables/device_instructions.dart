@@ -1,10 +1,11 @@
 import 'package:drift/drift.dart';
-import 'package:scalesoft_app/data/tables/device_prototypes.dart';
 
 class DeviceInstructions extends Table {
   IntColumn get id => integer().autoIncrement()();
 
-  IntColumn get prototypeId => integer().references(DevicePrototypes, #id, onDelete: KeyAction.cascade)();
+  IntColumn get remoteId => integer()();
+
+  IntColumn get prototypeId => integer()();
 
   IntColumn get index => integer()();
 
@@ -12,9 +13,9 @@ class DeviceInstructions extends Table {
 
   TextColumn get instructionType => text()();
 
-  TextColumn get instructionText => text().nullable()();
+  TextColumn get instructionText => text()();
 
   BlobColumn get image => blob().nullable()();
 
-  DateTimeColumn get lastModifiedTime => dateTime().nullable()();
+  DateTimeColumn get lastModifiedTime => dateTime()();
 }
