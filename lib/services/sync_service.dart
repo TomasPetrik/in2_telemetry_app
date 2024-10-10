@@ -236,9 +236,6 @@ class SyncService {
   /* load today's and yesterday's measurement results */
   Future<void> loadMeasurementResults(int userId) async {
     final carePlans = await _carePlanDbProvider.getByUser(userId);
-    if (carePlans.isEmpty) {
-      return;
-    }
 
     final user = _session.state.allUsers.firstWhereOrNull((x) => x.id == userId);
     if (user == null) {
@@ -248,6 +245,10 @@ class SyncService {
     var supportedMeasurementTypes = carePlans.map((x) => x.activity.measurementType).toSet();
 
     supportedMeasurementTypes.addAll(user.hospital.enabledMeasurementTypes);
+
+    if(supportedMeasurementTypes.isEmpty){
+      return;
+    }
 
     final yesterdayMidnight = DateTime.now().yesterday;
     final tomorrowMidnight = DateTime.now().tomorrow;
