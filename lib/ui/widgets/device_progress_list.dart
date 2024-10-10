@@ -1,21 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:scalesoft_app/cubit/device_instructions/device_instructions_cubit.dart';
+import 'package:scalesoft_app/cubit/device_instructions/device_instructions_state.dart';
+import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/model/device_create_model.dart';
+import 'package:scalesoft_app/model/device_instruction_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/icon_label_row.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 
 class DeviceProgressList extends StatelessWidget {
-  const DeviceProgressList({
+  DeviceProgressList({
     super.key,
     required this.device,
     required this.reqPairing,
     required this.activeIndex,
   });
-
+  final DeviceInstructionsCubit _deviceInstructionsCubit = getIt<DeviceInstructionsCubit>();
   final DeviceCreateModel device;
   final bool reqPairing;
   final int activeIndex;
+
+  List<DeviceInstruction> getDeviceInstructions(BuildContext context, int currentIndex) {
+      List<DeviceInstruction> deviceInstructions = List.empty(growable: true);
+      deviceInstructions.add(DeviceInstruction(id: 1, remoteId: 6, prototypeId: 1, index: 1, languageCode: "cs", instructionType: "Pairing", instructionText: "test index 1", lastModifiedTime: DateTime.now()));
+      deviceInstructions.add(DeviceInstruction(id: 3, remoteId: 8, prototypeId: 1, index: 1, languageCode: "cs", instructionType: "Pairing", instructionText: "test index 1 1", lastModifiedTime: DateTime.now()));
+      deviceInstructions.add(DeviceInstruction(id: 2, remoteId: 7, prototypeId: 1, index: 2, languageCode: "cs", instructionType: "Pairing", instructionText: "test index 2", lastModifiedTime: DateTime.now()));
+      deviceInstructions.add(DeviceInstruction(id: 4, remoteId: 10, prototypeId: 1, index: 3, languageCode: "cs", instructionType: "Pairing", instructionText: "test index 3", lastModifiedTime: DateTime.now()));
+      deviceInstructions.add(DeviceInstruction(id: 5, remoteId: 9, prototypeId: 1, index: 3, languageCode: "cs", instructionType: "Pairing", instructionText: "test index 3 3", lastModifiedTime: DateTime.now()));
+      return deviceInstructions.where((x) => x.index == currentIndex).toList();
+  }
 
   List<ConnectionState> getConnectionStates(BuildContext context) {
     if (reqPairing) {
@@ -82,20 +97,37 @@ class DeviceProgressList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Set<int> displayedInstructionIds = {};
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           final connectionState = getConnectionStates(context)[index];
-          return Column(
-            children: [
-              const Gap(Dimensions.padding34),
-              ConnectionLevel(
-                label: connectionState.label,
-                iconPath: connectionState.iconPath,
-                isActive: activeIndex >= connectionState.index,
-              ),
-            ],
-          );
+          return BlocBuilder<DeviceInstructionsCubit, DeviceInstructionsState>(
+            bloc: _deviceInstructionsCubit..init(),
+            builder: (context, deviceInstructionsState) {
+              String instructionText = '';
+              
+              final instructions = deviceInstructionsState.instructions ?? List.empty();
+              for (var deviceInstruction in instructions) {
+                if (!displayedInstructionIds.contains(deviceInstruction.id)) {
+                  instructionText += deviceInstruction.instructionText + '\n';
+                  displayedInstructionIds.add(deviceInstruction.id);
+                  break;
+                }
+              }
+              return Column(
+                children: [
+                  ConnectionLevel(
+                    label: connectionState.label,
+                    extraText: instructionText,
+                    iconPath: connectionState.iconPath,
+                    isDone: activeIndex >= connectionState.index,
+                    activeIndex: activeIndex,
+                    index: connectionState.index,
+                  ),
+                ],
+              );
+            },);
         },
         childCount: getConnectionStates(context).length,
       ),

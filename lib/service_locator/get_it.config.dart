@@ -37,6 +37,7 @@ import '../bloc/user_content/content_bloc.dart' as _i951;
 import '../cubit/background_measurement/background_measurement_cubit.dart'
     as _i207;
 import '../cubit/background_measurement_status_cubit.dart' as _i984;
+import '../cubit/device_instructions/device_instructions_cubit.dart' as _i260;
 import '../cubit/device_management/device_management_cubit.dart' as _i961;
 import '../cubit/hospital_search/hospital_search_cubit.dart' as _i745;
 import '../cubit/loader/loader_cubit.dart' as _i1064;
@@ -116,14 +117,14 @@ Future<_i174.GetIt> init(
       ));
   gh.factory<_i331.DeviceDbProvider>(
       () => _i331.DeviceDbProvider(gh<_i133.AppDatabase>()));
+  gh.factory<_i609.DeviceInstructionDbProvider>(
+      () => _i609.DeviceInstructionDbProvider(gh<_i133.AppDatabase>()));
   gh.factory<_i847.DevicePrototypeDbProvider>(
       () => _i847.DevicePrototypeDbProvider(gh<_i133.AppDatabase>()));
   gh.factory<_i640.LogDbProvider>(
       () => _i640.LogDbProvider(gh<_i133.AppDatabase>()));
   gh.factory<_i654.SettingsDbProvider>(
       () => _i654.SettingsDbProvider(gh<_i133.AppDatabase>()));
-  gh.factory<_i609.DeviceInstructionDbProvider>(
-      () => _i609.DeviceInstructionDbProvider(gh<_i133.AppDatabase>()));
   gh.factory<_i761.WhenTemplateDbProvider>(() => _i761.WhenTemplateDbProvider(
         gh<_i133.AppDatabase>(),
         gh<_i108.WhenCodeMapper>(),
@@ -151,6 +152,8 @@ Future<_i174.GetIt> init(
         gh<_i1047.CarePlanDbProvider>(),
         gh<_i477.MeasurementsDbProvider>(),
       ));
+  gh.factory<_i260.DeviceInstructionsCubit>(() =>
+      _i260.DeviceInstructionsCubit(gh<_i609.DeviceInstructionDbProvider>()));
   gh.factory<_i478.UserDbProvider>(() => _i478.UserDbProvider(
         gh<_i133.AppDatabase>(),
         gh<_i222.UserMapper>(),
