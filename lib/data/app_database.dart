@@ -18,6 +18,7 @@ import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_evaluation_item.dart';
 import 'package:scalesoft_app/data/entities/json_entities/list_converters.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/measurement_thresholds.dart';
+import 'package:scalesoft_app/data/migrations.dart';
 import 'package:scalesoft_app/data/tables/app_settings.dart';
 import 'package:scalesoft_app/data/tables/care_plans.dart';
 import 'package:scalesoft_app/data/tables/device_prototypes.dart';
@@ -82,6 +83,7 @@ class AppDatabase extends _$AppDatabase {
       onCreate: (Migrator m) async {
         await m.createAll();
       },
+      onUpgrade: upgradeStrategy,
     );
   }
 
