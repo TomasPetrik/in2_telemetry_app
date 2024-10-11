@@ -83,6 +83,7 @@ class _DeviceSearchScreenState extends State<DeviceSearchScreen>
                     userId: widget.userId,
                     onlyPairingMode:
                         widget.devicePurpose == DevicePurpose.addDevice,
+                    isPersonalDevice: true,
                   ),
                 ),
               listener: (BuildContext context, RegisterDeviceBlocState state) {

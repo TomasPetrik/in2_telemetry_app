@@ -14,12 +14,50 @@ class DevicePrototypeDbProvider {
     this._database,
   );
 
-  Future<void> replaceUserPrototypes(int userId, List<DevicePrototypeContract> newPrototypes) async {
-    await _database.devicePrototypesDao.removeUserPrototypes(userId);
+  Future<void> replaceUserPrototypes(
+    int userId,
+    List<DevicePrototypeContract> remotePrototypes,
+  ) async {
+    final remoteIds = remotePrototypes.map((x) => x.id);
 
-    for (final contract in newPrototypes) {
-      final template = ConfigurationConstants.supportedDevices
-          .firstWhereOrNull((x) => x.deviceManufacturer == contract.manufacturer && x.modelName == contract.modelName);
+    final existingPrototypes =
+        await _database.devicePrototypesDao.getByUser(userId);
+    final existingPrototypeRemoteIds = existingPrototypes.map((x) => x.remoteId);
+    final obsoletePrototypes = existingPrototypes
+        .where(
+          (existingPrototype) =>
+              !remoteIds.contains(existingPrototype.remoteId),
+        )
+        .map((x) => x.id);
+
+    await _database.devicePrototypesDao.removeByIds(obsoletePrototypes);
+
+    final prototypesToUpdate = remotePrototypes.where(
+      (remotePrototype) =>
+          existingPrototypeRemoteIds.contains(remotePrototype.id),
+    );
+    for (final contract in prototypesToUpdate) {
+      final existing =
+          existingPrototypes.firstWhere((x) => x.remoteId == contract.id);
+
+      final changes = DevicePrototypesCompanion(
+        aboutUrl: Value(contract.aboutUrl),
+      );
+
+      await _database.devicePrototypesDao.updatePrototype(existing.id, changes);
+    }
+
+    final prototypesToCreate = remotePrototypes.where(
+      (remotePrototype) =>
+          !existingPrototypeRemoteIds.contains(remotePrototype.id),
+    );
+
+    for (final contract in prototypesToCreate) {
+      final template = ConfigurationConstants.supportedDevices.firstWhereOrNull(
+        (x) =>
+            x.deviceManufacturer == contract.manufacturer &&
+            x.modelName == contract.modelName,
+      );
       if (template == null) {
         continue;
       }

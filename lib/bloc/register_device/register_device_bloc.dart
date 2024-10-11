@@ -22,6 +22,7 @@ class RegisterDeviceBloc extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlo
 
   late final int _userId;
   late final bool _onlyPairingMode;
+  late final bool _isPersonalDevice;
   bool shouldRequestPermission = true;
   bool? _searchStarted;
 
@@ -32,10 +33,11 @@ class RegisterDeviceBloc extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlo
   ) : super(const RegisterDeviceBlocState.init()) {
     on<RegisterDeviceBlocEvent>((event, emit) async {
       await event.when(
-        init: (int userId, bool? onlyPairingMode) async {
+        init: (int userId, bool? onlyPairingMode, bool isPersonalDevice) async {
           await WakelockPlus.enable();
           _userId = userId;
           _onlyPairingMode = onlyPairingMode ?? false;
+          _isPersonalDevice = isPersonalDevice;
 
           add(const RegisterDeviceBlocEvent.checkHwState());
         },
@@ -154,6 +156,7 @@ class RegisterDeviceBloc extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlo
             serviceUuids: [bloodPressureServiceUuid, heartRateServiceUuid],
             onlyPairingMode: _onlyPairingMode,
             userId: _userId,
+            isPersonalDevice: _isPersonalDevice,
             onResult: (btDevices) {
               add(
                 RegisterDeviceBlocEvent.notifyAboutNewDevices(

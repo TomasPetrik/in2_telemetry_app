@@ -22,6 +22,7 @@ class DeviceDbProvider {
     final allowedPrototypes = await _database.devicePrototypesDao.getByUser(userId);
 
     final devicesToRemove = existingDevices
+        .where((existingDevice) => !existingDevice.device.isPersonal)
         .where(
           (existingDevice) => newDevices.none(
             (x) => _areEquivalent(x, existingDevice),
@@ -77,7 +78,11 @@ class DeviceDbProvider {
         contract.deviceIdentifier == entity.physicalDevice.identifier;
   }
 
-  Future<PhysicalDevice> getOrCreatePhysicalDevice(String? manufacturer, String modelName, String identifier) async {
+  Future<PhysicalDevice> getOrCreatePhysicalDevice(
+    String? manufacturer,
+    String modelName,
+    String identifier,
+  ) async {
     final existingEntity = await _database.devicesDao.getPhysicalDevice(manufacturer, modelName, identifier);
     if (existingEntity != null) {
       return existingEntity;
@@ -146,6 +151,7 @@ class DeviceDbProvider {
         addedAt: DateTime.now(),
         assignedIdentifier: Value(device.assignedIdentifier),
         bluetoothAddress: Value(device.bluetoothAddress),
+        isPersonal: Value(device.isPersonal),
       );
       await _database.devicesDao.create(companion);
       final newDevice = await _database.devicesDao.getByPhysicalDeviceAndUser(userId, physicalDevice.id);
