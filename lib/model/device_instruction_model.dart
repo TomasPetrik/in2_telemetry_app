@@ -10,6 +10,7 @@ class DeviceInstructionModel {
   final String instructionText;
   final Uint8List? image;
   final DateTime lastModifiedTime;
+  bool hasRendered;
 
   DeviceInstructionModel(
     this.id,
@@ -20,6 +21,7 @@ class DeviceInstructionModel {
     this.instructionText,
     this.lastModifiedTime, {
     this.image,
+    required this.hasRendered
   });
 
   factory DeviceInstructionModel.fromEntity(DeviceInstruction entity) {
@@ -32,6 +34,7 @@ class DeviceInstructionModel {
       entity.instructionText,
       entity.lastModifiedTime,
       image: entity.image,
+      hasRendered: false,
     );
   }
 }

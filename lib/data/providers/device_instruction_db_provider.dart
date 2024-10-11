@@ -27,7 +27,7 @@ class DeviceInstructionDbProvider {
         lastModifiedTime: contract.lastModifiedTime,
         instructionText: contract.text,
         image: contract.base64Image != null 
-          ? Value(base64Decode(contract.base64Image!)) 
+          ? Value(base64Decode(contract.base64Image!.split(',')[1])) 
           : Value(Uint8List(0)),
       );
 
@@ -35,8 +35,8 @@ class DeviceInstructionDbProvider {
     }
   }
 
-  Future<List<DeviceInstructionModel>> getInstructions() async {
-    final entities = await _database.deviceInstructionsDao.getInstructions();
+  Future<List<DeviceInstructionModel>> getInstructions(int prototypeId, bool isPairing) async {
+    final entities = await _database.deviceInstructionsDao.getInstructions(prototypeId, isPairing);
 
     return entities.map(DeviceInstructionModel.fromEntity).toList();
   }

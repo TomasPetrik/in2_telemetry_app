@@ -16,14 +16,16 @@ class DeviceInstructionsCubit extends Cubit<DeviceInstructionsState> {
           ),
         );
 
-  Future<List<DeviceInstructionModel>> getDeviceInstructions() async {
-    final deviceInstructions = await _deviceInstructionDbProvider.getInstructions();
+  Future<List<DeviceInstructionModel>> getDeviceInstructions(int prototypeId, bool isPairing) async {
+    final deviceInstructions = await _deviceInstructionDbProvider.getInstructions(prototypeId, isPairing);
     return deviceInstructions.toList();
   }
 
     void init(
+      int prototypeId,
+      bool isPairing
   ) async {
-    final instructions = await getDeviceInstructions();
+    final instructions = await getDeviceInstructions(prototypeId, isPairing);
 
     emit(
       DeviceInstructionsState(

@@ -19,7 +19,14 @@ class DeviceInstructionsDao extends DatabaseAccessor<AppDatabase> with _$DeviceI
     );
   }
 
-  Future<List<DeviceInstruction>> getInstructions() async {
-    return await (select(deviceInstructions).get());
+  Future<List<DeviceInstruction>> getInstructions(int prototypeId, bool isPairing) async {
+    final query = select(deviceInstructions)..where((x) => x.prototypeId.equals(prototypeId));
+
+    if (isPairing) {
+      query.where((x) => x.instructionType.equals("Pairing"));
+    } else {
+      query.where((x) => x.instructionType.equals("Measuring"));
+    }
+    return query.get();
   }
 }

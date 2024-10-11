@@ -22,16 +22,6 @@ class DeviceProgressList extends StatelessWidget {
   final bool reqPairing;
   final int activeIndex;
 
-  List<DeviceInstruction> getDeviceInstructions(BuildContext context, int currentIndex) {
-      List<DeviceInstruction> deviceInstructions = List.empty(growable: true);
-      deviceInstructions.add(DeviceInstruction(id: 1, remoteId: 6, prototypeId: 1, index: 1, languageCode: "cs", instructionType: "Pairing", instructionText: "test index 1", lastModifiedTime: DateTime.now()));
-      deviceInstructions.add(DeviceInstruction(id: 3, remoteId: 8, prototypeId: 1, index: 1, languageCode: "cs", instructionType: "Pairing", instructionText: "test index 1 1", lastModifiedTime: DateTime.now()));
-      deviceInstructions.add(DeviceInstruction(id: 2, remoteId: 7, prototypeId: 1, index: 2, languageCode: "cs", instructionType: "Pairing", instructionText: "test index 2", lastModifiedTime: DateTime.now()));
-      deviceInstructions.add(DeviceInstruction(id: 4, remoteId: 10, prototypeId: 1, index: 3, languageCode: "cs", instructionType: "Pairing", instructionText: "test index 3", lastModifiedTime: DateTime.now()));
-      deviceInstructions.add(DeviceInstruction(id: 5, remoteId: 9, prototypeId: 1, index: 3, languageCode: "cs", instructionType: "Pairing", instructionText: "test index 3 3", lastModifiedTime: DateTime.now()));
-      return deviceInstructions.where((x) => x.index == currentIndex).toList();
-  }
-
   List<ConnectionState> getConnectionStates(BuildContext context) {
     if (reqPairing) {
       return [
@@ -97,21 +87,20 @@ class DeviceProgressList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Set<int> displayedInstructionIds = {};
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           final connectionState = getConnectionStates(context)[index];
           return BlocBuilder<DeviceInstructionsCubit, DeviceInstructionsState>(
-            bloc: _deviceInstructionsCubit..init(),
+            bloc: _deviceInstructionsCubit..init(device.prototype.remoteId, reqPairing),
             builder: (context, deviceInstructionsState) {
-              String instructionText = '';
+              DeviceInstructionModel? instruction;
               
               final instructions = deviceInstructionsState.instructions ?? List.empty();
               for (var deviceInstruction in instructions) {
-                if (!displayedInstructionIds.contains(deviceInstruction.id)) {
-                  instructionText += deviceInstruction.instructionText + '\n';
-                  displayedInstructionIds.add(deviceInstruction.id);
+                if (!deviceInstruction.hasRendered) {
+                  instruction = deviceInstruction;
+                  deviceInstruction.hasRendered = true;
                   break;
                 }
               }
@@ -119,7 +108,7 @@ class DeviceProgressList extends StatelessWidget {
                 children: [
                   ConnectionLevel(
                     label: connectionState.label,
-                    extraText: instructionText,
+                    deviceInstruction: instruction,
                     iconPath: connectionState.iconPath,
                     isDone: activeIndex >= connectionState.index,
                     activeIndex: activeIndex,
