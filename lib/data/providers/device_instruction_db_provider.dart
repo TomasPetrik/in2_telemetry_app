@@ -21,7 +21,7 @@ class DeviceInstructionDbProvider {
       final companion = DeviceInstructionsCompanion.insert(
         remoteId: contract.id,
         prototypeId: contract.devicePrototypeId,
-        index: contract.id,
+        index: contract.index,
         languageCode: contract.languageCode,
         instructionType: contract.instructionType,
         lastModifiedTime: contract.lastModifiedTime,

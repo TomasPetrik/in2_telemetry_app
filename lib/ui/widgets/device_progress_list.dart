@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
 import 'package:scalesoft_app/cubit/device_instructions/device_instructions_cubit.dart';
 import 'package:scalesoft_app/cubit/device_instructions/device_instructions_state.dart';
-import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/model/device_instruction_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/icon_label_row.dart';
-import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 
 class DeviceProgressList extends StatelessWidget {
   DeviceProgressList({
@@ -98,7 +95,7 @@ class DeviceProgressList extends StatelessWidget {
               
               final instructions = deviceInstructionsState.instructions ?? List.empty();
               for (var deviceInstruction in instructions) {
-                if (!deviceInstruction.hasRendered) {
+                if (!deviceInstruction.hasRendered && deviceInstruction.index == connectionState.index) {
                   instruction = deviceInstruction;
                   deviceInstruction.hasRendered = true;
                   break;
