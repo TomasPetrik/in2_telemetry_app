@@ -200,7 +200,7 @@ class ResultsHelper {
       }
     }
 
-    return allResults.sortedBy((x) => x.measurementIntervalStart ?? x.measurementTime);
+    return allResults.sortedBy((x) => x.measurementTime);
   }
 
   static List<MeasurementResultViewModel> getResultsByWhenPeriod({
