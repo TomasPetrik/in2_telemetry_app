@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
+import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 
 class PermissionGrantWidget extends StatefulWidget {
@@ -22,7 +23,8 @@ class PermissionGrantWidget extends StatefulWidget {
   State<StatefulWidget> createState() => _PermissionGrantState();
 }
 
-class _PermissionGrantState extends State<PermissionGrantWidget> with BottomSheetMixin {
+class _PermissionGrantState extends State<PermissionGrantWidget>
+    with BottomSheetMixin {
   late Permission _permission;
   PermissionStatus _permissionStatus = PermissionStatus.granted;
 
@@ -45,7 +47,7 @@ class _PermissionGrantState extends State<PermissionGrantWidget> with BottomShee
       onTap: () => requestPermission(context),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start, // Changed from MainAxisAlignment.spaceBetween
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 200),
@@ -65,12 +67,13 @@ class _PermissionGrantState extends State<PermissionGrantWidget> with BottomShee
           ),
           Gaps.gap16,
           Expanded(
-            // Replaced Flexible with Expanded
             child: Text(
               localization.permission_names(_permission),
               softWrap: true,
-              style: Theme.of(context).textTheme.bodyLarge,
-              textAlign: TextAlign.left, // Added TextAlign.left
+              style: ScaleTextStyles.text.apply(
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+              textAlign: TextAlign.left,
             ),
           ),
           IconButton(
@@ -100,9 +103,11 @@ class _PermissionGrantState extends State<PermissionGrantWidget> with BottomShee
 
   Future<void> requestPermission(BuildContext context) async {
     final status = await _permission.request();
-    if (status != PermissionStatus.granted && _permission == Permission.notification) {
+    if (status != PermissionStatus.granted &&
+        _permission == Permission.notification) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        showNotificationsSettings(context: context).then((openNotificationSettings) async {
+        showNotificationsSettings(context: context)
+            .then((openNotificationSettings) async {
           if (openNotificationSettings == true) {
             await AppSettings.openAppSettings(
               type: AppSettingsType.notification,

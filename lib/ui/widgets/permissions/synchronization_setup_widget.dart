@@ -9,6 +9,7 @@ import 'package:scalesoft_app/cubit/loader/loader_cubit.dart';
 import 'package:scalesoft_app/managers/background_measurement_manager.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
+import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/permissions/permission_grant_widget.dart';
 
@@ -28,22 +29,31 @@ class SynchronizationSetupWidget extends StatefulWidget {
   final int androidSdk;
   final LoaderCubit loaderCubit;
 
-  const SynchronizationSetupWidget({super.key, required this.androidSdk, required this.loaderCubit});
+  const SynchronizationSetupWidget({
+    super.key,
+    required this.androidSdk,
+    required this.loaderCubit,
+  });
 
   @override
-  State<SynchronizationSetupWidget> createState() => _SynchronizationSetupWidgetState();
+  State<SynchronizationSetupWidget> createState() =>
+      _SynchronizationSetupWidgetState();
 }
 
-class _SynchronizationSetupWidgetState extends State<SynchronizationSetupWidget> with BottomSheetMixin {
+class _SynchronizationSetupWidgetState extends State<SynchronizationSetupWidget>
+    with BottomSheetMixin {
   late List<PermissionState> permissionStatusList;
   late LoaderCubit loaderCubit = widget.loaderCubit;
 
-  final BackgroundMeasurementCubit backgroundMeasurementCubit = getIt<BackgroundMeasurementCubit>();
-  final BackgroundMeasurementManager backgroundMeasurementManager = getIt<BackgroundMeasurementManager>();
+  final BackgroundMeasurementCubit backgroundMeasurementCubit =
+      getIt<BackgroundMeasurementCubit>();
+  final BackgroundMeasurementManager backgroundMeasurementManager =
+      getIt<BackgroundMeasurementManager>();
 
   List<PermissionState> createPermissionStatusList() {
     return [
-      if (widget.androidSdk < 31) PermissionState(permission: Permission.notification, isMandatory: true),
+      if (widget.androidSdk < 31)
+        PermissionState(permission: Permission.notification, isMandatory: true),
       if (widget.androidSdk >= 31)
         PermissionState(
           permission: Permission.bluetoothConnect,
@@ -57,7 +67,8 @@ class _SynchronizationSetupWidgetState extends State<SynchronizationSetupWidget>
   }
 
   bool get areMandatoryPermissionsGranted {
-    return permissionStatusList.every((element) => !element.isMandatory || element.isGranted);
+    return permissionStatusList
+        .every((element) => !element.isMandatory || element.isGranted);
   }
 
   @override
@@ -72,7 +83,8 @@ class _SynchronizationSetupWidgetState extends State<SynchronizationSetupWidget>
 
     value
         ? await backgroundMeasurementManager.activateBackgroundSynchronization()
-        : await backgroundMeasurementManager.deactivateBackgroundSynchronization();
+        : await backgroundMeasurementManager
+            .deactivateBackgroundSynchronization();
 
     await backgroundMeasurementManager.updateBackgroundSynchronizationState();
 
@@ -106,7 +118,12 @@ class _SynchronizationSetupWidgetState extends State<SynchronizationSetupWidget>
         child: Column(
           children: [
             Center(
-              child: Text(localization.watch_setup_explanation),
+              child: Text(
+                localization.watch_setup_explanation,
+                style: ScaleTextStyles.textAccent.apply(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              ),
             ),
             Gaps.gap16,
             Column(
@@ -125,14 +142,20 @@ class _SynchronizationSetupWidgetState extends State<SynchronizationSetupWidget>
             ),
             Gaps.gap24,
             Center(
-              child: Text(localization.watch_setup_turn_on_synchronization),
+              child: Text(
+                localization.watch_setup_turn_on_synchronization,
+                style: ScaleTextStyles.text.apply(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              ),
             ),
             Gaps.gap16,
             BlocBuilder<BackgroundMeasurementCubit, BackgroundMeasurementState>(
               bloc: backgroundMeasurementCubit,
               builder: ((context, state) {
                 final toggleState =
-                    state == BackgroundMeasurementState.enabled || state == BackgroundMeasurementState.partial;
+                    state == BackgroundMeasurementState.enabled ||
+                        state == BackgroundMeasurementState.partial;
 
                 final showWarning = state == BackgroundMeasurementState.partial;
 
@@ -145,16 +168,25 @@ class _SynchronizationSetupWidgetState extends State<SynchronizationSetupWidget>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(localization.watch_synchronization_toggle_label),
+                      Text(
+                        localization.watch_synchronization_toggle_label,
+                        style: ScaleTextStyles.text.apply(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                      ),
                       Row(
                         children: [
                           if (showWarning)
                             IconButton(
-                              icon: const Icon(Icons.warning, color: Colors.yellow),
+                              icon: const Icon(
+                                Icons.warning,
+                                color: Colors.yellow,
+                              ),
                               onPressed: () {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text(localization.watch_setup_partial),
+                                    content:
+                                        Text(localization.watch_setup_partial),
                                     showCloseIcon: true,
                                   ),
                                 );
@@ -163,8 +195,11 @@ class _SynchronizationSetupWidgetState extends State<SynchronizationSetupWidget>
                           CupertinoSwitch(
                             trackColor: Theme.of(context).colorScheme.tertiary,
                             activeColor: Theme.of(context).colorScheme.primary,
-                            thumbColor: Theme.of(context).colorScheme.background,
-                            onChanged: areMandatoryPermissionsGranted ? toggleSynchronization : null,
+                            thumbColor:
+                                Theme.of(context).colorScheme.background,
+                            onChanged: areMandatoryPermissionsGranted
+                                ? toggleSynchronization
+                                : null,
                             value: toggleState,
                           ),
                         ],
