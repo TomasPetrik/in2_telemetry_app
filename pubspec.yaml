@@ -101,7 +101,6 @@ dependencies:
   auto_mappr_annotation: ^2.1.0
   async: ^2.11.0
   crypto: ^3.0.3
-  accordion: ^2.6.0
   flutter_html: ^3.0.0-beta.2
 
 dev_dependencies:

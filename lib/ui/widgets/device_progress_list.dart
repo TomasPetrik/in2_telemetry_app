@@ -28,11 +28,6 @@ class DeviceProgressList extends StatelessWidget {
           1,
         ),
         ConnectionState(
-          'assets/icons/icon_bluetooth_on.svg',
-          localization.find_device_screen_step2_p,
-          1,
-        ),
-        ConnectionState(
           'assets/icons/icon_arrow_spin.svg',
           localization.find_device_screen_step3_p,
           2,
@@ -87,7 +82,7 @@ class DeviceProgressList extends StatelessWidget {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
-          final connectionState = getConnectionStates(context)[index];
+          final connectionState = getConnectionStates(context).firstWhere((state) => state.index == activeIndex + 1);
           return BlocBuilder<DeviceInstructionsCubit, DeviceInstructionsState>(
             bloc: _deviceInstructionsCubit..init(device.prototype.remoteId, reqPairing),
             builder: (context, deviceInstructionsState) {
@@ -115,7 +110,7 @@ class DeviceProgressList extends StatelessWidget {
               );
             },);
         },
-        childCount: getConnectionStates(context).length,
+        childCount: 1,
       ),
     );
   }

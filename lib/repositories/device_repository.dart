@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/device_api_client.dart';
 import 'package:scalesoft_app/api/contracts/device/device_create_contract.dart';
@@ -27,12 +30,20 @@ class DeviceRepository {
   Future<List<DeviceInstructionContract>> getDeviceInstructions({
     required int userId
   }) async {
-    TokenInterceptor.userId = userId;
-    final user = session.getUser(userId);
+    try {
+      TokenInterceptor.userId = userId;
+      final user = session.getUser(userId);
 
-    return await deviceApiClient.getDeviceInstructions(
-      user.hospital.authData.baseUrl
-    );
+      return await deviceApiClient.getDeviceInstructions(
+        user.hospital.authData.baseUrl
+      );
+    } catch(e) {
+      if (e is DioException && e.response?.statusCode == 404) {
+        return [];
+      } else {
+        rethrow;
+      }
+    }
   }
 
   Future<void> registerDevice({

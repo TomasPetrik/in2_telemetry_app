@@ -99,6 +99,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> with BottomSheetMixin
                         connected: (_) => true,
                         syncing: (_) => true,
                         pairing: (_) => true,
+                        metering: (_, deviceInfo) => true,
                         synced: (timestamp, measurementResult, deviceInfo) => true,
                         paired: (_, deviceInfo) => true,
                       ) ??
@@ -234,6 +235,17 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> with BottomSheetMixin
                       );
                     },
                     paired: (_, deviceInfo) {
+                      return DeviceProgress(
+                        header: ProcessItem(
+                          label: localization.find_device_screen_paired_device,
+                          processType: ProcessType.done,
+                        ),
+                        device: device,
+                        activeIndex: 1,
+                        reqPairing: reqModelPairing,
+                      );
+                    },
+                    metering: (_, deviceInfo) {
                       return DeviceProgress(
                         header: ProcessItem(
                           label: localization.find_device_screen_waiting_on_measurement,

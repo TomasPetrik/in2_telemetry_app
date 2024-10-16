@@ -34,6 +34,10 @@ class OmronConnectionState with _$OmronConnectionState {
     required int timestamp,
     required DeviceInfo deviceInfo,
   }) = _Paired;
+  const factory OmronConnectionState.metering({
+    required int timestamp,
+    required DeviceInfo deviceInfo,
+  }) = _Metering;
   const factory OmronConnectionState.connecting({
     required int timestamp,
   }) = _Connecting;

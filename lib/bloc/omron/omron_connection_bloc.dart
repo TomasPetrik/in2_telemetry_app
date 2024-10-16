@@ -349,12 +349,18 @@ class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnection
       deviceInfo,
       emit,
     );
-
     //if device was about pairing before, then now we are expecting measurement data results,
     if (wasPaired) {
       //straight after pairing process, device should be turned off,
       //then we can start search for device again in metering mode
-      await Future.delayed(const Duration(seconds: 5));
+      await Future.delayed(const Duration(seconds: 2));
+      emit(
+        OmronConnectionState.metering(
+          timestamp: DateTime.now().microsecondsSinceEpoch,
+          deviceInfo: deviceInfo,
+        ),
+      );
+      await Future.delayed(const Duration(seconds: 3));
       final foundDevice = await _btConnectionHelper.searchDevice(
         serviceUuid: bloodPressureServiceUuid,
         device: _device!,
