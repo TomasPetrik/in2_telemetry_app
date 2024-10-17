@@ -166,7 +166,6 @@ class HospitalsConfiguration {
         MeasurementType.heartRate,
         MeasurementType.shortnessOfBreath,
         MeasurementType.overallHealth,
-        MeasurementType.battery,
       ],
       isStaging: true,
       clientSecret: 'cqWFWo9zYQHFh38kS8VC',
