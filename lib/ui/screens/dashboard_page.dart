@@ -102,13 +102,17 @@ class DashboardPage extends StatelessWidget with BottomSheetMixin {
                   },
                   syncWidget: SyncWidget(syncState: syncState),
                   topSlivers: [
-                    if ((carePlanState.selectedWhenPeriod == PlanWhenPeriod.today ||
-                        carePlanState.selectedWhenPeriod == PlanWhenPeriod.next10)) ...{
+                    if (carePlanState.allCarePlans?.isNotEmpty == true &&
+                        (carePlanState.selectedWhenPeriod ==
+                                PlanWhenPeriod.today ||
+                            carePlanState.selectedWhenPeriod ==
+                                PlanWhenPeriod.next10)) ...{
                       SliverToBoxAdapter(
                         child: ActionWidget(
                           whenPeriod: carePlanState.selectedWhenPeriod!,
                           upcomingMeasurements: upcomingMeasurements ?? [],
-                          allTodayMeasurements: carePlanState.allTodayMeasurements!,
+                          allTodayMeasurements:
+                              carePlanState.allTodayMeasurements!,
                         ),
                       ),
                     },

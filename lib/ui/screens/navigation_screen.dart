@@ -32,8 +32,7 @@ class NavigationScreen extends StatefulWidget {
     this.noContentWidget,
     this.onTabSelected,
     this.onRefresh,
-  }); //assert(tabs.isNotEmpty),
-  //assert(currentTab < tabs.length)
+  });
 
   final List<NavigationTabBarItem> tabs;
   final Widget? syncWidget;
@@ -123,10 +122,10 @@ class _NavigationScreenState extends State<NavigationScreen> {
                     ),
                   ),
                   if (widget.syncWidget != null) widget.syncWidget!,
+                  ...widget.topSlivers,
                   if (widget.noContentWidget != null)
                     widget.noContentWidget!
                   else ...[
-                    ...widget.topSlivers,
                     SliverPersistentHeader(
                       pinned: true,
                       delegate: FixedHeightItemDelegate(
