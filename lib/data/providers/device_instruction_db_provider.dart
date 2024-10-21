@@ -23,11 +23,11 @@ class DeviceInstructionDbProvider {
         prototypeId: contract.devicePrototypeId,
         index: contract.index,
         languageCode: contract.languageCode,
-        instructionType: contract.instructionType,
+        instructionType: contract.instructionTypeApp,
         lastModifiedTime: contract.lastModifiedTime,
         instructionText: contract.text,
         image: contract.base64Image != null 
-          ? Value(base64Decode(contract.base64Image!.split(',')[1])) 
+          ? Value(base64Decode(contract.base64Image!))
           : Value(Uint8List(0)),
       );
 

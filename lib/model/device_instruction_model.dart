@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 import 'package:scalesoft_app/data/app_database.dart';
 
@@ -8,7 +10,7 @@ class DeviceInstructionModel {
   final String languageCode;
   final String instructionType;
   final String instructionText;
-  final Uint8List? image;
+  final String? image;
   final DateTime lastModifiedTime;
   bool hasRendered;
 
@@ -33,7 +35,7 @@ class DeviceInstructionModel {
       entity.instructionType,
       entity.instructionText,
       entity.lastModifiedTime,
-      image: entity.image,
+      image: base64Encode(entity.image ?? Uint8List(0)),
       hasRendered: false,
     );
   }

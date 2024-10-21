@@ -5,7 +5,7 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/action_item.dart';
-import 'package:scalesoft_app/ui/widgets/device_progress_list.dart';
+import 'package:scalesoft_app/ui/widgets/device_progress_detail.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DeviceProgress extends StatelessWidget {
@@ -40,7 +40,7 @@ class DeviceProgress extends StatelessWidget {
             ),
           ),
         ),
-        DeviceProgressList(
+        DeviceProgressDetail(
           device: device,
           reqPairing: reqPairing,
           activeIndex: activeIndex,

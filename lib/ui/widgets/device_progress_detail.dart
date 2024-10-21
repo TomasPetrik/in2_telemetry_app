@@ -7,8 +7,8 @@ import 'package:scalesoft_app/model/device_instruction_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/icon_label_row.dart';
 
-class DeviceProgressList extends StatelessWidget {
-  DeviceProgressList({
+class DeviceProgressDetail extends StatelessWidget {
+  DeviceProgressDetail({
     super.key,
     required this.device,
     required this.reqPairing,
@@ -71,7 +71,7 @@ class DeviceProgressList extends StatelessWidget {
         ConnectionState(
           'assets/icons/icon_arrow_spin.svg',
           localization.find_device_screen_step4,
-          1,
+          3,
         ),
       ];
     }
@@ -79,13 +79,12 @@ class DeviceProgressList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          final connectionState = getConnectionStates(context).firstWhere((state) => state.index == activeIndex + 1);
-          return BlocBuilder<DeviceInstructionsCubit, DeviceInstructionsState>(
+    return SliverToBoxAdapter(
+      child: 
+           BlocBuilder<DeviceInstructionsCubit, DeviceInstructionsState>(
             bloc: _deviceInstructionsCubit..init(device.prototype.remoteId, reqPairing),
             builder: (context, deviceInstructionsState) {
+              final connectionState = getConnectionStates(context).firstWhere((state) => state.index == activeIndex + 1);
               DeviceInstructionModel? instruction;
               
               final instructions = deviceInstructionsState.instructions ?? List.empty();
@@ -108,13 +107,12 @@ class DeviceProgressList extends StatelessWidget {
                   ),
                 ],
               );
-            },);
-        },
-        childCount: 1,
-      ),
-    );
+            },
+          ),
+      );
+    }
   }
-}
+
 
 class ConnectionState {
   String iconPath;
