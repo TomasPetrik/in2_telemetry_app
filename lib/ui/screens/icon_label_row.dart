@@ -16,7 +16,7 @@ class ConnectionLevel extends StatelessWidget {
     this.deviceInstruction,
     required this.iconPath,
     required this.isDone,
-    required this.activeIndex,
+    required this.completedIndex,
     required this.index
   });
 
@@ -24,7 +24,7 @@ class ConnectionLevel extends StatelessWidget {
   final DeviceInstructionModel? deviceInstruction;
   final String iconPath;
   final bool isDone;
-  final int activeIndex;
+  final int completedIndex;
   final int index;
 
 

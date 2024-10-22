@@ -12,12 +12,12 @@ class DeviceProgressDetail extends StatelessWidget {
     super.key,
     required this.device,
     required this.reqPairing,
-    required this.activeIndex,
+    required this.completedIndex,
   });
   final DeviceInstructionsCubit _deviceInstructionsCubit = getIt<DeviceInstructionsCubit>();
   final DeviceCreateModel device;
   final bool reqPairing;
-  final int activeIndex;
+  final int completedIndex;
 
   List<ConnectionState> getConnectionStates(BuildContext context) {
     if (reqPairing) {
@@ -84,7 +84,8 @@ class DeviceProgressDetail extends StatelessWidget {
            BlocBuilder<DeviceInstructionsCubit, DeviceInstructionsState>(
             bloc: _deviceInstructionsCubit..init(device.prototype.remoteId, reqPairing),
             builder: (context, deviceInstructionsState) {
-              final connectionState = getConnectionStates(context).firstWhere((state) => state.index == activeIndex + 1);
+              final currentIndex = completedIndex + 1;
+              final connectionState = getConnectionStates(context).firstWhere((state) => state.index == currentIndex);
               DeviceInstructionModel? instruction;
               
               final instructions = deviceInstructionsState.instructions ?? List.empty();
@@ -101,8 +102,8 @@ class DeviceProgressDetail extends StatelessWidget {
                     label: connectionState.label,
                     deviceInstruction: instruction,
                     iconPath: connectionState.iconPath,
-                    isDone: activeIndex >= connectionState.index,
-                    activeIndex: activeIndex,
+                    isDone: completedIndex >= connectionState.index,
+                    completedIndex: completedIndex,
                     index: connectionState.index,
                   ),
                 ],

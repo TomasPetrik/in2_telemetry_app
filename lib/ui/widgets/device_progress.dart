@@ -43,7 +43,7 @@ class DeviceProgress extends StatelessWidget {
         DeviceProgressDetail(
           device: device,
           reqPairing: reqPairing,
-          activeIndex: activeIndex,
+          completedIndex: activeIndex,
         ),
         const SliverGap(Dimensions.padding60),
         if (device.prototype.aboutUrl != null) ...[
