@@ -170,6 +170,23 @@ class HospitalsConfiguration {
       isStaging: true,
       clientSecret: 'cqWFWo9zYQHFh38kS8VC',
     ),
+    Hospital(
+      id: 12,
+      title: '[Test] in2-test',
+      iconPath: 'assets/icons/icon_hospital_user.svg',
+      authData: const AuthData(
+        baseUrl: 'https://in2-test.devscale.cz/api-mobile/v1',
+        authUrl: 'https://in2-test-auth.devscale.cz/connect/authorize',
+        tokenUrl: 'https://in2-test-auth.devscale.cz/connect/token',
+      ),
+      enabledMeasurementTypes: MeasurementType.values
+          .where(
+            (x) => ![MeasurementType.globalPosition, MeasurementType.battery].any((y) => y == x),
+      )
+          .toList(),
+      isStaging: true,
+      clientSecret: 'cqWFWo9zYQHFh38kS8VC',
+    ),
   ];
 
   static String logEndpointSecret = 'zvqoz0vA#agIA0rsIzYSuk7kU1sCfKK6hsVYP3dW6!AOj**^31';
