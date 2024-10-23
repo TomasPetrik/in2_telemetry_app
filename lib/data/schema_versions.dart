@@ -117,6 +117,7 @@ final class Schema2 extends i0.VersionedSchema {
           _column_0,
           _column_17,
           _column_33,
+          _column_25,
           _column_34,
           _column_35,
           _column_36,
@@ -155,12 +156,12 @@ final class Schema2 extends i0.VersionedSchema {
           _column_0,
           _column_25,
           _column_44,
+          _column_33,
           _column_45,
           _column_46,
           _column_47,
           _column_48,
           _column_49,
-          _column_50,
         ],
         attachedDatabase: database,
       ),
@@ -176,6 +177,7 @@ final class Schema2 extends i0.VersionedSchema {
         columns: [
           _column_0,
           _column_25,
+          _column_50,
           _column_51,
           _column_52,
           _column_53,
@@ -187,7 +189,6 @@ final class Schema2 extends i0.VersionedSchema {
           _column_59,
           _column_60,
           _column_61,
-          _column_62,
         ],
         attachedDatabase: database,
       ),
@@ -199,15 +200,15 @@ final class Schema2 extends i0.VersionedSchema {
         isStrict: false,
         tableConstraints: [],
         columns: [
-          _column_63,
+          _column_62,
           _column_35,
+          _column_63,
           _column_64,
           _column_65,
           _column_66,
           _column_67,
           _column_68,
           _column_69,
-          _column_70,
         ],
         attachedDatabase: database,
       ),
@@ -220,12 +221,12 @@ final class Schema2 extends i0.VersionedSchema {
         tableConstraints: [],
         columns: [
           _column_0,
+          _column_70,
           _column_71,
           _column_72,
           _column_73,
           _column_74,
           _column_75,
-          _column_76,
         ],
         attachedDatabase: database,
       ),
@@ -453,6 +454,8 @@ class Shape4 extends i0.VersionedTable {
       columnsByName['remote_id']! as i1.GeneratedColumn<int>;
   i1.GeneratedColumn<int> get prototypeId =>
       columnsByName['prototype_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get userId =>
+      columnsByName['user_id']! as i1.GeneratedColumn<int>;
   i1.GeneratedColumn<int> get index =>
       columnsByName['index']! as i1.GeneratedColumn<int>;
   i1.GeneratedColumn<String> get languageCode =>
@@ -469,7 +472,9 @@ class Shape4 extends i0.VersionedTable {
 
 i1.GeneratedColumn<int> _column_33(String aliasedName) =>
     i1.GeneratedColumn<int>('prototype_id', aliasedName, false,
-        type: i1.DriftSqlType.int);
+        type: i1.DriftSqlType.int,
+        defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
+            ' REFERENCES device_prototypes (id) ON DELETE CASCADE'));
 i1.GeneratedColumn<int> _column_34(String aliasedName) =>
     i1.GeneratedColumn<int>('index', aliasedName, false,
         type: i1.DriftSqlType.int);
@@ -546,27 +551,22 @@ i1.GeneratedColumn<int> _column_44(String aliasedName) =>
         type: i1.DriftSqlType.int,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             ' REFERENCES physical_devices (id)'));
-i1.GeneratedColumn<int> _column_45(String aliasedName) =>
-    i1.GeneratedColumn<int>('prototype_id', aliasedName, false,
-        type: i1.DriftSqlType.int,
-        defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
-            ' REFERENCES device_prototypes (id) ON DELETE CASCADE'));
-i1.GeneratedColumn<DateTime> _column_46(String aliasedName) =>
+i1.GeneratedColumn<DateTime> _column_45(String aliasedName) =>
     i1.GeneratedColumn<DateTime>('added_at', aliasedName, false,
         type: i1.DriftSqlType.dateTime);
-i1.GeneratedColumn<bool> _column_47(String aliasedName) =>
+i1.GeneratedColumn<bool> _column_46(String aliasedName) =>
     i1.GeneratedColumn<bool>('is_personal', aliasedName, false,
         type: i1.DriftSqlType.bool,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             ' CHECK ("is_personal" IN (0, 1))'),
         defaultValue: const Constant(false));
-i1.GeneratedColumn<String> _column_48(String aliasedName) =>
+i1.GeneratedColumn<String> _column_47(String aliasedName) =>
     i1.GeneratedColumn<String>('assigned_identifier', aliasedName, true,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_49(String aliasedName) =>
+i1.GeneratedColumn<String> _column_48(String aliasedName) =>
     i1.GeneratedColumn<String>('bluetooth_address', aliasedName, true,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<DateTime> _column_50(String aliasedName) =>
+i1.GeneratedColumn<DateTime> _column_49(String aliasedName) =>
     i1.GeneratedColumn<DateTime>('last_measurement_time', aliasedName, true,
         type: i1.DriftSqlType.dateTime);
 
@@ -602,45 +602,45 @@ class Shape7 extends i0.VersionedTable {
       columnsByName['battery_percentage']! as i1.GeneratedColumn<int>;
 }
 
-i1.GeneratedColumn<int> _column_51(String aliasedName) =>
+i1.GeneratedColumn<int> _column_50(String aliasedName) =>
     i1.GeneratedColumn<int>('device_id', aliasedName, true,
         type: i1.DriftSqlType.int,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             ' REFERENCES devices (id) ON DELETE CASCADE'));
-i1.GeneratedColumn<DateTime> _column_52(String aliasedName) =>
+i1.GeneratedColumn<DateTime> _column_51(String aliasedName) =>
     i1.GeneratedColumn<DateTime>('measured_at', aliasedName, false,
         type: i1.DriftSqlType.dateTime);
-i1.GeneratedColumn<String> _column_53(String aliasedName) =>
+i1.GeneratedColumn<String> _column_52(String aliasedName) =>
     i1.GeneratedColumn<String>('measurement_type', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<bool> _column_54(String aliasedName) =>
+i1.GeneratedColumn<bool> _column_53(String aliasedName) =>
     i1.GeneratedColumn<bool>('is_uploaded', aliasedName, false,
         type: i1.DriftSqlType.bool,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             ' CHECK ("is_uploaded" IN (0, 1))'),
         defaultValue: const Constant(true));
-i1.GeneratedColumn<double> _column_55(String aliasedName) =>
+i1.GeneratedColumn<double> _column_54(String aliasedName) =>
     i1.GeneratedColumn<double>('temperature', aliasedName, true,
         type: i1.DriftSqlType.double);
-i1.GeneratedColumn<String> _column_56(String aliasedName) =>
+i1.GeneratedColumn<String> _column_55(String aliasedName) =>
     i1.GeneratedColumn<String>('blood_pressure', aliasedName, true,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<int> _column_57(String aliasedName) =>
+i1.GeneratedColumn<int> _column_56(String aliasedName) =>
     i1.GeneratedColumn<int>('heart_rate', aliasedName, true,
         type: i1.DriftSqlType.int);
-i1.GeneratedColumn<int> _column_58(String aliasedName) =>
+i1.GeneratedColumn<int> _column_57(String aliasedName) =>
     i1.GeneratedColumn<int>('oxygen_saturation', aliasedName, true,
         type: i1.DriftSqlType.int);
-i1.GeneratedColumn<int> _column_59(String aliasedName) =>
+i1.GeneratedColumn<int> _column_58(String aliasedName) =>
     i1.GeneratedColumn<int>('respiratory_rate', aliasedName, true,
         type: i1.DriftSqlType.int);
-i1.GeneratedColumn<String> _column_60(String aliasedName) =>
+i1.GeneratedColumn<String> _column_59(String aliasedName) =>
     i1.GeneratedColumn<String>('shortness_of_breath', aliasedName, true,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_61(String aliasedName) =>
+i1.GeneratedColumn<String> _column_60(String aliasedName) =>
     i1.GeneratedColumn<String>('overall_health', aliasedName, true,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<int> _column_62(String aliasedName) =>
+i1.GeneratedColumn<int> _column_61(String aliasedName) =>
     i1.GeneratedColumn<int>('battery_percentage', aliasedName, true,
         type: i1.DriftSqlType.int);
 
@@ -668,40 +668,40 @@ class Shape8 extends i0.VersionedTable {
       columnsByName['enable_staging_hospitals']! as i1.GeneratedColumn<bool>;
 }
 
-i1.GeneratedColumn<String> _column_63(String aliasedName) =>
+i1.GeneratedColumn<String> _column_62(String aliasedName) =>
     i1.GeneratedColumn<String>('theme_mode', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<bool> _column_64(String aliasedName) =>
+i1.GeneratedColumn<bool> _column_63(String aliasedName) =>
     i1.GeneratedColumn<bool>('enable_notifications', aliasedName, false,
         type: i1.DriftSqlType.bool,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             ' CHECK ("enable_notifications" IN (0, 1))'));
-i1.GeneratedColumn<bool> _column_65(
+i1.GeneratedColumn<bool> _column_64(
         String aliasedName) =>
     i1.GeneratedColumn<bool>(
         'notify_at_start_of_measurement', aliasedName, false,
         type: i1.DriftSqlType.bool,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             ' CHECK ("notify_at_start_of_measurement" IN (0, 1))'));
-i1.GeneratedColumn<bool> _column_66(
+i1.GeneratedColumn<bool> _column_65(
         String aliasedName) =>
     i1.GeneratedColumn<bool>(
         'notify10min_before_measurement', aliasedName, false,
         type: i1.DriftSqlType.bool,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             ' CHECK ("notify10min_before_measurement" IN (0, 1))'));
-i1.GeneratedColumn<int> _column_67(String aliasedName) =>
+i1.GeneratedColumn<int> _column_66(String aliasedName) =>
     i1.GeneratedColumn<int>('last_hospital_id', aliasedName, false,
         type: i1.DriftSqlType.int);
-i1.GeneratedColumn<String> _column_68(String aliasedName) =>
+i1.GeneratedColumn<String> _column_67(String aliasedName) =>
     i1.GeneratedColumn<String>('current_code_verifier', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<bool> _column_69(String aliasedName) =>
+i1.GeneratedColumn<bool> _column_68(String aliasedName) =>
     i1.GeneratedColumn<bool>('show_all_users', aliasedName, false,
         type: i1.DriftSqlType.bool,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             ' CHECK ("show_all_users" IN (0, 1))'));
-i1.GeneratedColumn<bool> _column_70(String aliasedName) =>
+i1.GeneratedColumn<bool> _column_69(String aliasedName) =>
     i1.GeneratedColumn<bool>('enable_staging_hospitals', aliasedName, false,
         type: i1.DriftSqlType.bool,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
@@ -726,24 +726,24 @@ class Shape9 extends i0.VersionedTable {
       columnsByName['event_time']! as i1.GeneratedColumn<DateTime>;
 }
 
-i1.GeneratedColumn<int> _column_71(String aliasedName) =>
+i1.GeneratedColumn<int> _column_70(String aliasedName) =>
     i1.GeneratedColumn<int>('user_id', aliasedName, true,
         type: i1.DriftSqlType.int,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             ' REFERENCES users (id) ON DELETE CASCADE'));
-i1.GeneratedColumn<String> _column_72(String aliasedName) =>
+i1.GeneratedColumn<String> _column_71(String aliasedName) =>
     i1.GeneratedColumn<String>('app_version', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_73(String aliasedName) =>
+i1.GeneratedColumn<String> _column_72(String aliasedName) =>
     i1.GeneratedColumn<String>('os_version', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_74(String aliasedName) =>
+i1.GeneratedColumn<String> _column_73(String aliasedName) =>
     i1.GeneratedColumn<String>('severity', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_75(String aliasedName) =>
+i1.GeneratedColumn<String> _column_74(String aliasedName) =>
     i1.GeneratedColumn<String>('message', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<DateTime> _column_76(String aliasedName) =>
+i1.GeneratedColumn<DateTime> _column_75(String aliasedName) =>
     i1.GeneratedColumn<DateTime>('event_time', aliasedName, false,
         type: i1.DriftSqlType.dateTime);
 i0.MigrationStepWithVersion migrationSteps({
