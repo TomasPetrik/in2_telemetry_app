@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:scalesoft_app/data/entities/enums/instruction_type.dart';
 
 part 'device_instruction_contract.g.dart';
 
@@ -8,7 +9,7 @@ class DeviceInstructionContract {
   final int devicePrototypeId;
   final int index;
   final String languageCode;
-  final String instructionTypeApp;
+  final InstructionType instructionTypeApp;
   final DateTime lastModifiedTime;
   final String text;
   final String? base64Image;

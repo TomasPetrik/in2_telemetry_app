@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/contracts/device/device_instruction_contract.dart';
 import 'package:scalesoft_app/data/app_database.dart';
+import 'package:scalesoft_app/data/entities/enums/instruction_type.dart';
 import 'package:scalesoft_app/model/device_instruction_model.dart';
 
 @injectable
@@ -14,13 +15,14 @@ class DeviceInstructionDbProvider {
     this._database,
   );
 
-  Future<void> replaceDeviceInstructions(List<DeviceInstructionContract> newInstructions) async {
-    await _database.deviceInstructionsDao.removeDeviceInstructions();
-
+  Future<void> replaceDeviceInstructions(List<DeviceInstructionContract> newInstructions, int userId) async {
+    await _database.deviceInstructionsDao.removeDeviceInstructions(userId);
     for (final contract in newInstructions) {
+      final prototype = await _database.devicePrototypesDao.getByRemotePrototypeId(contract.devicePrototypeId, userId);
       final companion = DeviceInstructionsCompanion.insert(
         remoteId: contract.id,
-        prototypeId: contract.devicePrototypeId,
+        prototypeId: prototype.id,
+        userId: userId,
         index: contract.index,
         languageCode: contract.languageCode,
         instructionType: contract.instructionTypeApp,
@@ -35,8 +37,8 @@ class DeviceInstructionDbProvider {
     }
   }
 
-  Future<List<DeviceInstructionModel>> getInstructions(int prototypeId, bool isPairing) async {
-    final entities = await _database.deviceInstructionsDao.getInstructions(prototypeId, isPairing);
+  Future<List<DeviceInstructionModel>> getInstructions(int prototypeId, InstructionType instructionType) async {
+    final entities = await _database.deviceInstructionsDao.getInstructions(prototypeId, instructionType);
 
     return entities.map(DeviceInstructionModel.fromEntity).toList();
   }

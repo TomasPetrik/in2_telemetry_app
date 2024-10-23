@@ -12,6 +12,7 @@ import 'package:scalesoft_app/data/daos/logs_dao.dart';
 import 'package:scalesoft_app/data/daos/measurements_dao.dart';
 import 'package:scalesoft_app/data/daos/users_dao.dart';
 import 'package:scalesoft_app/data/daos/when_templates_dao.dart';
+import 'package:scalesoft_app/data/entities/enums/instruction_type.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/care_plan_author.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/care_plan_version.dart';

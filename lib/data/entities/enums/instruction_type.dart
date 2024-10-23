@@ -1,0 +1,4 @@
+enum InstructionType {
+  Pairing,
+  Measuring
+}

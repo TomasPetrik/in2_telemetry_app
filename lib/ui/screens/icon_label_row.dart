@@ -30,26 +30,28 @@ class ConnectionLevel extends StatelessWidget {
 
 Widget getLottieOrImage(String base64String) {
 
-  Widget? lottieWidget = getLottieWidget(base64String);
+  final decodedBytes = base64Decode(base64String);
+  Widget? lottieWidget = getLottieWidget(decodedBytes);
   if (lottieWidget != null) {
     return lottieWidget;
   }
 
-  Widget? imageWidget = getImageWidget(base64String);
+  Widget? imageWidget = getImageWidget(decodedBytes);
   if (imageWidget != null) {
     return imageWidget;
   }
 
-  return const Text('Invalid data');
+  debugPrint("Invalid Image or Lottie Data");
+  return const SizedBox();
 }
 
-Widget? getLottieWidget(String base64String) {
+Widget? getLottieWidget(Uint8List lottieImage) {
   try  {
-    final decodedString = utf8.decode(base64Decode(base64String));
+    final decodedString = utf8.decode(lottieImage);
     
     if (isValidJson(decodedString)) {
       return LottieBuilder.memory(
-        Uint8List.fromList(utf8.encode(decodedString)),
+        lottieImage,
         width: 300,
         height: 300,
       );
@@ -69,11 +71,10 @@ bool isValidJson(String jsonString) {
   }
 }
 
-Widget? getImageWidget(String base64String) {
+Widget? getImageWidget(Uint8List image) {
   try {
-    Uint8List imageBytes = base64Decode(base64String);
     return Image.memory(
-      imageBytes,
+      image,
       fit: BoxFit.cover,
       width: 300,
       height: 300,

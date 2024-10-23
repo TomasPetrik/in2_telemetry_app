@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:scalesoft_app/data/app_database.dart';
+import 'package:scalesoft_app/data/entities/enums/instruction_type.dart';
 import 'package:scalesoft_app/data/tables/device_instructions.dart';
 
 part 'device_instruction_dao.drift.dart';
@@ -8,8 +9,8 @@ part 'device_instruction_dao.drift.dart';
 class DeviceInstructionsDao extends DatabaseAccessor<AppDatabase> with _$DeviceInstructionsDaoMixin {
   DeviceInstructionsDao(super.db);
 
-  Future<void> removeDeviceInstructions() async {
-    await (delete(deviceInstructions).go());
+  Future<void> removeDeviceInstructions(int userId) async {
+    await (delete(deviceInstructions)..where((x) => x.userId.equals(userId))).go();
   }
 
   Future<int> save(DeviceInstructionsCompanion instruction) async {
@@ -19,14 +20,9 @@ class DeviceInstructionsDao extends DatabaseAccessor<AppDatabase> with _$DeviceI
     );
   }
 
-  Future<List<DeviceInstruction>> getInstructions(int prototypeId, bool isPairing) async {
-    final query = select(deviceInstructions)..where((x) => x.prototypeId.equals(prototypeId));
+  Future<List<DeviceInstruction>> getInstructions(int prototypeId, InstructionType instructionType) async {
+    final query = select(deviceInstructions)..where((x) => x.prototypeId.equals(prototypeId) & (x.instructionType.equals(instructionType.name)));
 
-    if (isPairing) {
-      query.where((x) => x.instructionType.equals("Pairing"));
-    } else {
-      query.where((x) => x.instructionType.equals("Measuring"));
-    }
     return query.get();
   }
 }

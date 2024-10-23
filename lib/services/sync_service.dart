@@ -179,7 +179,7 @@ class SyncService {
       final deviceInstructions = await _deviceRepository.getDeviceInstructions(
         userId: userId
       );
-      await _deviceInstructionDbProvider.replaceDeviceInstructions(deviceInstructions);
+      await _deviceInstructionDbProvider.replaceDeviceInstructions(deviceInstructions, userId);
 
     } on Exception catch (e, s) {
       debugPrint(

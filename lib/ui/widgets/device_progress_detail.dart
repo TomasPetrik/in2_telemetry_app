@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:scalesoft_app/cubit/device_instructions/device_instructions_cubit.dart';
 import 'package:scalesoft_app/cubit/device_instructions/device_instructions_state.dart';
+import 'package:scalesoft_app/data/entities/enums/instruction_type.dart';
 import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/model/device_instruction_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/icon_label_row.dart';
+import 'package:scalesoft_app/ui/widgets/rotating_icon.dart';
 
 class DeviceProgressDetail extends StatelessWidget {
   DeviceProgressDetail({
@@ -42,7 +45,7 @@ class DeviceProgressDetail extends StatelessWidget {
         ConnectionState(
           'assets/icons/icon_arrow_spin.svg',
           localization.find_device_screen_step5_p,
-          3,
+          4,
         ),
       ];
     } else {
@@ -71,7 +74,7 @@ class DeviceProgressDetail extends StatelessWidget {
         ConnectionState(
           'assets/icons/icon_arrow_spin.svg',
           localization.find_device_screen_step4,
-          3,
+          4,
         ),
       ];
     }
@@ -82,32 +85,48 @@ class DeviceProgressDetail extends StatelessWidget {
     return SliverToBoxAdapter(
       child: 
            BlocBuilder<DeviceInstructionsCubit, DeviceInstructionsState>(
-            bloc: _deviceInstructionsCubit..init(device.prototype.remoteId, reqPairing),
+            bloc: _deviceInstructionsCubit..init(device.prototype.id, reqPairing ? InstructionType.Pairing : InstructionType.Measuring),
             builder: (context, deviceInstructionsState) {
-              final currentIndex = completedIndex + 1;
-              final connectionState = getConnectionStates(context).firstWhere((state) => state.index == currentIndex);
-              DeviceInstructionModel? instruction;
-              
-              final instructions = deviceInstructionsState.instructions ?? List.empty();
-              for (var deviceInstruction in instructions) {
-                if (!deviceInstruction.hasRendered && deviceInstruction.index == connectionState.index) {
-                  instruction = deviceInstruction;
-                  deviceInstruction.hasRendered = true;
-                  break;
-                }
+              switch(deviceInstructionsState) {
+                case DeviceInstructionsLoading():
+                  return Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: RotatingIcon(
+                        child: SvgPicture.asset(
+                          'assets/icons/icon_loader.svg',
+                          color: Theme.of(context).colorScheme.tertiary,
+                        ),
+                      ),
+                    ),
+                  );
+                case DeviceInstructionsLoaded loadedInstructions:
+                  final currentIndex = completedIndex + 1;
+                  final connectionState = getConnectionStates(context).firstWhere((state) => state.index == currentIndex);
+                  DeviceInstructionModel? instruction;                  
+                  final instructions = loadedInstructions.instructions;
+
+                  for (var deviceInstruction in instructions) {
+                    if (deviceInstruction.index == connectionState.index) {
+                      instruction = deviceInstruction;
+                      break;
+                    }
+                  }
+                  return Column(
+                    children: [
+                      ConnectionLevel(
+                        label: connectionState.label,
+                        deviceInstruction: instruction,
+                        iconPath: connectionState.iconPath,
+                        isDone: completedIndex >= connectionState.index,
+                        completedIndex: completedIndex,
+                        index: connectionState.index,
+                      ),
+                    ],
+                  );
               }
-              return Column(
-                children: [
-                  ConnectionLevel(
-                    label: connectionState.label,
-                    deviceInstruction: instruction,
-                    iconPath: connectionState.iconPath,
-                    isDone: completedIndex >= connectionState.index,
-                    completedIndex: completedIndex,
-                    index: connectionState.index,
-                  ),
-                ],
-              );
             },
           ),
       );

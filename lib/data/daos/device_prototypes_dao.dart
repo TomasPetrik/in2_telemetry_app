@@ -19,6 +19,10 @@ class DevicePrototypesDao extends DatabaseAccessor<AppDatabase> with _$DevicePro
     return await (select(devicePrototypes)..where((x) => x.userId.equals(userId))).get();
   }
 
+  Future<DevicePrototype> getByRemotePrototypeId(int remotePrototypeId, int userId) async {
+    return await (select(devicePrototypes)..where((x) => x.remoteId.equals(remotePrototypeId) & x.userId.equals(userId))).getSingle();
+  }
+
   Future<void> removeByIds(Iterable<int> prototypeIds) async {
     await (delete(devicePrototypes)..where((x)=>x.id.isIn(prototypeIds))).go();
   }

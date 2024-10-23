@@ -355,7 +355,7 @@ class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnection
       //then we can start search for device again in metering mode
       await Future.delayed(const Duration(seconds: 2));
       emit(
-        OmronConnectionState.metering(
+        OmronConnectionState.measuring(
           timestamp: DateTime.now().microsecondsSinceEpoch,
           deviceInfo: deviceInfo,
         ),

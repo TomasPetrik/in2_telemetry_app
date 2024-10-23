@@ -1,11 +1,11 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scalesoft_app/model/device_instruction_model.dart';
 
-part 'device_instructions_state.freezed.dart';
+sealed class DeviceInstructionsState {}
 
-@freezed
-class DeviceInstructionsState with _$DeviceInstructionsState {
-  const factory DeviceInstructionsState({
-    List<DeviceInstructionModel>? instructions,
-  }) = _$DeviceInstructionsStateImpl;
+final class DeviceInstructionsLoading extends DeviceInstructionsState {}
+
+final class DeviceInstructionsLoaded extends DeviceInstructionsState {
+  final List<DeviceInstructionModel> instructions;
+
+  DeviceInstructionsLoaded(this.instructions);
 }

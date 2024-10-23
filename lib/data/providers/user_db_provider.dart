@@ -267,7 +267,7 @@ class UserDbProvider {
     await _devicePrototypeDbProvider.replaceUserPrototypes(userId, deviceModels);
     final updatedUser = await _database.usersDao.updateUser(userId, changes);
     await _deviceDbProvider.updateUserDevices(userId, contract.assignedDevices ?? []);
-    await _deviceInstructionDbProvider.replaceDeviceInstructions(deviceInstructions);
+    await _deviceInstructionDbProvider.replaceDeviceInstructions(deviceInstructions, userId);
 
     await updateRepresentedPeople(updatedUser, contract.representedPeople ?? [], timeSettingContracts, deviceModels);
   }
