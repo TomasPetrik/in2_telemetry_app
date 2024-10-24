@@ -22,7 +22,7 @@ class DeviceInstructionContract {
     required this.instructionTypeApp,
     required this.lastModifiedTime,
     required this.text,
-    this.base64Image
+    this.base64Image,
   });
 
   factory DeviceInstructionContract.fromJson(Map<String, dynamic> json) =>

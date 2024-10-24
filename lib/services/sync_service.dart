@@ -177,7 +177,7 @@ class SyncService {
       final user = _session.state.allUsers.firstWhere((x) => x.id == userId);
 
       final deviceInstructions = await _deviceRepository.getDeviceInstructions(
-        userId: userId
+        userId: userId,
       );
       await _deviceInstructionDbProvider.replaceDeviceInstructions(deviceInstructions, userId);
 

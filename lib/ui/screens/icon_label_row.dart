@@ -17,7 +17,7 @@ class ConnectionLevel extends StatelessWidget {
     required this.iconPath,
     required this.isDone,
     required this.completedIndex,
-    required this.index
+    required this.index,
   });
 
   final String label;
@@ -75,7 +75,7 @@ Widget? getImageWidget(Uint8List image) {
   try {
     return Image.memory(
       image,
-      fit: BoxFit.cover,
+      fit: BoxFit.contain,
       width: 300,
       height: 300,
     );
@@ -119,14 +119,14 @@ Widget build(BuildContext context) {
               "p": Style(
                 color: Theme.of(context).colorScheme.onPrimary,
               ),
-              }
+              },
             ),
           ),
           if (deviceInstruction?.image != null && deviceInstruction!.image!.isNotEmpty) 
-            getLottieOrImage(deviceInstruction!.image!)
+            getLottieOrImage(deviceInstruction!.image!),
 
         ],
-    )
+    ),
   );
 }
 }

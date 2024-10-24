@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/api/client/device_api_client.dart';
@@ -28,14 +26,14 @@ class DeviceRepository {
   }
 
   Future<List<DeviceInstructionContract>> getDeviceInstructions({
-    required int userId
+    required int userId,
   }) async {
     try {
       TokenInterceptor.userId = userId;
       final user = session.getUser(userId);
 
       return await deviceApiClient.getDeviceInstructions(
-        user.hospital.authData.baseUrl
+        user.hospital.authData.baseUrl,
       );
     } catch(e) {
       if (e is DioException && e.response?.statusCode == 404) {

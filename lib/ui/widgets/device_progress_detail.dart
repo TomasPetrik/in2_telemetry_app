@@ -85,7 +85,7 @@ class DeviceProgressDetail extends StatelessWidget {
     return SliverToBoxAdapter(
       child: 
            BlocBuilder<DeviceInstructionsCubit, DeviceInstructionsState>(
-            bloc: _deviceInstructionsCubit..init(device.prototype.id, reqPairing ? InstructionType.Pairing : InstructionType.Measuring),
+            bloc: _deviceInstructionsCubit..init(device.prototype.id, reqPairing ? InstructionType.pairing : InstructionType.measuring),
             builder: (context, deviceInstructionsState) {
               switch(deviceInstructionsState) {
                 case DeviceInstructionsLoading():
