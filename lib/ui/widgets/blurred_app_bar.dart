@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:scalesoft_app/ui/widgets/scale_background_blur.dart';
 
 class BlurredAppBar extends StatelessWidget {
   const BlurredAppBar({
@@ -15,13 +16,11 @@ class BlurredAppBar extends StatelessWidget {
     return Stack(
       children: [
         Positioned.fill(
-          child: ClipRRect(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Container(
-                color:
-                    Theme.of(context).colorScheme.background.withOpacity(0.8),
-              ),
+          child: ScaleBackgroundBlur(
+            sigma:10,
+            child: Container(
+              color:
+                  Theme.of(context).appBarTheme.backgroundColor,
             ),
           ),
         ),

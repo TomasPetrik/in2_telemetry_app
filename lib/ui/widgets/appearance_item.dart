@@ -20,26 +20,26 @@ class AppearanceItem extends StatelessWidget {
 
   Color _getTitleColor(BuildContext context) {
     return itemType == AppearanceItemType.light
-        ? ScaleColorsLight.content100
-        : ScaleColorsDark.content100;
+        ? ScaleColorsLight().content100
+        : ScaleColorsDark().content100;
   }
 
   Color _getSubTitleColor(BuildContext context) {
     return itemType == AppearanceItemType.light
-        ? ScaleColorsLight.content80
-        : ScaleColorsDark.content80;
+        ? ScaleColorsLight().content80
+        : ScaleColorsDark().content80;
   }
 
   Color _getItemBackgroundColor(BuildContext context) {
     return itemType == AppearanceItemType.light
-        ? ScaleColorsLight.paperAccent
-        : ScaleColorsDark.paperAccent;
+        ? ScaleColorsLight().paperAccent
+        : ScaleColorsDark().paperAccent;
   }
 
   Color _getRectColor(BuildContext context) {
     return itemType == AppearanceItemType.light
-        ? ScaleColorsLight.content20
-        : ScaleColorsDark.content20;
+        ? ScaleColorsLight().content20
+        : ScaleColorsDark().content20;
   }
 
   String _getTitle(BuildContext context) {

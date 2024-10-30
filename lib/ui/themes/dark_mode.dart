@@ -4,39 +4,41 @@ import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 
 class DarkMode {
-  static Color get backgroundColor => ScaleColorsDark.paper;
+  static final ScaleColorsDark _colors = ScaleColorsDark();
 
-  static Color get primary => ScaleColorsDark.primary;
+  static Color get backgroundColor => _colors.paper;
 
-  static Color get fontColor => ScaleColorsDark.content100;
+  static Color get primary => _colors.primary;
 
-  static Color get colorContent80 => ScaleColorsDark.content80;
+  static Color get fontColor => _colors.content100;
 
-  static Color get colorContent60 => ScaleColorsDark.content60;
+  static Color get colorContent80 => _colors.content80;
 
-  static Color get colorContent40 => ScaleColorsDark.content40;
+  static Color get colorContent60 => _colors.content60;
 
-  static Color get colorContent20 => ScaleColorsDark.content20;
+  static Color get colorContent40 => _colors.content40;
 
-  static Color get paperAccent => ScaleColorsDark.paperAccent;
+  static Color get colorContent20 => _colors.content20;
 
-  static Color get alertColor => ScaleColorsDark.alert;
+  static Color get paperAccent => _colors.paperAccent;
 
-  static Color get actionStartColor => ScaleColorsDark.actionStart;
+  static Color get alertColor => _colors.alert;
 
-  static Color get actionEndColor => ScaleColorsDark.actionEnd;
+  static Color get actionStartColor => _colors.actionStart;
 
-  static Color get light => ScaleColorsDark.light;
+  static Color get actionEndColor => _colors.actionEnd;
 
-  static Color get lightTransparent => ScaleColorsDark.lightTransparent;
+  static Color get light => _colors.light;
 
-  static Color get dark => ScaleColorsDark.dark;
+  static Color get lightTransparent => _colors.lightTransparent;
 
-  static Color get positive => ScaleColorsDark.positive;
+  static Color get dark => _colors.dark;
 
-  static Color get warning => ScaleColorsDark.warning;
+  static Color get positive => _colors.positive;
 
-  static Color get cardShadow => ScaleColorsDark.cardShadow;
+  static Color get warning => _colors.warning;
+
+  static Color get cardShadow => _colors.cardShadow;
 
   static ButtonStyle elevatedButtonStyle = ButtonStyle(
     backgroundColor: MaterialStateColor.resolveWith(
@@ -81,8 +83,8 @@ class DarkMode {
         primaryColor: primary,
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
-        canvasColor: backgroundColor,
-        scaffoldBackgroundColor: backgroundColor,
+        canvasColor: _colors.transparent,
+        scaffoldBackgroundColor: _colors.transparent,
         cardColor: paperAccent,
         hintColor: colorContent80,
         colorScheme: colorScheme,
@@ -93,6 +95,8 @@ class DarkMode {
           iconColor: primary,
         ),
         cardTheme: CardTheme(
+          color: _colors.paperTransparent,
+          surfaceTintColor: Colors.pink,
           elevation: Dimensions.cardElevation,
           shadowColor: cardShadow,
           shape: RoundedRectangleBorder(
@@ -102,14 +106,14 @@ class DarkMode {
         ),
         appBarTheme: AppBarTheme(
           iconTheme: IconThemeData(color: primary),
-          backgroundColor: ScaleColorsDark.paperTransparent,
+          backgroundColor: _colors.paperTransparent,
           titleTextStyle: TextStyle(
             backgroundColor: backgroundColor,
             color: fontColor,
           ),
         ),
         inputDecorationTheme: InputDecorationTheme(
-          fillColor: ScaleColorsDark.paper,
+          fillColor: _colors.paper,
           labelStyle: ScaleTextStyles.text.apply(color: fontColor),
           iconColor: primary,
           contentPadding: const EdgeInsets.symmetric(

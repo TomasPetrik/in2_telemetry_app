@@ -1,42 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:scalesoft_app/ui/themes/scale_colors.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_colors_light.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 
 class LightMode {
-  static Color get backgroundColor => ScaleColorsLight.paper;
+  static final ScaleColors _colors = ScaleColorsLight();
 
-  static Color get primary => ScaleColorsLight.primary;
+  static Color get backgroundColor => _colors.paper;
 
-  static Color get fontColor => ScaleColorsLight.content100;
+  static Color get primary => _colors.primary;
 
-  static Color get colorContent80 => ScaleColorsLight.content80;
+  static Color get fontColor => _colors.content100;
 
-  static Color get colorContent60 => ScaleColorsLight.content60;
+  static Color get colorContent80 => _colors.content80;
 
-  static Color get colorContent40 => ScaleColorsLight.content60;
+  static Color get colorContent60 => _colors.content60;
 
-  static Color get colorContent20 => ScaleColorsLight.content20;
+  static Color get colorContent40 => _colors.content60;
 
-  static Color get paperAccent => ScaleColorsLight.paperAccent;
+  static Color get colorContent20 => _colors.content20;
 
-  static Color get alertColor => ScaleColorsLight.alert;
+  static Color get paperAccent => _colors.paperAccent;
 
-  static Color get actionStartColor => ScaleColorsLight.actionStart;
+  static Color get alertColor => _colors.alert;
 
-  static Color get actionEndColor => ScaleColorsLight.actionEnd;
+  static Color get actionStartColor => _colors.actionStart;
 
-  static Color get light => ScaleColorsLight.light;
+  static Color get actionEndColor => _colors.actionEnd;
 
-  static Color get lightTransparent => ScaleColorsLight.lightTransparent;
+  static Color get light => _colors.light;
 
-  static Color get dark => ScaleColorsLight.dark;
+  static Color get lightTransparent => _colors.lightTransparent;
 
-  static Color get positive => ScaleColorsLight.positive;
+  static Color get dark => _colors.dark;
 
-  static Color get warning => ScaleColorsLight.warning;
+  static Color get positive => _colors.positive;
 
-  static Color get cardShadow => ScaleColorsLight.cardShadow;
+  static Color get warning => _colors.warning;
+
+  static Color get cardShadow => _colors.cardShadow;
 
   static ColorScheme get colorScheme => ColorScheme(
         background: backgroundColor,
@@ -62,8 +65,8 @@ class LightMode {
         primaryColor: primary,
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
-        canvasColor: backgroundColor,
-        scaffoldBackgroundColor: backgroundColor,
+        canvasColor: _colors.transparent,//backgroundColor,
+        scaffoldBackgroundColor: _colors.transparent,//backgroundColor,
         cardColor: paperAccent,
         hintColor: colorContent80,
         colorScheme: colorScheme,
@@ -74,6 +77,8 @@ class LightMode {
           iconColor: primary,
         ),
         cardTheme: CardTheme(
+          color: _colors.paperTransparent,
+          surfaceTintColor: Colors.pink,
           elevation: Dimensions.cardElevation,
           shadowColor: cardShadow,
           shape: RoundedRectangleBorder(
@@ -83,14 +88,14 @@ class LightMode {
         ),
         appBarTheme: AppBarTheme(
           iconTheme: IconThemeData(color: primary),
-          backgroundColor: ScaleColorsLight.paperTransparent,
+          backgroundColor: _colors.paperTransparent,
           titleTextStyle: TextStyle(
             backgroundColor: backgroundColor,
             color: fontColor,
           ),
         ),
         inputDecorationTheme: InputDecorationTheme(
-          fillColor: ScaleColorsLight.paper,
+          fillColor: _colors.paper,
           labelStyle: ScaleTextStyles.text.apply(color: fontColor),
           iconColor: primary,
           contentPadding: const EdgeInsets.symmetric(
