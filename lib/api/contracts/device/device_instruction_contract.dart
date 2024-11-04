@@ -9,7 +9,7 @@ class DeviceInstructionContract {
   final int devicePrototypeId;
   final int index;
   final String languageCode;
-  final InstructionType instructionTypeApp;
+  final InstructionType instructionType;
   final DateTime lastModifiedTime;
   final String text;
   final String? base64Image;
@@ -19,7 +19,7 @@ class DeviceInstructionContract {
     required this.devicePrototypeId,
     required this.index,
     required this.languageCode,
-    required this.instructionTypeApp,
+    required this.instructionType,
     required this.lastModifiedTime,
     required this.text,
     this.base64Image,

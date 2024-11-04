@@ -25,7 +25,7 @@ class DeviceInstructionDbProvider {
         userId: userId,
         index: contract.index,
         languageCode: contract.languageCode,
-        instructionType: contract.instructionTypeApp,
+        instructionType: contract.instructionType,
         lastModifiedTime: contract.lastModifiedTime,
         instructionText: contract.text,
         image: contract.base64Image != null 
