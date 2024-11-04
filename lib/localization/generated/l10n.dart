@@ -1959,10 +1959,20 @@ class I10n {
     );
   }
 
-  /// `Zapněte {deviceName} v režimu párování`
+  /// `Tlakoměr úspěšně spárován`
+  String get find_device_screen_paired_device {
+    return Intl.message(
+      'Tlakoměr úspěšně spárován',
+      name: 'find_device_screen_paired_device',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zapněte {deviceName} v režimu párování a počkejte na výzvu k párování`
   String find_device_screen_step1_p(String deviceName) {
     return Intl.message(
-      'Zapněte $deviceName v režimu párování',
+      'Zapněte $deviceName v režimu párování a počkejte na výzvu k párování',
       name: 'find_device_screen_step1_p',
       desc: '',
       args: [deviceName],

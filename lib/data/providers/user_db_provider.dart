@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
+import 'package:scalesoft_app/api/contracts/device/device_instruction_contract.dart';
 import 'package:scalesoft_app/api/contracts/device/device_prototype_contract.dart';
 import 'package:scalesoft_app/api/contracts/time_settings/time_setting_contract.dart';
 import 'package:scalesoft_app/api/contracts/user/current_user_info_contract.dart';
@@ -13,6 +14,7 @@ import 'package:scalesoft_app/data/entities/json_entities/user/measurement_thres
 import 'package:scalesoft_app/data/entities/json_entities/user/time_setting.dart';
 import 'package:scalesoft_app/data/providers/device_db_provider.dart';
 import 'package:scalesoft_app/data/providers/device_prototype_db_provider.dart';
+import 'package:scalesoft_app/data/providers/device_instruction_db_provider.dart';
 import 'package:scalesoft_app/mapper/thresholds_mapper.dart';
 import 'package:scalesoft_app/mapper/user_mapper.dart';
 import 'package:scalesoft_app/mapper/when_code_mapper.dart';
@@ -27,6 +29,7 @@ class UserDbProvider {
   final ThresholdsMapper _thresholdsMapper;
   final DeviceDbProvider _deviceDbProvider;
   final DevicePrototypeDbProvider _devicePrototypeDbProvider;
+  final DeviceInstructionDbProvider _deviceInstructionDbProvider;
 
   UserDbProvider(
     this._database,
@@ -35,6 +38,7 @@ class UserDbProvider {
     this._thresholdsMapper,
     this._deviceDbProvider,
     this._devicePrototypeDbProvider,
+    this._deviceInstructionDbProvider,
   );
 
   Stream<UserModel?> get(int userId) {
@@ -236,6 +240,7 @@ class UserDbProvider {
     CurrentUserInfoContract contract,
     List<TimeSettingContract> timeSettingContracts,
     List<DevicePrototypeContract> deviceModels,
+    List<DeviceInstructionContract> deviceInstructions
   ) async {
     final rootUser = contract.currentUser;
     MeasurementThresholds? thresholds = _thresholdsMapper.tryConvert(rootUser.measurementThresholds);
@@ -262,6 +267,7 @@ class UserDbProvider {
     await _devicePrototypeDbProvider.replaceUserPrototypes(userId, deviceModels);
     final updatedUser = await _database.usersDao.updateUser(userId, changes);
     await _deviceDbProvider.updateUserDevices(userId, contract.assignedDevices ?? []);
+    await _deviceInstructionDbProvider.replaceDeviceInstructions(deviceInstructions, userId);
 
     await updateRepresentedPeople(updatedUser, contract.representedPeople ?? [], timeSettingContracts, deviceModels);
   }

@@ -6,11 +6,13 @@ import 'package:flutter/material.dart' hide Table;
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/data/daos/care_plans_dao.dart';
 import 'package:scalesoft_app/data/daos/device_prototypes_dao.dart';
+import 'package:scalesoft_app/data/daos/device_instruction_dao.dart';
 import 'package:scalesoft_app/data/daos/devices_dao.dart';
 import 'package:scalesoft_app/data/daos/logs_dao.dart';
 import 'package:scalesoft_app/data/daos/measurements_dao.dart';
 import 'package:scalesoft_app/data/daos/users_dao.dart';
 import 'package:scalesoft_app/data/daos/when_templates_dao.dart';
+import 'package:scalesoft_app/data/entities/enums/instruction_type.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/care_plan_activity.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/care_plan_author.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/care_plan_version.dart';
@@ -22,6 +24,7 @@ import 'package:scalesoft_app/data/migrations.dart';
 import 'package:scalesoft_app/data/tables/app_settings.dart';
 import 'package:scalesoft_app/data/tables/care_plans.dart';
 import 'package:scalesoft_app/data/tables/device_prototypes.dart';
+import 'package:scalesoft_app/data/tables/device_instructions.dart';
 import 'package:scalesoft_app/data/tables/devices.dart';
 import 'package:scalesoft_app/data/tables/log_events.dart';
 import 'package:scalesoft_app/data/tables/measurements.dart';
@@ -48,6 +51,7 @@ part 'app_database.drift.dart';
     Users,
     WhenTemplates,
     DevicePrototypes,
+    DeviceInstructions,
     Devices,
     Measurements,
     PhysicalDevices,
@@ -61,6 +65,7 @@ part 'app_database.drift.dart';
     WhenTemplatesDao,
     CarePlansDao,
     DevicePrototypesDao,
+    DeviceInstructionsDao,
     DevicesDao,
   ],
 )
@@ -68,7 +73,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration {

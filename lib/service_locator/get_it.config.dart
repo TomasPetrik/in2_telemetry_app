@@ -37,6 +37,7 @@ import '../bloc/user_content/content_bloc.dart' as _i951;
 import '../cubit/background_measurement/background_measurement_cubit.dart'
     as _i207;
 import '../cubit/background_measurement_status_cubit.dart' as _i984;
+import '../cubit/device_instructions/device_instructions_cubit.dart' as _i260;
 import '../cubit/device_management/device_management_cubit.dart' as _i961;
 import '../cubit/hospital_search/hospital_search_cubit.dart' as _i745;
 import '../cubit/loader/loader_cubit.dart' as _i1064;
@@ -44,6 +45,7 @@ import '../cubit/plan_progress/plan_progress_cubit.dart' as _i198;
 import '../data/app_database.dart' as _i133;
 import '../data/providers/care_plan_db_provider.dart' as _i1047;
 import '../data/providers/device_db_provider.dart' as _i331;
+import '../data/providers/device_instruction_db_provider.dart' as _i609;
 import '../data/providers/device_prototype_db_provider.dart' as _i847;
 import '../data/providers/log_db_provider.dart' as _i640;
 import '../data/providers/measurements_db_provider.dart' as _i477;
@@ -115,6 +117,8 @@ Future<_i174.GetIt> init(
       ));
   gh.factory<_i331.DeviceDbProvider>(
       () => _i331.DeviceDbProvider(gh<_i133.AppDatabase>()));
+  gh.factory<_i609.DeviceInstructionDbProvider>(
+      () => _i609.DeviceInstructionDbProvider(gh<_i133.AppDatabase>()));
   gh.factory<_i847.DevicePrototypeDbProvider>(
       () => _i847.DevicePrototypeDbProvider(gh<_i133.AppDatabase>()));
   gh.factory<_i640.LogDbProvider>(
@@ -142,6 +146,14 @@ Future<_i174.GetIt> init(
         gh<_i728.CarePlanVersionMapper>(),
         gh<_i763.CarePlanActivityMapper>(),
       ));
+  gh.factory<_i541.AuthApiClient>(
+      () => _i541.AuthApiClient(gh<_i361.Dio>(instanceName: 'authDio')));
+  gh.factory<_i1045.ChartBloc>(() => _i1045.ChartBloc(
+        gh<_i1047.CarePlanDbProvider>(),
+        gh<_i477.MeasurementsDbProvider>(),
+      ));
+  gh.factory<_i260.DeviceInstructionsCubit>(() =>
+      _i260.DeviceInstructionsCubit(gh<_i609.DeviceInstructionDbProvider>()));
   gh.factory<_i478.UserDbProvider>(() => _i478.UserDbProvider(
         gh<_i133.AppDatabase>(),
         gh<_i222.UserMapper>(),
@@ -149,12 +161,7 @@ Future<_i174.GetIt> init(
         gh<_i1000.ThresholdsMapper>(),
         gh<_i331.DeviceDbProvider>(),
         gh<_i847.DevicePrototypeDbProvider>(),
-      ));
-  gh.factory<_i541.AuthApiClient>(
-      () => _i541.AuthApiClient(gh<_i361.Dio>(instanceName: 'authDio')));
-  gh.factory<_i1045.ChartBloc>(() => _i1045.ChartBloc(
-        gh<_i1047.CarePlanDbProvider>(),
-        gh<_i477.MeasurementsDbProvider>(),
+        gh<_i609.DeviceInstructionDbProvider>(),
       ));
   gh.singleton<_i994.BtConnectionHelper>(
       () => _i994.BtConnectionHelper(gh<_i847.DevicePrototypeDbProvider>()));
@@ -230,6 +237,11 @@ Future<_i174.GetIt> init(
     ),
     preResolve: true,
   );
+  gh.factory<_i768.RegisterDeviceBloc>(() => _i768.RegisterDeviceBloc(
+        gh<_i994.BtConnectionHelper>(),
+        gh<_i347.DeviceRepository>(),
+        gh<_i420.ReportService>(),
+      ));
   gh.singleton<_i979.SyncService>(() => _i979.SyncService(
         gh<_i584.UserCubit>(),
         gh<_i319.AccountRepository>(),
@@ -241,14 +253,10 @@ Future<_i174.GetIt> init(
         gh<_i477.MeasurementsDbProvider>(),
         gh<_i478.UserDbProvider>(),
         gh<_i847.DevicePrototypeDbProvider>(),
+        gh<_i609.DeviceInstructionDbProvider>(),
         gh<_i761.WhenTemplateDbProvider>(),
         gh<_i331.DeviceDbProvider>(),
         gh<_i654.SettingsDbProvider>(),
-      ));
-  gh.factory<_i768.RegisterDeviceBloc>(() => _i768.RegisterDeviceBloc(
-        gh<_i994.BtConnectionHelper>(),
-        gh<_i347.DeviceRepository>(),
-        gh<_i420.ReportService>(),
       ));
   gh.singleton<_i396.BackgroundMeasurementManager>(
       () => _i396.BackgroundMeasurementManager(

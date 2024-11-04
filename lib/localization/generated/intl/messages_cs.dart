@@ -195,7 +195,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m25(deviceName) =>
       "Ujistěte se, že máte aktivován Bluetooth na ${deviceName}";
 
-  static String m26(deviceName) => "Zapněte ${deviceName} v režimu párování";
+  static String m26(deviceName) =>
+      "Zapněte ${deviceName} v režimu párování a počkejte na výzvu k párování";
 
   static String m27(actionButtonLabel) =>
       "Spusťte na tlakoměru měření pomocí tlačítka ${actionButtonLabel} a počkejte na jeho dokončení";
@@ -478,6 +479,8 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Aplikace vyžaduje povolení používat Bluetooth pro komunikaci se zařízeními."),
         "find_device_screen_not_granted_bt_title":
             MessageLookupByLibrary.simpleMessage("Bluetooth zakázán "),
+        "find_device_screen_paired_device":
+            MessageLookupByLibrary.simpleMessage("Tlakoměr úspěšně spárován"),
         "find_device_screen_pairing_device":
             MessageLookupByLibrary.simpleMessage(
                 "Probíhá párování s tlakoměrem..."),

@@ -486,7 +486,8 @@
     "find_device_screen_device_connected": "Tlakoměr připojen",
     "find_device_screen_sync_results": "Probíhá přenos dat z tlakoměru...",
     "find_device_screen_pairing_device": "Probíhá párování s tlakoměrem...",
-    "find_device_screen_step1_p": "Zapněte {deviceName} v režimu párování",
+    "find_device_screen_paired_device": "Tlakoměr úspěšně spárován",
+    "find_device_screen_step1_p": "Zapněte {deviceName} v režimu párování a počkejte na výzvu k párování",
     "@find_device_screen_step1_p": {
         "placeholders": {
             "deviceName": {

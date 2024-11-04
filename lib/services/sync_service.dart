@@ -15,6 +15,7 @@ import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_evaluation_item.dart';
 import 'package:scalesoft_app/data/providers/device_db_provider.dart';
 import 'package:scalesoft_app/data/providers/device_prototype_db_provider.dart';
+import 'package:scalesoft_app/data/providers/device_instruction_db_provider.dart';
 import 'package:scalesoft_app/data/providers/measurements_db_provider.dart';
 import 'package:scalesoft_app/data/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/data/providers/user_db_provider.dart';
@@ -45,6 +46,7 @@ class SyncService {
   final MeasurementsDbProvider _measurementsDbProvider;
   final UserDbProvider _userDbProvider;
   final DevicePrototypeDbProvider _devicePrototypeDbProvider;
+  final DeviceInstructionDbProvider _deviceInstructionDbProvider;
   final WhenTemplateDbProvider _whenTemplateDbProvider;
   final DeviceDbProvider _deviceDbProvider;
   final SettingsDbProvider _settingsDbProvider;
@@ -60,6 +62,7 @@ class SyncService {
     this._measurementsDbProvider,
     this._userDbProvider,
     this._devicePrototypeDbProvider,
+    this._deviceInstructionDbProvider,
     this._whenTemplateDbProvider,
     this._deviceDbProvider,
     this._settingsDbProvider,
@@ -164,6 +167,22 @@ class SyncService {
       }
     } on Exception {
       debugPrint(
+        'Couln\'t load device instructions',
+      );
+    }
+  }
+
+    Future<void> loadDeviceInstructions(final int userId) async {
+    try {
+      final user = _session.state.allUsers.firstWhere((x) => x.id == userId);
+
+      final deviceInstructions = await _deviceRepository.getDeviceInstructions(
+        userId: userId,
+      );
+      await _deviceInstructionDbProvider.replaceDeviceInstructions(deviceInstructions, userId);
+
+    } on Exception catch (e, s) {
+      debugPrint(
         'Couln\'t load device models for user $userId',
       );
     }
@@ -227,8 +246,11 @@ class SyncService {
     final deviceModels = await _deviceRepository.getDeviceModels(
       userId: user.id,
     );
+    final deviceInstructions = await _deviceRepository.getDeviceInstructions(
+      userId: user.id,
+    );
 
-    await _userDbProvider.updateUserFromContract(user.id, userInfo, timeSettings, deviceModels);
+    await _userDbProvider.updateUserFromContract(user.id, userInfo, timeSettings, deviceModels, deviceInstructions);
 
     await getIt<BackgroundMeasurementManager>().removeUnassignedDevices();
   }
