@@ -49,12 +49,9 @@ class AppSettingsBloc extends Bloc<AppSettingsBlocEvent, AppSetting?> {
             final settings =
                 await _settingsDbProvider.updateAppSettings(AppSettingsCompanion(themeMode: Value(newThemeMode)));
 
-            if (newThemeMode == ThemeMode.system) {
-              final brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
-              AppearanceHelper.setSystemUIOverlayStyleByBrightness(brightness);
-            } else {
+
               AppearanceHelper.setSystemUIOverlayStyle(newThemeMode);
-            }
+
 
             emit(settings);
 
