@@ -311,9 +311,12 @@ class SyncService {
         );
 
         await _session.waitForChange((x) => x.id == user.id && x.lastSyncAt.isAtSameMomentAs(now));
-      } on DioException {
+      } catch (e, trace) {
         //for any failed sync set flag and go on next account
-        await _userDbProvider.updateUser(user.id, const UsersCompanion(lastSyncFailed: Value(true)));
+        debugPrintStack(
+            label: "User synchronization failed: $e", stackTrace: trace);
+        await _userDbProvider.updateUser(
+            user.id, const UsersCompanion(lastSyncFailed: Value(true)));
       }
     }
 
