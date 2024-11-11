@@ -9,7 +9,7 @@ class ScaleColorsLight implements ScaleColors {
   @override
   Color paperAccent = const Color(0xFFFFFFFF);
   @override
-  Color paperTransparent = const Color.fromARGB(184, 255, 255, 255);
+  Color paperTransparent = const Color.fromARGB(72, 255, 255, 255);
   @override
   Color transparent = const Color(0x00000000);
 

@@ -83,8 +83,8 @@ class DarkMode {
         primaryColor: primary,
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
-        canvasColor: _colors.transparent,
-        scaffoldBackgroundColor: _colors.transparent,
+        canvasColor: backgroundColor,
+        scaffoldBackgroundColor: backgroundColor,
         cardColor: paperAccent,
         hintColor: colorContent80,
         colorScheme: colorScheme,
@@ -95,8 +95,6 @@ class DarkMode {
           iconColor: primary,
         ),
         cardTheme: CardTheme(
-          color: _colors.paperTransparent,
-          surfaceTintColor: Colors.pink,
           elevation: Dimensions.cardElevation,
           shadowColor: cardShadow,
           shape: RoundedRectangleBorder(
