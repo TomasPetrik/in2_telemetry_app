@@ -80,7 +80,9 @@ class CarePlanBloc extends Bloc<CarePlanBlocEvent, CarePlanBlocState> {
           timestamp: DateTime.now().microsecondsSinceEpoch,
           carePlansOfType: activeCarePlans,
           selectedWhenPeriod: event.whenPeriod,
-          nextMeasurement: nextMeasurement?.first,
+          nextMeasurement: nextMeasurement != null && nextMeasurement.isNotEmpty 
+            ? nextMeasurement.first 
+            : null,
           allTodayMeasurements: allTodayMeasurements,
           results: _pendingResults,
           measurementType: null,
