@@ -88,7 +88,7 @@ class HospitalSelectionDialog extends StatelessWidget {
                           return Padding(
                             padding: padding,
                             child: SettingsItem(
-                              iconBackground: ScaleColorsLight.content20,
+                              iconBackground: ScaleColorsLight().content20,
                               label: hospital.title,
                               iconWidget: Padding(
                                 padding: Paddings.all8,

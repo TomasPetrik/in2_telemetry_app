@@ -108,7 +108,7 @@ class UserHospitalSelectionDialog extends StatelessWidget {
                     return Padding(
                       padding: Paddings.horizontal16,
                       child: SettingsItem(
-                        iconBackground: ScaleColorsLight.content20,
+                        iconBackground: ScaleColorsLight().content20,
                         label: hospital.key.title,
                         subLabel: '${hospital.value[0].fullName}'
                             ' ${hasMultipleUsers ? localization.common_plus_n_others(hospital.value.length - 1) : ''}',

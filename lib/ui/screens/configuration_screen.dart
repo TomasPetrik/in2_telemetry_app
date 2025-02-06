@@ -123,7 +123,7 @@ class ConfigurationScreen extends StatelessWidget with BottomSheetMixin {
                               padding: Paddings.all8,
                               child: ImageWidget(hospital.key.iconPath),
                             ),
-                            iconBackground: ScaleColorsLight.content20,
+                            iconBackground: ScaleColorsLight().content20,
                             onTap: () {
                               if (allHospitalUsersCount == 1) {
                                 GoRouter.of(context).pushNamed(
