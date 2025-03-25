@@ -169,7 +169,7 @@ class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnection
             ),
           );
           final foundDevice = await _btConnectionHelper.searchDevice(
-            serviceUuid: bloodPressureServiceUuid,
+            serviceUuid: bloodPressureServiceUuid,                            // -------problem--------
             device: _device!,
             searchMode: reqModelPairing ? SearchMode.pairing : SearchMode.syncing,
             maxAllowedDeviceSearchingTime:
@@ -256,7 +256,7 @@ class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnection
 
     debugPrint('request device for data');
     final batteryInfo = await _btConnectionHelper.requestBatteryInfo(blDevice);
-    final measurementResult = await _btConnectionHelper.requestBPData(
+    final measurementResult = await _btConnectionHelper.requestBPData(          //-----------problem-----------
       blDevice,
       !reqModelPairing,
     );
@@ -361,7 +361,7 @@ class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnection
         ),
       );
       await Future.delayed(const Duration(seconds: 3));
-      final foundDevice = await _btConnectionHelper.searchDevice(
+      final foundDevice = await _btConnectionHelper.searchDevice(               //--------problem-------
         serviceUuid: bloodPressureServiceUuid,
         device: _device!,
         searchMode: reqModelPairing ? SearchMode.pairing : SearchMode.syncing,

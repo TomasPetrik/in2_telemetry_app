@@ -85,7 +85,6 @@ dependencies:
   # Open url in webview
   url_launcher: ^6.2.6
   wakelock_plus: ^1.2.8
-  notification_permissions: ^0.6.1
 
   # Handle oauth callbacks to app (deeplinks)
   app_links: ^6.3.2

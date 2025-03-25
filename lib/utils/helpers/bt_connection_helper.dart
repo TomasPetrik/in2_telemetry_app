@@ -23,6 +23,7 @@ final Guid recordAccessCpServiceUuid = Guid('5df5e817-a945-4f81-89c0-3d4e9759c07
 final Guid batteryService = Guid('0000180f-0000-1000-8000-00805f9b34fb');
 final Guid bloodPressureServiceUuid = Guid('1810');
 final Guid heartRateServiceUuid = Guid('180d');
+final Guid temperatureServiceUuid = Guid('1809');
 
 class DeviceSearchResult {
   BluetoothDevice device;
