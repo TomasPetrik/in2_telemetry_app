@@ -42,6 +42,8 @@ class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnection
   ) : super(const OmronConnectionState.init()) {
     on<OmronConnectionBlocEvent>((event, emit) async {
       await event.when(
+
+        //set device, userId and measurement type and transition to checkHwState
         init: (userId, measurementType, device) async {
           await WakelockPlus.enable();
 
@@ -52,6 +54,11 @@ class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnection
 
           add(const OmronConnectionBlocEvent.checkHwState());
         },
+
+        //check if all permissions are granted and if so start checking state
+        //of bluetooth adapter
+        //if not try to get the permissions granted
+        //called when initializing this bloc or when app is resumed
         checkHwState: () async {
           if (_searchStarted == true) {
             return;
@@ -75,9 +82,7 @@ class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnection
             return;
           }
 
-          final isBTPermissionsPermanentylDenied = await _btConnectionHelper.isBTPermissionsPermanentylDenied();
-
-          if (isBTPermissionsPermanentylDenied) {
+          if (await _btConnectionHelper.isBTPermissionsPermanentlyDenied()) {
             shouldRequestPermission = false;
             emit(
               OmronConnectionState.noBtPermissions(
@@ -85,9 +90,9 @@ class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnection
               ),
             );
             return;
-          } else if (await _btConnectionHelper.isBTPermissionsGranted()) {
-            shouldRequestPermission = false;
-          } else {
+          }
+
+          if (!await _btConnectionHelper.isBTPermissionsGranted()) {
             shouldRequestPermission = true;
             final hasPermissionsGranted = await _btConnectionHelper.requestForBTPermissions();
             if (!hasPermissionsGranted) {
@@ -104,11 +109,9 @@ class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnection
               return;
             }
           }
-
           shouldRequestPermission = false;
 
-          final hasLocationServiceEnabled = await _btConnectionHelper.hasLocationServiceEnabled();
-          if (!hasLocationServiceEnabled) {
+          if (!await _btConnectionHelper.hasLocationServiceEnabled()) {
             debugPrint('disabled location service !');
             _reportsService.trackEvent(
               userId: _userId,
@@ -122,15 +125,25 @@ class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnection
             );
             shouldRequestPermission = true;
             _searchStarted = false;
-          } else {
-            _searchStarted = true;
-            _startCheckingBtState();
+            return;
           }
+
+          _searchStarted = true;
+          //start checking bluetooth state
+          FlutterBluePlus.adapterState.listen((btState) {
+            add(OmronConnectionBlocEvent.newBtState(btState));
+          });
         },
+
+        //called when bluetooth adapter changes state
+        //starts search device event if adapter is on
         newBtState: (newBtState) async {
           if (newBtState == BluetoothAdapterState.on) {
-            add(const OmronConnectionBlocEvent.checkDeviceAvailability());
-          } else if (newBtState == BluetoothAdapterState.off) {
+            add(const OmronConnectionBlocEvent.searchDevice());
+            return;
+          }
+
+          if (newBtState == BluetoothAdapterState.off) {
             _reportsService.trackEvent(
               userId: _userId,
               severity: LogSeverity.warning,
@@ -141,33 +154,35 @@ class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnection
                 timestamp: DateTime.now().microsecondsSinceEpoch,
               ),
             );
-          } else {
-            _reportsService.trackEvent(
-              userId: _userId,
-              severity: LogSeverity.warning,
-              message: EventsConstants.eventNoBTPermissionsGranted,
-            );
-            emit(
-              OmronConnectionState.noBtPermissions(
-                timestamp: DateTime.now().microsecondsSinceEpoch,
-              ),
-            );
+            return;
           }
+
+          _reportsService.trackEvent(
+            userId: _userId,
+            severity: LogSeverity.warning,
+            message: EventsConstants.eventNoBTPermissionsGranted,
+          );
+          emit(
+            OmronConnectionState.noBtPermissions(
+              timestamp: DateTime.now().microsecondsSinceEpoch,
+            ),
+          );
         },
-        checkDeviceAvailability: () async {
-          add(const OmronConnectionBlocEvent.searchDevice());
-        },
+
+
         searchDevice: () async {
           _reportsService.trackEvent(
             userId: _userId,
             severity: LogSeverity.info,
             message: EventsConstants.eventDeviceSearchingStart,
           );
+
           emit(
             OmronConnectionState.searching(
               timestamp: DateTime.now().microsecondsSinceEpoch,
             ),
           );
+
           final foundDevice = await _btConnectionHelper.searchDevice(
             serviceUuid: bloodPressureServiceUuid,                            // -------problem--------
             device: _device!,
@@ -175,6 +190,7 @@ class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnection
             maxAllowedDeviceSearchingTime:
                 reqModelPairing ? ConfigurationConstants.maxAllowedDeviceSearchingTime : null,
           );
+
           if (foundDevice != null) {
             _reportsService.trackEvent(
               userId: _userId,
@@ -184,10 +200,10 @@ class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnection
             emit(
               OmronConnectionState.found(
                 timestamp: DateTime.now().microsecondsSinceEpoch,
-                device: foundDevice.device,
+                device: foundDevice,
               ),
             );
-            await connectToDevice(foundDevice.device, emit);
+            await connectToDevice(foundDevice, emit);
           } else {
             emit(
               OmronConnectionState.notFound(
@@ -196,16 +212,12 @@ class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnection
             );
           }
         },
+
+        //stops ble search, is only called from outside this class
         stopSearch: () async {
           await stopSearch();
         },
       );
-    });
-  }
-
-  void _startCheckingBtState() {
-    FlutterBluePlus.adapterState.listen((btState) {
-      add(OmronConnectionBlocEvent.newBtState(btState));
     });
   }
 
@@ -373,13 +385,13 @@ class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnection
           message: EventsConstants.eventDeviceFound,
         );
         try {
-          await foundDevice.device.connect(autoConnect: false);
+          await foundDevice.connect(autoConnect: false);
         } catch (e) {
           debugPrint('dev is already connected');
-          await foundDevice.device.disconnect();
-          await foundDevice.device.connect(autoConnect: false);
+          await foundDevice.disconnect();
+          await foundDevice.connect(autoConnect: false);
         }
-        await pairOrGetMeasurement(foundDevice.device, deviceInfo, emit);
+        await pairOrGetMeasurement(foundDevice, deviceInfo, emit);
       }
     }
   }
@@ -393,13 +405,13 @@ class OmronConnectionBloc extends Bloc<OmronConnectionBlocEvent, OmronConnection
         severity: LogSeverity.info,
         message: EventsConstants.eventDeviceVerified,
       );
-      emit(
-        OmronConnectionState.verified(
-          timestamp: DateTime.now().microsecondsSinceEpoch,
-          device: blDevice,
-          deviceInfo: deviceInfo,
-        ),
-      );
+      // emit(
+      //   OmronConnectionState.verified(
+      //     timestamp: DateTime.now().microsecondsSinceEpoch,
+      //     device: blDevice,
+      //     deviceInfo: deviceInfo,
+      //   ),
+      // );
       return deviceInfo;
     } else {
       _reportsService.trackEvent(

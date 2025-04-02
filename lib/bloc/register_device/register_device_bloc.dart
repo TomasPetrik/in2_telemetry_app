@@ -64,7 +64,7 @@ class RegisterDeviceBloc extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlo
             return;
           }
 
-          final isBTPermissionsPermanentlyDenied = await _btConnectionHelper.isBTPermissionsPermanentylDenied();
+          final isBTPermissionsPermanentlyDenied = await _btConnectionHelper.isBTPermissionsPermanentlyDenied();
 
           if (isBTPermissionsPermanentlyDenied) {
             shouldRequestPermission = true;

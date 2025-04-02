@@ -44,11 +44,11 @@ class OmronConnectionState with _$OmronConnectionState {
   const factory OmronConnectionState.connected({
     required int timestamp,
   }) = _Connected;
-  const factory OmronConnectionState.verified({
-    required int timestamp,
-    required BluetoothDevice device,
-    required DeviceInfo deviceInfo,
-  }) = _Verified;
+  // const factory OmronConnectionState.verified({
+  //   required int timestamp,
+  //   required BluetoothDevice device,
+  //   required DeviceInfo deviceInfo,
+  // }) = _Verified;
   const factory OmronConnectionState.notVerified({
     required int timestamp,
     required HwMeasurementResult measurementResult,

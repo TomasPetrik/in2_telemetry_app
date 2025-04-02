@@ -199,18 +199,18 @@ class ConfigurationConstants {
       imagePath: 'assets/images/e8x.png',
       measurementFlow: MeasurementFlow.background,
     ),
-    // DevicePrototypeTemplate(
-    //   localId: 3,
-    //   modelName: "FT95",
-    //   visibleName: "FT95",
-    //   bluetoothName: "FT95",
-    //   deviceModelType: DeviceModelType.beurerFt95,
-    //   supportedMeasurementTypes: [MeasurementType.temperature],
-    //   imagePath: 'assets/images/e8x.png',
-    //   measurementFlow: MeasurementFlow.foreground,
-    //   requiresPairing: true,
-    //   askToConfirmMeasurement: true,
-    // ),
+    DevicePrototypeTemplate(
+      localId: 3,
+      modelName: "FT95",
+      visibleName: "FT95",
+      bluetoothName: "FT95",
+      deviceModelType: DeviceModelType.beurerFt95,
+      supportedMeasurementTypes: [MeasurementType.temperature],
+      imagePath: 'assets/images/e8x.png',
+      measurementFlow: MeasurementFlow.foreground,
+      requiresPairing: true,
+      askToConfirmMeasurement: true,
+    ),
   ];
 
   static const Map<int, String> monthsInYear = {

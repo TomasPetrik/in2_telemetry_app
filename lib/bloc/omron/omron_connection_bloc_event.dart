@@ -16,8 +16,8 @@ class OmronConnectionBlocEvent with _$OmronConnectionBlocEvent {
   const factory OmronConnectionBlocEvent.newBtState(
     BluetoothAdapterState newBtState,
   ) = _NewBtState;
-  const factory OmronConnectionBlocEvent.checkDeviceAvailability() =
-      _CheckDeviceAvailability;
+  // const factory OmronConnectionBlocEvent.checkDeviceAvailability() =
+  //     _CheckDeviceAvailability;
   const factory OmronConnectionBlocEvent.stopSearch() = _StopSearch;
 
   const factory OmronConnectionBlocEvent.searchDevice() = _SearchDevice;
