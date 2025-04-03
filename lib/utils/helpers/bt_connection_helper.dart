@@ -10,8 +10,9 @@ import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/data/entities/enums/device_model_type.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/data/providers/device_prototype_db_provider.dart';
-import 'package:scalesoft_app/extensions/uint8_list_extension.dart';
+import 'package:scalesoft_app/utils/extensions/uint8_list_extension.dart';
 import 'package:scalesoft_app/model/device_info.dart';
 import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/model/device_prototype_model.dart';
@@ -28,10 +29,17 @@ final Guid temperatureServiceUuid = Guid('1809');
 
 enum SearchMode { pairing, syncing }
 
+var measurementTypeToUUid = {
+  MeasurementType.bloodPressure : Guid('1810'),
+  MeasurementType.heartRate : Guid('180d'),
+  MeasurementType.temperature : Guid('1809'),
+};
+
 @singleton
 class BtConnectionHelper {
   bool syncMode = false;
   final DevicePrototypeDbProvider _devicePrototypeDbProvider;
+
 
   BtConnectionHelper(this._devicePrototypeDbProvider);
 

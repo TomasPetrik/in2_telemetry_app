@@ -9,7 +9,7 @@ class HwMeasurementResult with _$HwMeasurementResult {
   const factory HwMeasurementResult({
     required ResultState resultState,
     required DateTime measurementDt,
-    MeasurementInfo? measurementInfo,
+    // MeasurementInfo? measurementInfo,
     MeasurementCreateModel? measurement,
   }) = _HwMeasurementResult;
 }

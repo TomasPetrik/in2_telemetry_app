@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "C:\\Users\\vojtech.fosum\\FlutterSDK\\flutter\\packages\\flutter_tools\\gradle\\src\\main\\groovy\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "C:\\Users\\vojtech.fosum\\AppData\\Local\\Android\\sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "C:\\Pool\\IN2-Telemetry-MobileApp\\android\\app\\.cxx\\Debug\\6l1z156w\\arm64-v8a",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "C:\\Users\\vojtech.fosum\\AppData\\Local\\Android\\sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "C:\\Pool\\IN2-Telemetry-MobileApp\\android\\app\\.cxx\\Debug\\6l1z156w\\arm64-v8a",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

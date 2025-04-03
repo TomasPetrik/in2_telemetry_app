@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/extensions/uint8_list_extension.dart';
+import 'package:scalesoft_app/utils/extensions/uint8_list_extension.dart';
 
 part 'measurement_info.freezed.dart';
 part 'measurement_info.g.dart';

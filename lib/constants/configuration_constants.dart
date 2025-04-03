@@ -206,7 +206,7 @@ class ConfigurationConstants {
       bluetoothName: "FT95",
       deviceModelType: DeviceModelType.beurerFt95,
       supportedMeasurementTypes: [MeasurementType.temperature],
-      imagePath: 'assets/images/e8x.png',
+      imagePath: 'assets/images/beurer_ft_95.png',
       measurementFlow: MeasurementFlow.foreground,
       requiresPairing: true,
       askToConfirmMeasurement: true,
