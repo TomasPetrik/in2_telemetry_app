@@ -193,9 +193,10 @@ class OmronConnectionBloc
                   .map((devicePrototype) {
                 return devicePrototype.bluetoothName;
               }).toList(),
-              timeout: ConfigurationConstants.maxAllowedDeviceSearchingTime,
+              // timeout: ConfigurationConstants.maxAllowedDeviceSearchingTime,
             );
           }
+          debugPrint("searching");
           var scanResultSubscription =
               FlutterBluePlus.onScanResults.listen((results) async {
             var scanResult = results.firstWhereOrNull(
@@ -208,6 +209,7 @@ class OmronConnectionBloc
             }
             await FlutterBluePlus.stopScan();
             var selectedBlDevice = scanResult.device;
+            debugPrint("found device: ${selectedBlDevice.advName}");
             emit(
               OmronConnectionState.found(
                 timestamp: DateTime.now().microsecondsSinceEpoch,
@@ -230,6 +232,20 @@ class OmronConnectionBloc
                   timestamp: DateTime.now().microsecondsSinceEpoch,
               ),
             );
+            var deviceInfo = await _btConnectionHelper.requestDeviceInfo(selectedBlDevice);
+            if (deviceInfo == null){
+              emit(
+                OmronConnectionState.notVerified(
+                  timestamp: DateTime.now().microsecondsSinceEpoch,
+                  measurementResult: HwMeasurementResult(
+                    resultState: ResultState.connectionError,
+                    measurementDt: DateTime.now(),
+                  ),
+                ),
+              );
+              return;
+            }
+
             final measurementUuid = Guid('2A35');
             var services = await selectedBlDevice.discoverServices();
             var characteristics = services
@@ -242,11 +258,31 @@ class OmronConnectionBloc
             measurementCharacteristic.onValueReceived.listen((data) {
               dataArray.add(data);
             },
-            onDone: () {
-              var data = dataArray.last;
-              var measurement = MeasurementCreateModel(data.toInt8(16, 17), DateTime.now(), _measurementType);
-              measurement.sys
-            });
+
+            onDone: () async {
+              var btData = dataArray.last;
+              var measurementCreateModel = MeasurementCreateModel(
+                btData.toInt8(16, 17),
+                btData.toTimestamp(7, 14),
+                _measurementType,
+                bloodPressure: BloodPressureValue(
+                    systolic: btData.toInt16(1, 3),
+                    diastolic: btData.toInt16(3, 5),),
+                heartRate: btData.toInt16(14, 16),
+              );
+              var hwMeasurementResult = HwMeasurementResult(
+                resultState: ResultState.success,
+                measurementDt: DateTime.now(),
+                measurement: measurementCreateModel,
+              );
+              emit(
+                OmronConnectionState.synced(
+                  timestamp: DateTime.now().microsecondsSinceEpoch,
+                  measurementResult: hwMeasurementResult,
+                  deviceInfo: deviceInfo,
+                ),
+              );
+            },);
             // var blConnection = BlConnection(selectedBlDevice);
 
           });
@@ -319,121 +355,121 @@ class OmronConnectionBloc
 //   /// Otherwise an attempt to fetch the latest measurements available on the device will be made.
 //   /// Returns true when the device was successfully paired (and this method should be called again to fetch measurements)
 //   /// Returns false otherwise
-  Future<bool> pairOrGetMeasurement(
-    final BluetoothDevice blDevice,
-    final DeviceInfo deviceInfo,
-    Emitter<OmronConnectionState> emit,
-  ) async {
-    // Warning: Do not attempt to understand how, why, nor what this method (and the methods called by it) does.
-    // Don't ask why the same method is used for pairing xor getting measurements - this is simply unknowable.
-    if (reqModelPairing) {
-      _reportsService.trackEvent(
-        userId: _userId,
-        severity: LogSeverity.info,
-        message: EventsConstants.eventDevicePairing,
-      );
-      emit(
-        OmronConnectionState.pairing(
-          timestamp: DateTime.now().microsecondsSinceEpoch,
-        ),
-      );
-    } else {
-      _reportsService.trackEvent(
-        userId: _userId,
-        severity: LogSeverity.info,
-        message: EventsConstants.eventDeviceSyncing,
-      );
-      emit(
-        OmronConnectionState.syncing(
-          timestamp: DateTime.now().microsecondsSinceEpoch,
-        ),
-      );
-    }
-
-    debugPrint('request device for data');
-    final batteryInfo = await _btConnectionHelper.requestBatteryInfo(blDevice);
-    final measurementResult = await _btConnectionHelper.requestBPData(          //-----------problem-----------
-      blDevice,
-      !reqModelPairing,
-    );
-
-    if (!reqModelPairing) {
-      await WakelockPlus.disable();
-    }
-
-    if (measurementResult.resultState == ResultState.connectionError) {
-      emit(
-        OmronConnectionState.notFound(
-          timestamp: DateTime.now().microsecondsSinceEpoch,
-        ),
-      );
-      return false;
-    }
-
-    if (measurementResult.resultState == ResultState.success && reqModelPairing) {
-      debugPrint(
-        'device got success data when pairing [saving paired device]',
-      );
-      emit(
-        OmronConnectionState.paired(
-          timestamp: DateTime.now().microsecondsSinceEpoch,
-          deviceInfo: deviceInfo,
-        ),
-      );
-
-      _reportsService.trackEvent(
-        userId: _userId,
-        severity: LogSeverity.info,
-        message: EventsConstants.eventDevicePaired,
-      );
-
-      //save paired device
-      _device = await _deviceDbProvider.markDeviceAsPaired(_userId, _device!);
-      return true;
-    }
-
-    if (measurementResult.resultState == ResultState.success && measurementResult.measurementInfo != null) {
-      debugPrint('device got success data');
-      final measurementInfo = measurementResult.measurementInfo!;
-
-      final measurement = MeasurementCreateModel(
-        _userId,
-        measurementResult.measurementDt,
-        _measurementType,
-        deviceId: (_device as DeviceModel?)?.id,
-        bloodPressure: BloodPressureValue(
-          systolic: measurementInfo.systolic,
-          diastolic: measurementInfo.diastolic,
-        ),
-        heartRate: measurementInfo.pulseRate,
-        batteryPercentage: batteryInfo?.batteryLevel,
-      );
-
-      _reportsService.trackEvent(
-        userId: _userId,
-        severity: LogSeverity.info,
-        message: EventsConstants.eventDeviceSynced,
-      );
-      emit(
-        OmronConnectionState.synced(
-          timestamp: DateTime.now().microsecondsSinceEpoch,
-          measurementResult: measurementResult.copyWith(measurement: measurement),
-          deviceInfo: deviceInfo,
-        ),
-      );
-    } else if (measurementResult.resultState == ResultState.noData) {
-      debugPrint('device got empty data');
-      emit(
-        OmronConnectionState.synced(
-          timestamp: DateTime.now().microsecondsSinceEpoch,
-          measurementResult: measurementResult,
-          deviceInfo: deviceInfo,
-        ),
-      );
-    }
-
-    return false;
-  }
+//   Future<bool> pairOrGetMeasurement(
+//     final BluetoothDevice blDevice,
+//     final DeviceInfo deviceInfo,
+//     Emitter<OmronConnectionState> emit,
+//   ) async {
+//     // Warning: Do not attempt to understand how, why, nor what this method (and the methods called by it) does.
+//     // Don't ask why the same method is used for pairing xor getting measurements - this is simply unknowable.
+//     if (reqModelPairing) {
+//       _reportsService.trackEvent(
+//         userId: _userId,
+//         severity: LogSeverity.info,
+//         message: EventsConstants.eventDevicePairing,
+//       );
+//       emit(
+//         OmronConnectionState.pairing(
+//           timestamp: DateTime.now().microsecondsSinceEpoch,
+//         ),
+//       );
+//     } else {
+//       _reportsService.trackEvent(
+//         userId: _userId,
+//         severity: LogSeverity.info,
+//         message: EventsConstants.eventDeviceSyncing,
+//       );
+//       emit(
+//         OmronConnectionState.syncing(
+//           timestamp: DateTime.now().microsecondsSinceEpoch,
+//         ),
+//       );
+//     }
+//
+//     debugPrint('request device for data');
+//     final batteryInfo = await _btConnectionHelper.requestBatteryInfo(blDevice);
+//     final measurementResult = await _btConnectionHelper.requestBPData(          //-----------problem-----------
+//       blDevice,
+//       !reqModelPairing,
+//     );
+//
+//     if (!reqModelPairing) {
+//       await WakelockPlus.disable();
+//     }
+//
+//     if (measurementResult.resultState == ResultState.connectionError) {
+//       emit(
+//         OmronConnectionState.notFound(
+//           timestamp: DateTime.now().microsecondsSinceEpoch,
+//         ),
+//       );
+//       return false;
+//     }
+//
+//     if (measurementResult.resultState == ResultState.success && reqModelPairing) {
+//       debugPrint(
+//         'device got success data when pairing [saving paired device]',
+//       );
+//       emit(
+//         OmronConnectionState.paired(
+//           timestamp: DateTime.now().microsecondsSinceEpoch,
+//           deviceInfo: deviceInfo,
+//         ),
+//       );
+//
+//       _reportsService.trackEvent(
+//         userId: _userId,
+//         severity: LogSeverity.info,
+//         message: EventsConstants.eventDevicePaired,
+//       );
+//
+//       //save paired device
+//       _device = await _deviceDbProvider.markDeviceAsPaired(_userId, _device!);
+//       return true;
+//     }
+//
+//     if (measurementResult.resultState == ResultState.success && measurementResult.measurementInfo != null) {
+//       debugPrint('device got success data');
+//       final measurementInfo = measurementResult.measurementInfo!;
+//
+//       final measurement = MeasurementCreateModel(
+//         _userId,
+//         measurementResult.measurementDt,
+//         _measurementType,
+//         deviceId: (_device as DeviceModel?)?.id,
+//         bloodPressure: BloodPressureValue(
+//           systolic: measurementInfo.systolic,
+//           diastolic: measurementInfo.diastolic,
+//         ),
+//         heartRate: measurementInfo.pulseRate,
+//         batteryPercentage: batteryInfo?.batteryLevel,
+//       );
+//
+//       _reportsService.trackEvent(
+//         userId: _userId,
+//         severity: LogSeverity.info,
+//         message: EventsConstants.eventDeviceSynced,
+//       );
+//       emit(
+//         OmronConnectionState.synced(
+//           timestamp: DateTime.now().microsecondsSinceEpoch,
+//           measurementResult: measurementResult.copyWith(measurement: measurement),
+//           deviceInfo: deviceInfo,
+//         ),
+//       );
+//     } else if (measurementResult.resultState == ResultState.noData) {
+//       debugPrint('device got empty data');
+//       emit(
+//         OmronConnectionState.synced(
+//           timestamp: DateTime.now().microsecondsSinceEpoch,
+//           measurementResult: measurementResult,
+//           deviceInfo: deviceInfo,
+//         ),
+//       );
+//     }
+//
+//     return false;
+//   }
 //
 //   Future<void> measureAndSync(
 //     BluetoothDevice blDevice,

@@ -15,7 +15,7 @@ extension Uint8ListExtension on List<int> {
     return bdata.getInt8(0);
   }
 
-  String toTimestamp(int fromIndex, int toIndex) {
+  DateTime toTimestamp(int fromIndex, int toIndex) {
     final int year = toInt16(fromIndex, fromIndex + 2);
     final int month = toInt8(fromIndex + 2, fromIndex + 3);
     final int day = toInt8(fromIndex + 3, fromIndex + 4);
@@ -23,7 +23,7 @@ extension Uint8ListExtension on List<int> {
     final int minutes = toInt8(fromIndex + 5, fromIndex + 6);
     final int seconds = toInt8(fromIndex + 6, fromIndex + 7);
 
-    final dateTime = DateTime(
+    return DateTime(
       year,
       month,
       day,
@@ -31,6 +31,6 @@ extension Uint8ListExtension on List<int> {
       minutes,
       seconds,
     );
-    return dateTime.toIso8601String();
+    // return dateTime.toIso8601String();
   }
 }

@@ -306,102 +306,102 @@ class BtConnectionHelper {
     }
   }
 
-  Future<HwMeasurementResult> _getHwMeasurementResult({
-    required BluetoothDevice device,
-    required BluetoothCharacteristic bpCharacteristic,
-    required BluetoothCharacteristic recordAccessCpCharacteristic,
-    required bool isPairing,
-    bool? isSecondAttempt,
-  }) async {
-    final dtNow = DateTime.now().toUtc();
-
-    var bpData = await _getBPDataFromService(
-      device,
-      bpCharacteristic,
-      recordAccessCpCharacteristic,
-      isPairing,
-      isSecondAttempt,
-    );
-
-    if (bpData == null) {
-      return HwMeasurementResult(
-        resultState: ResultState.connectionError,
-        measurementDt: dtNow,
-      );
-    } else if (bpData.isEmpty) {
-      return HwMeasurementResult(
-        resultState: isPairing ? ResultState.success : ResultState.noData,
-        measurementDt: dtNow,
-      );
-    } else {
-      final measurementInfo = MeasurementInfo.fromIntList(bpData);
-      return HwMeasurementResult(
-        resultState: ResultState.success,
-        measurementInfo: measurementInfo,
-        measurementDt: dtNow,
-      );
-    }
-  }
-
-  Future<HwMeasurementResult> requestBPData(
-    BluetoothDevice device,
-    bool isMeasurement,
-  ) async {
-    final services = await device.discoverServices();
-    final bpCharacteristic = services
-        .firstWhereOrNull(
-          (service) => service.serviceUuid == bloodPressureServiceUuid,
-        )
-        ?.characteristics
-        .firstWhereOrNull((characteristic) =>
-            characteristic.uuid ==
-            MeasurementChar.bloodPressureMeasurement.address);
-
-    final recordAccessCpCharacteristic = services
-        .firstWhereOrNull(
-          (service) => service.serviceUuid == recordAccessCpServiceUuid,
-        )
-        ?.characteristics
-        .firstWhereOrNull((characteristic) =>
-            characteristic.uuid == MeasurementChar.recordAccessCp.address);
-
-    if (bpCharacteristic != null && recordAccessCpCharacteristic != null) {
-      final hwMeasurementResult = await _getHwMeasurementResult(
-        device: device,
-        bpCharacteristic: bpCharacteristic,
-        recordAccessCpCharacteristic: recordAccessCpCharacteristic,
-        isPairing: !isMeasurement,
-      );
-      if (isMeasurement) {
-        try {
-          await Future.delayed(const Duration(seconds: 2));
-          //repeat action in case to get fresh data
-          final hwMeasurementResult2 = await _getHwMeasurementResult(
-            device: device,
-            bpCharacteristic: bpCharacteristic,
-            recordAccessCpCharacteristic: recordAccessCpCharacteristic,
-            isPairing: !isMeasurement,
-            isSecondAttempt: true,
-          );
-          if (hwMeasurementResult2.resultState == ResultState.success) {
-            debugPrint('fetched more updated result');
-            return hwMeasurementResult2;
-          }
-
-          await device.disconnect();
-        } catch (e) {
-          debugPrint('device was disconnected');
-        }
-      }
-
-      return hwMeasurementResult;
-    } else {
-      return HwMeasurementResult(
-        resultState: ResultState.connectionError,
-        measurementDt: DateTime.now(),
-      );
-    }
-  }
+  // Future<HwMeasurementResult> _getHwMeasurementResult({
+  //   required BluetoothDevice device,
+  //   required BluetoothCharacteristic bpCharacteristic,
+  //   required BluetoothCharacteristic recordAccessCpCharacteristic,
+  //   required bool isPairing,
+  //   bool? isSecondAttempt,
+  // }) async {
+  //   final dtNow = DateTime.now().toUtc();
+  //
+  //   var bpData = await _getBPDataFromService(
+  //     device,
+  //     bpCharacteristic,
+  //     recordAccessCpCharacteristic,
+  //     isPairing,
+  //     isSecondAttempt,
+  //   );
+  //
+  //   if (bpData == null) {
+  //     return HwMeasurementResult(
+  //       resultState: ResultState.connectionError,
+  //       measurementDt: dtNow,
+  //     );
+  //   } else if (bpData.isEmpty) {
+  //     return HwMeasurementResult(
+  //       resultState: isPairing ? ResultState.success : ResultState.noData,
+  //       measurementDt: dtNow,
+  //     );
+  //   } else {
+  //     final measurementInfo = MeasurementInfo.fromIntList(bpData);
+  //     return HwMeasurementResult(
+  //       resultState: ResultState.success,
+  //       measurementInfo: measurementInfo,
+  //       measurementDt: dtNow,
+  //     );
+  //   }
+  // }
+  //
+  // Future<HwMeasurementResult> requestBPData(
+  //   BluetoothDevice device,
+  //   bool isMeasurement,
+  // ) async {
+  //   final services = await device.discoverServices();
+  //   final bpCharacteristic = services
+  //       .firstWhereOrNull(
+  //         (service) => service.serviceUuid == bloodPressureServiceUuid,
+  //       )
+  //       ?.characteristics
+  //       .firstWhereOrNull((characteristic) =>
+  //           characteristic.uuid ==
+  //           MeasurementChar.bloodPressureMeasurement.address);
+  //
+  //   final recordAccessCpCharacteristic = services
+  //       .firstWhereOrNull(
+  //         (service) => service.serviceUuid == recordAccessCpServiceUuid,
+  //       )
+  //       ?.characteristics
+  //       .firstWhereOrNull((characteristic) =>
+  //           characteristic.uuid == MeasurementChar.recordAccessCp.address);
+  //
+  //   if (bpCharacteristic != null && recordAccessCpCharacteristic != null) {
+  //     final hwMeasurementResult = await _getHwMeasurementResult(
+  //       device: device,
+  //       bpCharacteristic: bpCharacteristic,
+  //       recordAccessCpCharacteristic: recordAccessCpCharacteristic,
+  //       isPairing: !isMeasurement,
+  //     );
+  //     if (isMeasurement) {
+  //       try {
+  //         await Future.delayed(const Duration(seconds: 2));
+  //         //repeat action in case to get fresh data
+  //         final hwMeasurementResult2 = await _getHwMeasurementResult(
+  //           device: device,
+  //           bpCharacteristic: bpCharacteristic,
+  //           recordAccessCpCharacteristic: recordAccessCpCharacteristic,
+  //           isPairing: !isMeasurement,
+  //           isSecondAttempt: true,
+  //         );
+  //         if (hwMeasurementResult2.resultState == ResultState.success) {
+  //           debugPrint('fetched more updated result');
+  //           return hwMeasurementResult2;
+  //         }
+  //
+  //         await device.disconnect();
+  //       } catch (e) {
+  //         debugPrint('device was disconnected');
+  //       }
+  //     }
+  //
+  //     return hwMeasurementResult;
+  //   } else {
+  //     return HwMeasurementResult(
+  //       resultState: ResultState.connectionError,
+  //       measurementDt: DateTime.now(),
+  //     );
+  //   }
+  // }
 
   Future<List<int>?> _getBPDataFromService(
     BluetoothDevice device,
