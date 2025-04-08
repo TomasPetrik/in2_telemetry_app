@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:async/async.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -142,7 +143,7 @@ class OmronConnectionBloc
 
         //called when bluetooth adapter changes state
         //starts search device event if adapter is on
-        newBtState: (newBtState) async {
+        newBtState: (newBtState) {
           if (newBtState == BluetoothAdapterState.on) {
             add(const OmronConnectionBlocEvent.searchDevice());
             return;
@@ -175,120 +176,188 @@ class OmronConnectionBloc
         },
 
         searchDevice: () async {
+          final measurementUuid = Guid('2A35');
+          debugPrint("paired: ${_device!.isPaired}");
+          debugPrint("address: ${_device!.bluetoothAddress}");
           _reportsService.trackEvent(
             userId: _userId,
             severity: LogSeverity.info,
             message: EventsConstants.eventDeviceSearchingStart,
           );
-
           emit(
             OmronConnectionState.searching(
               timestamp: DateTime.now().microsecondsSinceEpoch,
             ),
           );
 
-          if (!FlutterBluePlus.isScanningNow) {
-            FlutterBluePlus.startScan(
-              withNames: ConfigurationConstants.supportedDevices
-                  .map((devicePrototype) {
-                return devicePrototype.bluetoothName;
-              }).toList(),
-              // timeout: ConfigurationConstants.maxAllowedDeviceSearchingTime,
-            );
-          }
           debugPrint("searching");
-          var scanResultSubscription =
-              FlutterBluePlus.onScanResults.listen((results) async {
-            var scanResult = results.firstWhereOrNull(
-              (result) =>
-                  result.advertisementData.advName ==
-                  _device!.prototype.bluetoothName,
-            );
-            if (scanResult == null) {
-              return;
-            }
-            await FlutterBluePlus.stopScan();
-            var selectedBlDevice = scanResult.device;
-            debugPrint("found device: ${selectedBlDevice.advName}");
-            emit(
-              OmronConnectionState.found(
-                timestamp: DateTime.now().microsecondsSinceEpoch,
-                device: selectedBlDevice,
-              ),
-            );
-            emit(
-              OmronConnectionState.connecting(
-                timestamp: DateTime.now().microsecondsSinceEpoch,
-              ),
-            );
-            await selectedBlDevice.connect();
-            _reportsService.trackEvent(
-              userId: _userId,
-              severity: LogSeverity.info,
-              message: EventsConstants.eventDeviceConnected,
-            );
-            emit(
-              OmronConnectionState.connected(
-                  timestamp: DateTime.now().microsecondsSinceEpoch,
-              ),
-            );
-            var deviceInfo = await _btConnectionHelper.requestDeviceInfo(selectedBlDevice);
-            if (deviceInfo == null){
-              emit(
-                OmronConnectionState.notVerified(
-                  timestamp: DateTime.now().microsecondsSinceEpoch,
-                  measurementResult: HwMeasurementResult(
-                    resultState: ResultState.connectionError,
-                    measurementDt: DateTime.now(),
-                  ),
-                ),
-              );
-              return;
-            }
+          debugPrint(_measurementType.toString());
+          var scanResultStream =
+              FlutterBluePlus.onScanResults.listenAndBuffer();
 
-            final measurementUuid = Guid('2A35');
-            var services = await selectedBlDevice.discoverServices();
-            var characteristics = services
-                .map((service) => service.characteristics)
-                .expand((x) => x)
-                .toList();
-            var measurementCharacteristic = characteristics
-                .firstWhere((chara) => chara.characteristicUuid == measurementUuid);
-            var dataArray = List<List<int>>.empty(growable: true);
-            measurementCharacteristic.onValueReceived.listen((data) {
-              dataArray.add(data);
+          if (!FlutterBluePlus.isScanningNow) {
+            FlutterBluePlus.startScan();
+          }
+
+          BluetoothDevice? selectedBlDevice;
+
+          await scanResultStream.firstWhere(
+            (results) {
+              if (results.isEmpty) {
+                return false;
+              }
+              ScanResult? scanResult;
+
+              scanResult = results.firstWhereOrNull(
+                (result) => result.advertisementData.advName.contains(
+                  _device!.deviceIdentifier,
+                )
+              );
+
+              // for (final result in results) {
+              //   debugPrint(
+              //     "search result: ${result.advertisementData.advName}",
+              //   );
+              // }
+              if (scanResult == null) {
+                return false;
+              }
+              debugPrint(scanResult.advertisementData.serviceUuids.toString());
+              selectedBlDevice = scanResult.device;
+              debugPrint("found device: ${selectedBlDevice!.advName}");
+              return true;
             },
+          );
 
-            onDone: () async {
-              var btData = dataArray.last;
-              var measurementCreateModel = MeasurementCreateModel(
-                btData.toInt8(16, 17),
-                btData.toTimestamp(7, 14),
-                _measurementType,
-                bloodPressure: BloodPressureValue(
-                    systolic: btData.toInt16(1, 3),
-                    diastolic: btData.toInt16(3, 5),),
-                heartRate: btData.toInt16(14, 16),
-              );
-              var hwMeasurementResult = HwMeasurementResult(
-                resultState: ResultState.success,
-                measurementDt: DateTime.now(),
-                measurement: measurementCreateModel,
-              );
-              emit(
-                OmronConnectionState.synced(
-                  timestamp: DateTime.now().microsecondsSinceEpoch,
-                  measurementResult: hwMeasurementResult,
-                  deviceInfo: deviceInfo,
+          await FlutterBluePlus.stopScan();
+
+          if (selectedBlDevice == null) {
+            emit(
+              OmronConnectionState.notFound(
+                  timestamp: DateTime.now().microsecondsSinceEpoch,),
+            );
+            return;
+          }
+
+          debugPrint("connecting device");
+          while (selectedBlDevice!.isDisconnected) {
+            await selectedBlDevice!.connect(autoConnect: false);
+            if (selectedBlDevice!.isDisconnected) {
+              await Future.delayed(const Duration(milliseconds: 100));
+            }
+          }
+          _reportsService.trackEvent(
+            userId: _userId,
+            severity: LogSeverity.info,
+            message: EventsConstants.eventDeviceConnected,
+          );
+          emit(
+            OmronConnectionState.connected(
+              timestamp: DateTime.now().microsecondsSinceEpoch,
+            ),
+          );
+          debugPrint("connected device");
+          var deviceInfo =
+              await _btConnectionHelper.requestDeviceInfo(selectedBlDevice!);
+          if (deviceInfo == null) {
+            emit(
+              OmronConnectionState.notVerified(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
+                measurementResult: HwMeasurementResult(
+                  resultState: ResultState.connectionError,
+                  measurementDt: DateTime.now(),
                 ),
+              ),
+            );
+            return;
+          }
+
+          if (!_device!.isPaired){
+            _device = await _deviceDbProvider.markDeviceAsPaired(_userId, _device!);
+            debugPrint("got device info");
+            debugPrint(_device!.prototype.remoteId.toString());
+            emit(
+              OmronConnectionState.paired(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
+                deviceInfo: deviceInfo,
+              ),
+            );
+            add(const OmronConnectionBlocEvent.searchDevice());
+            return;
+          }
+
+          var services = await selectedBlDevice!.discoverServices();
+
+          var characteristics = services
+              .map((service) => service.characteristics)
+              .toList()
+              .expand((x) => x)
+              .toList();
+          var measurementCharacteristic = characteristics.firstWhereOrNull(
+            (chara) => chara.uuid == measurementUuid,
+          );
+          if (measurementCharacteristic == null) {
+            debugPrint("characteristic not found");
+            selectedBlDevice!.disconnect();
+            return;
+          }
+
+          var dataArray = List<List<int>>.empty(growable: true);
+          final done = Completer<void>();
+          final subscription =
+              measurementCharacteristic.onValueReceived.listen((data) {
+                dataArray.add(data);
+                debugPrint("got data");
+              },
+                onDone: done.complete,
               );
-            },);
-            // var blConnection = BlConnection(selectedBlDevice);
+          // selectedBlDevice.cancelWhenDisconnected(measurementStream);
+          await measurementCharacteristic.setNotifyValue(true);
 
-          });
+          emit(
+              OmronConnectionState.measuring(
+                timestamp: DateTime.now().microsecondsSinceEpoch,
+                deviceInfo: deviceInfo,
+            ),
+          );
 
-          scanResultSubscription.cancel();
+          await Future.delayed(Duration(seconds: 2),);
+
+          // await done.future;
+          subscription.cancel();
+
+
+
+          var btData = dataArray.last;
+          var measurementCreateModel = MeasurementCreateModel(
+            btData.toInt8(16, 17),
+            btData.toTimestamp(7, 14),
+            _measurementType,
+            bloodPressure: BloodPressureValue(
+              systolic: btData.toInt16(1, 3),
+              diastolic: btData.toInt16(3, 5),
+            ),
+            heartRate: btData.toInt16(14, 16),
+          );
+          var hwMeasurementResult = HwMeasurementResult(
+            resultState: ResultState.success,
+            measurementDt: DateTime.now(),
+            measurement: measurementCreateModel,
+          );
+          debugPrint(
+              "got measurement ${hwMeasurementResult.measurement.toString()}");
+          emit(
+            OmronConnectionState.synced(
+              timestamp: DateTime.now().microsecondsSinceEpoch,
+              measurementResult: hwMeasurementResult,
+              deviceInfo: deviceInfo,
+            ),
+          );
         },
+        // var blConnection = BlConnection(selectedBlDevice);
+        // await FlutterBluePlus.isScanning.where((val) => val == false).first;
+        // scanResultSubscription.cancel();
+
         // searchDevice: () async {
         //   _reportsService.trackEvent(
         //     userId: _userId,
@@ -331,7 +400,6 @@ class OmronConnectionBloc
         //     );
         //   }
         // },
-
         //stops ble search, is only called from outside this class
         stopSearch: () async {
           await stopSearch();

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:async/async.dart';
 import 'package:collection/collection.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
@@ -30,16 +31,15 @@ final Guid temperatureServiceUuid = Guid('1809');
 enum SearchMode { pairing, syncing }
 
 var measurementTypeToUUid = {
-  MeasurementType.bloodPressure : Guid('1810'),
-  MeasurementType.heartRate : Guid('180d'),
-  MeasurementType.temperature : Guid('1809'),
+  MeasurementType.bloodPressure: Guid('1810'),
+  MeasurementType.heartRate: Guid('180d'),
+  MeasurementType.temperature: Guid('1809'),
 };
 
 @singleton
 class BtConnectionHelper {
   bool syncMode = false;
   final DevicePrototypeDbProvider _devicePrototypeDbProvider;
-
 
   BtConnectionHelper(this._devicePrototypeDbProvider);
 
@@ -136,8 +136,8 @@ class BtConnectionHelper {
       for (final scanResult in availableDevices) {
         final serviceUuids = scanResult.advertisementData.serviceUuids;
         final services = scanResult.device.servicesList;
-        if ((serviceUuids.any(
-                (btServiceUuid) => btServiceUuid == serviceUuid) ||
+        if ((serviceUuids
+                    .any((btServiceUuid) => btServiceUuid == serviceUuid) ||
                 services.any(
                   (btService) => btService.serviceUuid == serviceUuid,
                 )) &&
@@ -164,7 +164,6 @@ class BtConnectionHelper {
     }
   }
 
-  /// Finds devices that support at least one of the services in [serviceUuids].
   Future<void> searchDevicesByService({
     required List<Guid> serviceUuids,
     required onlyPairingMode,
@@ -173,8 +172,7 @@ class BtConnectionHelper {
     required bool isPersonalDevice,
   }) async {
     syncMode = false;
-    final isScanning = FlutterBluePlus.isScanningNow;
-    if (!isScanning) {
+    if (!FlutterBluePlus.isScanningNow) {
       FlutterBluePlus.startScan();
     }
     final supportedDevicePrototypes =
@@ -185,16 +183,17 @@ class BtConnectionHelper {
 
     final supportedBtPairingNames = supportedDevicePrototypes
         .map((x) => x.bluetoothPairingName)
-        .whereNotNull()
+        .nonNulls
         .toList();
 
-    while (true) {
-      await Future.delayed(const Duration(seconds: 1));
-      final allDevices = await FlutterBluePlus.onScanResults.first;
+    var scanResultStream = FlutterBluePlus.onScanResults.listenAndBuffer();
 
-      debugPrint('found all ${allDevices.length} devices');
+    late List<ScanResult> matchedResults;
 
-      final matchedResults = allDevices.where((scanResult) {
+    await scanResultStream.firstWhere((scanResult) {
+      debugPrint('found all ${scanResult.length} devices');
+
+      matchedResults = scanResult.where((scanResult) {
         return scanResult.advertisementData.serviceUuids.any(
               (uuid) => serviceUuids.any((x) => x == uuid),
             ) &&
@@ -210,7 +209,6 @@ class BtConnectionHelper {
                           .contains(suppBtPairName);
                     })));
       }).toList();
-
       debugPrint('found matching devices ${matchedResults.length}');
 
       final availableDevices = matchedResults
@@ -228,12 +226,80 @@ class BtConnectionHelper {
       debugPrint('available devices ${matchedResults.length}');
 
       onResult.call(availableDevices);
-
-      if (syncMode || FlutterBluePlus.isScanningNow == false) {
-        break;
-      }
-    }
+      return syncMode;
+    });
   }
+
+  /// Finds devices that support at least one of the services in [serviceUuids].
+  // Future<void> searchDevicesByService({
+  //   required List<Guid> serviceUuids,
+  //   required onlyPairingMode,
+  //   required Function(List<DeviceCreateModel> devices) onResult,
+  //   required int userId,
+  //   required bool isPersonalDevice,
+  // }) async {
+  //   syncMode = false;
+  //   final isScanning = FlutterBluePlus.isScanningNow;
+  //   if (!isScanning) {
+  //     FlutterBluePlus.startScan();
+  //   }
+  //   final supportedDevicePrototypes =
+  //       await _devicePrototypeDbProvider.getByUser(userId);
+  //
+  //   final supportedBtNames =
+  //       supportedDevicePrototypes.map((x) => x.bluetoothName).toList();
+  //
+  //   final supportedBtPairingNames = supportedDevicePrototypes
+  //       .map((x) => x.bluetoothPairingName)
+  //       .whereNotNull()
+  //       .toList();
+  //
+  //   while (true) {
+  //     await Future.delayed(const Duration(seconds: 1));
+  //     final allDevices = await FlutterBluePlus.onScanResults.first;
+  //
+  //     debugPrint('found all ${allDevices.length} devices');
+  //
+  //     final matchedResults = allDevices.where((scanResult) {
+  //       return scanResult.advertisementData.serviceUuids.any(
+  //             (uuid) => serviceUuids.any((x) => x == uuid),
+  //           ) &&
+  //           ((!onlyPairingMode &&
+  //                   supportedBtNames.any((suppBtName) {
+  //                     return scanResult.advertisementData.advName
+  //                         .toLowerCase()
+  //                         .contains(suppBtName.toLowerCase());
+  //                   })) ||
+  //               (onlyPairingMode &&
+  //                   supportedBtPairingNames.any((suppBtPairName) {
+  //                     return scanResult.advertisementData.advName
+  //                         .contains(suppBtPairName);
+  //                   })));
+  //     }).toList();
+  //
+  //     debugPrint('found matching devices ${matchedResults.length}');
+  //
+  //     final availableDevices = matchedResults
+  //         .where((x) => x.rssi < 0 && x.advertisementData.connectable)
+  //         .map(
+  //           (x) => _convertToModel(
+  //             x.advertisementData.advName,
+  //             x.device,
+  //             supportedDevicePrototypes,
+  //             isPersonalDevice,
+  //           ),
+  //         )
+  //         .toList();
+  //
+  //     debugPrint('available devices ${matchedResults.length}');
+  //
+  //     onResult.call(availableDevices);
+  //
+  //     if (syncMode || FlutterBluePlus.isScanningNow == false) {
+  //       break;
+  //     }
+  //   }
+  // }
 
   DeviceCreateModel _convertToModel(
     String advertisementName,
@@ -527,7 +593,6 @@ class BtConnectionHelper {
     }
     return null;
   }
-
 
   Future<bool> isBTPermissionsPermanentlyDenied() async {
     if (!Platform.isAndroid) {
