@@ -305,11 +305,13 @@ class MeteringFirstScreen extends StatelessWidget with BottomSheetMixin {
                                       ),
                                       hasNavigationIcon: false,
                                       onTap: () async {
+                                        debugPrint(selectedMeasurementType.name);
                                         GoRouter.of(context).pushNamed<DeviceCreateModel?>(
                                           DeviceSearchRoute.name,
                                           pathParameters: {
                                             'userId': userAccount.id.toString(),
                                             'devicePurpose': DevicePurpose.addDevice.name,
+                                            'measurementType' : selectedMeasurementType.name,
                                           },
                                         ).then((final DeviceCreateModel? device) {
                                           if (device != null) {

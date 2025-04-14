@@ -7,6 +7,7 @@ import 'package:scalesoft_app/api/contracts/device/device_create_contract.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_event.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_state.dart';
 import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/repositories/device_repository.dart';
 import 'package:scalesoft_app/services/report_service.dart';
@@ -23,6 +24,7 @@ class RegisterDeviceBloc extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlo
   late final int _userId;
   late final bool _onlyPairingMode;
   late final bool _isPersonalDevice;
+  late final MeasurementType _measurementType;
   bool shouldRequestPermission = true;
   bool? _searchStarted;
 
@@ -33,11 +35,14 @@ class RegisterDeviceBloc extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlo
   ) : super(const RegisterDeviceBlocState.init()) {
     on<RegisterDeviceBlocEvent>((event, emit) async {
       await event.when(
-        init: (int userId, bool? onlyPairingMode, bool isPersonalDevice) async {
+        init: (int userId, MeasurementType measurementType, bool? onlyPairingMode, bool isPersonalDevice) async {
           await WakelockPlus.enable();
           _userId = userId;
+          _measurementType = measurementType;
           _onlyPairingMode = onlyPairingMode ?? false;
           _isPersonalDevice = isPersonalDevice;
+
+          debugPrint('selected measurement type: $measurementType');
 
           add(const RegisterDeviceBlocEvent.checkHwState());
         },
@@ -152,8 +157,9 @@ class RegisterDeviceBloc extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlo
               timestamp: DateTime.now().microsecondsSinceEpoch,
             ),
           );
+
           _btConnectionHelper.searchDevicesByService(
-            serviceUuids: [bloodPressureServiceUuid, heartRateServiceUuid],
+            serviceUuids: [measurementTypeToUUid[_measurementType]!],
             onlyPairingMode: _onlyPairingMode,
             userId: _userId,
             isPersonalDevice: _isPersonalDevice,

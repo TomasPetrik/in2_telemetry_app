@@ -2,6 +2,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/model/device_create_model.dart';
+import 'package:scalesoft_app/model/device_info.dart';
 
 part 'omron_connection_bloc_event.freezed.dart';
 
@@ -21,5 +22,8 @@ class OmronConnectionBlocEvent with _$OmronConnectionBlocEvent {
   const factory OmronConnectionBlocEvent.stopSearch() = _StopSearch;
 
   const factory OmronConnectionBlocEvent.searchDevice() = _SearchDevice;
+  const factory OmronConnectionBlocEvent.connectDevice() = _ConnectDevice;
+  const factory OmronConnectionBlocEvent.pairDevice() = _PairDevice;
+  const factory OmronConnectionBlocEvent.loadMeasurement() = _LoadMeasurement;
 
 }

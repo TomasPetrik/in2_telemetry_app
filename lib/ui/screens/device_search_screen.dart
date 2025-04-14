@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_event.dart';
 import 'package:scalesoft_app/bloc/register_device/register_device_bloc_state.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -26,10 +27,12 @@ class DeviceSearchScreen extends StatefulWidget {
     super.key,
     required this.userId,
     required this.devicePurpose,
+    required this.measurementType,
   });
 
   final int userId;
   final DevicePurpose devicePurpose;
+  final MeasurementType measurementType;
 
   @override
   State<DeviceSearchScreen> createState() => _DeviceSearchScreenState();
@@ -84,6 +87,7 @@ class _DeviceSearchScreenState extends State<DeviceSearchScreen>
                     onlyPairingMode:
                         widget.devicePurpose == DevicePurpose.addDevice,
                     isPersonalDevice: true,
+                    measurementType: widget.measurementType,
                   ),
                 ),
               listener: (BuildContext context, RegisterDeviceBlocState state) {

@@ -37,6 +37,8 @@ class OmronConnectionBloc
   late final MeasurementType _measurementType;
   bool shouldRequestPermission = true;
   bool? _searchStarted;
+  bool tryConnect = false;
+  BluetoothDevice? selectedBlDevice;
 
   bool get reqModelPairing =>
       _device?.prototype.requiresPairing == true && _device?.isPaired != true;
@@ -176,9 +178,9 @@ class OmronConnectionBloc
         },
 
         searchDevice: () async {
-          final measurementUuid = Guid('2A35');
-          debugPrint("paired: ${_device!.isPaired}");
-          debugPrint("address: ${_device!.bluetoothAddress}");
+          tryConnect = true;
+          _btConnectionHelper.syncMode = true;
+
           _reportsService.trackEvent(
             userId: _userId,
             severity: LogSeverity.info,
@@ -190,8 +192,7 @@ class OmronConnectionBloc
             ),
           );
 
-          debugPrint("searching");
-          debugPrint(_measurementType.toString());
+          // debugPrint(_measurementType.toString());
           var scanResultStream =
               FlutterBluePlus.onScanResults.listenAndBuffer();
 
@@ -199,26 +200,15 @@ class OmronConnectionBloc
             FlutterBluePlus.startScan();
           }
 
-          BluetoothDevice? selectedBlDevice;
-
           await scanResultStream.firstWhere(
             (results) {
               if (results.isEmpty) {
                 return false;
               }
-              ScanResult? scanResult;
-
-              scanResult = results.firstWhereOrNull(
-                (result) => result.advertisementData.advName.contains(
-                  _device!.deviceIdentifier,
-                )
-              );
-
-              // for (final result in results) {
-              //   debugPrint(
-              //     "search result: ${result.advertisementData.advName}",
-              //   );
-              // }
+              ScanResult? scanResult = results.firstWhereOrNull(
+                  (result) => result.advertisementData.advName.contains(
+                        _device!.deviceIdentifier,
+                      ));
               if (scanResult == null) {
                 return false;
               }
@@ -234,18 +224,35 @@ class OmronConnectionBloc
           if (selectedBlDevice == null) {
             emit(
               OmronConnectionState.notFound(
-                  timestamp: DateTime.now().microsecondsSinceEpoch,),
+                timestamp: DateTime.now().microsecondsSinceEpoch,
+              ),
             );
             return;
           }
 
-          debugPrint("connecting device");
-          while (selectedBlDevice!.isDisconnected) {
-            await selectedBlDevice!.connect(autoConnect: false);
-            if (selectedBlDevice!.isDisconnected) {
-              await Future.delayed(const Duration(milliseconds: 100));
+          late StreamSubscription stateSubscription;
+          stateSubscription = selectedBlDevice!.connectionState.listen((state) {
+            if (!tryConnect) {
+              stateSubscription.cancel();
+              return;
             }
-          }
+            if (state == BluetoothConnectionState.connected) {
+              if (reqModelPairing) {
+                add(const OmronConnectionBlocEvent.pairDevice());
+              } else {
+                add(const OmronConnectionBlocEvent.loadMeasurement());
+              }
+            }
+            if (state == BluetoothConnectionState.disconnected) {
+              add(const OmronConnectionBlocEvent.connectDevice());
+            }
+          });
+        },
+
+        connectDevice: () async {
+          debugPrint("connecting device");
+          await selectedBlDevice!.connect(autoConnect: false);
+
           _reportsService.trackEvent(
             userId: _userId,
             severity: LogSeverity.info,
@@ -256,7 +263,14 @@ class OmronConnectionBloc
               timestamp: DateTime.now().microsecondsSinceEpoch,
             ),
           );
-          debugPrint("connected device");
+        },
+
+        pairDevice: () async {
+          // emit(
+          //   OmronConnectionState.pairing(
+          //       timestamp: DateTime.now().microsecondsSinceEpoch
+          //   ),
+          // );
           var deviceInfo =
               await _btConnectionHelper.requestDeviceInfo(selectedBlDevice!);
           if (deviceInfo == null) {
@@ -271,88 +285,45 @@ class OmronConnectionBloc
             );
             return;
           }
+          if (reqModelPairing) {
+            _device =
+                await _deviceDbProvider.markDeviceAsPaired(_userId, _device!);
+            debugPrint("marked device as paired");
 
-          if (!_device!.isPaired){
-            _device = await _deviceDbProvider.markDeviceAsPaired(_userId, _device!);
-            debugPrint("got device info");
-            debugPrint(_device!.prototype.remoteId.toString());
             emit(
               OmronConnectionState.paired(
                 timestamp: DateTime.now().microsecondsSinceEpoch,
                 deviceInfo: deviceInfo,
               ),
             );
+            tryConnect = false;
+            await selectedBlDevice!.connectionState.firstWhere(
+                (state) => state == BluetoothConnectionState.disconnected);
             add(const OmronConnectionBlocEvent.searchDevice());
-            return;
           }
+        },
 
-          var services = await selectedBlDevice!.discoverServices();
-
-          var characteristics = services
-              .map((service) => service.characteristics)
-              .toList()
-              .expand((x) => x)
-              .toList();
-          var measurementCharacteristic = characteristics.firstWhereOrNull(
-            (chara) => chara.uuid == measurementUuid,
-          );
-          if (measurementCharacteristic == null) {
-            debugPrint("characteristic not found");
-            selectedBlDevice!.disconnect();
-            return;
-          }
-
-          var dataArray = List<List<int>>.empty(growable: true);
-          final done = Completer<void>();
-          final subscription =
-              measurementCharacteristic.onValueReceived.listen((data) {
-                dataArray.add(data);
-                debugPrint("got data");
-              },
-                onDone: done.complete,
-              );
-          // selectedBlDevice.cancelWhenDisconnected(measurementStream);
-          await measurementCharacteristic.setNotifyValue(true);
-
+        loadMeasurement: () async {
           emit(
-              OmronConnectionState.measuring(
-                timestamp: DateTime.now().microsecondsSinceEpoch,
-                deviceInfo: deviceInfo,
+            OmronConnectionState.syncing(
+              timestamp: DateTime.now().microsecondsSinceEpoch,
             ),
           );
+          var blConnection = BlConnection(selectedBlDevice!, _device!);
+          var hwMeasurementResult = await blConnection.getHwMeasurementResult();
 
-          await Future.delayed(Duration(seconds: 2),);
-
-          // await done.future;
-          subscription.cancel();
-
-
-
-          var btData = dataArray.last;
-          var measurementCreateModel = MeasurementCreateModel(
-            btData.toInt8(16, 17),
-            btData.toTimestamp(7, 14),
-            _measurementType,
-            bloodPressure: BloodPressureValue(
-              systolic: btData.toInt16(1, 3),
-              diastolic: btData.toInt16(3, 5),
-            ),
-            heartRate: btData.toInt16(14, 16),
-          );
-          var hwMeasurementResult = HwMeasurementResult(
-            resultState: ResultState.success,
-            measurementDt: DateTime.now(),
-            measurement: measurementCreateModel,
-          );
           debugPrint(
               "got measurement ${hwMeasurementResult.measurement.toString()}");
+          var deviceInfo =
+              await _btConnectionHelper.requestDeviceInfo(selectedBlDevice!);
           emit(
             OmronConnectionState.synced(
               timestamp: DateTime.now().microsecondsSinceEpoch,
               measurementResult: hwMeasurementResult,
-              deviceInfo: deviceInfo,
+              deviceInfo: deviceInfo!,
             ),
           );
+          tryConnect = false;
         },
         // var blConnection = BlConnection(selectedBlDevice);
         // await FlutterBluePlus.isScanning.where((val) => val == false).first;

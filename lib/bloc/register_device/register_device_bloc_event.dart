@@ -1,5 +1,6 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/model/user_model.dart';
 
@@ -9,6 +10,7 @@ part 'register_device_bloc_event.freezed.dart';
 class RegisterDeviceBlocEvent with _$RegisterDeviceBlocEvent {
   const factory RegisterDeviceBlocEvent.init({
     required int userId,
+    required MeasurementType measurementType,
     bool? onlyPairingMode,
     @Default(false)
     bool isPersonalDevice,
