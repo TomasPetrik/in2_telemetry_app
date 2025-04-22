@@ -9,7 +9,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/data/entities/enums/device_model_type.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/data/providers/device_prototype_db_provider.dart';
@@ -17,20 +16,13 @@ import 'package:scalesoft_app/utils/extensions/uint8_list_extension.dart';
 import 'package:scalesoft_app/model/device_info.dart';
 import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/model/device_prototype_model.dart';
-import 'package:scalesoft_app/model/hw_measurement_result.dart';
-import 'package:scalesoft_app/model/measurement_info.dart';
 
 final Guid deviceInfo = Guid('0000180a-0000-1000-8000-00805f9b34fb');
 final Guid recordAccessCpServiceUuid =
     Guid('5df5e817-a945-4f81-89c0-3d4e9759c07c');
 final Guid batteryService = Guid('0000180f-0000-1000-8000-00805f9b34fb');
-final Guid bloodPressureServiceUuid = Guid('1810');
-final Guid heartRateServiceUuid = Guid('180d');
-final Guid temperatureServiceUuid = Guid('1809');
 
-// enum SearchMode { pairing, syncing }
-
-var measurementTypeToUUid = {
+var measurementTypeToServiceUUid = {
   MeasurementType.bloodPressure: Guid('1810'),
   MeasurementType.heartRate: Guid('180d'),
   MeasurementType.temperature: Guid('1809'),
@@ -60,6 +52,8 @@ class BtConnectionHelper {
     final supportedBtNames =
         supportedDevicePrototypes.map((x) => x.bluetoothName).toList();
 
+    debugPrint(supportedBtNames.toString());
+
     final supportedBtPairingNames = supportedDevicePrototypes
         .map((x) => x.bluetoothPairingName)
         .nonNulls
@@ -70,7 +64,7 @@ class BtConnectionHelper {
     late List<ScanResult> matchedResults;
 
     await scanResultStream.firstWhere((scanResult) {
-      // debugPrint('found all ${scanResult.length} devices');
+      debugPrint('found all ${scanResult.length} devices');
 
       matchedResults = scanResult.where((scanResult) {
         return scanResult.advertisementData.serviceUuids.any(
@@ -88,7 +82,7 @@ class BtConnectionHelper {
                           .contains(suppBtPairName);
                     })));
       }).toList();
-      // debugPrint('found matching devices ${matchedResults.length}');
+      debugPrint('found matching devices ${matchedResults.length}');
 
       final availableDevices = matchedResults
           .where((x) => x.rssi < 0 && x.advertisementData.connectable)
@@ -102,7 +96,7 @@ class BtConnectionHelper {
           )
           .toList();
 
-      // debugPrint('available devices ${matchedResults.length}');
+      debugPrint('available devices ${matchedResults.length}');
 
       onResult.call(availableDevices);
       return syncMode;

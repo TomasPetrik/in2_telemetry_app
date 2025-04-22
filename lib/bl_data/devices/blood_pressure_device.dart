@@ -11,7 +11,7 @@ import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/model/measurement_create_model.dart';
 import 'package:scalesoft_app/utils/extensions/uint8_list_extension.dart';
 
-class OmronM7 implements DeviceConnector {
+class BloodPressureDevice implements DeviceConnector {
   final _measurementUuid = Guid('2A35');
 
   @override
@@ -27,22 +27,18 @@ class OmronM7 implements DeviceConnector {
     }
 
     var dataArray = List<List<int>>.empty(growable: true);
-    final done = Completer<void>();
     final subscription = measurementCharacteristic.onValueReceived.listen(
           (data) {
         dataArray.add(data);
         debugPrint("got data");
       },
-      onDone: done.complete,
     );
     // selectedBlDevice.cancelWhenDisconnected(measurementStream);
     await measurementCharacteristic.setNotifyValue(true);
 
-    await Future.delayed(
-      Duration(seconds: 2),
+    await Future.delayed(const Duration(seconds: 2),
     );
 
-    // await done.future;
     subscription.cancel();
 
     var btData = dataArray.last;

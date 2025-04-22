@@ -159,7 +159,7 @@ class RegisterDeviceBloc extends Bloc<RegisterDeviceBlocEvent, RegisterDeviceBlo
           );
 
           _btConnectionHelper.searchDevicesByService(
-            serviceUuids: [measurementTypeToUUid[_measurementType]!],
+            serviceUuids: [measurementTypeToServiceUUid[_measurementType]!],
             onlyPairingMode: _onlyPairingMode,
             userId: _userId,
             isPersonalDevice: _isPersonalDevice,

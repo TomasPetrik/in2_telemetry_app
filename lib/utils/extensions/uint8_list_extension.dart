@@ -1,6 +1,16 @@
+import 'dart:ffi';
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 
 extension Uint8ListExtension on List<int> {
+  int toInt32(int fromIndex, int toIndex) {
+    final bytes = Uint8List.fromList(sublist(fromIndex, toIndex).reversed.toList());
+    final buffer = bytes.buffer;
+    final bdata = ByteData.view(buffer);
+    return bdata.getInt32(0);
+  }
+
   int toInt16(int fromIndex, int toIndex) {
     final bytes = Uint8List.fromList(sublist(fromIndex, toIndex).reversed.toList());
     final buffer = bytes.buffer;
@@ -32,5 +42,14 @@ extension Uint8ListExtension on List<int> {
       seconds,
     );
     // return dateTime.toIso8601String();
+  }
+
+  double toFloat(int fromIndex){
+    var bytes = sublist(fromIndex, fromIndex + 4).reversed.toList();
+    final exponent = bytes[0].toSigned(8);
+    bytes[0] = 0;
+    final mantissa = bytes.reversed.toList().toInt32(0, 4);
+    var result = (pow(10, exponent) * mantissa.toDouble());
+    return double.parse(result.toStringAsFixed(1));
   }
 }

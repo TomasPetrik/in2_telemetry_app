@@ -29,7 +29,6 @@ class DeviceSearchRoute extends ApplicationRoute with PageBuilderMixin {
           final userId = int.parse(state.pathParameters['userId']!);
           final devicePurposeName = state.pathParameters['devicePurpose']!;
           final measurementTypeName = state.pathParameters['measurementType']!;
-          print('hhhhhhhhhh');
           final MeasurementType measurementType = MeasurementType.values.firstWhere(
                 (measurementType) => measurementType.name == measurementTypeName,
           );
