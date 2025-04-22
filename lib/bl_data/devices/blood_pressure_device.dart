@@ -55,7 +55,6 @@ class BloodPressureDevice implements DeviceConnector {
       ),
       heartRate: btData.toInt16(14, 16),
     );
-    print('hhhhhhh');
     return HwMeasurementResult(
       resultState: ResultState.success,
       measurementDt: DateTime.now(),
