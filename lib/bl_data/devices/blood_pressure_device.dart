@@ -34,11 +34,15 @@ class BloodPressureDevice implements DeviceConnector {
     );
     // selectedBlDevice.cancelWhenDisconnected(measurementStream);
     await measurementCharacteristic.setNotifyValue(true);
-
     await Future.delayed(const Duration(seconds: 2),
     );
-
     subscription.cancel();
+
+    if (dataArray.isEmpty){
+      debugPrint("no data received");
+      device.disconnect();
+      return HwMeasurementResult(resultState: ResultState.noData, measurementDt: DateTime.now());
+    }
 
     var btData = dataArray.last;
     var measurementCreateModel = MeasurementCreateModel(
@@ -51,6 +55,7 @@ class BloodPressureDevice implements DeviceConnector {
       ),
       heartRate: btData.toInt16(14, 16),
     );
+    print('hhhhhhh');
     return HwMeasurementResult(
       resultState: ResultState.success,
       measurementDt: DateTime.now(),

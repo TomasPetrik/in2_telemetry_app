@@ -221,7 +221,7 @@ class SyncedResult extends StatelessWidget {
                 GoRouter.of(context).pushReplacementNamed(
                   OmronFlowRoute.name,
                   queryParameters: {
-                    'userId': userId,
+                    'userId': userId.toString(),
                     'measurementType': measurementType.name,
                   },
                   extra: device,

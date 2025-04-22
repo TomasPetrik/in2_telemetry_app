@@ -333,6 +333,7 @@ class OmronConnectionBloc
               BlConnection(selectedBlDevice!, _device!, _measurementType);
           var hwMeasurementResult = await blConnection.getHwMeasurementResult();
 
+
           if (hwMeasurementResult.resultState != ResultState.success) {
             emit(
               OmronConnectionState.synced(
