@@ -2,6 +2,7 @@ import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_bloc.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_bloc_event.dart';
 import 'package:scalesoft_app/bloc/omron/omron_connection_state.dart';
@@ -194,7 +195,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> with BottomSheetMixin
                       return DeviceProgress(
                         header: ProcessItem(
                           label: reqModelPairing
-                              ? localization.find_device_screen_searching_tonometer
+                              ? localization.find_device_screen_searching_tonometer(getDeviceTypeByMeasurementType(device))
                               : localization.find_device_screen_waiting_on_measurement,
                           processType: ProcessType.inProgress,
                         ),
@@ -206,7 +207,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> with BottomSheetMixin
                     connected: (_) {
                       return DeviceProgress(
                         header: ProcessItem(
-                          label: localization.find_device_screen_device_connected,
+                          label: localization.find_device_screen_device_connected(getDeviceTypeByMeasurementType(device)),
                           processType: ProcessType.connected,
                         ),
                         device: device,
@@ -226,7 +227,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> with BottomSheetMixin
                     pairing: (_) {
                       return DeviceProgress(
                         header: ProcessItem(
-                          label: localization.find_device_screen_pairing_device,
+                          label: localization.find_device_screen_pairing_device(getDeviceTypeByMeasurementType(device)),
                           processType: ProcessType.inProgress,
                         ),
                         device: device,
@@ -237,7 +238,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> with BottomSheetMixin
                     paired: (_, deviceInfo) {
                       return DeviceProgress(
                         header: ProcessItem(
-                          label: localization.find_device_screen_paired_device,
+                          label: localization.find_device_screen_paired_device(getDeviceTypeByMeasurementType(device)),
                           processType: ProcessType.done,
                         ),
                         device: device,
@@ -261,7 +262,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> with BottomSheetMixin
                     ) {
                       return DeviceProgress(
                         header: ProcessItem(
-                          label: localization.find_device_screen_sync_results,
+                          label: localization.find_device_screen_sync_results(getDeviceTypeByMeasurementType(device)),
                           processType: ProcessType.inProgress,
                         ),
                         device: device,

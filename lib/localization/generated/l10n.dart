@@ -1,7 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -19,17 +18,20 @@ class I10n {
   static I10n? _current;
 
   static I10n get current {
-    assert(_current != null,
-        'No instance of I10n was loaded. Try to initialize the I10n delegate before accessing I10n.current.');
+    assert(
+      _current != null,
+      'No instance of I10n was loaded. Try to initialize the I10n delegate before accessing I10n.current.',
+    );
     return _current!;
   }
 
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<I10n> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false)
-        ? locale.languageCode
-        : locale.toString();
+    final name =
+        (locale.countryCode?.isEmpty ?? false)
+            ? locale.languageCode
+            : locale.toString();
     final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
@@ -42,8 +44,10 @@ class I10n {
 
   static I10n of(BuildContext context) {
     final instance = I10n.maybeOf(context);
-    assert(instance != null,
-        'No instance of I10n present in the widget tree. Did you add I10n.delegate in localizationsDelegates?');
+    assert(
+      instance != null,
+      'No instance of I10n present in the widget tree. Did you add I10n.delegate in localizationsDelegates?',
+    );
     return instance!;
   }
 
@@ -74,32 +78,17 @@ class I10n {
 
   /// `Zrušit`
   String get common_cancel {
-    return Intl.message(
-      'Zrušit',
-      name: 'common_cancel',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Zrušit', name: 'common_cancel', desc: '', args: []);
   }
 
   /// `Potvrdit`
   String get common_confirm {
-    return Intl.message(
-      'Potvrdit',
-      name: 'common_confirm',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Potvrdit', name: 'common_confirm', desc: '', args: []);
   }
 
   /// `Zavřít`
   String get common_close {
-    return Intl.message(
-      'Zavřít',
-      name: 'common_close',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Zavřít', name: 'common_close', desc: '', args: []);
   }
 
   /// `Měření`
@@ -114,12 +103,7 @@ class I10n {
 
   /// `Měřit`
   String get common_measure {
-    return Intl.message(
-      'Měřit',
-      name: 'common_measure',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Měřit', name: 'common_measure', desc: '', args: []);
   }
 
   /// `Měřit teď`
@@ -184,12 +168,7 @@ class I10n {
 
   /// `Uložit`
   String get common_save {
-    return Intl.message(
-      'Uložit',
-      name: 'common_save',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Uložit', name: 'common_save', desc: '', args: []);
   }
 
   /// `Nesprávná hodnota`
@@ -264,42 +243,22 @@ class I10n {
 
   /// `Od`
   String get common_from {
-    return Intl.message(
-      'Od',
-      name: 'common_from',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Od', name: 'common_from', desc: '', args: []);
   }
 
   /// `Do`
   String get common_to {
-    return Intl.message(
-      'Do',
-      name: 'common_to',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Do', name: 'common_to', desc: '', args: []);
   }
 
   /// `Postup`
   String get common_procedure {
-    return Intl.message(
-      'Postup',
-      name: 'common_procedure',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Postup', name: 'common_procedure', desc: '', args: []);
   }
 
   /// `Dnes`
   String get common_today {
-    return Intl.message(
-      'Dnes',
-      name: 'common_today',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Dnes', name: 'common_today', desc: '', args: []);
   }
 
   /// `v {atTime}`
@@ -362,23 +321,14 @@ class I10n {
 
   /// `Celkem`
   String get common_overall {
-    return Intl.message(
-      'Celkem',
-      name: 'common_overall',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Celkem', name: 'common_overall', desc: '', args: []);
   }
 
   /// `{whenDayName, select, today{dnešek} yesterday{včerejšek} other{zvolené období}}`
   String common_when_day_name(Object whenDayName) {
     return Intl.select(
       whenDayName,
-      {
-        'today': 'dnešek',
-        'yesterday': 'včerejšek',
-        'other': 'zvolené období',
-      },
+      {'today': 'dnešek', 'yesterday': 'včerejšek', 'other': 'zvolené období'},
       name: 'common_when_day_name',
       desc: 'When day names',
       args: [whenDayName],
@@ -581,32 +531,17 @@ class I10n {
 
   /// `Měření`
   String get tabs_measurement {
-    return Intl.message(
-      'Měření',
-      name: 'tabs_measurement',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Měření', name: 'tabs_measurement', desc: '', args: []);
   }
 
   /// `Výsledky`
   String get tabs_results {
-    return Intl.message(
-      'Výsledky',
-      name: 'tabs_results',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Výsledky', name: 'tabs_results', desc: '', args: []);
   }
 
   /// `Více`
   String get tabs_more {
-    return Intl.message(
-      'Více',
-      name: 'tabs_more',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Více', name: 'tabs_more', desc: '', args: []);
   }
 
   /// `Přihlášené účty`
@@ -1131,7 +1066,9 @@ class I10n {
 
   /// `Platný od {fromDate} do {toDate}`
   String user_details_screen_plan_active_from_to_date(
-      String fromDate, String toDate) {
+    String fromDate,
+    String toDate,
+  ) {
     return Intl.message(
       'Platný od $fromDate do $toDate',
       name: 'user_details_screen_plan_active_from_to_date',
@@ -1152,7 +1089,9 @@ class I10n {
 
   /// `Plánované měření začíná {fromTime} v {atTime}`
   String care_plan_detail_screen_fulfillment_evaluation_valid_from(
-      String fromTime, String atTime) {
+    String fromTime,
+    String atTime,
+  ) {
     return Intl.message(
       'Plánované měření začíná $fromTime v $atTime',
       name: 'care_plan_detail_screen_fulfillment_evaluation_valid_from',
@@ -1273,7 +1212,9 @@ class I10n {
 
   /// `Začíná {fromTime}\nKončí {toTime}`
   String dashboard_screen_measurement_periodical_interval(
-      String fromTime, String toTime) {
+    String fromTime,
+    String toTime,
+  ) {
     return Intl.message(
       'Začíná $fromTime\nKončí $toTime',
       name: 'dashboard_screen_measurement_periodical_interval',
@@ -1651,7 +1592,9 @@ class I10n {
 
   /// `Uživateli {name} byl upraven plán pro měření {measurementType}.`
   String notification_widget_plan_changed_for_user_desc(
-      String name, String measurementType) {
+    String name,
+    String measurementType,
+  ) {
     return Intl.message(
       'Uživateli $name byl upraven plán pro měření $measurementType.',
       name: 'notification_widget_plan_changed_for_user_desc',
@@ -1910,13 +1853,13 @@ class I10n {
     );
   }
 
-  /// `Hledání tlakoměru...`
-  String get find_device_screen_searching_tonometer {
+  /// `Hledání {deviceType}u...`
+  String find_device_screen_searching_tonometer(String deviceType) {
     return Intl.message(
-      'Hledání tlakoměru...',
+      'Hledání ${deviceType}u...',
       name: 'find_device_screen_searching_tonometer',
       desc: '',
-      args: [],
+      args: [deviceType],
     );
   }
 
@@ -1930,43 +1873,43 @@ class I10n {
     );
   }
 
-  /// `Tlakoměr připojen`
-  String get find_device_screen_device_connected {
+  /// `{deviceType} připojen`
+  String find_device_screen_device_connected(String deviceType) {
     return Intl.message(
-      'Tlakoměr připojen',
+      '$deviceType připojen',
       name: 'find_device_screen_device_connected',
       desc: '',
-      args: [],
+      args: [deviceType],
     );
   }
 
-  /// `Probíhá přenos dat z tlakoměru...`
-  String get find_device_screen_sync_results {
+  /// `Probíhá přenos dat z {deviceType}u...`
+  String find_device_screen_sync_results(String deviceType) {
     return Intl.message(
-      'Probíhá přenos dat z tlakoměru...',
+      'Probíhá přenos dat z ${deviceType}u...',
       name: 'find_device_screen_sync_results',
       desc: '',
-      args: [],
+      args: [deviceType],
     );
   }
 
-  /// `Probíhá párování s tlakoměrem...`
-  String get find_device_screen_pairing_device {
+  /// `Probíhá párování s {deviceType}em...`
+  String find_device_screen_pairing_device(String deviceType) {
     return Intl.message(
-      'Probíhá párování s tlakoměrem...',
+      'Probíhá párování s ${deviceType}em...',
       name: 'find_device_screen_pairing_device',
       desc: '',
-      args: [],
+      args: [deviceType],
     );
   }
 
-  /// `Tlakoměr úspěšně spárován`
-  String get find_device_screen_paired_device {
+  /// `{deviceType} úspěšně spárován`
+  String find_device_screen_paired_device(String deviceType) {
     return Intl.message(
-      'Tlakoměr úspěšně spárován',
+      '$deviceType úspěšně spárován',
       name: 'find_device_screen_paired_device',
       desc: '',
-      args: [],
+      args: [deviceType],
     );
   }
 
@@ -1990,33 +1933,36 @@ class I10n {
     );
   }
 
-  /// `Párování s tlakoměrem`
-  String get find_device_screen_step3_p {
+  /// `Párování s {deviceType}em`
+  String find_device_screen_step3_p(String deviceType) {
     return Intl.message(
-      'Párování s tlakoměrem',
+      'Párování s ${deviceType}em',
       name: 'find_device_screen_step3_p',
       desc: '',
-      args: [],
+      args: [deviceType],
     );
   }
 
-  /// `Vypněte tlakoměr pomocí tlačítka {actionButtonLabel}, poté spusťte měření dalším stisknutím tlačítka {actionButtonLabel} a počkejte na jeho dokončení`
-  String find_device_screen_step4_p(String actionButtonLabel) {
+  /// `Vypněte {deviceType} pomocí tlačítka {actionButtonLabel}, poté spusťte měření dalším stisknutím tlačítka {actionButtonLabel} a počkejte na jeho dokončení`
+  String find_device_screen_step4_p(
+    String deviceType,
+    String actionButtonLabel,
+  ) {
     return Intl.message(
-      'Vypněte tlakoměr pomocí tlačítka $actionButtonLabel, poté spusťte měření dalším stisknutím tlačítka $actionButtonLabel a počkejte na jeho dokončení',
+      'Vypněte $deviceType pomocí tlačítka $actionButtonLabel, poté spusťte měření dalším stisknutím tlačítka $actionButtonLabel a počkejte na jeho dokončení',
       name: 'find_device_screen_step4_p',
       desc: '',
-      args: [actionButtonLabel],
+      args: [deviceType, actionButtonLabel],
     );
   }
 
-  /// `Počkejte na přenesení výsledků z tlakoměru`
-  String get find_device_screen_step5_p {
+  /// `Počkejte na přenesení výsledků z {deviceType}u`
+  String find_device_screen_step5_p(String deviceType) {
     return Intl.message(
-      'Počkejte na přenesení výsledků z tlakoměru',
+      'Počkejte na přenesení výsledků z ${deviceType}u',
       name: 'find_device_screen_step5_p',
       desc: '',
-      args: [],
+      args: [deviceType],
     );
   }
 
@@ -2030,13 +1976,13 @@ class I10n {
     );
   }
 
-  /// `Spusťte na tlakoměru měření pomocí tlačítka {actionButtonLabel} a počkejte na jeho dokončení`
-  String find_device_screen_step2(String actionButtonLabel) {
+  /// `Spusťte na {deviceType}u měření pomocí tlačítka {actionButtonLabel} a počkejte na jeho dokončení`
+  String find_device_screen_step2(String deviceType, String actionButtonLabel) {
     return Intl.message(
-      'Spusťte na tlakoměru měření pomocí tlačítka $actionButtonLabel a počkejte na jeho dokončení',
+      'Spusťte na ${deviceType}u měření pomocí tlačítka $actionButtonLabel a počkejte na jeho dokončení',
       name: 'find_device_screen_step2',
       desc: '',
-      args: [actionButtonLabel],
+      args: [deviceType, actionButtonLabel],
     );
   }
 
@@ -2050,23 +1996,23 @@ class I10n {
     );
   }
 
-  /// `Počkejte na přenesení výsledků z tlakoměru`
-  String get find_device_screen_step4 {
+  /// `Počkejte na přenesení výsledků z {deviceType}u`
+  String find_device_screen_step4(String deviceType) {
     return Intl.message(
-      'Počkejte na přenesení výsledků z tlakoměru',
+      'Počkejte na přenesení výsledků z ${deviceType}u',
       name: 'find_device_screen_step4',
       desc: '',
-      args: [],
+      args: [deviceType],
     );
   }
 
-  /// `Stránky nemocnice o tlakoměru`
-  String get find_device_screen_device_reference {
+  /// `Stránky nemocnice o {deviceType}u`
+  String find_device_screen_device_reference(String deviceType) {
     return Intl.message(
-      'Stránky nemocnice o tlakoměru',
+      'Stránky nemocnice o ${deviceType}u',
       name: 'find_device_screen_device_reference',
       desc: '',
-      args: [],
+      args: [deviceType],
     );
   }
 
@@ -2434,7 +2380,10 @@ class I10n {
 
   /// `{frequency} krát od {fromTime} do {toTime}`
   String notification_periodical_frequency_from_to(
-      int frequency, String fromTime, String toTime) {
+    int frequency,
+    String fromTime,
+    String toTime,
+  ) {
     return Intl.message(
       '$frequency krát od $fromTime do $toTime',
       name: 'notification_periodical_frequency_from_to',
@@ -2671,15 +2620,43 @@ class I10n {
       args: [],
     );
   }
+
+  /// `Teploměr`
+  String get device_thermometer {
+    return Intl.message(
+      'Teploměr',
+      name: 'device_thermometer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Oxymetr`
+  String get device_oximetry {
+    return Intl.message('Oxymetr', name: 'device_oximetry', desc: '', args: []);
+  }
+
+  /// `Tlakoměr`
+  String get device_tonometer {
+    return Intl.message(
+      'Tlakoměr',
+      name: 'device_tonometer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Měřák`
+  String get device_generic {
+    return Intl.message('Měřák', name: 'device_generic', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<I10n> {
   const AppLocalizationDelegate();
 
   List<Locale> get supportedLocales {
-    return const <Locale>[
-      Locale.fromSubtags(languageCode: 'cs'),
-    ];
+    return const <Locale>[Locale.fromSubtags(languageCode: 'cs')];
   }
 
   @override
