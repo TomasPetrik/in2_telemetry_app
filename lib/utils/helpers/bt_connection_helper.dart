@@ -12,10 +12,10 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:scalesoft_app/data/entities/enums/device_model_type.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/data/providers/device_prototype_db_provider.dart';
-import 'package:scalesoft_app/utils/extensions/uint8_list_extension.dart';
-import 'package:scalesoft_app/model/device_info.dart';
 import 'package:scalesoft_app/model/device_create_model.dart';
+import 'package:scalesoft_app/model/device_info.dart';
 import 'package:scalesoft_app/model/device_prototype_model.dart';
+import 'package:scalesoft_app/utils/extensions/uint8_list_extension.dart';
 
 final Guid deviceInfo = Guid('0000180a-0000-1000-8000-00805f9b34fb');
 final Guid recordAccessCpServiceUuid =

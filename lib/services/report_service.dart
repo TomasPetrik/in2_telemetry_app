@@ -1,15 +1,16 @@
 import 'dart:io';
+
 import 'package:collection/collection.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:scalesoft_app/api/contracts/logs/logs_contract.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
 import 'package:scalesoft_app/data/providers/log_db_provider.dart';
 import 'package:scalesoft_app/mapper/log_event_mapper.dart';
 import 'package:scalesoft_app/repositories/account_repository.dart';
-import 'package:scalesoft_app/constants/configuration_constants.dart';
 
 @preResolve
 @lazySingleton

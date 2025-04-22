@@ -1,8 +1,8 @@
 import 'package:scalesoft_app/data/app_database.dart';
+import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_evaluation_item.dart';
 import 'package:scalesoft_app/ui/dialogs/results_time_dialog.dart';
 import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:scalesoft_app/utils/helpers/results_helper.dart';
-import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_evaluation_item.dart';
 
 class EvaluationPlanHelper {
   static int getProgressFromFullPlanEvaluation({

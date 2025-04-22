@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scalesoft_app/model/measurement_create_model.dart';
-import 'package:scalesoft_app/model/measurement_info.dart';
 
 part 'hw_measurement_result.freezed.dart';
 

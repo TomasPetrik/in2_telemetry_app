@@ -1,5 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:drift/drift.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:scalesoft_app/data/entities/enums/overall_health_state.dart';
 
 part 'overall_health_thresholds.g.dart';

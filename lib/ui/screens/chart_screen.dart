@@ -8,6 +8,7 @@ import 'package:scalesoft_app/bloc/calendar/calendar_bloc_state.dart';
 import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc.dart';
 import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc_event.dart';
 import 'package:scalesoft_app/bloc/chart_bloc/chart_bloc_state.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/data/providers/care_plan_db_provider.dart';
 import 'package:scalesoft_app/model/user_model.dart';
@@ -15,7 +16,6 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/chart_widget.dart';
 import 'package:scalesoft_app/ui/widgets/scale_app_bar.dart';
-import 'package:scalesoft_app/constants/configuration_constants.dart';
 
 class ChartScreen extends StatefulWidget {
   const ChartScreen({

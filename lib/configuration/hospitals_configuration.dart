@@ -1,6 +1,6 @@
 import 'package:scalesoft_app/api/model/auth_data.dart';
-import 'package:scalesoft_app/model/hospital.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
+import 'package:scalesoft_app/model/hospital.dart';
 
 class HospitalsConfiguration {
   static List<Hospital> hospitals = [

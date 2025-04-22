@@ -3,9 +3,9 @@ import 'package:scalesoft_app/api/client/time_settings_api_client.dart';
 import 'package:scalesoft_app/api/contracts/care_pan/care_plan_template_contract.dart';
 import 'package:scalesoft_app/api/contracts/time_settings/time_setting_contract.dart';
 import 'package:scalesoft_app/api/contracts/time_settings/time_settings_update_contract.dart';
+import 'package:scalesoft_app/api/interceptors/token_interceptor.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/auth_token.dart';
 import 'package:scalesoft_app/storage/user_cubit.dart';
-import 'package:scalesoft_app/api/interceptors/token_interceptor.dart';
 
 @singleton
 class TimeSettingsRepository {

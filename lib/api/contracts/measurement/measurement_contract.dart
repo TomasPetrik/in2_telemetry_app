@@ -1,10 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scalesoft_app/api/contracts/device/source_device_contract.dart';
+import 'package:scalesoft_app/api/contracts/device/source_device_with_metadata_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/blood_pressure_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/overall_health_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/shortness_of_breath_contract.dart';
-import 'package:scalesoft_app/api/contracts/device/source_device_with_metadata_contract.dart';
 import 'package:scalesoft_app/data/app_database.dart';
 
 part 'measurement_contract.g.dart';

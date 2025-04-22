@@ -1,5 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:drift/drift.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 
 part 'auth_token.g.dart';

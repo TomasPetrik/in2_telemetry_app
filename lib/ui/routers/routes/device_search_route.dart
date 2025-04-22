@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:go_router/go_router.dart';
-import 'package:path/path.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
 import 'package:scalesoft_app/ui/screens/device_search_screen.dart';

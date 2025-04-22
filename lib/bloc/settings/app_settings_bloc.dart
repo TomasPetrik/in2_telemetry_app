@@ -1,14 +1,13 @@
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/bloc/settings/app_settings_bloc_event.dart';
 import 'package:scalesoft_app/bloc/user_content/content_bloc.dart';
 import 'package:scalesoft_app/bloc/user_content/content_event.dart';
 import 'package:scalesoft_app/data/app_database.dart';
-import 'package:scalesoft_app/globals.dart';
 import 'package:scalesoft_app/data/providers/settings_db_provider.dart';
+import 'package:scalesoft_app/globals.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/utils/helpers/appearance_helper.dart';
 

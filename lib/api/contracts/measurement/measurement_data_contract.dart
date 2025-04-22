@@ -1,8 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:scalesoft_app/api/contracts/measurement_type_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/composed_value_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/overall_health_contract.dart';
 import 'package:scalesoft_app/api/contracts/measurement/shortness_of_breath_contract.dart';
+import 'package:scalesoft_app/api/contracts/measurement_type_contract.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/utils/extensions/date_extensions.dart';
 

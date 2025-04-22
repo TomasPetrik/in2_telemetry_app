@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/data/providers/settings_db_provider.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';

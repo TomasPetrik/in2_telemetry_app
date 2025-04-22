@@ -1,5 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:drift/drift.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'temperature_thresholds.g.dart';
 

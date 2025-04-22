@@ -1,9 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/constants/permissions.dart';
 import 'package:scalesoft_app/cubit/device_management/device_management_state.dart';
-import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/data/providers/device_db_provider.dart';
 import 'package:scalesoft_app/data/providers/device_prototype_db_provider.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:scalesoft_app/bl_data/devices/device_connector.dart';
 import 'package:scalesoft_app/bl_data/devices/blood_pressure_device.dart';
+import 'package:scalesoft_app/bl_data/devices/device_connector.dart';
 import 'package:scalesoft_app/bl_data/devices/thermometer_device.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/model/device_create_model.dart';

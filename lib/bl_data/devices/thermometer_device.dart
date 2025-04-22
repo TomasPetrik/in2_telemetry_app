@@ -1,12 +1,10 @@
 import 'dart:async';
 
-import 'package:async/async.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:scalesoft_app/bl_data/devices/device_connector.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
-import 'package:scalesoft_app/data/entities/json_entities/measurement/blood_pressure_value.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/model/measurement_create_model.dart';
 import 'package:scalesoft_app/utils/extensions/uint8_list_extension.dart';

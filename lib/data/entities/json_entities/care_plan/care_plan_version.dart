@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:scalesoft_app/data/entities/enums/time_unit.dart';
 import 'package:scalesoft_app/data/entities/enums/week_day.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/timing_day_when.dart';
-import 'package:scalesoft_app/data/entities/enums/time_unit.dart';
 
 part 'care_plan_version.g.dart';
 

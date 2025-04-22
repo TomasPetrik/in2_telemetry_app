@@ -18,7 +18,6 @@ import 'package:scalesoft_app/data/entities/json_entities/measurement_thresholds
 import 'package:scalesoft_app/data/entities/json_entities/measurement_thresholds/shortness_of_breath_thresholds.dart';
 import 'package:scalesoft_app/data/entities/json_entities/measurement_thresholds/temperature_thresholds.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/measurement_thresholds.dart';
-
 import 'package:scalesoft_app/mapper/thresholds_mapper.auto_mappr.dart';
 
 @injectable

@@ -1,8 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
-import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 import 'package:scalesoft_app/ui/viewModels/measurement_result_view_model.dart';
+import 'package:scalesoft_app/utils/helpers/care_plan_helper.dart';
 
 part 'care_plan_bloc_state.freezed.dart';
 
