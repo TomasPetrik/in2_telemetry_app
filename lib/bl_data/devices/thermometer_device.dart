@@ -25,16 +25,23 @@ class ThermometerDevice extends DeviceConnector {
           resultState: ResultState.noData, measurementDt: DateTime.now());
     }
 
+    var lastReceived = DateTime.now();
     var dataArray = List<List<int>>.empty(growable: true);
     final subscription = measurementCharacteristic.onValueReceived.listen(
       (data) {
         dataArray.add(data);
-        debugPrint("got data");
+        lastReceived = DateTime.now();
+        // debugPrint("got data");
       },
     );
     await measurementCharacteristic.setNotifyValue(true);
 
-    await Future.delayed(const Duration(seconds: 10),);
+    // Wait until no incoming measurement in 0.5 second
+    while (DateTime.now().difference(lastReceived).inMilliseconds < 500){
+      await Future.delayed(const Duration(milliseconds: 200));
+      // debugPrint('time diff: ${DateTime.now().difference(lastReceived).inMilliseconds}');
+    }
+
     await subscription.cancel();
 
     var btData = dataArray.last;

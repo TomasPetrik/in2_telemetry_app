@@ -29,7 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Výsledky měření ${measurementType} ${unitType}";
 
   static String m3(actionButtonType) =>
-      "${Intl.select(actionButtonType, {'regular': 'akčního tlačítka', 'startButton': 'START|STOP', 'other': ' '})}";
+      "${Intl.select(actionButtonType, {'regular': 'zapnout/vypnout', 'startButton': 'START|STOP', 'other': ' '})}";
 
   static String m4(atTime) => "Přidáno ${atTime}";
 

@@ -1,6 +1,7 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:scalesoft_app/bl_data/devices/blood_pressure_device.dart';
 import 'package:scalesoft_app/bl_data/devices/device_connector.dart';
+import 'package:scalesoft_app/bl_data/devices/oximeter_device.dart';
 import 'package:scalesoft_app/bl_data/devices/thermometer_device.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/model/device_create_model.dart';
@@ -27,6 +28,8 @@ class BlConnection {
         this.connector = ThermometerDevice();
       case MeasurementType.bloodPressure:
         this.connector = BloodPressureDevice();
+      case MeasurementType.oxygenSaturation:
+        this.connector = OximeterDevice();
         default:
           UnimplementedError("Device connector not implemented for this measurement type");
     }

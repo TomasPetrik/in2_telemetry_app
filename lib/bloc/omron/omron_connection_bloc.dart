@@ -34,6 +34,7 @@ class OmronConnectionBloc
   bool? _searchStarted;
   bool tryConnect = false;
   BluetoothDevice? selectedBlDevice;
+  late StreamSubscription stateSubscription;
 
   bool get reqModelPairing =>
       _device?.prototype.requiresPairing == true && _device?.isPaired != true;
@@ -226,11 +227,9 @@ class OmronConnectionBloc
           }
 
           tryConnect = true;
-
-          late StreamSubscription stateSubscription;
-          stateSubscription = selectedBlDevice!.connectionState.listen((state) {
+          stateSubscription =
+              selectedBlDevice!.connectionState.listen((state) async {
             if (!tryConnect) {
-              stateSubscription.cancel();
               return;
             }
             if (state == BluetoothConnectionState.connected) {
@@ -241,6 +240,7 @@ class OmronConnectionBloc
               }
             }
             if (state == BluetoothConnectionState.disconnected) {
+              // await Future.delayed(const Duration(seconds: 1));
               add(const OmronConnectionBlocEvent.connectDevice());
             }
           });
@@ -263,12 +263,9 @@ class OmronConnectionBloc
         },
 
         pairDevice: () async {
-          // emit(
-          //   OmronConnectionState.pairing(
-          //       timestamp: DateTime.now().microsecondsSinceEpoch
-          //   ),
-          // );
           var deviceInfo =
+              await _btConnectionHelper.requestDeviceInfo(selectedBlDevice!);
+          deviceInfo ??=
               await _btConnectionHelper.requestDeviceInfo(selectedBlDevice!);
           if (deviceInfo == null) {
             emit(
@@ -282,30 +279,34 @@ class OmronConnectionBloc
             );
             return;
           }
-          if (reqModelPairing) {
-            emit(
-              OmronConnectionState.paired(
-                timestamp: DateTime.now().microsecondsSinceEpoch,
-                deviceInfo: deviceInfo,
-              ),
-            );
-            _device =
-                await _deviceDbProvider.markDeviceAsPaired(_userId, _device!);
-            debugPrint("marked device as paired");
+          emit(
+            OmronConnectionState.paired(
+              timestamp: DateTime.now().microsecondsSinceEpoch,
+              deviceInfo: deviceInfo,
+            ),
+          );
+          _device =
+              await _deviceDbProvider.markDeviceAsPaired(_userId, _device!);
+          debugPrint("marked device as paired");
 
-            // tryConnect = false;
-            emit(
-              OmronConnectionState.measuring(
-                timestamp: DateTime.now().microsecondsSinceEpoch,
-                deviceInfo: deviceInfo,
-              ),
-            );
-            await selectedBlDevice!.connectionState.firstWhere(
-                (state) => state == BluetoothConnectionState.disconnected);
-          }
+          // tryConnect = false;
+          emit(
+            OmronConnectionState.measuring(
+              timestamp: DateTime.now().microsecondsSinceEpoch,
+              deviceInfo: deviceInfo,
+            ),
+          );
+          // debugPrint('waiting on disconnect');
+          await selectedBlDevice!.connectionState.firstWhere(
+              (state) => state == BluetoothConnectionState.disconnected);
+          // Omron M7 tries to send data immediately after pairing so this stops that
+          tryConnect = false;
+          await Future.delayed(Duration(seconds: 1));
+          tryConnect = true;
         },
 
         loadMeasurement: () async {
+          await stateSubscription.cancel();
           tryConnect = false;
           emit(
             OmronConnectionState.syncing(
@@ -333,7 +334,6 @@ class OmronConnectionBloc
               BlConnection(selectedBlDevice!, _device!, _measurementType);
           var hwMeasurementResult = await blConnection.getHwMeasurementResult();
 
-
           if (hwMeasurementResult.resultState != ResultState.success) {
             emit(
               OmronConnectionState.synced(
@@ -342,6 +342,7 @@ class OmronConnectionBloc
                 deviceInfo: deviceInfo,
               ),
             );
+            selectedBlDevice!.disconnect();
             return;
           }
           hwMeasurementResult.measurement!.userId = _userId;
@@ -360,11 +361,13 @@ class OmronConnectionBloc
               deviceInfo: deviceInfo,
             ),
           );
+          selectedBlDevice!.disconnect();
         },
 
         //stops ble search, is only called from outside this class
         stopSearch: () async {
           await stopSearch();
+          await stateSubscription.cancel();
         },
       );
     });

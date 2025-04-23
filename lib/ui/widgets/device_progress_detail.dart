@@ -35,13 +35,13 @@ class DeviceProgressDetail extends StatelessWidget {
         ConnectionState(
           'assets/icons/icon_arrow_spin.svg',
           localization.find_device_screen_step3_p(
-              getDeviceTypeByMeasurementType(device)),
+              getDeviceTypeByMeasurementType(device).toLowerCase()),
           2,
         ),
         ConnectionState(
           'assets/icons/icon_wave_pulse.svg',
           localization.find_device_screen_step4_p(
-            getDeviceTypeByMeasurementType(device),
+            getDeviceTypeByMeasurementType(device).toLowerCase(),
             localization.common_action_button_label(
                 device.prototype.actionButtonType!.name),
           ),
@@ -50,7 +50,7 @@ class DeviceProgressDetail extends StatelessWidget {
         ConnectionState(
           'assets/icons/icon_arrow_spin.svg',
           localization.find_device_screen_step5_p(
-              getDeviceTypeByMeasurementType(device)),
+              getDeviceTypeByMeasurementType(device).toLowerCase()),
           4,
         ),
       ];
@@ -66,7 +66,7 @@ class DeviceProgressDetail extends StatelessWidget {
         ConnectionState(
           'assets/icons/icon_power_off.svg',
           localization.find_device_screen_step2(
-            getDeviceTypeByMeasurementType(device),
+            getDeviceTypeByMeasurementType(device).toLowerCase(),
             localization.common_action_button_label(
                 device.prototype.actionButtonType!.name),
           ),
@@ -82,7 +82,7 @@ class DeviceProgressDetail extends StatelessWidget {
         ConnectionState(
           'assets/icons/icon_arrow_spin.svg',
           localization
-              .find_device_screen_step4(getDeviceTypeByMeasurementType(device)),
+              .find_device_screen_step4(getDeviceTypeByMeasurementType(device).toLowerCase()),
           4,
         ),
       ];

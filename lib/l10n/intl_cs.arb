@@ -52,7 +52,7 @@
             }
         }
     },
-    "common_action_button_label": "{actionButtonType, select, regular{akčního tlačítka} startButton{START|STOP} other{ }}",
+    "common_action_button_label": "{actionButtonType, select, regular{zapnout/vypnout} startButton{START|STOP} other{ }}",
     "@common_action_button_label": {
         "description": "Action Button Type",
         "placeholders": {

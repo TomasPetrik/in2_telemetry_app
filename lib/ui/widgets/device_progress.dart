@@ -49,7 +49,7 @@ class DeviceProgress extends StatelessWidget {
         const SliverGap(Dimensions.padding60),
         if (device.prototype.aboutUrl != null) ...[
           ActionItem(
-            label: localization.find_device_screen_device_reference(getDeviceTypeByMeasurementType(device)),
+            label: localization.find_device_screen_device_reference(getDeviceTypeByMeasurementType(device).toLowerCase()),
             onTap: () async {
               if (!await launchUrl(
                 Uri.parse(device.prototype.aboutUrl!),

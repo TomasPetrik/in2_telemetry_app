@@ -51,4 +51,12 @@ extension Uint8ListExtension on List<int> {
     var result = (pow(10, exponent) * mantissa.toDouble());
     return double.parse(result.toStringAsFixed(1));
   }
+
+  DateTime toDateTimePO60() {
+    if (length != 6) {
+      throw Exception("Cannot convert to DateTime. List length must be 6");
+    }
+    return DateTime(
+        2000 + this[0], this[1], this[2], this[3], this[4], this[5]);
+  }
 }

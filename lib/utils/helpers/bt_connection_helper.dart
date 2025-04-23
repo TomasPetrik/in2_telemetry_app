@@ -26,6 +26,7 @@ var measurementTypeToServiceUUid = {
   MeasurementType.bloodPressure: Guid('1810'),
   MeasurementType.heartRate: Guid('180d'),
   MeasurementType.temperature: Guid('1809'),
+  MeasurementType.oxygenSaturation: Guid('FF12')
 };
 
 @singleton
@@ -132,22 +133,24 @@ class BtConnectionHelper {
   }
 
   Future<DeviceInfo?> requestDeviceInfo(BluetoothDevice device) async {
-    List<BluetoothService> services = [];
+    // List<BluetoothService> services = [];
 
-    await Future.delayed(const Duration(milliseconds: 100));
-    services = await device.discoverServices().timeout(
-          const Duration(seconds: 3),
-          onTimeout: () => <BluetoothService>[],
-        );
+    // await Future.delayed(const Duration(milliseconds: 100));
+    // services = await device.discoverServices().timeout(
+    //       const Duration(seconds: 3),
+    //       onTimeout: () => <BluetoothService>[],
+    //     );
 
-    debugPrint('found services ${services.length}');
-    await Future.delayed(const Duration(milliseconds: 100));
-    services = await device.discoverServices().timeout(
-          const Duration(seconds: 3),
-          onTimeout: () => <BluetoothService>[],
-        );
+    // debugPrint('found services ${services.length}');
+    // await Future.delayed(const Duration(milliseconds: 100));
+    // services = await device.discoverServices().timeout(
+    //       const Duration(seconds: 3),
+    //       onTimeout: () => <BluetoothService>[],
+    //     );
 
-    debugPrint('found services2 ${services.length}');
+    final services = await device.discoverServices();
+
+    // debugPrint('found services2 ${services.length}');
 
     final deviceInfoService = services.firstWhereOrNull(
       (service) => service.serviceUuid == deviceInfo,

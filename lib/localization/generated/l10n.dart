@@ -291,15 +291,11 @@ class I10n {
     );
   }
 
-  /// `{actionButtonType, select, regular{akčního tlačítka} startButton{START|STOP} other{ }}`
+  /// `{actionButtonType, select, regular{zapnout/vypnout} startButton{START|STOP} other{ }}`
   String common_action_button_label(Object actionButtonType) {
     return Intl.select(
       actionButtonType,
-      {
-        'regular': 'akčního tlačítka',
-        'startButton': 'START|STOP',
-        'other': ' ',
-      },
+      {'regular': 'zapnout/vypnout', 'startButton': 'START|STOP', 'other': ' '},
       name: 'common_action_button_label',
       desc: 'Action Button Type',
       args: [actionButtonType],

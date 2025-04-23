@@ -214,6 +214,21 @@ class ConfigurationConstants {
       requiresPairing: true,
       askToConfirmMeasurement: true,
     ),
+    DevicePrototypeTemplate(
+      localId: 4,
+      modelName: "PO60",
+      deviceManufacturer: "Beurer",
+      visibleName: "Beurer PO60",
+      bluetoothName: "PO60",
+      bluetoothPairingName: "PO60",
+      deviceModelType: DeviceModelType.beurerPo60,
+      supportedMeasurementTypes: [MeasurementType.oxygenSaturation, MeasurementType.heartRate],
+      imagePath: 'assets/images/beurer_po_60.png',
+      actionButtonType: ActionButtonType.regular,
+      measurementFlow: MeasurementFlow.foreground,
+      requiresPairing: true,
+      askToConfirmMeasurement: true,
+    ),
   ];
 
   static const Map<int, String> monthsInYear = {
