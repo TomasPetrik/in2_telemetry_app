@@ -264,10 +264,14 @@ class OmronConnectionBloc
         },
 
         pairDevice: () async {
-          if (Platform.isAndroid && selectedBlDevice!.prevBondState != BluetoothBondState.bonded){
+          if (Platform.isAndroid){
             selectedBlDevice!.createBond();
             await selectedBlDevice!.bondState.firstWhere((state) => state == BluetoothBondState.bonded);
+            print("plask");
+            // final blConnection = BlConnection(selectedBlDevice!);
+            // await blConnection.getHwMeasurementResult();
           }
+          // var batteryInfo = _btConnectionHelper.requestBatteryInfo(selectedBlDevice!);
           var deviceInfo =
               await _btConnectionHelper.requestDeviceInfo(selectedBlDevice!);
           deviceInfo ??=

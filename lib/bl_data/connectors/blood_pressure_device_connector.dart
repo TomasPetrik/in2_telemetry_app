@@ -33,7 +33,7 @@ class BloodPressureDeviceConnector implements DeviceConnector {
       },
     );
     // selectedBlDevice.cancelWhenDisconnected(measurementStream);
-    await measurementCharacteristic.setNotifyValue(true);
+    await measurementCharacteristic.setNotifyValue(!measurementCharacteristic.isNotifying);
     await Future.delayed(
       const Duration(seconds: 2),
     );
