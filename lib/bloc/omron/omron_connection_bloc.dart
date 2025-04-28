@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:async/async.dart';
 import 'package:collection/collection.dart';
@@ -263,6 +264,10 @@ class OmronConnectionBloc
         },
 
         pairDevice: () async {
+          if (Platform.isAndroid && selectedBlDevice!.prevBondState != BluetoothBondState.bonded){
+            selectedBlDevice!.createBond();
+            await selectedBlDevice!.bondState.firstWhere((state) => state == BluetoothBondState.bonded);
+          }
           var deviceInfo =
               await _btConnectionHelper.requestDeviceInfo(selectedBlDevice!);
           deviceInfo ??=
@@ -331,7 +336,7 @@ class OmronConnectionBloc
               await _btConnectionHelper.requestBatteryInfo(selectedBlDevice!);
 
           var blConnection =
-              BlConnection(selectedBlDevice!, _device!, _measurementType);
+              BlConnection(selectedBlDevice!);
           var hwMeasurementResult = await blConnection.getHwMeasurementResult();
 
           if (hwMeasurementResult.resultState != ResultState.success) {

@@ -65,7 +65,6 @@ class BtConnectionHelper {
     late List<ScanResult> matchedResults;
 
     await scanResultStream.firstWhere((scanResult) {
-      debugPrint('found all ${scanResult.length} devices');
 
       matchedResults = scanResult.where((scanResult) {
         return scanResult.advertisementData.serviceUuids.any(
@@ -83,7 +82,7 @@ class BtConnectionHelper {
                           .contains(suppBtPairName);
                     })));
       }).toList();
-      debugPrint('found matching devices ${matchedResults.length}');
+      debugPrint('found matching connectors ${matchedResults.length}');
 
       final availableDevices = matchedResults
           .where((x) => x.rssi < 0 && x.advertisementData.connectable)
@@ -96,8 +95,6 @@ class BtConnectionHelper {
             ),
           )
           .toList();
-
-      debugPrint('available devices ${matchedResults.length}');
 
       onResult.call(availableDevices);
       return syncMode;
@@ -133,24 +130,7 @@ class BtConnectionHelper {
   }
 
   Future<DeviceInfo?> requestDeviceInfo(BluetoothDevice device) async {
-    // List<BluetoothService> services = [];
-
-    // await Future.delayed(const Duration(milliseconds: 100));
-    // services = await device.discoverServices().timeout(
-    //       const Duration(seconds: 3),
-    //       onTimeout: () => <BluetoothService>[],
-    //     );
-
-    // debugPrint('found services ${services.length}');
-    // await Future.delayed(const Duration(milliseconds: 100));
-    // services = await device.discoverServices().timeout(
-    //       const Duration(seconds: 3),
-    //       onTimeout: () => <BluetoothService>[],
-    //     );
-
     final services = await device.discoverServices();
-
-    // debugPrint('found services2 ${services.length}');
 
     final deviceInfoService = services.firstWhereOrNull(
       (service) => service.serviceUuid == deviceInfo,

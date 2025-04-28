@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:scalesoft_app/bl_data/devices/device_connector.dart';
+import 'package:scalesoft_app/bl_data/connectors/device_connector.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/data/entities/json_entities/measurement/blood_pressure_value.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
@@ -12,7 +12,7 @@ import 'package:scalesoft_app/model/measurement_create_model.dart';
 import 'package:scalesoft_app/utils/extensions/int_extensions.dart';
 import 'package:scalesoft_app/utils/extensions/uint8_list_extension.dart';
 
-class OximeterDevice implements DeviceConnector {
+class OximeterDeviceConnector implements DeviceConnector {
   final _wirteUuid = Guid('FF01');
   final _readUuid = Guid('FF02');
 
@@ -40,7 +40,6 @@ class OximeterDevice implements DeviceConnector {
       if (data.first == 0xF3) {
         data.removeRange(0, 3);
       }
-
       measurementBytes.addAll(data);
 
       if (measurementBytes.length >= 24) {
@@ -52,7 +51,7 @@ class OximeterDevice implements DeviceConnector {
         }
         measurementBytes.removeRange(0, 24);
         if (packetNumber == 9) {
-          await readCharacteristic.write(_nextMeasurementRequest());
+          await writeCharacteristic.write(_nextMeasurementRequest());
         }
       }
     });
@@ -75,7 +74,6 @@ class OximeterDevice implements DeviceConnector {
           resultState: ResultState.noData, measurementDt: DateTime.now());
     }
 
-    debugPrint('measurement: ${measurements.last.oxygenSaturation}, ${measurements.last.heartRate}');
     return HwMeasurementResult(
       resultState: ResultState.success,
       measurementDt: DateTime.now(),

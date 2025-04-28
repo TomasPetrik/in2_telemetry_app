@@ -1,37 +1,31 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:scalesoft_app/bl_data/devices/blood_pressure_device.dart';
-import 'package:scalesoft_app/bl_data/devices/device_connector.dart';
-import 'package:scalesoft_app/bl_data/devices/oximeter_device.dart';
-import 'package:scalesoft_app/bl_data/devices/thermometer_device.dart';
+import 'package:scalesoft_app/bl_data/connectors/blood_pressure_device_connector.dart';
+import 'package:scalesoft_app/bl_data/connectors/device_connector.dart';
+import 'package:scalesoft_app/bl_data/connectors/oximeter_device_connector.dart';
+import 'package:scalesoft_app/bl_data/connectors/thermometer_device_connector.dart';
+import 'package:scalesoft_app/data/app_database.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
 
-var deviceConnectorByName = {
-
+Map<String, DeviceConnector> deviceConnectorByName = {
+  'BM77' : BloodPressureDeviceConnector(),
+  'BLESmart' : BloodPressureDeviceConnector(),
+  'FT95' : ThermometerDeviceConnector(),
+  'PO60' : OximeterDeviceConnector(),
 };
 
 class BlConnection {
   BluetoothDevice device;
-  DeviceCreateModel deviceCreateModel;
-  MeasurementType measurementType;
   late DeviceConnector connector;
 
-  BlConnection(this.device, this.deviceCreateModel, this.measurementType) {
-    var connector = deviceConnectorByName[deviceCreateModel.prototype.bluetoothName];
+  BlConnection(this.device,) {
+    debugPrint(device.advName.split('_').first);
+    var connector = deviceConnectorByName[device.advName.split('_').first];
     if (connector != null){
       this.connector = connector;
       return;
-    }
-    switch (measurementType) {
-      case  MeasurementType.temperature:
-        this.connector = ThermometerDevice();
-      case MeasurementType.bloodPressure:
-        this.connector = BloodPressureDevice();
-      case MeasurementType.oxygenSaturation:
-        this.connector = OximeterDevice();
-        default:
-          UnimplementedError("Device connector not implemented for this measurement type");
     }
   }
 
