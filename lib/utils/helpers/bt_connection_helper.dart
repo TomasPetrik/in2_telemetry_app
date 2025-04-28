@@ -82,7 +82,7 @@ class BtConnectionHelper {
                           .contains(suppBtPairName);
                     })));
       }).toList();
-      debugPrint('found matching connectors ${matchedResults.length}');
+      debugPrint('found matching devices ${matchedResults.length}');
 
       final availableDevices = matchedResults
           .where((x) => x.rssi < 0 && x.advertisementData.connectable)
