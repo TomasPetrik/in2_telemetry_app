@@ -9,6 +9,8 @@ import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/model/measurement_create_model.dart';
 import 'package:scalesoft_app/utils/extensions/uint8_list_extension.dart';
 
+//Todo fix magic constants
+
 class ThermometerDeviceConnector extends DeviceConnector {
   final _measurementUuid = Guid('2A1C');
 

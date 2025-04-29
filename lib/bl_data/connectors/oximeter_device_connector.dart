@@ -10,15 +10,17 @@ import 'package:scalesoft_app/model/measurement_create_model.dart';
 import 'package:scalesoft_app/utils/extensions/int_extensions.dart';
 import 'package:scalesoft_app/utils/extensions/uint8_list_extension.dart';
 
+//Todo fix magic constants
+
 class OximeterDeviceConnector implements DeviceConnector {
-  final _wirteUuid = Guid('FF01');
+  final _writeUuid = Guid('FF01');
   final _readUuid = Guid('FF02');
 
   @override
   Future<HwMeasurementResult> loadMeasurement(BluetoothDevice device,
       List<BluetoothCharacteristic> characteristics) async {
     final writeCharacteristic =
-        characteristics.firstWhereOrNull((chara) => chara.uuid == _wirteUuid);
+        characteristics.firstWhereOrNull((chara) => chara.uuid == _writeUuid);
     var readCharacteristic = characteristics.firstWhereOrNull(
       (chara) => chara.uuid == _readUuid,
     );

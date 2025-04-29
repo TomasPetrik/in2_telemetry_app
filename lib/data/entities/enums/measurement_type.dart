@@ -27,6 +27,8 @@ enum MeasurementType {
   battery;
 }
 
+//Todo extrahovat do extension
+
 String getDeviceTypeByMeasurementType(DeviceCreateModel device) {
   final measurementType = device.prototype.supportedMeasurementTypes.first;
   switch (measurementType) {
