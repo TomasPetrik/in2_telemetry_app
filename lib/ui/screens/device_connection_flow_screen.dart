@@ -2,7 +2,6 @@ import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:injectable/injectable.dart';
 import 'package:scalesoft_app/bloc/device_connection/device_connection_bloc.dart';
 import 'package:scalesoft_app/bloc/device_connection/device_connection_bloc_event.dart';
 import 'package:scalesoft_app/bloc/device_connection/device_connection_state.dart';

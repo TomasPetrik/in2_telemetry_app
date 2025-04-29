@@ -4,9 +4,6 @@ import 'package:scalesoft_app/bl_data/connectors/blood_pressure_device_connector
 import 'package:scalesoft_app/bl_data/connectors/device_connector.dart';
 import 'package:scalesoft_app/bl_data/connectors/oximeter_device_connector.dart';
 import 'package:scalesoft_app/bl_data/connectors/thermometer_device_connector.dart';
-import 'package:scalesoft_app/data/app_database.dart';
-import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
-import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
 
 Map<String, DeviceConnector> deviceConnectorByName = {
