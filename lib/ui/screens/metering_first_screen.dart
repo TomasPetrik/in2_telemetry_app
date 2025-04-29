@@ -15,7 +15,7 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/ui/routers/routes/device_search_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/manual_measurement_route.dart';
-import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/device_connection_flow_route.dart';
 import 'package:scalesoft_app/ui/screens/device_search_screen.dart';
 import 'package:scalesoft_app/ui/screens/mixins/bottom_sheet_mixin.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
@@ -52,7 +52,7 @@ class MeteringFirstScreen extends StatelessWidget with BottomSheetMixin {
 
   void goToMetering(DeviceCreateModel device, MeasurementType measurementType, BuildContext context) {
     GoRouter.of(context).pushNamed(
-      OmronFlowRoute.name,
+      DeviceConnectionFlowRoute.name,
       queryParameters: {
         'userId': userId.toString(),
         'measurementType': measurementType.name,
@@ -316,7 +316,7 @@ class MeteringFirstScreen extends StatelessWidget with BottomSheetMixin {
                                         ).then((final DeviceCreateModel? device) {
                                           if (device != null) {
                                             GoRouter.of(context).replaceNamed(
-                                              OmronFlowRoute.name,
+                                              DeviceConnectionFlowRoute.name,
                                               queryParameters: {
                                                 'userId': userId.toString(),
                                                 'measurementType': selectedMeasurementType.name,

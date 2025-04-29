@@ -3,45 +3,45 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scalesoft_app/model/device_info.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
 
-part 'omron_connection_state.freezed.dart';
+part 'device_connection_state.freezed.dart';
 
 @freezed
-class OmronConnectionState with _$OmronConnectionState {
-  const factory OmronConnectionState.init() = _Init;
-  const factory OmronConnectionState.disabledBt({
+class DeviceConnectionState with _$DeviceConnectionState {
+  const factory DeviceConnectionState.init() = _Init;
+  const factory DeviceConnectionState.disabledBt({
     required int timestamp,
   }) = _DisabledBt;
-  const factory OmronConnectionState.disabledLocationService({
+  const factory DeviceConnectionState.disabledLocationService({
     required int timestamp,
   }) = _DisabledLocalizationService;
-  factory OmronConnectionState.noBtPermissions({
+  factory DeviceConnectionState.noBtPermissions({
     required int timestamp,
   }) = _NoBtPermissions;
-  factory OmronConnectionState.searching({
+  factory DeviceConnectionState.searching({
     required int timestamp,
   }) = _Searching;
-  const factory OmronConnectionState.found({
+  const factory DeviceConnectionState.found({
     required int timestamp,
     required BluetoothDevice device,
   }) = _Found;
-  const factory OmronConnectionState.notFound({
+  const factory DeviceConnectionState.notFound({
     required int timestamp,
   }) = _NotFound;
-  const factory OmronConnectionState.pairing({
+  const factory DeviceConnectionState.pairing({
     required int timestamp,
   }) = _Pairing;
-  const factory OmronConnectionState.paired({
+  const factory DeviceConnectionState.paired({
     required int timestamp,
     required DeviceInfo deviceInfo,
   }) = _Paired;
-  const factory OmronConnectionState.measuring({
+  const factory DeviceConnectionState.measuring({
     required int timestamp,
     required DeviceInfo deviceInfo,
   }) = _Measuring;
-  const factory OmronConnectionState.connecting({
+  const factory DeviceConnectionState.connecting({
     required int timestamp,
   }) = _Connecting;
-  const factory OmronConnectionState.connected({
+  const factory DeviceConnectionState.connected({
     required int timestamp,
   }) = _Connected;
   // const factory OmronConnectionState.verified({
@@ -49,22 +49,22 @@ class OmronConnectionState with _$OmronConnectionState {
   //   required BluetoothDevice device,
   //   required DeviceInfo deviceInfo,
   // }) = _Verified;
-  const factory OmronConnectionState.notVerified({
+  const factory DeviceConnectionState.notVerified({
     required int timestamp,
     required HwMeasurementResult measurementResult,
   }) = _NotVerified;
-  const factory OmronConnectionState.disconnected({
+  const factory DeviceConnectionState.disconnected({
     required int timestamp,
   }) = _Disconnected;
-  const factory OmronConnectionState.syncing({
+  const factory DeviceConnectionState.syncing({
     required int timestamp,
   }) = _Syncing;
-  const factory OmronConnectionState.synced({
+  const factory DeviceConnectionState.synced({
     required int timestamp,
     required HwMeasurementResult measurementResult,
     required DeviceInfo deviceInfo,
   }) = _Synced;
-  const factory OmronConnectionState.error({
+  const factory DeviceConnectionState.error({
     required int timestamp,
     required Exception exception,
   }) = _Error;

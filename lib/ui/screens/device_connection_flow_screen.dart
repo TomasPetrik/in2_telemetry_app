@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/bloc/omron/omron_connection_bloc.dart';
-import 'package:scalesoft_app/bloc/omron/omron_connection_bloc_event.dart';
-import 'package:scalesoft_app/bloc/omron/omron_connection_state.dart';
+import 'package:scalesoft_app/bloc/device_connection/device_connection_bloc.dart';
+import 'package:scalesoft_app/bloc/device_connection/device_connection_bloc_event.dart';
+import 'package:scalesoft_app/bloc/device_connection/device_connection_state.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
@@ -17,8 +17,8 @@ import 'package:scalesoft_app/ui/widgets/device_progress.dart';
 import 'package:scalesoft_app/ui/widgets/process_item.dart';
 import 'package:scalesoft_app/ui/widgets/warning_item.dart';
 
-class OmronFlowScreen extends StatefulWidget {
-  const OmronFlowScreen({
+class DeviceConnectionFlowScreen extends StatefulWidget {
+  const DeviceConnectionFlowScreen({
     super.key,
     required this.userId,
     required this.device,
@@ -30,11 +30,11 @@ class OmronFlowScreen extends StatefulWidget {
   final MeasurementType measurementType;
 
   @override
-  State<OmronFlowScreen> createState() => _OmronFlowScreenState();
+  State<DeviceConnectionFlowScreen> createState() => _DeviceConnectionFlowScreenState();
 }
 
-class _OmronFlowScreenState extends State<OmronFlowScreen> with BottomSheetMixin, WidgetsBindingObserver {
-  final OmronConnectionBloc omronConnectionBloc = getIt<OmronConnectionBloc>();
+class _DeviceConnectionFlowScreenState extends State<DeviceConnectionFlowScreen> with BottomSheetMixin, WidgetsBindingObserver {
+  final DeviceConnectionBloc deviceConnectionBloc = getIt<DeviceConnectionBloc>();
   late final MeasurementType measurementType;
   late final DeviceCreateModel device;
 
@@ -45,8 +45,8 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> with BottomSheetMixin
     debugPrint('didChangeAppLifecycleState ${state.toString()}');
 
     if (state == AppLifecycleState.resumed) {
-      if (omronConnectionBloc.shouldRequestPermission == true) {
-        omronConnectionBloc.add(const OmronConnectionBlocEvent.checkHwState());
+      if (deviceConnectionBloc.shouldRequestPermission == true) {
+        deviceConnectionBloc.add(const DeviceConnectionBlocEvent.checkHwState());
       }
     }
   }
@@ -55,8 +55,8 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> with BottomSheetMixin
   void initState() {
     device = widget.device;
     measurementType = widget.measurementType;
-    omronConnectionBloc.add(
-      OmronConnectionBlocEvent.init(
+    deviceConnectionBloc.add(
+      DeviceConnectionBlocEvent.init(
         widget.userId,
         measurementType,
         device,
@@ -73,7 +73,7 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> with BottomSheetMixin
   }
 
   void _onWillPop() {
-    omronConnectionBloc.add(const OmronConnectionBlocEvent.stopSearch());
+    deviceConnectionBloc.add(const DeviceConnectionBlocEvent.stopSearch());
   }
 
   @override
@@ -88,8 +88,8 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> with BottomSheetMixin
         child: Stack(
           children: [
             Positioned.fill(
-              child: BlocConsumer<OmronConnectionBloc, OmronConnectionState>(
-                bloc: omronConnectionBloc,
+              child: BlocConsumer<DeviceConnectionBloc, DeviceConnectionState>(
+                bloc: deviceConnectionBloc,
                 buildWhen: (previous, current) {
                   final showState = current.whenOrNull(
                         init: () => true,
@@ -113,8 +113,8 @@ class _OmronFlowScreenState extends State<OmronFlowScreen> with BottomSheetMixin
                     notFound: (_) async {
                       await showDevNotFound(context).then((searchAgain) {
                         if (searchAgain == true) {
-                          omronConnectionBloc.add(
-                            const OmronConnectionBlocEvent.searchDevice(),
+                          deviceConnectionBloc.add(
+                            const DeviceConnectionBlocEvent.searchDevice(),
                           );
                         } else if (searchAgain == false) {
                           Navigator.of(context).pop();

@@ -3,13 +3,13 @@ import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/ui/routers/routes/application_route.dart';
 import 'package:scalesoft_app/ui/screens/mixins/page_builder_mixin.dart';
-import 'package:scalesoft_app/ui/screens/omron_flow_screen.dart';
+import 'package:scalesoft_app/ui/screens/device_connection_flow_screen.dart';
 
-class OmronFlowRoute extends ApplicationRoute with PageBuilderMixin {
-  static const name = 'omron-flow';
-  static const path = '/omron-flow';
+class DeviceConnectionFlowRoute extends ApplicationRoute with PageBuilderMixin {
+  static const name = 'device-connect-flow';
+  static const path = '/device-connect-flow';
 
-  OmronFlowRoute({
+  DeviceConnectionFlowRoute({
     required super.navigator,
     super.routes,
   });
@@ -32,7 +32,7 @@ class OmronFlowRoute extends ApplicationRoute with PageBuilderMixin {
           );
           final device = state.extra as DeviceCreateModel;
 
-          return OmronFlowScreen(
+          return DeviceConnectionFlowScreen(
             userId: userId,
             device: device,
             measurementType: measurementType,
