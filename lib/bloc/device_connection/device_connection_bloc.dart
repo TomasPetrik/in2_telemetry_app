@@ -268,7 +268,32 @@ class DeviceConnectionBloc
           if (Platform.isAndroid) {
             selectedBlDevice!.createBond();
             await selectedBlDevice!.bondState.firstWhere((state) => state == BluetoothBondState.bonded);
+          } else if (Platform.isIOS) {
+            final recordAccessCp = Guid('2A52');
+
+            final services = await selectedBlDevice!.discoverServices();
+
+            final recordAccessCpCharacteristic = services
+                .firstWhereOrNull(
+                  (service) => service.serviceUuid == recordAccessCpServiceUuid,
+            )
+                ?.characteristics
+                .firstWhereOrNull((characteristic) => characteristic.uuid == recordAccessCp);
+            if (recordAccessCpCharacteristic == null){
+              return;
+            }
+
+            try {
+              await recordAccessCpCharacteristic.setNotifyValue(!recordAccessCpCharacteristic.isNotifying, timeout: 30);
+              await recordAccessCpCharacteristic.write([0x00, 0x01], withoutResponse: false, timeout: 30);
+            } on FlutterBluePlusException catch (e) {
+              //Timeout error
+              if (e.code == 1) return null;
+              //Insufficient encryption error
+              if (e.code == 15) return null;
+            }
           }
+
           var deviceInfo =
               await _btConnectionHelper.requestDeviceInfo(selectedBlDevice!);
           deviceInfo ??=
