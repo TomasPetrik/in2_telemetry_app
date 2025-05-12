@@ -15,6 +15,7 @@ import 'package:scalesoft_app/ui/widgets/blurred_scale_app_bart.dart';
 import 'package:scalesoft_app/ui/widgets/device_progress.dart';
 import 'package:scalesoft_app/ui/widgets/process_item.dart';
 import 'package:scalesoft_app/ui/widgets/warning_item.dart';
+import 'package:scalesoft_app/utils/extensions/device_create_model_extension.dart';
 
 class DeviceConnectionFlowScreen extends StatefulWidget {
   const DeviceConnectionFlowScreen({
@@ -194,7 +195,7 @@ class _DeviceConnectionFlowScreenState extends State<DeviceConnectionFlowScreen>
                       return DeviceProgress(
                         header: ProcessItem(
                           label: reqModelPairing
-                              ? localization.find_device_screen_searching_tonometer(getDeviceTypeByMeasurementType(device).toLowerCase())
+                              ? localization.find_device_screen_searching_tonometer(device.getDeviceTypeByMeasurementType().toLowerCase())
                               : localization.find_device_screen_waiting_on_measurement,
                           processType: ProcessType.inProgress,
                         ),
@@ -206,7 +207,7 @@ class _DeviceConnectionFlowScreenState extends State<DeviceConnectionFlowScreen>
                     connected: (_) {
                       return DeviceProgress(
                         header: ProcessItem(
-                          label: localization.find_device_screen_device_connected(getDeviceTypeByMeasurementType(device)),
+                          label: localization.find_device_screen_device_connected(device.getDeviceTypeByMeasurementType()),
                           processType: ProcessType.connected,
                         ),
                         device: device,
@@ -226,7 +227,7 @@ class _DeviceConnectionFlowScreenState extends State<DeviceConnectionFlowScreen>
                     pairing: (_) {
                       return DeviceProgress(
                         header: ProcessItem(
-                          label: localization.find_device_screen_pairing_device(getDeviceTypeByMeasurementType(device).toLowerCase()),
+                          label: localization.find_device_screen_pairing_device(device.getDeviceTypeByMeasurementType().toLowerCase()),
                           processType: ProcessType.inProgress,
                         ),
                         device: device,
@@ -237,7 +238,7 @@ class _DeviceConnectionFlowScreenState extends State<DeviceConnectionFlowScreen>
                     paired: (_, deviceInfo) {
                       return DeviceProgress(
                         header: ProcessItem(
-                          label: localization.find_device_screen_paired_device(getDeviceTypeByMeasurementType(device)),
+                          label: localization.find_device_screen_paired_device(device.getDeviceTypeByMeasurementType()),
                           processType: ProcessType.done,
                         ),
                         device: device,
@@ -261,7 +262,7 @@ class _DeviceConnectionFlowScreenState extends State<DeviceConnectionFlowScreen>
                     ) {
                       return DeviceProgress(
                         header: ProcessItem(
-                          label: localization.find_device_screen_sync_results(getDeviceTypeByMeasurementType(device).toLowerCase()),
+                          label: localization.find_device_screen_sync_results(device.getDeviceTypeByMeasurementType().toLowerCase()),
                           processType: ProcessType.inProgress,
                         ),
                         device: device,

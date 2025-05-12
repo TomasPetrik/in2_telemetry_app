@@ -3,18 +3,23 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:scalesoft_app/bl_data/connectors/device_connector.dart';
+import 'package:scalesoft_app/bt_data/connectors/device_connector.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/model/measurement_create_model.dart';
 import 'package:scalesoft_app/utils/extensions/int_extensions.dart';
 import 'package:scalesoft_app/utils/extensions/uint8_list_extension.dart';
 
-//Todo fix magic constants
-
 class OximeterDeviceConnector implements DeviceConnector {
   final _writeUuid = Guid('FF01');
   final _readUuid = Guid('FF02');
+  final _frameLength = 24;
+  final _timeSyncLength = 3;
+  final _lastPacketIdx = 9;
+  final _packetNumberByte = 1;
+  final _timeSyncHeader = 0xF3;
+  final _setTimeHeader = 0x83;
+  final _measurementRequestHeader = 0x99;
 
   @override
   Future<HwMeasurementResult> loadMeasurement(BluetoothDevice device,
@@ -37,20 +42,20 @@ class OximeterDeviceConnector implements DeviceConnector {
     int packetNumber = -1;
     var onComplete = Completer();
     var subscription = readCharacteristic.onValueReceived.listen((data) async {
-      if (data.first == 0xF3) {
-        data.removeRange(0, 3);
+      if (data.first == _timeSyncHeader) {
+        data.removeRange(0, _timeSyncLength);
       }
       measurementBytes.addAll(data);
 
-      if (measurementBytes.length >= 24) {
-        packetNumber = measurementBytes[1];
+      if (measurementBytes.length >= _frameLength) {
+        packetNumber = measurementBytes[_packetNumberByte];
         measurements
-            .add(bytesToMeasurement(measurementBytes.sublist(0, 24)));
-        if (packetNumber > 9){
+            .add(bytesToMeasurement(measurementBytes.sublist(0, _frameLength)));
+        if (packetNumber > _lastPacketIdx) {
           onComplete.complete();
         }
-        measurementBytes.removeRange(0, 24);
-        if (packetNumber == 9) {
+        measurementBytes.removeRange(0, _frameLength);
+        if (packetNumber == _lastPacketIdx) {
           await writeCharacteristic.write(_nextMeasurementRequest());
         }
       }
@@ -71,7 +76,7 @@ class OximeterDeviceConnector implements DeviceConnector {
       debugPrint("no data received");
       device.disconnect();
       return HwMeasurementResult(
-          resultState: ResultState.noData, measurementDt: DateTime.now());
+          resultState: ResultState.noData, measurementDt: DateTime.now(),);
     }
 
     return HwMeasurementResult(
@@ -82,19 +87,30 @@ class OximeterDeviceConnector implements DeviceConnector {
   }
 
   MeasurementCreateModel bytesToMeasurement(List<int> data) {
+    const userId = 0;
+    const dateTimeByte = 8;
+    const dateTimeLength = 6;
+    const oxygenSaturationByte = 19;
+    const heartRateByte = 22;
+    const heartRateAddonByte = 14;
+    const heartRateAddonBit = 3;
     return MeasurementCreateModel(
-      0,
-      data.sublist(8, 14).toDateTimePO60(),
+      userId,
+      data
+          .sublist(dateTimeByte, dateTimeByte + dateTimeLength)
+          .toDateTimePO60(),
       MeasurementType.oxygenSaturation,
-      oxygenSaturation: data[19],
-      heartRate: data[22] + (data[14].getBit(3) << 7),
+      oxygenSaturation: data[oxygenSaturationByte],
+      // first bit of heart rate is stored in the third bit of byte 14
+      heartRate: data[heartRateByte] +
+          (data[heartRateAddonByte].getBit(heartRateAddonBit) << 7),
     );
   }
 
   List<int> _setCurrentTimeRequest() {
     var time = DateTime.now();
     var bytes = [
-      0x83,
+      _setTimeHeader,
       time.year - 2000,
       time.month,
       time.day,
@@ -108,22 +124,23 @@ class OximeterDeviceConnector implements DeviceConnector {
   }
 
   List<int> _firstMeasurementRequest() {
-    return _addChecksum([0x99, 0]);
+    return _addChecksum([_measurementRequestHeader, 0]);
   }
 
   List<int> _nextMeasurementRequest() {
-    return _addChecksum([0x99, 1]);
+    return _addChecksum([_measurementRequestHeader, 1]);
   }
 
   List<int> _deleteMeasurementRequest() {
-    return _addChecksum([0x99, 127]);
+    return _addChecksum([_measurementRequestHeader, 127]);
   }
 
   List<int> _addChecksum(List<int> data) {
     int checksum = 0;
-    for (var d in data) {
+    for (final d in data) {
       checksum += d;
     }
+    // set first bit of checksum to zero
     checksum &= 0x7f;
     data.add(checksum);
     return data;

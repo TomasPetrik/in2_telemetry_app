@@ -10,6 +10,7 @@ import 'package:scalesoft_app/model/device_instruction_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/screens/icon_label_row.dart';
 import 'package:scalesoft_app/ui/widgets/rotating_icon.dart';
+import 'package:scalesoft_app/utils/extensions/device_create_model_extension.dart';
 
 class DeviceProgressDetail extends StatelessWidget {
   DeviceProgressDetail({
@@ -35,13 +36,13 @@ class DeviceProgressDetail extends StatelessWidget {
         ConnectionState(
           'assets/icons/icon_arrow_spin.svg',
           localization.find_device_screen_step3_p(
-              getDeviceTypeByMeasurementType(device).toLowerCase()),
+              device.getDeviceTypeByMeasurementType().toLowerCase()),
           2,
         ),
         ConnectionState(
           'assets/icons/icon_wave_pulse.svg',
           localization.find_device_screen_step4_p(
-            getDeviceTypeByMeasurementType(device).toLowerCase(),
+            device.getDeviceTypeByMeasurementType().toLowerCase(),
             localization.common_action_button_label(
                 device.prototype.actionButtonType!.name),
           ),
@@ -50,7 +51,7 @@ class DeviceProgressDetail extends StatelessWidget {
         ConnectionState(
           'assets/icons/icon_arrow_spin.svg',
           localization.find_device_screen_step5_p(
-              getDeviceTypeByMeasurementType(device).toLowerCase()),
+              device.getDeviceTypeByMeasurementType().toLowerCase()),
           4,
         ),
       ];
@@ -66,7 +67,7 @@ class DeviceProgressDetail extends StatelessWidget {
         ConnectionState(
           'assets/icons/icon_power_off.svg',
           localization.find_device_screen_step2(
-            getDeviceTypeByMeasurementType(device).toLowerCase(),
+            device.getDeviceTypeByMeasurementType().toLowerCase(),
             localization.common_action_button_label(
                 device.prototype.actionButtonType!.name),
           ),
@@ -82,7 +83,7 @@ class DeviceProgressDetail extends StatelessWidget {
         ConnectionState(
           'assets/icons/icon_arrow_spin.svg',
           localization
-              .find_device_screen_step4(getDeviceTypeByMeasurementType(device).toLowerCase()),
+              .find_device_screen_step4(device.getDeviceTypeByMeasurementType().toLowerCase()),
           4,
         ),
       ];

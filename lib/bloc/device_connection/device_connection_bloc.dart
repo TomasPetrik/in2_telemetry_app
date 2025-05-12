@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:injectable/injectable.dart';
-import 'package:scalesoft_app/bl_data/bl_connection.dart';
+import 'package:scalesoft_app/bt_data/bt_connection.dart';
 import 'package:scalesoft_app/bloc/device_connection/device_connection_bloc_event.dart';
 import 'package:scalesoft_app/bloc/device_connection/device_connection_state.dart';
 import 'package:scalesoft_app/data/entities/enums/log_severity.dart';
@@ -379,7 +379,7 @@ class DeviceConnectionBloc
 
           tryConnect = false;
           var blConnection =
-              BlConnection(selectedBlDevice!);
+              BtConnection(selectedBlDevice!);
           var hwMeasurementResult = await blConnection.getHwMeasurementResult();
 
           if (hwMeasurementResult.resultState != ResultState.success) {

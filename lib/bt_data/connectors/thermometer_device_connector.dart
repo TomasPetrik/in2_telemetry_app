@@ -3,16 +3,18 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-import 'package:scalesoft_app/bl_data/connectors/device_connector.dart';
+import 'package:scalesoft_app/bt_data/connectors/device_connector.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/model/hw_measurement_result.dart';
 import 'package:scalesoft_app/model/measurement_create_model.dart';
 import 'package:scalesoft_app/utils/extensions/uint8_list_extension.dart';
 
-//Todo fix magic constants
-
 class ThermometerDeviceConnector extends DeviceConnector {
   final _measurementUuid = Guid('2A1C');
+  final _userId = 0;
+  final _timestampByte = 5;
+  final _timestampLength = 7;
+  final _temperatureByte = 1;
 
   @override
   Future<HwMeasurementResult> loadMeasurement(BluetoothDevice device,
@@ -33,15 +35,13 @@ class ThermometerDeviceConnector extends DeviceConnector {
       (data) {
         dataArray.add(data);
         lastReceived = DateTime.now();
-        // debugPrint("got data");
       },
     );
     await measurementCharacteristic.setNotifyValue(true);
 
-    // Wait until no incoming measurement in 0.5 second
+    // Wait until no incoming measurement in 0.5 seconds
     while (DateTime.now().difference(lastReceived).inMilliseconds < 500) {
       await Future.delayed(const Duration(milliseconds: 200));
-      // debugPrint('time diff: ${DateTime.now().difference(lastReceived).inMilliseconds}');
     }
 
     await subscription.cancel();
@@ -49,10 +49,10 @@ class ThermometerDeviceConnector extends DeviceConnector {
     var btData = dataArray.last;
 
     var measurementCreateModel = MeasurementCreateModel(
-      0,
-      btData.toTimestamp(5, 11),
+      _userId,
+      btData.toTimestamp(_timestampByte, _timestampByte + _timestampLength),
       MeasurementType.temperature,
-      temperature: btData.toFloat(1),
+      temperature: btData.toFloat(_temperatureByte),
     );
 
     debugPrint('created measurement');
