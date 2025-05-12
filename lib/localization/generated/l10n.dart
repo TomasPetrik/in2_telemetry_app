@@ -18,17 +18,20 @@ class I10n {
   static I10n? _current;
 
   static I10n get current {
-    assert(_current != null,
-        'No instance of I10n was loaded. Try to initialize the I10n delegate before accessing I10n.current.');
+    assert(
+      _current != null,
+      'No instance of I10n was loaded. Try to initialize the I10n delegate before accessing I10n.current.',
+    );
     return _current!;
   }
 
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<I10n> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false)
-        ? locale.languageCode
-        : locale.toString();
+    final name =
+        (locale.countryCode?.isEmpty ?? false)
+            ? locale.languageCode
+            : locale.toString();
     final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
@@ -41,8 +44,10 @@ class I10n {
 
   static I10n of(BuildContext context) {
     final instance = I10n.maybeOf(context);
-    assert(instance != null,
-        'No instance of I10n present in the widget tree. Did you add I10n.delegate in localizationsDelegates?');
+    assert(
+      instance != null,
+      'No instance of I10n present in the widget tree. Did you add I10n.delegate in localizationsDelegates?',
+    );
     return instance!;
   }
 
@@ -73,32 +78,17 @@ class I10n {
 
   /// `Zrušit`
   String get common_cancel {
-    return Intl.message(
-      'Zrušit',
-      name: 'common_cancel',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Zrušit', name: 'common_cancel', desc: '', args: []);
   }
 
   /// `Potvrdit`
   String get common_confirm {
-    return Intl.message(
-      'Potvrdit',
-      name: 'common_confirm',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Potvrdit', name: 'common_confirm', desc: '', args: []);
   }
 
   /// `Zavřít`
   String get common_close {
-    return Intl.message(
-      'Zavřít',
-      name: 'common_close',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Zavřít', name: 'common_close', desc: '', args: []);
   }
 
   /// `Měření`
@@ -113,12 +103,7 @@ class I10n {
 
   /// `Měřit`
   String get common_measure {
-    return Intl.message(
-      'Měřit',
-      name: 'common_measure',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Měřit', name: 'common_measure', desc: '', args: []);
   }
 
   /// `Měřit teď`
@@ -183,12 +168,7 @@ class I10n {
 
   /// `Uložit`
   String get common_save {
-    return Intl.message(
-      'Uložit',
-      name: 'common_save',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Uložit', name: 'common_save', desc: '', args: []);
   }
 
   /// `Nesprávná hodnota`
@@ -263,42 +243,22 @@ class I10n {
 
   /// `Od`
   String get common_from {
-    return Intl.message(
-      'Od',
-      name: 'common_from',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Od', name: 'common_from', desc: '', args: []);
   }
 
   /// `Do`
   String get common_to {
-    return Intl.message(
-      'Do',
-      name: 'common_to',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Do', name: 'common_to', desc: '', args: []);
   }
 
   /// `Postup`
   String get common_procedure {
-    return Intl.message(
-      'Postup',
-      name: 'common_procedure',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Postup', name: 'common_procedure', desc: '', args: []);
   }
 
   /// `Dnes`
   String get common_today {
-    return Intl.message(
-      'Dnes',
-      name: 'common_today',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Dnes', name: 'common_today', desc: '', args: []);
   }
 
   /// `v {atTime}`
@@ -361,23 +321,14 @@ class I10n {
 
   /// `Celkem`
   String get common_overall {
-    return Intl.message(
-      'Celkem',
-      name: 'common_overall',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Celkem', name: 'common_overall', desc: '', args: []);
   }
 
   /// `{whenDayName, select, today{dnešek} yesterday{včerejšek} other{zvolené období}}`
   String common_when_day_name(Object whenDayName) {
     return Intl.select(
       whenDayName,
-      {
-        'today': 'dnešek',
-        'yesterday': 'včerejšek',
-        'other': 'zvolené období',
-      },
+      {'today': 'dnešek', 'yesterday': 'včerejšek', 'other': 'zvolené období'},
       name: 'common_when_day_name',
       desc: 'When day names',
       args: [whenDayName],
@@ -580,32 +531,17 @@ class I10n {
 
   /// `Měření`
   String get tabs_measurement {
-    return Intl.message(
-      'Měření',
-      name: 'tabs_measurement',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Měření', name: 'tabs_measurement', desc: '', args: []);
   }
 
   /// `Výsledky`
   String get tabs_results {
-    return Intl.message(
-      'Výsledky',
-      name: 'tabs_results',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Výsledky', name: 'tabs_results', desc: '', args: []);
   }
 
   /// `Více`
   String get tabs_more {
-    return Intl.message(
-      'Více',
-      name: 'tabs_more',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Více', name: 'tabs_more', desc: '', args: []);
   }
 
   /// `Přihlášené účty`
@@ -1130,7 +1066,9 @@ class I10n {
 
   /// `Platný od {fromDate} do {toDate}`
   String user_details_screen_plan_active_from_to_date(
-      String fromDate, String toDate) {
+    String fromDate,
+    String toDate,
+  ) {
     return Intl.message(
       'Platný od $fromDate do $toDate',
       name: 'user_details_screen_plan_active_from_to_date',
@@ -1151,7 +1089,9 @@ class I10n {
 
   /// `Plánované měření začíná {fromTime} v {atTime}`
   String care_plan_detail_screen_fulfillment_evaluation_valid_from(
-      String fromTime, String atTime) {
+    String fromTime,
+    String atTime,
+  ) {
     return Intl.message(
       'Plánované měření začíná $fromTime v $atTime',
       name: 'care_plan_detail_screen_fulfillment_evaluation_valid_from',
@@ -1272,7 +1212,9 @@ class I10n {
 
   /// `Začíná {fromTime}\nKončí {toTime}`
   String dashboard_screen_measurement_periodical_interval(
-      String fromTime, String toTime) {
+    String fromTime,
+    String toTime,
+  ) {
     return Intl.message(
       'Začíná $fromTime\nKončí $toTime',
       name: 'dashboard_screen_measurement_periodical_interval',
@@ -1650,7 +1592,9 @@ class I10n {
 
   /// `Uživateli {name} byl upraven plán pro měření {measurementType}.`
   String notification_widget_plan_changed_for_user_desc(
-      String name, String measurementType) {
+    String name,
+    String measurementType,
+  ) {
     return Intl.message(
       'Uživateli $name byl upraven plán pro měření $measurementType.',
       name: 'notification_widget_plan_changed_for_user_desc',
@@ -2433,7 +2377,10 @@ class I10n {
 
   /// `{frequency} krát od {fromTime} do {toTime}`
   String notification_periodical_frequency_from_to(
-      int frequency, String fromTime, String toTime) {
+    int frequency,
+    String fromTime,
+    String toTime,
+  ) {
     return Intl.message(
       '$frequency krát od $fromTime do $toTime',
       name: 'notification_periodical_frequency_from_to',
@@ -2676,9 +2623,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<I10n> {
   const AppLocalizationDelegate();
 
   List<Locale> get supportedLocales {
-    return const <Locale>[
-      Locale.fromSubtags(languageCode: 'cs'),
-    ];
+    return const <Locale>[Locale.fromSubtags(languageCode: 'cs')];
   }
 
   @override
