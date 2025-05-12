@@ -4,7 +4,6 @@ import 'package:scalesoft_app/data/entities/json_entities/care_plan/care_plan_au
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/care_plan_version.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_evaluation_aggregated.dart';
 import 'package:scalesoft_app/data/entities/json_entities/care_plan/fulfillment_evaluation_item.dart';
-
 import 'package:scalesoft_app/data/tables/users.dart';
 
 class CarePlans extends Table {

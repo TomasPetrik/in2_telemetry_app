@@ -1,6 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:drift/drift.dart';
-
+import 'package:json_annotation/json_annotation.dart';
 import 'package:scalesoft_app/data/entities/enums/shortness_of_breath_level.dart';
 
 part 'shortness_of_breath_thresholds.g.dart';

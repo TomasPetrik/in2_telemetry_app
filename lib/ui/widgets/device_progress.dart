@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/model/device_create_model.dart';
 import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/action_item.dart';
 import 'package:scalesoft_app/ui/widgets/device_progress_detail.dart';
+import 'package:scalesoft_app/utils/extensions/device_create_model_extension.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DeviceProgress extends StatelessWidget {
@@ -48,7 +50,7 @@ class DeviceProgress extends StatelessWidget {
         const SliverGap(Dimensions.padding60),
         if (device.prototype.aboutUrl != null) ...[
           ActionItem(
-            label: localization.find_device_screen_device_reference,
+            label: localization.find_device_screen_device_reference(device.getDeviceTypeByMeasurementType().toLowerCase()),
             onTap: () async {
               if (!await launchUrl(
                 Uri.parse(device.prototype.aboutUrl!),

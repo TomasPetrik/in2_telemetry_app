@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 enum MeasurementType {
   @JsonValue('Temperature')
-  temperature,
+  temperature(),
   @JsonValue('BloodPressure')
   bloodPressure,
   @JsonValue('OxygenSaturation')

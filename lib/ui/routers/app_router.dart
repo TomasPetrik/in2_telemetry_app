@@ -8,6 +8,7 @@ import 'package:scalesoft_app/ui/routers/routes/care_plan_detail_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/chart_screen_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/configuration_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/device_connection_flow_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/device_search_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/future_measurements_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/hospital_detail_route.dart';
@@ -20,7 +21,6 @@ import 'package:scalesoft_app/ui/routers/routes/metering_first_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/no_user_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/notification_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/offline_results_route.dart';
-import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/register_device_detail_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/register_device_success_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/results_history_route.dart';
@@ -84,7 +84,7 @@ class AppRouter {
             UserAddedRoute(navigator: navAuthManager).route,
             NoUserRoute(navigator: navAuthManager).route,
             ManualMeasurementRoute(navigator: navAuthManager).route,
-            OmronFlowRoute(navigator: navAuthManager).route,
+            DeviceConnectionFlowRoute(navigator: navAuthManager).route,
             CalendarRoute(navigator: navAuthManager).route,
             OfflineResultsRoute(navigator: navAuthManager).route,
             ResultsHistoryRoute(navigator: navAuthManager).route,

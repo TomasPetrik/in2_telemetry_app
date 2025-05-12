@@ -1,0 +1,2 @@
+C:/Pool/IN2-Telemetry-MobileApp/android/app/.cxx/RelWithDebInfo/8a5u4u6y/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Pool/IN2-Telemetry-MobileApp/android/app/.cxx/RelWithDebInfo/8a5u4u6y/armeabi-v7a/CMakeFiles/rebuild_cache.dir

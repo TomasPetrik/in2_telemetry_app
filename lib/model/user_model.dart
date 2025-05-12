@@ -1,8 +1,8 @@
-import 'package:scalesoft_app/data/entities/json_entities/user/measurement_thresholds.dart';
-import 'package:scalesoft_app/model/hospital.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/auth_token.dart';
+import 'package:scalesoft_app/data/entities/json_entities/user/measurement_thresholds.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/time_setting.dart';
 import 'package:scalesoft_app/model/enum/user_problem_type.dart';
+import 'package:scalesoft_app/model/hospital.dart';
 
 class UserModel {
   final int id;

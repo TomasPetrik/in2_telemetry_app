@@ -15,7 +15,7 @@ import 'package:scalesoft_app/service_locator/get_it.dart';
 import 'package:scalesoft_app/services/report_service.dart';
 import 'package:scalesoft_app/storage/user_cubit.dart';
 import 'package:scalesoft_app/ui/routers/routes/dashboard_route.dart';
-import 'package:scalesoft_app/ui/routers/routes/omron_flow_route.dart';
+import 'package:scalesoft_app/ui/routers/routes/device_connection_flow_route.dart';
 import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/highlighted_elevated_button.dart';
@@ -219,9 +219,9 @@ class SyncedResult extends StatelessWidget {
                   message: EventsConstants.eventMeasurementRepeat,
                 );
                 GoRouter.of(context).pushReplacementNamed(
-                  OmronFlowRoute.name,
+                  DeviceConnectionFlowRoute.name,
                   queryParameters: {
-                    'userId': userId,
+                    'userId': userId.toString(),
                     'measurementType': measurementType.name,
                   },
                   extra: device,

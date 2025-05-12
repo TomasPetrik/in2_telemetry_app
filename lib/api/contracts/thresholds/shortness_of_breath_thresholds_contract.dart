@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scalesoft_app/api/contracts/measurement/shortness_of_breath_contract.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:scalesoft_app/api/contracts/measurement/shortness_of_breath_contract.dart';
 
 part 'shortness_of_breath_thresholds_contract.g.dart';
 

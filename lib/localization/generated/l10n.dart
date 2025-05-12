@@ -291,15 +291,11 @@ class I10n {
     );
   }
 
-  /// `{actionButtonType, select, regular{akčního tlačítka} startButton{START|STOP} other{ }}`
+  /// `{actionButtonType, select, regular{zapnout/vypnout} startButton{START|STOP} other{ }}`
   String common_action_button_label(Object actionButtonType) {
     return Intl.select(
       actionButtonType,
-      {
-        'regular': 'akčního tlačítka',
-        'startButton': 'START|STOP',
-        'other': ' ',
-      },
+      {'regular': 'zapnout/vypnout', 'startButton': 'START|STOP', 'other': ' '},
       name: 'common_action_button_label',
       desc: 'Action Button Type',
       args: [actionButtonType],
@@ -1853,13 +1849,13 @@ class I10n {
     );
   }
 
-  /// `Hledání tlakoměru...`
-  String get find_device_screen_searching_tonometer {
+  /// `Hledání {deviceType}u...`
+  String find_device_screen_searching_tonometer(String deviceType) {
     return Intl.message(
-      'Hledání tlakoměru...',
+      'Hledání ${deviceType}u...',
       name: 'find_device_screen_searching_tonometer',
       desc: '',
-      args: [],
+      args: [deviceType],
     );
   }
 
@@ -1873,43 +1869,43 @@ class I10n {
     );
   }
 
-  /// `Tlakoměr připojen`
-  String get find_device_screen_device_connected {
+  /// `{deviceType} připojen`
+  String find_device_screen_device_connected(String deviceType) {
     return Intl.message(
-      'Tlakoměr připojen',
+      '$deviceType připojen',
       name: 'find_device_screen_device_connected',
       desc: '',
-      args: [],
+      args: [deviceType],
     );
   }
 
-  /// `Probíhá přenos dat z tlakoměru...`
-  String get find_device_screen_sync_results {
+  /// `Probíhá přenos dat z {deviceType}u...`
+  String find_device_screen_sync_results(String deviceType) {
     return Intl.message(
-      'Probíhá přenos dat z tlakoměru...',
+      'Probíhá přenos dat z ${deviceType}u...',
       name: 'find_device_screen_sync_results',
       desc: '',
-      args: [],
+      args: [deviceType],
     );
   }
 
-  /// `Probíhá párování s tlakoměrem...`
-  String get find_device_screen_pairing_device {
+  /// `Probíhá párování s {deviceType}em...`
+  String find_device_screen_pairing_device(String deviceType) {
     return Intl.message(
-      'Probíhá párování s tlakoměrem...',
+      'Probíhá párování s ${deviceType}em...',
       name: 'find_device_screen_pairing_device',
       desc: '',
-      args: [],
+      args: [deviceType],
     );
   }
 
-  /// `Tlakoměr úspěšně spárován`
-  String get find_device_screen_paired_device {
+  /// `{deviceType} úspěšně spárován`
+  String find_device_screen_paired_device(String deviceType) {
     return Intl.message(
-      'Tlakoměr úspěšně spárován',
+      '$deviceType úspěšně spárován',
       name: 'find_device_screen_paired_device',
       desc: '',
-      args: [],
+      args: [deviceType],
     );
   }
 
@@ -1933,33 +1929,36 @@ class I10n {
     );
   }
 
-  /// `Párování s tlakoměrem`
-  String get find_device_screen_step3_p {
+  /// `Párování s {deviceType}em`
+  String find_device_screen_step3_p(String deviceType) {
     return Intl.message(
-      'Párování s tlakoměrem',
+      'Párování s ${deviceType}em',
       name: 'find_device_screen_step3_p',
       desc: '',
-      args: [],
+      args: [deviceType],
     );
   }
 
-  /// `Vypněte tlakoměr pomocí tlačítka {actionButtonLabel}, poté spusťte měření dalším stisknutím tlačítka {actionButtonLabel} a počkejte na jeho dokončení`
-  String find_device_screen_step4_p(String actionButtonLabel) {
+  /// `Vypněte {deviceType} pomocí tlačítka {actionButtonLabel}, poté spusťte měření dalším stisknutím tlačítka {actionButtonLabel} a počkejte na jeho dokončení`
+  String find_device_screen_step4_p(
+    String deviceType,
+    String actionButtonLabel,
+  ) {
     return Intl.message(
-      'Vypněte tlakoměr pomocí tlačítka $actionButtonLabel, poté spusťte měření dalším stisknutím tlačítka $actionButtonLabel a počkejte na jeho dokončení',
+      'Vypněte $deviceType pomocí tlačítka $actionButtonLabel, poté spusťte měření dalším stisknutím tlačítka $actionButtonLabel a počkejte na jeho dokončení',
       name: 'find_device_screen_step4_p',
       desc: '',
-      args: [actionButtonLabel],
+      args: [deviceType, actionButtonLabel],
     );
   }
 
-  /// `Počkejte na přenesení výsledků z tlakoměru`
-  String get find_device_screen_step5_p {
+  /// `Počkejte na přenesení výsledků z {deviceType}u`
+  String find_device_screen_step5_p(String deviceType) {
     return Intl.message(
-      'Počkejte na přenesení výsledků z tlakoměru',
+      'Počkejte na přenesení výsledků z ${deviceType}u',
       name: 'find_device_screen_step5_p',
       desc: '',
-      args: [],
+      args: [deviceType],
     );
   }
 
@@ -1973,13 +1972,13 @@ class I10n {
     );
   }
 
-  /// `Spusťte na tlakoměru měření pomocí tlačítka {actionButtonLabel} a počkejte na jeho dokončení`
-  String find_device_screen_step2(String actionButtonLabel) {
+  /// `Spusťte na {deviceType}u měření pomocí tlačítka {actionButtonLabel} a počkejte na jeho dokončení`
+  String find_device_screen_step2(String deviceType, String actionButtonLabel) {
     return Intl.message(
-      'Spusťte na tlakoměru měření pomocí tlačítka $actionButtonLabel a počkejte na jeho dokončení',
+      'Spusťte na ${deviceType}u měření pomocí tlačítka $actionButtonLabel a počkejte na jeho dokončení',
       name: 'find_device_screen_step2',
       desc: '',
-      args: [actionButtonLabel],
+      args: [deviceType, actionButtonLabel],
     );
   }
 
@@ -1993,23 +1992,23 @@ class I10n {
     );
   }
 
-  /// `Počkejte na přenesení výsledků z tlakoměru`
-  String get find_device_screen_step4 {
+  /// `Počkejte na přenesení výsledků z {deviceType}u`
+  String find_device_screen_step4(String deviceType) {
     return Intl.message(
-      'Počkejte na přenesení výsledků z tlakoměru',
+      'Počkejte na přenesení výsledků z ${deviceType}u',
       name: 'find_device_screen_step4',
       desc: '',
-      args: [],
+      args: [deviceType],
     );
   }
 
-  /// `Stránky nemocnice o tlakoměru`
-  String get find_device_screen_device_reference {
+  /// `Stránky nemocnice o {deviceType}u`
+  String find_device_screen_device_reference(String deviceType) {
     return Intl.message(
-      'Stránky nemocnice o tlakoměru',
+      'Stránky nemocnice o ${deviceType}u',
       name: 'find_device_screen_device_reference',
       desc: '',
-      args: [],
+      args: [deviceType],
     );
   }
 
@@ -2616,6 +2615,36 @@ class I10n {
       desc: '',
       args: [],
     );
+  }
+
+  /// `Teploměr`
+  String get device_thermometer {
+    return Intl.message(
+      'Teploměr',
+      name: 'device_thermometer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Oxymetr`
+  String get device_oximetry {
+    return Intl.message('Oxymetr', name: 'device_oximetry', desc: '', args: []);
+  }
+
+  /// `Tlakoměr`
+  String get device_tonometer {
+    return Intl.message(
+      'Tlakoměr',
+      name: 'device_tonometer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Měřák`
+  String get device_generic {
+    return Intl.message('Měřák', name: 'device_generic', desc: '', args: []);
   }
 }
 

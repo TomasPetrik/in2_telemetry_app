@@ -6,8 +6,8 @@ import 'package:scalesoft_app/api/contracts/time_settings/time_settings_update_c
 import 'package:scalesoft_app/bloc/daily_times_settings/times_settings_event.dart';
 import 'package:scalesoft_app/bloc/daily_times_settings/times_settings_state.dart';
 import 'package:scalesoft_app/data/entities/json_entities/user/time_setting.dart';
-import 'package:scalesoft_app/mapper/when_code_mapper.dart';
 import 'package:scalesoft_app/data/providers/when_template_db_provider.dart';
+import 'package:scalesoft_app/mapper/when_code_mapper.dart';
 import 'package:scalesoft_app/repositories/time_settings_repository.dart';
 import 'package:scalesoft_app/services/internet_service.dart';
 import 'package:scalesoft_app/storage/user_cubit.dart';

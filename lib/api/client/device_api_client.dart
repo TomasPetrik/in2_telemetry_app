@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:scalesoft_app/api/contracts/device/device_create_contract.dart';
 import 'package:scalesoft_app/api/contracts/device/device_instruction_contract.dart';
 import 'package:scalesoft_app/api/contracts/device/device_prototype_contract.dart';
-import 'package:scalesoft_app/api/contracts/device/device_create_contract.dart';
 import 'package:scalesoft_app/constants/configuration_constants.dart';
 
 part 'device_api_client.g.dart';

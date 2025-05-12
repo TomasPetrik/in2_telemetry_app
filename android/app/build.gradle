@@ -77,8 +77,8 @@ android {
         }
         release {
             // Use this to build with debug signing:
-            //signingConfig signingConfigs.debug
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
+//            signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
 

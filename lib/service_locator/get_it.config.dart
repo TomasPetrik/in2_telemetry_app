@@ -26,8 +26,8 @@ import '../bloc/care_plan/care_plan_bloc.dart' as _i260;
 import '../bloc/chart_bloc/chart_bloc.dart' as _i1045;
 import '../bloc/chart_loader_bloc/chart_loader_bloc.dart' as _i380;
 import '../bloc/daily_times_settings/times_settings_bloc.dart' as _i193;
+import '../bloc/device_connection/device_connection_bloc.dart' as _i788;
 import '../bloc/notifications/notifications_bloc.dart' as _i917;
-import '../bloc/omron/omron_connection_bloc.dart' as _i362;
 import '../bloc/register_device/register_device_bloc.dart' as _i768;
 import '../bloc/report/report_bloc.dart' as _i243;
 import '../bloc/results/results_bloc.dart' as _i206;
@@ -283,7 +283,7 @@ Future<_i174.GetIt> init(
         gh<_i584.UserCubit>(),
         gh<_i1047.CarePlanDbProvider>(),
       ));
-  gh.factory<_i362.OmronConnectionBloc>(() => _i362.OmronConnectionBloc(
+  gh.factory<_i788.DeviceConnectionBloc>(() => _i788.DeviceConnectionBloc(
         gh<_i994.BtConnectionHelper>(),
         gh<_i420.ReportService>(),
         gh<_i331.DeviceDbProvider>(),

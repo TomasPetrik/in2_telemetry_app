@@ -1,5 +1,5 @@
 class EventsConstants {
-  /* OMRON CONNECTION BLOC */
+  /* DEVICE CONNECTION BLOC */
   static const eventBluetoothDisabled = 'EVENT_BLUETOOTH_DISABLED';
   static const eventNoBTPermissionsGranted = 'EVENT_NO_BT_PERMISSIONS_GRANTED';
   static const eventDeviceSearchingStart = 'EVENT_DEVICE_SEARCHING_START';

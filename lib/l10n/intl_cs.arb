@@ -52,7 +52,7 @@
             }
         }
     },
-    "common_action_button_label": "{actionButtonType, select, regular{akčního tlačítka} startButton{START|STOP} other{ }}",
+    "common_action_button_label": "{actionButtonType, select, regular{zapnout/vypnout} startButton{START|STOP} other{ }}",
     "@common_action_button_label": {
         "description": "Action Button Type",
         "placeholders": {
@@ -481,12 +481,47 @@
     "notifications_screen_at_start_of_measurement": "V čase začátku měření",
     "notifications_screen_10_min_before_measurement": "10 minut před každým měřením",
     "find_device_screen_searching_device": "Hledání zařízení...",
-    "find_device_screen_searching_tonometer": "Hledání tlakoměru...",
+    "find_device_screen_searching_tonometer": "Hledání {deviceType}u...",
+    "@find_device_screen_searching_tonometer": {
+        "placeholders": {
+            "deviceType": {
+                "type": "String"
+            }
+        }
+    },
     "find_device_screen_waiting_on_measurement": "Čekáme až se změříte...",
-    "find_device_screen_device_connected": "Tlakoměr připojen",
-    "find_device_screen_sync_results": "Probíhá přenos dat z tlakoměru...",
-    "find_device_screen_pairing_device": "Probíhá párování s tlakoměrem...",
-    "find_device_screen_paired_device": "Tlakoměr úspěšně spárován",
+    "find_device_screen_device_connected": "{deviceType} připojen",
+    "@find_device_screen_device_connected": {
+        "placeholders": {
+            "deviceType": {
+                "type": "String"
+            }
+        }
+    },
+    "find_device_screen_sync_results": "Probíhá přenos dat z {deviceType}u...",
+    "@find_device_screen_sync_results": {
+        "placeholders": {
+            "deviceType": {
+                "type": "String"
+            }
+        }
+    },
+    "find_device_screen_pairing_device": "Probíhá párování s {deviceType}em...",
+    "@find_device_screen_pairing_device": {
+        "placeholders": {
+            "deviceType": {
+                "type": "String"
+            }
+        }
+    },
+    "find_device_screen_paired_device": "{deviceType} úspěšně spárován",
+    "@find_device_screen_paired_device": {
+        "placeholders": {
+            "deviceType": {
+                "type": "String"
+            }
+        }
+    },
     "find_device_screen_step1_p": "Zapněte {deviceName} v režimu párování a počkejte na výzvu k párování",
     "@find_device_screen_step1_p": {
         "placeholders": {
@@ -496,16 +531,33 @@
         }
     },
     "find_device_screen_step2_p": "Počkejte, na výzvu k párování",
-    "find_device_screen_step3_p": "Párování s tlakoměrem",
-    "find_device_screen_step4_p": "Vypněte tlakoměr pomocí tlačítka {actionButtonLabel}, poté spusťte měření dalším stisknutím tlačítka {actionButtonLabel} a počkejte na jeho dokončení",
+    "find_device_screen_step3_p": "Párování s {deviceType}em",
+    "@find_device_screen_step3_p": {
+        "placeholders": {
+            "deviceType": {
+                "type": "String"
+            }
+        }
+    },
+    "find_device_screen_step4_p": "Vypněte {deviceType} pomocí tlačítka {actionButtonLabel}, poté spusťte měření dalším stisknutím tlačítka {actionButtonLabel} a počkejte na jeho dokončení",
     "@find_device_screen_step4_p": {
         "placeholders": {
+            "deviceType": {
+                "type": "String"
+            },
             "actionButtonLabel": {
                 "type": "String"
             }
         }
     },
-    "find_device_screen_step5_p": "Počkejte na přenesení výsledků z tlakoměru",
+    "find_device_screen_step5_p": "Počkejte na přenesení výsledků z {deviceType}u",
+    "@find_device_screen_step5_p": {
+        "placeholders": {
+            "deviceType": {
+                "type": "String"
+            }
+        }
+    },
     "find_device_screen_step1": "Ujistěte se, že máte aktivován Bluetooth na {deviceName}",
     "@find_device_screen_step1": {
         "placeholders": {
@@ -514,17 +566,34 @@
             }
         }
     },
-    "find_device_screen_step2": "Spusťte na tlakoměru měření pomocí tlačítka {actionButtonLabel} a počkejte na jeho dokončení",
+    "find_device_screen_step2": "Spusťte na {deviceType}u měření pomocí tlačítka {actionButtonLabel} a počkejte na jeho dokončení",
     "@find_device_screen_step2": {
         "placeholders": {
+            "deviceType": {
+                "type": "String"
+            },
             "actionButtonLabel": {
                 "type": "String"
             }
         }
     },
     "find_device_screen_step3": "Po měření stiskněte opět akční tlačítko",
-    "find_device_screen_step4": "Počkejte na přenesení výsledků z tlakoměru",
-    "find_device_screen_device_reference": "Stránky nemocnice o tlakoměru",
+    "find_device_screen_step4": "Počkejte na přenesení výsledků z {deviceType}u",
+    "@find_device_screen_step4": {
+        "placeholders": {
+            "deviceType": {
+                "type": "String"
+            }
+        }
+    },
+    "find_device_screen_device_reference": "Stránky nemocnice o {deviceType}u",
+    "@find_device_screen_device_reference": {
+        "placeholders": {
+            "deviceType": {
+                "type": "String"
+            }
+        }
+    },
     "find_device_screen_disabled_bt_title": "Bluetooth je vypnutý",
     "find_device_screen_disabled_bt_desc": "Pro spojení s přístrojem je potřeba mít Bluetooth zapnutý.",
     "find_device_screen_disabled_bt_btn_settings": "Nastavení",
@@ -646,5 +715,9 @@
     "watch_setup_failed": "Nastavení hodinek se nezdařilo. Ujistěte se, že aplikace má potřebná oprávnění, je aktivní bluetooth telefonu a hodinky jsou zapnuté a v dosahu. Potom zkuste akci opakovat.",
     "watch_setup_partial": "Je aktivní přenos dat pouze z některých hodinek. Zkuste prosím aktivaci provést znovu. Ujistěte se, že všechny Vaše přiřazené hodinky jsou v dosahu.",
     "new_watch_assigned_title": "Konfigurace hodinek",
-    "new_watch_assigned_description": "Máte přiřazené hodinky. Aktivujte prosím automatický přenos naměřených dat z hodinek v nastavení aplikace."
+    "new_watch_assigned_description": "Máte přiřazené hodinky. Aktivujte prosím automatický přenos naměřených dat z hodinek v nastavení aplikace.",
+    "device_thermometer": "Teploměr",
+    "device_oximetry": "Oxymetr",
+    "device_tonometer": "Tlakoměr",
+    "device_generic": "Měřák"
 }

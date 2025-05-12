@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:scalesoft_app/ui/widgets/scale_background_blur.dart';
 

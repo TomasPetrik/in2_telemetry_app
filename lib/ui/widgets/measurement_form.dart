@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/data/entities/enums/measurement_type.dart';
 import 'package:scalesoft_app/data/entities/enums/overall_health_state.dart';
 import 'package:scalesoft_app/data/entities/enums/shortness_of_breath_level.dart';
@@ -12,7 +13,6 @@ import 'package:scalesoft_app/ui/themes/scalesoft_text_styles.dart';
 import 'package:scalesoft_app/ui/themes/ui_constants.dart';
 import 'package:scalesoft_app/ui/widgets/scale_select_form_field.dart';
 import 'package:scalesoft_app/ui/widgets/scale_text_form_field.dart';
-import 'package:scalesoft_app/constants/configuration_constants.dart';
 import 'package:scalesoft_app/utils/extensions/string_extensions.dart';
 
 final formKey = GlobalKey<FormState>();
