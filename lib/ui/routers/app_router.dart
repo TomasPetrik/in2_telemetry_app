@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:scalesoft_app/configuration/hospitals_configuration.dart';
 import 'package:scalesoft_app/ui/managers/auth_manager.dart';
 import 'package:scalesoft_app/ui/routers/routes/appearance_route.dart';
 import 'package:scalesoft_app/ui/routers/routes/blank_route.dart';
@@ -42,6 +43,14 @@ class AppRouter {
       navigatorKey: navRoot,
       initialLocation: '/',
       errorBuilder: (context, state) => const BlankScreen(),
+      redirect: (context, state) {
+        final uriString = state.uri.toString();
+        // Check if the incoming URI is auth callback
+        if (uriString.startsWith(HospitalsConfiguration.redirectUrl)) {
+          return '/blank';
+        }
+        return null;
+      },
       routes: [
         ShellRoute(
           navigatorKey: navAuthManager,

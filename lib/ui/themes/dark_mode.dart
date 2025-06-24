@@ -94,7 +94,7 @@ class DarkMode {
           subtitleTextStyle: ScaleTextStyles.label.apply(color: colorContent60),
           iconColor: primary,
         ),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           elevation: Dimensions.cardElevation,
           shadowColor: cardShadow,
           shape: RoundedRectangleBorder(

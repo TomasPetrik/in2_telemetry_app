@@ -76,7 +76,7 @@ class LightMode {
           subtitleTextStyle: ScaleTextStyles.label.apply(color: colorContent80),
           iconColor: primary,
         ),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           elevation: Dimensions.cardElevation,
           shadowColor: cardShadow,
           shape: RoundedRectangleBorder(
@@ -139,7 +139,7 @@ class LightMode {
             ),
           ),
         ),
-        dialogTheme: DialogTheme(
+        dialogTheme: DialogThemeData(
           backgroundColor: light,
           titleTextStyle: ScaleTextStyles.title.apply(color: fontColor),
           contentTextStyle: ScaleTextStyles.label.apply(color: colorContent80),
