@@ -32,17 +32,19 @@ class BloodPressureDeviceConnector implements DeviceConnector {
           resultState: ResultState.noData, measurementDt: DateTime.now());
     }
 
+    var receivedFirst = false;
     var lastReceived = DateTime.now();
     var dataArray = List<List<int>>.empty(growable: true);
     final subscription = measurementCharacteristic.onValueReceived.listen(
       (data) {
         dataArray.add(data);
         lastReceived = DateTime.now();
+        receivedFirst = true;
       },
     );
     await measurementCharacteristic.setNotifyValue(!measurementCharacteristic.isNotifying);
     await Future.delayed(const Duration(seconds: 1));
-    while (DateTime.now().difference(lastReceived).inMilliseconds < 500) {
+    while (DateTime.now().difference(lastReceived).inMilliseconds < 500 || !receivedFirst) {
       await Future.delayed(const Duration(milliseconds: 200));
     }
     subscription.cancel();

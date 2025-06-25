@@ -3,5 +3,7 @@ enum DeviceModelType {
   omronM7,
   e8x,
   beurerFt95,
-  beurerPo60
+  beurerPo60,
+  verovalBpw26,
+  beurerBc87
 }

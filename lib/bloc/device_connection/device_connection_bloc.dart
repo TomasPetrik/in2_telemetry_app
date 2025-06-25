@@ -189,7 +189,6 @@ class DeviceConnectionBloc
             ),
           );
 
-          // debugPrint(_measurementType.toString());
           var scanResultStream =
               FlutterBluePlus.onScanResults.listenAndBuffer();
 
@@ -352,14 +351,9 @@ class DeviceConnectionBloc
               deviceInfo: deviceInfo,
             ),
           );
-          await selectedBlDevice!.connectionState.firstWhere(
-              (state) => state == BluetoothConnectionState.disconnected);
-
-          // Omron M7 tries to send data immediately after turning off so this stops that
-          // I know it's ugly, what can you do
-          tryConnect = false;
-          await Future.delayed(const Duration(seconds: 1));
-          tryConnect = true;
+          if (selectedBlDevice!.advName == "BC87"){
+            await selectedBlDevice!.disconnect();
+          }
         },
 
         loadMeasurement: () async {

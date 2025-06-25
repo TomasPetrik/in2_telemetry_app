@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:scalesoft_app/bt_data/connectors/blood_pressure_device_connector.dart';
+import 'package:scalesoft_app/bt_data/connectors/bpw26_device_connector.dart';
 import 'package:scalesoft_app/bt_data/connectors/device_connector.dart';
 import 'package:scalesoft_app/bt_data/connectors/oximeter_device_connector.dart';
 import 'package:scalesoft_app/bt_data/connectors/thermometer_device_connector.dart';
@@ -11,6 +12,8 @@ Map<String, DeviceConnector> deviceConnectorByName = {
   'blesmart': BloodPressureDeviceConnector(),
   'ft95': ThermometerDeviceConnector(),
   'po60': OximeterDeviceConnector(),
+  'bpw26' : Bpw26DeviceConnector(),
+  'bc87' : BloodPressureDeviceConnector()
 };
 
 class BtConnection {
