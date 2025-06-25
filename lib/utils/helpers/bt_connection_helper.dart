@@ -47,6 +47,7 @@ class BtConnectionHelper {
     if (!FlutterBluePlus.isScanningNow) {
       FlutterBluePlus.startScan();
     }
+    debugPrint(serviceUuids.toString());
     final supportedDevicePrototypes =
         await _devicePrototypeDbProvider.getByUser(userId);
 
@@ -64,9 +65,8 @@ class BtConnectionHelper {
 
     late List<ScanResult> matchedResults;
 
-    await scanResultStream.firstWhere((scanResult) {
-
-      matchedResults = scanResult.where((scanResult) {
+    await scanResultStream.firstWhere((scanResults) {
+      matchedResults = scanResults.where((scanResult) {
         return scanResult.advertisementData.serviceUuids.any(
               (uuid) => serviceUuids.any((x) => x == uuid),
             ) &&
@@ -79,7 +79,8 @@ class BtConnectionHelper {
                 (onlyPairingMode &&
                     supportedBtPairingNames.any((suppBtPairName) {
                       return scanResult.advertisementData.advName
-                          .contains(suppBtPairName);
+                      .toLowerCase()
+                          .contains(suppBtPairName.toLowerCase());
                     })));
       }).toList();
       debugPrint('found matching devices ${matchedResults.length}');

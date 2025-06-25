@@ -151,7 +151,7 @@ class ConfigurationConstants {
       localId: 0,
       modelName: 'BM77',
       deviceManufacturer: 'Beurer',
-      visibleName: 'Beurer BM 77',
+      visibleName: 'Beurer BM77',
       bluetoothName: 'BM77',
       bluetoothPairingName: 'BM77',
       deviceModelType: DeviceModelType.beurerBm77,

@@ -238,6 +238,10 @@ class DeviceConnectionBloc
               if (reqModelPairing) {
                 add(const DeviceConnectionBlocEvent.pairDevice());
               } else {
+                if (!_device!.isPaired){
+                  _device =
+                  await _deviceDbProvider.markDeviceAsPaired(_userId, _device!);
+                }
                 add(const DeviceConnectionBlocEvent.loadMeasurement());
               }
             }
@@ -267,7 +271,8 @@ class DeviceConnectionBloc
           );
           if (Platform.isAndroid) {
             selectedBlDevice!.createBond();
-            await selectedBlDevice!.bondState.firstWhere((state) => state == BluetoothBondState.bonded);
+            await selectedBlDevice!.bondState
+                .firstWhere((state) => state == BluetoothBondState.bonded);
           } else if (Platform.isIOS) {
             final recordAccessCp = Guid('2A52');
 
@@ -276,16 +281,20 @@ class DeviceConnectionBloc
             final recordAccessCpCharacteristic = services
                 .firstWhereOrNull(
                   (service) => service.serviceUuid == recordAccessCpServiceUuid,
-            )
+                )
                 ?.characteristics
-                .firstWhereOrNull((characteristic) => characteristic.uuid == recordAccessCp);
-            if (recordAccessCpCharacteristic == null){
+                .firstWhereOrNull(
+                    (characteristic) => characteristic.uuid == recordAccessCp);
+            if (recordAccessCpCharacteristic == null) {
               return;
             }
 
             try {
-              await recordAccessCpCharacteristic.setNotifyValue(!recordAccessCpCharacteristic.isNotifying, timeout: 30);
-              await recordAccessCpCharacteristic.write([0x00, 0x01], withoutResponse: false, timeout: 30);
+              await recordAccessCpCharacteristic.setNotifyValue(
+                  !recordAccessCpCharacteristic.isNotifying,
+                  timeout: 30);
+              await recordAccessCpCharacteristic
+                  .write([0x00, 0x01], withoutResponse: false, timeout: 30);
             } on FlutterBluePlusException catch (e) {
               //Timeout error
               if (e.code == 1) return null;
@@ -378,8 +387,7 @@ class DeviceConnectionBloc
               await _btConnectionHelper.requestBatteryInfo(selectedBlDevice!);
 
           tryConnect = false;
-          var blConnection =
-              BtConnection(selectedBlDevice!);
+          var blConnection = BtConnection(selectedBlDevice!);
           var hwMeasurementResult = await blConnection.getHwMeasurementResult();
 
           if (hwMeasurementResult.resultState != ResultState.success) {
@@ -394,8 +402,12 @@ class DeviceConnectionBloc
             return;
           }
           hwMeasurementResult.measurement!.userId = _userId;
-          hwMeasurementResult.measurement!.deviceId =
-              (_device as DeviceModel?)?.id;
+          try {
+            hwMeasurementResult.measurement!.deviceId =
+                (_device as DeviceModel?)?.id;
+          } catch (e) {
+            debugPrint(e.toString());
+          }
           hwMeasurementResult.measurement!.measurementType = _measurementType;
           if (batteryInfo != null) {
             hwMeasurementResult.measurement!.batteryPercentage =
