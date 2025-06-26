@@ -26,7 +26,7 @@ class Bpw26DeviceConnector implements DeviceConnector {
       List<BluetoothCharacteristic> characteristics) async {
 
     await device.disconnect();
-    await Future.delayed(Duration(seconds: 10));
+    await Future.delayed(Duration(seconds: 11));
 
     var scanResultStream =
     FlutterBluePlus.onScanResults.listenAndBuffer();
